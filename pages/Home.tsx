@@ -189,33 +189,37 @@ export const Home: React.FC = () => {
 
           {/* Results Preview */}
           <div className="mt-8 pt-6 border-t border-stone-200">
-            <div className="bg-white rounded-2xl shadow-lg border border-stone-200 p-6 max-w-md mx-auto">
-              <div className="flex items-center gap-3 mb-4">
+            <div className="bg-white rounded-2xl shadow-lg border border-stone-200 p-6 max-w-sm mx-auto">
+              <div className="flex items-center justify-center gap-2 mb-4">
                 <Activity className="w-5 h-5 text-jung-primary" />
-                <span className="text-sm font-medium text-jung-dark">Your Cognitive Profile Preview</span>
+                <span className="text-sm font-medium text-jung-dark">Your Results Preview</span>
               </div>
-              {/* Mini Radar Chart Mockup */}
-              <div className="relative w-48 h-48 mx-auto mb-4">
-                <svg viewBox="0 0 200 200" className="w-full h-full">
-                  {/* Background grid */}
-                  <polygon points="100,20 180,100 100,180 20,100" fill="none" stroke="#e7e5e4" strokeWidth="1" />
-                  <polygon points="100,40 160,100 100,160 40,100" fill="none" stroke="#e7e5e4" strokeWidth="1" />
-                  <polygon points="100,60 140,100 100,140 60,100" fill="none" stroke="#e7e5e4" strokeWidth="1" />
+              {/* Mini Radar Chart Mockup - 8 functions */}
+              <div className="relative w-56 h-56 mx-auto">
+                <svg viewBox="0 0 240 240" className="w-full h-full">
+                  {/* Background octagon grids */}
+                  <polygon points="120,30 190,60 210,120 190,180 120,210 50,180 30,120 50,60" fill="none" stroke="#e7e5e4" strokeWidth="1" />
+                  <polygon points="120,50 175,75 190,120 175,165 120,190 65,165 50,120 65,75" fill="none" stroke="#e7e5e4" strokeWidth="1" />
+                  <polygon points="120,70 160,90 170,120 160,150 120,170 80,150 70,120 80,90" fill="none" stroke="#e7e5e4" strokeWidth="1" />
                   {/* Sample profile shape */}
                   <polygon
-                    points="100,35 165,85 145,155 55,145 45,75"
+                    points="120,40 180,70 195,125 170,170 120,185 70,160 45,115 65,65"
                     fill="rgba(180, 83, 9, 0.15)"
                     stroke="#b45309"
                     strokeWidth="2"
                   />
-                  {/* Function labels */}
-                  <text x="100" y="12" textAnchor="middle" className="text-xs fill-stone-500">Ni</text>
-                  <text x="188" y="104" textAnchor="start" className="text-xs fill-stone-500">Te</text>
-                  <text x="100" y="198" textAnchor="middle" className="text-xs fill-stone-500">Se</text>
-                  <text x="12" y="104" textAnchor="end" className="text-xs fill-stone-500">Fi</text>
+                  {/* Function labels - 8 functions around the octagon */}
+                  <text x="120" y="18" textAnchor="middle" fontSize="11" fill="#78716c">Ni</text>
+                  <text x="200" y="55" textAnchor="start" fontSize="11" fill="#78716c">Ne</text>
+                  <text x="222" y="124" textAnchor="start" fontSize="11" fill="#78716c">Te</text>
+                  <text x="200" y="195" textAnchor="start" fontSize="11" fill="#78716c">Ti</text>
+                  <text x="120" y="230" textAnchor="middle" fontSize="11" fill="#78716c">Si</text>
+                  <text x="40" y="195" textAnchor="end" fontSize="11" fill="#78716c">Se</text>
+                  <text x="18" y="124" textAnchor="end" fontSize="11" fill="#78716c">Fe</text>
+                  <text x="40" y="55" textAnchor="end" fontSize="11" fill="#78716c">Fi</text>
                 </svg>
               </div>
-              <p className="text-xs text-stone-500 text-center">See your unique function stack visualized</p>
+              <p className="text-sm text-stone-500 text-center mt-2">See all 8 functions visualized</p>
             </div>
           </div>
 

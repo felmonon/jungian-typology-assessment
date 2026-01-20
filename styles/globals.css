@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", serif;
+  --font-sans: "IBM Plex Sans", sans-serif;
+  
+  --color-jung-base: #fbfaf8;
+  --color-jung-dark: #1c1917;
+  --color-jung-primary: #451a03;
+  --color-jung-secondary: #57534e;
+  --color-jung-accent: #b45309;
+  --color-jung-muted: #e7e5e4;
+}
+
+body {
+  background-color: #fbfaf8;
+  color: #1c1917;
+}

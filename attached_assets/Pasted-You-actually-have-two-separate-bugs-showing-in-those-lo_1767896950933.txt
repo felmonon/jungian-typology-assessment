@@ -1,0 +1,188 @@
+You actually have **two separate bugs** showing in those logs. I’ll break them down **clearly and simply**, and then tell you **exactly how to fix each one**.
+
+---
+
+## 🐞 Bug #1: Chart width / height = -1
+
+### Error
+
+```
+The width(-1) and height(-1) of chart should be greater than 0
+```
+
+### What this means
+
+Your chart component (very likely **Recharts** or a similar chart lib) is rendering **before its container has a size**.
+
+So the chart tries to calculate its size and gets:
+
+* width = -1
+* height = -1
+  → which is invalid → error spam.
+
+This is a **layout / CSS bug**, not logic.
+
+---
+
+### Common causes
+
+* Chart is inside a `div` with **no height**
+* Parent container uses `display: flex` but no fixed/min height
+* Using `width="100%" height="100%"` but parent has `height: auto`
+* Rendering chart conditionally before layout settles
+
+---
+
+### ✅ Fix (pick ONE of these)
+
+#### ✅ Best fix (recommended)
+
+Give the chart container a real height:
+
+```jsx
+<div style={{ width: "100%", height: 300 }}>
+  <ResponsiveContainer width="100%" height="100%">
+    <YourChart />
+  </ResponsiveContainer>
+</div>
+```
+
+#### OR give minHeight
+
+```jsx
+<div style={{ minHeight: 300 }}>
+```
+
+#### OR control aspect ratio
+
+```jsx
+<ResponsiveContainer width="100%" aspect={2}>
+```
+
+> 🔑 Key rule: **charts need a parent with a real height**
+
+---
+
+## 🐞 Bug #2: Checkout JSON error (this is the serious one)
+
+### Error
+
+```
+Failed to execute 'json' on 'Response': Unexpected end of JSON input
+```
+
+### What this REALLY means
+
+Your frontend is calling:
+
+```js
+response.json()
+```
+
+But the backend response is:
+
+* empty
+* cut off
+* or NOT JSON at all
+
+So JavaScript tries to parse JSON → **fails**.
+
+---
+
+### Most common causes (90% of cases)
+
+#### ❌ Backend returns NOTHING
+
+Example (Node / serverless):
+
+```js
+res.status(200).end()
+```
+
+But frontend expects JSON.
+
+#### ❌ Backend crashes before sending response
+
+* Stripe error
+* exception thrown
+* missing `return`
+
+#### ❌ Backend returns HTML or plain text
+
+(very common in Vercel serverless errors)
+
+---
+
+### ✅ How to confirm quickly
+
+Open **DevTools → Network → Checkout request**
+
+* Click the request
+* Look at **Response**
+* If it’s empty → this is the bug
+* If it’s HTML → backend error page
+
+---
+
+### ✅ Proper backend response (REQUIRED)
+
+Your checkout API **must always return JSON**, even on errors.
+
+Example (Express / Vercel):
+
+```js
+return res.status(200).json({
+  success: true,
+  sessionId
+});
+```
+
+On error:
+
+```js
+return res.status(500).json({
+  error: "Checkout failed"
+});
+```
+
+---
+
+### ✅ Frontend SAFETY FIX (important)
+
+Never blindly call `.json()`:
+
+```js
+const res = await fetch("/api/checkout");
+
+const text = await res.text();
+
+if (!text) {
+  throw new Error("Empty response from server");
+}
+
+const data = JSON.parse(text);
+```
+
+This prevents crashes while debugging.
+
+---
+
+## 🧠 Summary (plain English)
+
+| Error                   | Meaning                                  |
+| ----------------------- | ---------------------------------------- |
+| Chart width(-1)         | Container has no height                  |
+| Unexpected end of JSON  | Backend returned empty / broken response |
+| Repeated checkout error | Backend is failing every time            |
+
+---
+
+## 🔥 What I need to help you fix it fully
+
+If you want **exact code-level fixes**, send:
+
+1. The **chart component code**
+2. The **checkout API route** (`/api/checkout`)
+3. What payment system you use (Stripe?)
+
+I can pinpoint the bug **line by line** and fix it cleanly.

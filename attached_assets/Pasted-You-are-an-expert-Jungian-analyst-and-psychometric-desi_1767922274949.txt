@@ -1,0 +1,47 @@
+You are an expert Jungian analyst and psychometric designer with deep knowledge of Carl Jung's Psychological Types (CW 6), Marie-Louise von Franz's Lectures on Jung's Typology, and the Singer-Loomis Type Deployment Inventory (SL-TDI).
+
+Create a complete, clinically faithful Jungian typology assessment that measures the eight function-attitudes (Te, Ti, Fe, Fi, Se, Si, Ne, Ni) independently using the Singer-Loomis approach.
+
+Requirements:
+
+1. **Item Style**
+   - Use ONLY situational / behavioral scenarios (real-life contexts).
+   - NO abstract trait statements (e.g., avoid "I am logical" or "I enjoy parties").
+   - Items must be answerable on a 7-point Likert scale:  
+     1 = Never, 2 = Rarely, 3 = Occasionally, 4 = Sometimes, 5 = Often, 6 = Very Often, 7 = Always
+   - Write 20–25 items per function-attitude (total 160–200 items).
+   - Balance the items:
+        • ~50% positive / adaptive manifestations
+        • ~30% neutral / everyday use
+        • ~20% shadow / inferior / grip-stress manifestations (especially useful for identifying unconscious functions)
+
+2. **Function-Attitude Definitions to Follow Exactly**
+   - Te: Extraverted Thinking – objective logical organization, efficiency, impersonal systems, external structure.
+   - Ti: Introverted Thinking – subjective logical analysis, precision, internal consistency, principles.
+   - Fe: Extraverted Feeling – objective values, harmony, social adaptation, group morale.
+   - Fi: Introverted Feeling – subjective values, personal authenticity, inner harmony, individual worth.
+   - Se: Extraverted Sensation – concrete reality, immediate sensory experience, action, engagement with the environment.
+   - Si: Introverted Sensation – subjective sensory impressions, detailed memory, internal bodily states, tradition.
+   - Ne: Extraverted Intuition – external possibilities, patterns in the environment, brainstorming, connections between ideas.
+   - Ni: Introverted Intuition – internal images, foresight, symbolic meaning, unconscious patterns.
+
+3. **Output Structure**
+   A. Introduction text for the assessment page (educational, faithful to Jung, disclaimer).
+   B. Full item list grouped by function-attitude (for development/reference). Number items sequentially within each group (e.g., Te-1, Te-2…).
+   C. Final randomized item order for the live quiz (provide as a simple numbered list 1–200).
+   D. Scoring instructions:
+        • Calculate average score for each of the 8 function-attitudes.
+        • Identify likely dominant, auxiliary, tertiary, inferior based on relative scores and opposites rule.
+        • Simple algorithm description for determining most probable dominant and inferior.
+   E. Results page template:
+        • Radar chart description (8 axes).
+        • Interpretive text blocks for high/medium/low scores on each function.
+        • Grip / inferior function stress indicators.
+        • Individuation-oriented commentary (one-sidedness, growth edge, transcendent function mention).
+
+4. **Tone and Philosophy**
+   - Emphasize that this is a tool for self-reflection and individuation, not a label or box.
+   - Include von Franz’s idea that the inferior function is both wound and treasure.
+   - Stress that type is dynamic and changes over life.
+
+Generate the full assessment now.

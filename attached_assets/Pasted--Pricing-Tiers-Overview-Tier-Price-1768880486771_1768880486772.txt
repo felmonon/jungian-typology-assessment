@@ -1,0 +1,390 @@
+ ---
+  Pricing Tiers Overview
+  ┌─────────┬───────┬────────────────────────────┐
+  │  Tier   │ Price │       One-Line Pitch       │
+  ├─────────┼───────┼────────────────────────────┤
+  │ Free    │ $0    │ See your cognitive profile │
+  ├─────────┼───────┼────────────────────────────┤
+  │ Insight │ $19   │ Understand what it means   │
+  ├─────────┼───────┼────────────────────────────┤
+  │ Mastery │ $39   │ Transform with AI guidance │
+  └─────────┴───────┴────────────────────────────┘
+  ---
+  Detailed Tier Breakdown
+
+  FREE ($0)
+
+  Purpose: Get users hooked, demonstrate value, build trust
+  ┌──────────────────────────────┬─────────────────────────────────────────┐
+  │           Feature            │                 Details                 │
+  ├──────────────────────────────┼─────────────────────────────────────────┤
+  │ Full 132-Question Assessment │ Complete test, no truncation            │
+  ├──────────────────────────────┼─────────────────────────────────────────┤
+  │ Radar Chart Visualization    │ All 8 functions displayed               │
+  ├──────────────────────────────┼─────────────────────────────────────────┤
+  │ Basic Results Summary        │ 150-200 word AI-generated insight       │
+  ├──────────────────────────────┼─────────────────────────────────────────┤
+  │ Dominant Function Revealed   │ "Your strongest function is Ti"         │
+  ├──────────────────────────────┼─────────────────────────────────────────┤
+  │ Learn the Theory             │ Educational content on Jung's framework │
+  ├──────────────────────────────┼─────────────────────────────────────────┤
+  │ Shareable Results Link       │ Social sharing capability               │
+  ├──────────────────────────────┼─────────────────────────────────────────┤
+  │ Community Leaderboard        │ See function distribution among users   │
+  └──────────────────────────────┴─────────────────────────────────────────┘
+  What's Locked (Visible but Blurred):
+  - Full function breakdown
+  - PDF report
+  - AI coach
+  - Growth exercises
+
+  Conversion Trigger:
+  "Your full 8-function analysis is ready. Unlock it →"
+
+  ---
+  INSIGHT ($19) — Most Popular
+
+  Purpose: Core offering for most users, solid value
+  Feature: Everything in Free
+  Details: +
+  ────────────────────────────────────────
+  Feature: 25-Page PDF Report
+  Details: Downloadable, beautifully designed
+  ────────────────────────────────────────
+  Feature: Complete 8-Function Analysis
+  Details: In-depth breakdown of each function score
+  ────────────────────────────────────────
+  Feature: Archetypal Stack Dynamics
+  Details: Hero, Parent, Child, Anima/Animus patterns
+  ────────────────────────────────────────
+  Feature: The Grip Analysis
+  Details: Stress patterns, triggers, recovery strategies
+  ────────────────────────────────────────
+  Feature: Relationship Insights
+  Details: How you connect with others, compatibility
+  ────────────────────────────────────────
+  Feature: Career Alignment
+  Details: Natural strengths, ideal work environments
+  ────────────────────────────────────────
+  Feature: Shadow Function Analysis
+  Details: Your blind spots and growth edges
+  ────────────────────────────────────────
+  Feature: Lifetime Access
+  Details: Retake anytime, compare results over time
+  ────────────────────────────────────────
+  Feature: Results History
+  Details: Track changes over time
+  What's Locked:
+  - AI Type Coach
+  - Active Imagination Prompts
+  - Dream Journaling Guide
+  - Priority support
+
+  Upgrade Trigger:
+  "Have questions about your results? Upgrade to chat with your AI Type Coach →"
+
+  ---
+  MASTERY ($39) — Best Value
+
+  Purpose: Premium tier for serious self-development seekers
+  Feature: Everything in Insight
+  Details: +
+  ────────────────────────────────────────
+  Feature: AI Type Coach
+  Details: Unlimited chat with Jung-trained AI
+  ────────────────────────────────────────
+  Feature:
+  Details: Ask about your results, relationships, career, growth
+  ────────────────────────────────────────
+  Feature:
+  Details: Personalized answers based on YOUR function scores
+  ────────────────────────────────────────
+  Feature: Individuation Roadmap
+  Details: Personalized growth path with exercises
+  ────────────────────────────────────────
+  Feature: Active Imagination Prompts
+  Details: 5 Jungian self-exploration exercises
+  ────────────────────────────────────────
+  Feature: Dream Journaling Guide
+  Details: Templates + interpretation framework
+  ────────────────────────────────────────
+  Feature: Shadow Work Exercises
+  Details: Practical exercises for integration
+  ────────────────────────────────────────
+  Feature: Monthly Growth Prompts
+  Details: Email with personalized reflection questions
+  ────────────────────────────────────────
+  Feature: Priority Support
+  Details: Direct email access
+  Exclusive Value:
+  - AI coach is the killer feature — ongoing value vs. one-time report
+  - Growth tools transform from "assessment" to "transformation journey"
+
+  ---
+  Feature Comparison Table
+
+  Use this on your pricing page:
+  ┌──────────────────────────────┬──────┬───────────────┬───────────────┐
+  │           Feature            │ Free │ Insight ($19) │ Mastery ($39) │
+  ├──────────────────────────────┼──────┼───────────────┼───────────────┤
+  │ 132-Question Assessment      │  ✓   │       ✓       │       ✓       │
+  ├──────────────────────────────┼──────┼───────────────┼───────────────┤
+  │ Radar Chart Visualization    │  ✓   │       ✓       │       ✓       │
+  ├──────────────────────────────┼──────┼───────────────┼───────────────┤
+  │ Basic AI Insight (200 words) │  ✓   │       ✓       │       ✓       │
+  ├──────────────────────────────┼──────┼───────────────┼───────────────┤
+  │ Shareable Results            │  ✓   │       ✓       │       ✓       │
+  ├──────────────────────────────┼──────┼───────────────┼───────────────┤
+  │ Educational Content          │  ✓   │       ✓       │       ✓       │
+  ├──────────────────────────────┼──────┼───────────────┼───────────────┤
+  │ 25-Page PDF Report           │  —   │       ✓       │       ✓       │
+  ├──────────────────────────────┼──────┼───────────────┼───────────────┤
+  │ Complete 8-Function Analysis │  —   │       ✓       │       ✓       │
+  ├──────────────────────────────┼──────┼───────────────┼───────────────┤
+  │ Archetypal Stack Dynamics    │  —   │       ✓       │       ✓       │
+  ├──────────────────────────────┼──────┼───────────────┼───────────────┤
+  │ Grip/Stress Analysis         │  —   │       ✓       │       ✓       │
+  ├──────────────────────────────┼──────┼───────────────┼───────────────┤
+  │ Relationship Insights        │  —   │       ✓       │       ✓       │
+  ├──────────────────────────────┼──────┼───────────────┼───────────────┤
+  │ Career Alignment             │  —   │       ✓       │       ✓       │
+  ├──────────────────────────────┼──────┼───────────────┼───────────────┤
+  │ Shadow Function Analysis     │  —   │       ✓       │       ✓       │
+  ├──────────────────────────────┼──────┼───────────────┼───────────────┤
+  │ Results History & Retakes    │  —   │       ✓       │       ✓       │
+  ├──────────────────────────────┼──────┼───────────────┼───────────────┤
+  │ AI Type Coach (Unlimited)    │  —   │       —       │       ✓       │
+  ├──────────────────────────────┼──────┼───────────────┼───────────────┤
+  │ Individuation Roadmap        │  —   │       —       │       ✓       │
+  ├──────────────────────────────┼──────┼───────────────┼───────────────┤
+  │ Active Imagination Prompts   │  —   │       —       │       ✓       │
+  ├──────────────────────────────┼──────┼───────────────┼───────────────┤
+  │ Dream Journaling Guide       │  —   │       —       │       ✓       │
+  ├──────────────────────────────┼──────┼───────────────┼───────────────┤
+  │ Shadow Work Exercises        │  —   │       —       │       ✓       │
+  ├──────────────────────────────┼──────┼───────────────┼───────────────┤
+  │ Monthly Growth Prompts       │  —   │       —       │       ✓       │
+  ├──────────────────────────────┼──────┼───────────────┼───────────────┤
+  │ Priority Support             │  —   │       —       │       ✓       │
+  └──────────────────────────────┴──────┴───────────────┴───────────────┘
+  ---
+  Pricing Psychology Built In
+  Principle: Decoy Effect
+  How It's Applied: $19 feels like a deal compared to $39, but $39 has the "cool
+
+    stuff"
+  ────────────────────────────────────────
+  Principle: Anchoring
+  How It's Applied: Show Mastery first (or highlight it) to anchor high
+  ────────────────────────────────────────
+  Principle: Value Ladder
+  How It's Applied: Clear progression: See → Understand → Transform
+  ────────────────────────────────────────
+  Principle: Most Popular Badge
+  How It's Applied: Put on Insight tier to guide uncertain buyers
+  ────────────────────────────────────────
+  Principle: Best Value Badge
+  How It's Applied: Put on Mastery to justify the premium
+  ────────────────────────────────────────
+  Principle: Loss Aversion
+  How It's Applied: Free tier shows blurred premium content — feel the loss
+  ---
+  Conversion Flow Design
+
+  After Free Assessment
+
+  ┌─────────────────────────────────────────────────────────────┐
+  │                                                             │
+  │  🎉 Your Results Are Ready                                  │
+  │                                                             │
+  │  [Radar Chart - All 8 Functions]                            │
+  │                                                             │
+  │  Your dominant function: Introverted Thinking (Ti)          │
+  │  Your auxiliary function: Extraverted Intuition (Ne)        │
+  │                                                             │
+  │  ─────────────────────────────────────────────────────────  │
+  │                                                             │
+  │  🔒 Your Full Analysis                                      │
+  │                                                             │
+  │  [Blurred Preview of PDF Report]                            │
+  │  [Blurred Preview of Function Breakdown]                    │
+  │  [Blurred Preview of Relationship Insights]                 │
+  │                                                             │
+  │  ─────────────────────────────────────────────────────────  │
+  │                                                             │
+  │  Unlock Your Complete Profile                               │
+  │                                                             │
+  │  ┌─────────────┐  ┌─────────────────┐  ┌─────────────────┐  │
+  │  │   FREE      │  │ INSIGHT ⭐      │  │    MASTERY      │  │
+  │  │   $0        │  │ $19             │  │    $39          │  │
+  │  │             │  │ Most Popular    │  │    Best Value   │  │
+  │  │ Basic       │  │ Full Report     │  │ Report +        │  │
+  │  │ Results     │  │ + Analysis      │  │ AI Coach        │  │
+  │  │             │  │                 │  │                 │  │
+  │  │ [Current]   │  │ [Get Insight]   │  │ [Get Mastery]   │  │
+  │  └─────────────┘  └─────────────────┘  └─────────────────┘  │
+  │                                                             │
+  └─────────────────────────────────────────────────────────────┘
+
+  Upsell Triggers (Insight → Mastery)
+
+  In PDF Report:
+  "Want to explore this further? Your AI Type Coach can answer questions about
+  your specific profile. [Upgrade to Mastery →]"
+
+  In Results Dashboard:
+  "Questions about your results? [Ask your AI Coach — Upgrade]"
+
+  After 7 Days (Email):
+  "You unlocked your Insight report last week. Ready to go deeper? Your AI Type
+  Coach is waiting."
+
+  ---
+  Pricing Page Copy
+
+  Headline
+
+  Choose Your Path to Self-Understanding
+
+  Tier Cards
+
+  FREE
+  Free
+  ─────
+  See Your Profile
+
+  ✓ Full 132-question assessment
+  ✓ Radar chart of all 8 functions
+  ✓ Basic AI-generated insight
+  ✓ Shareable results
+
+  [Take Free Assessment]
+
+  INSIGHT ⭐ Most Popular
+  $19
+  ─────
+  Understand What It Means
+
+  Everything in Free, plus:
+
+  ✓ 25-page downloadable PDF report
+  ✓ Complete 8-function analysis
+  ✓ Archetypal stack dynamics
+  ✓ Stress & shadow patterns
+  ✓ Relationship insights
+  ✓ Career alignment guide
+  ✓ Lifetime access & retakes
+
+  [Get Full Insight — $19]
+
+  One-time payment. No subscription.
+
+  MASTERY — Best Value
+  $39
+  ─────
+  Transform With Guidance
+
+  Everything in Insight, plus:
+
+  ✓ AI Type Coach (unlimited)
+    Ask anything about your type
+  ✓ Individuation roadmap
+  ✓ Active imagination prompts
+  ✓ Dream journaling guide
+  ✓ Shadow work exercises
+  ✓ Monthly growth prompts
+  ✓ Priority support
+
+  [Unlock Mastery — $39]
+
+  One-time payment. Lifetime access.
+
+  ---
+  Revenue Projections
+
+  Assumptions
+
+  - 1,000 free assessments/month
+  - 10% convert to paid (industry standard for freemium)
+  - Split: 60% Insight, 40% Mastery
+
+  At Current $10 Single Tier
+
+  1,000 × 10% × $10 = $1,000/month
+
+  At New Tiered Pricing
+
+  1,000 × 10% = 100 paid users
+
+  60 × $19 (Insight) = $1,140
+  40 × $39 (Mastery) = $1,560
+  ─────────────────────────────
+  Total: $2,700/month
+
+  Result: 2.7x revenue increase
+
+  ---
+  Implementation Checklist
+
+  Phase 1: Setup
+
+  - Create Insight tier product in Stripe
+  - Create Mastery tier product in Stripe
+  - Build pricing page with 3 tiers
+  - Design PDF report template (25 pages)
+  - Set up AI coach backend
+
+  Phase 2: Conversion Flow
+
+  - Add blurred preview after free results
+  - Build tier selection UI
+  - Add "Most Popular" badge to Insight
+  - Add "Best Value" badge to Mastery
+  - Set up payment flow
+
+  Phase 3: Upsells
+
+  - Add upsell prompts in Insight PDF
+  - Build upgrade path (Insight → Mastery)
+  - Create 7-day upsell email sequence
+
+  Phase 4: Optimize
+
+  - Track conversion rate by tier
+  - A/B test tier positioning
+  - Collect feedback on pricing
+  - Adjust based on data
+
+  ---
+  FAQ for Pricing Page
+
+  Q: What's the difference between Insight and Mastery?
+
+  Insight gives you a complete analysis of your type — the 25-page PDF covers
+  everything about your cognitive functions, relationships, and career
+  alignment. Mastery adds the AI Type Coach, so you can ask unlimited questions
+  about your results and get personalized guidance on growth.
+
+  Q: Is this a subscription?
+
+  No. Both Insight and Mastery are one-time payments with lifetime access. Pay
+  once, keep forever.
+
+  Q: Can I upgrade from Insight to Mastery later?
+
+  Yes. If you purchase Insight and later want the AI Coach, you can upgrade for
+  the difference ($20).
+
+  Q: What if I'm not satisfied?
+
+  Email us within 30 days for a full refund. No questions asked.
+
+  ---
+  Want me to save this to your jungiantypology folder?
+
+✻ Brewed for 55s
+
+────────────────────────────────────────────────────────────────────────────────
+❯
+────────────────────────────────────────────────────────────────────────────────
+  ⏵⏵ accept edits on (shift+tab to cycle)

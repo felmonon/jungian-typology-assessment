@@ -134,8 +134,20 @@ export const Leaderboard: React.FC = () => {
         </div>
         
         {!data || data.leaderboard.length === 0 ? (
-          <div className="p-8 text-center text-stone-500">
-            <p>No assessment data yet. Be the first to take the assessment!</p>
+          <div className="p-12 text-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-jung-primary/10 flex items-center justify-center">
+              <BarChart3 className="w-8 h-8 text-jung-primary/50" />
+            </div>
+            <h3 className="text-lg font-semibold text-jung-dark mb-2">Building Our Community</h3>
+            <p className="text-stone-500 mb-6 max-w-md mx-auto">
+              Be among the first to complete the assessment and help establish the community baseline for cognitive function distribution.
+            </p>
+            <a
+              href="/assessment"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-jung-accent text-white font-medium rounded-lg hover:bg-jung-accent/90 transition-colors"
+            >
+              Take the Assessment
+            </a>
           </div>
         ) : (
           <div className="divide-y divide-stone-100">

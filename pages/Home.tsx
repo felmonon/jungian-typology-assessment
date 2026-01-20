@@ -128,7 +128,7 @@ export const Home: React.FC = () => {
           {/* Social Proof Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-jung-primary/10 rounded-full text-jung-primary text-sm font-medium">
             <Users className="w-4 h-4" />
-            <span>Join <strong>47,000+</strong> people who discovered their true type</span>
+            <span>Based on <strong>Singer-Loomis</strong> validated methodology since 1980</span>
           </div>
 
           <div className="inline-block p-3 rounded-full bg-jung-primary/5 mb-2 sm:mb-4">
@@ -254,10 +254,10 @@ export const Home: React.FC = () => {
         <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-white text-sm sm:text-base">
           <span className="flex items-center gap-2">
             <Users className="w-4 h-4" />
-            <strong>47,000+</strong> assessments completed
+            <strong>132</strong> questions measuring all 8 functions
           </span>
           <span className="hidden sm:inline text-white/40">|</span>
-          <span>Based on Singer-Loomis validated methodology</span>
+          <span>Singer-Loomis validated methodology</span>
           <span className="hidden sm:inline text-white/40">|</span>
           <span>Rooted in Jung's 1921 original framework</span>
         </div>

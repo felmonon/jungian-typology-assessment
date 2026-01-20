@@ -285,7 +285,7 @@ export const ProfilePage: React.FC = () => {
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   className="w-full px-4 py-3 text-base border border-stone-300 rounded-lg focus:ring-2 focus:ring-jung-accent focus:border-transparent outline-none transition-all"
-                  placeholder="John"
+                  placeholder="Enter first name"
                 />
               </div>
               <div>
@@ -297,7 +297,7 @@ export const ProfilePage: React.FC = () => {
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   className="w-full px-4 py-3 text-base border border-stone-300 rounded-lg focus:ring-2 focus:ring-jung-accent focus:border-transparent outline-none transition-all"
-                  placeholder="Doe"
+                  placeholder="Enter last name"
                 />
               </div>
             </div>

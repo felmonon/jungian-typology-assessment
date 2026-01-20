@@ -2,7 +2,7 @@ import Stripe from 'stripe';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-18.acacia',
+  apiVersion: '2025-12-15.clover',
 });
 
 // Disable body parsing, need raw body for webhook signature

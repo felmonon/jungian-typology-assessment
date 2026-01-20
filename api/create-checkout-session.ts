@@ -2,7 +2,7 @@ import Stripe from 'stripe';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-18.acacia',
+  apiVersion: '2025-12-15.clover',
 });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -12,7 +12,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const { priceId } = req.body;
+    const { priceId, tier } = req.body;
+
+    // Resolve the price ID based on tier
+    let resolvedPriceId = priceId;
+    let resolvedTier = tier || 'insight';
+
+    if (tier === 'insight') {
+      resolvedPriceId = process.env.STRIPE_INSIGHT_PRICE_ID;
+    } else if (tier === 'mastery') {
+      resolvedPriceId = process.env.STRIPE_MASTERY_PRICE_ID;
+    }
+
+    if (!resolvedPriceId) {
+      resolvedPriceId = process.env.STRIPE_PRICE_ID;
+    }
 
     // Get the origin for redirect URLs
     const origin = req.headers.origin || 'https://jungian-typology-assessment.vercel.app';
@@ -22,7 +36,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       payment_method_types: ['card'],
       line_items: [
         {
-          price: priceId || process.env.STRIPE_PRICE_ID,
+          price: resolvedPriceId,
           quantity: 1,
         },
       ],
@@ -30,6 +44,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       cancel_url: `${origin}/#/results`,
       metadata: {
         product: 'jungian_assessment_premium',
+        tier: resolvedTier,
       },
     });
 

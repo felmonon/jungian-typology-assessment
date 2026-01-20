@@ -23,3 +23,11 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+.env
+.env*.local
+
+# Test coverage
+coverage/
+.config/
+.firebaserc
+firebase.json

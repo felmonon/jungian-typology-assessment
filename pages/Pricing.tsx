@@ -374,7 +374,8 @@ export const Pricing: React.FC = () => {
           </p>
           <Button
             onClick={() => navigate('/assessment')}
-            className="bg-white text-jung-primary hover:bg-stone-100 px-8 py-4 text-lg font-semibold"
+            className="bg-white hover:bg-stone-100 px-8 py-4 text-lg font-semibold"
+            style={{ color: '#5D4E37' }}
           >
             Take Free Assessment
             <ArrowRight className="ml-2 w-4 h-4" />

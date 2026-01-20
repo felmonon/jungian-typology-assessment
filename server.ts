@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import { rateLimit } from 'express-rate-limit';
@@ -479,9 +480,9 @@ async function startServer() {
 
   app.use(vite.middlewares);
 
-  const PORT = 5000;
+  const PORT = parseInt(process.env.PORT || '3000', 10);
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on http://0.0.0.0:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
   });
 }
 

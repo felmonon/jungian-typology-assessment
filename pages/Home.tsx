@@ -78,6 +78,17 @@ export const Home: React.FC = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [showExitPopup, setShowExitPopup] = useState(false);
   const [hasShownPopup, setHasShownPopup] = useState(false);
+  const [showStickyHeader, setShowStickyHeader] = useState(false);
+
+  // Sticky header on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowStickyHeader(window.scrollY > 600);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Exit intent detection
   useEffect(() => {
@@ -122,6 +133,28 @@ export const Home: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center">
+      {/* Sticky CTA Header */}
+      <div
+        className={`fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-stone-200 shadow-sm transition-all duration-300 ${
+          showStickyHeader ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
+        }`}
+      >
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Compass className="w-6 h-6 text-jung-primary" />
+            <span className="font-serif font-medium text-jung-dark hidden sm:inline">JungianTypology</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-stone-600 hidden md:inline">
+              Free · 15 min · No signup
+            </span>
+            <Button size="sm" onClick={() => navigate('/assessment')}>
+              Start Free Assessment <ArrowRight className="ml-1 w-3 h-3" />
+            </Button>
+          </div>
+        </div>
+      </div>
+
       {/* Hero Section */}
       <section className="w-full bg-stone-100 py-12 sm:py-16 md:py-20 px-4 text-center border-b border-stone-200">
         <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
@@ -138,11 +171,11 @@ export const Home: React.FC = () => {
             Who are you, <span className="italic text-jung-accent">really</span>?
           </h1>
           <p className="text-lg sm:text-xl text-stone-600 max-w-2xl mx-auto leading-relaxed px-2">
-            Discover why you've gotten different results on every personality test. This 132-question assessment measures all 8 cognitive functions independently—revealing your true psychological profile, not a 4-letter box.
+            In just 15 minutes, see why you've gotten different results on every personality test. We measure all 8 cognitive functions independently—revealing your true psychological profile, not a 4-letter box.
           </p>
           <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" onClick={() => navigate('/assessment')}>
-              Discover My True Type — Free <ArrowRight className="ml-2 w-4 h-4" />
+              See My Cognitive Profile — Free <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
             <Button variant="outline" size="lg" onClick={() => navigate('/learn')}>
               Learn the Theory
@@ -154,8 +187,40 @@ export const Home: React.FC = () => {
             <span className="flex items-center gap-1"><Zap className="w-4 h-4" /> Instant results</span>
           </p>
 
-          {/* Testimonial Preview */}
+          {/* Results Preview */}
           <div className="mt-8 pt-6 border-t border-stone-200">
+            <div className="bg-white rounded-2xl shadow-lg border border-stone-200 p-6 max-w-md mx-auto">
+              <div className="flex items-center gap-3 mb-4">
+                <Activity className="w-5 h-5 text-jung-primary" />
+                <span className="text-sm font-medium text-jung-dark">Your Cognitive Profile Preview</span>
+              </div>
+              {/* Mini Radar Chart Mockup */}
+              <div className="relative w-48 h-48 mx-auto mb-4">
+                <svg viewBox="0 0 200 200" className="w-full h-full">
+                  {/* Background grid */}
+                  <polygon points="100,20 180,100 100,180 20,100" fill="none" stroke="#e7e5e4" strokeWidth="1" />
+                  <polygon points="100,40 160,100 100,160 40,100" fill="none" stroke="#e7e5e4" strokeWidth="1" />
+                  <polygon points="100,60 140,100 100,140 60,100" fill="none" stroke="#e7e5e4" strokeWidth="1" />
+                  {/* Sample profile shape */}
+                  <polygon
+                    points="100,35 165,85 145,155 55,145 45,75"
+                    fill="rgba(180, 83, 9, 0.15)"
+                    stroke="#b45309"
+                    strokeWidth="2"
+                  />
+                  {/* Function labels */}
+                  <text x="100" y="12" textAnchor="middle" className="text-xs fill-stone-500">Ni</text>
+                  <text x="188" y="104" textAnchor="start" className="text-xs fill-stone-500">Te</text>
+                  <text x="100" y="198" textAnchor="middle" className="text-xs fill-stone-500">Se</text>
+                  <text x="12" y="104" textAnchor="end" className="text-xs fill-stone-500">Fi</text>
+                </svg>
+              </div>
+              <p className="text-xs text-stone-500 text-center">See your unique function stack visualized</p>
+            </div>
+          </div>
+
+          {/* Testimonial Preview */}
+          <div className="mt-6">
             <div className="inline-flex items-start gap-3 bg-white px-6 py-4 rounded-xl shadow-sm border border-stone-200 max-w-xl text-left">
               <Quote className="w-6 h-6 text-jung-accent flex-shrink-0 mt-1" />
               <div>

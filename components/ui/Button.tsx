@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'accent';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'accent' | 'inverted' | 'ghost-inverted';
   size?: 'sm' | 'md' | 'lg';
 }
 
@@ -45,6 +45,15 @@ export const Button: React.FC<ButtonProps> = ({
       bg-gradient-to-r from-jung-accent to-jung-accent-hover text-white
       hover:shadow-lg hover:shadow-jung-accent/25
       hover:-translate-y-0.5
+    `,
+    inverted: `
+      bg-white text-jung-dark
+      hover:bg-jung-base hover:shadow-lg
+      hover:-translate-y-0.5
+    `,
+    'ghost-inverted': `
+      text-white/80 bg-transparent
+      hover:text-white hover:bg-white/10
     `
   };
 

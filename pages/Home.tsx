@@ -814,17 +814,16 @@ export const Home: React.FC = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
+                variant="inverted"
                 size="lg"
                 onClick={() => navigate('/assessment')}
-                className="bg-white text-jung-dark hover:bg-jung-base"
               >
                 Take the Free Assessment <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
               <Button
-                variant="ghost"
+                variant="ghost-inverted"
                 size="lg"
                 onClick={() => navigate('/learn')}
-                className="text-white/80 hover:text-white hover:bg-white/10"
               >
                 Learn About the Theory First
               </Button>

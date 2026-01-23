@@ -785,22 +785,19 @@ export const Home: React.FC = () => {
             Take the assessment Jung would have built. See all 8 of your cognitive functions. Get insights that actually mean something.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
+            <button
               onClick={() => navigate('/assessment')}
-              className="bg-white text-jung-primary hover:bg-stone-100"
+              className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium rounded-sm bg-white text-jung-primary hover:bg-stone-100 transition-colors"
             >
               Take the Free Assessment
               <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
+            </button>
+            <button
               onClick={() => navigate('/learn')}
-              className="border-white text-white hover:bg-white/10"
+              className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium rounded-sm border-2 border-white text-white hover:bg-white/10 transition-colors"
             >
               Learn the Theory First
-            </Button>
+            </button>
           </div>
           <p className="text-sm text-stone-400 mt-8 flex items-center justify-center gap-4 flex-wrap">
             <span>15 minutes</span>

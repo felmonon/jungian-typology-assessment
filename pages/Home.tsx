@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import {
-  Compass, Brain, ArrowRight, Activity, CheckCircle, Beaker,
-  MessageCircle, Sparkles, Users, FileText, Target, Zap,
-  ChevronDown, ChevronUp, Check, X, Clock, Shield, Star, Crown,
-  Quote, ShieldCheck, ArrowUpRight
+  ArrowRight, CheckCircle, Beaker,
+  MessageCircle, Sparkles, Brain,
+  ChevronDown, ChevronUp, Check, X, Clock, Shield,
+  ShieldCheck, Compass
 } from 'lucide-react';
 
 const AI_DEMO_CONVERSATION = [
@@ -70,16 +70,16 @@ const TESTIMONIALS = [
   }
 ];
 
-// Function labels for the visualization
+// Cognitive functions with semantic colors
 const FUNCTIONS = [
-  { abbr: 'Ni', name: 'Introverted Intuition', color: '#6b8f71' },
-  { abbr: 'Ne', name: 'Extraverted Intuition', color: '#6b7a8c' },
-  { abbr: 'Si', name: 'Introverted Sensing', color: '#6b7a8c' },
-  { abbr: 'Se', name: 'Extraverted Sensing', color: '#6b8f71' },
-  { abbr: 'Ti', name: 'Introverted Thinking', color: '#c67d5e' },
-  { abbr: 'Te', name: 'Extraverted Thinking', color: '#d4a574' },
-  { abbr: 'Fi', name: 'Introverted Feeling', color: '#d4a574' },
-  { abbr: 'Fe', name: 'Extraverted Feeling', color: '#c67d5e' },
+  { abbr: 'Ni', name: 'Introverted Intuition', desc: 'Synthesizes into singular insights', type: 'perceive' },
+  { abbr: 'Ne', name: 'Extraverted Intuition', desc: 'Generates possibilities', type: 'perceive' },
+  { abbr: 'Si', name: 'Introverted Sensing', desc: 'Stores detailed impressions', type: 'perceive' },
+  { abbr: 'Se', name: 'Extraverted Sensing', desc: 'Engages the present moment', type: 'perceive' },
+  { abbr: 'Ti', name: 'Introverted Thinking', desc: 'Builds internal logic', type: 'judge' },
+  { abbr: 'Te', name: 'Extraverted Thinking', desc: 'Organizes externally', type: 'judge' },
+  { abbr: 'Fi', name: 'Introverted Feeling', desc: 'Navigates by values', type: 'judge' },
+  { abbr: 'Fe', name: 'Extraverted Feeling', desc: 'Reads social dynamics', type: 'judge' },
 ];
 
 export const Home: React.FC = () => {
@@ -90,17 +90,6 @@ export const Home: React.FC = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [showExitPopup, setShowExitPopup] = useState(false);
   const [hasShownPopup, setHasShownPopup] = useState(false);
-  const [showStickyHeader, setShowStickyHeader] = useState(false);
-
-  // Sticky header on scroll
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowStickyHeader(window.scrollY > 600);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // Exit intent detection
   useEffect(() => {
@@ -144,221 +133,163 @@ export const Home: React.FC = () => {
   }, [showResponse, isTyping]);
 
   return (
-    <div className="flex flex-col items-center">
-      {/* Noise texture overlay */}
-      <div
-        className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.02]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-        }}
-      />
+    <div className="flex flex-col">
+      {/* ════════════════════════════════════════════════════════════════════
+          HERO - Asymmetric editorial layout
+      ════════════════════════════════════════════════════════════════════ */}
+      <section className="relative overflow-hidden">
+        {/* Subtle texture */}
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23451a03' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }}
+        />
 
-      {/* Sticky CTA Header */}
-      <div
-        className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b transition-all duration-500 ${
-          showStickyHeader
-            ? 'translate-y-0 opacity-100 bg-[#0d0f14]/95 border-[#252a38]'
-            : '-translate-y-full opacity-0 bg-transparent border-transparent'
-        }`}
-      >
-        <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="font-serif text-lg text-[#f0ede8]">Jungian<span className="text-[#d4a574]">Typology</span></span>
-          </div>
-          <div className="flex items-center gap-6">
-            <span className="text-sm text-[#a8a4a0] hidden md:inline">
-              Free · 15 min · No signup
-            </span>
-            <Button size="sm" onClick={() => navigate('/assessment')}>
-              Begin Assessment <ArrowRight className="ml-1 w-3 h-3" />
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* ═══════════════════════════════════════════════════════════════════════════
-          HERO SECTION - Editorial style with dramatic typography
-      ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full min-h-screen relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #0d0f14 0%, #1a1d26 100%)' }}>
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 pt-32 pb-24">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-8 items-center">
-            {/* Left: Content */}
-            <div className="space-y-8">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-16 md:py-24 lg:py-32">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-start">
+            {/* Left column - Main content */}
+            <div className="lg:col-span-7 space-y-8">
               {/* Eyebrow */}
-              <div className="flex items-center gap-4">
-                <div className="h-px w-12 bg-[#d4a574]" />
-                <span className="text-[11px] font-medium tracking-[0.2em] uppercase text-[#d4a574]">
+              <div className="flex items-center gap-3">
+                <span className="h-px w-8 bg-jung-accent"></span>
+                <span className="text-xs font-medium tracking-[0.15em] uppercase text-jung-accent">
                   Cognitive Function Assessment
                 </span>
               </div>
 
-              {/* Headline - SCALE_SHOCK mutation */}
-              <h1 className="font-serif text-[#f0ede8]">
-                <span className="block text-3xl sm:text-4xl font-normal leading-tight">Who are you,</span>
-                <span
-                  className="block text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-normal italic leading-[0.9] mt-2"
-                  style={{ color: '#d4a574' }}
-                >
+              {/* Headline - SCALE_SHOCK */}
+              <h1 className="font-serif text-jung-dark leading-[1.1]">
+                <span className="block text-2xl sm:text-3xl md:text-4xl font-normal text-jung-secondary">
+                  Who are you,
+                </span>
+                <span className="block text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold italic text-jung-primary mt-1">
                   really?
                 </span>
               </h1>
 
-              {/* Subtitle */}
-              <p className="text-lg sm:text-xl text-[#a8a4a0] max-w-xl leading-relaxed font-light">
+              {/* Subhead */}
+              <p className="text-lg md:text-xl text-jung-secondary max-w-xl leading-relaxed">
                 MBTI gives you a label. We give you a map of your mind—measuring all 8 cognitive functions independently to reveal how you actually think.
               </p>
 
-              {/* CTA Group */}
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Button
-                  size="lg"
-                  onClick={() => navigate('/assessment')}
-                  className="group"
-                >
+              {/* CTA */}
+              <div className="flex flex-col sm:flex-row gap-4 pt-2">
+                <Button size="lg" onClick={() => navigate('/assessment')}>
                   Begin Assessment
-                  <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+                  <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
-                <button
-                  onClick={() => navigate('/learn')}
-                  className="px-6 py-3 text-[#a8a4a0] border border-[#3d4455] hover:border-[#6b6862] hover:text-[#f0ede8] transition-all text-sm font-medium"
-                >
+                <Button variant="outline" size="lg" onClick={() => navigate('/learn')}>
                   Learn the Theory
-                </button>
+                </Button>
               </div>
 
-              {/* Trust indicators */}
-              <div className="flex items-center gap-8 pt-4 text-[#6b6862] text-sm">
+              {/* Trust signals */}
+              <div className="flex flex-wrap items-center gap-6 text-sm text-jung-secondary pt-2">
                 <span className="flex items-center gap-2">
-                  <Clock className="w-4 h-4" /> ~15 min
+                  <Clock className="w-4 h-4 text-jung-accent" />
+                  ~15 minutes
                 </span>
                 <span className="flex items-center gap-2">
-                  <Shield className="w-4 h-4" /> No signup
+                  <Shield className="w-4 h-4 text-jung-accent" />
+                  No signup required
                 </span>
                 <span className="flex items-center gap-2">
-                  <Zap className="w-4 h-4" /> Free
+                  <CheckCircle className="w-4 h-4 text-jung-accent" />
+                  Free to start
                 </span>
               </div>
             </div>
 
-            {/* Right: 8 Functions Visualization */}
-            <div className="relative flex items-center justify-center lg:justify-end">
-              <div className="relative w-[360px] h-[360px] sm:w-[420px] sm:h-[420px]">
-                {/* Concentric circles */}
-                <div className="absolute inset-0 border border-[#252a38] rounded-full" />
-                <div className="absolute inset-8 border border-[#252a38]/60 rounded-full" />
-                <div className="absolute inset-16 border border-[#252a38]/40 rounded-full" />
-
-                {/* Dashed connecting circle */}
-                <div
-                  className="absolute inset-4 border border-dashed border-[#3d4455]/50 rounded-full"
-                  style={{ animation: 'spin 60s linear infinite' }}
-                />
-
-                {/* Center text */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <p className="font-serif text-sm italic text-[#6b6862]">Your cognitive</p>
-                    <p className="font-serif text-sm italic text-[#6b6862]">architecture</p>
-                  </div>
-                </div>
-
-                {/* Function nodes positioned around the circle */}
-                {FUNCTIONS.map((func, i) => {
-                  const angle = (i * 45 - 90) * (Math.PI / 180);
-                  const radius = 160;
-                  const x = 50 + (radius / 210) * 50 * Math.cos(angle);
-                  const y = 50 + (radius / 210) * 50 * Math.sin(angle);
-
-                  return (
+            {/* Right column - Functions visualization */}
+            <div className="lg:col-span-5 lg:pt-8">
+              <div className="bg-white/60 backdrop-blur-sm border border-stone-200 p-6 md:p-8 rounded-sm shadow-sm">
+                <p className="text-xs font-medium tracking-[0.15em] uppercase text-jung-secondary mb-6">
+                  The 8 Cognitive Functions
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  {FUNCTIONS.map((func, i) => (
                     <div
                       key={func.abbr}
-                      className="absolute w-16 h-16 flex flex-col items-center justify-center rounded-full border transition-all duration-300 hover:scale-110 cursor-default"
+                      className="group p-4 border border-stone-200 hover:border-jung-accent hover:bg-jung-accent/5 transition-all duration-300 cursor-default rounded-sm"
                       style={{
-                        left: `${x}%`,
-                        top: `${y}%`,
-                        transform: 'translate(-50%, -50%)',
-                        background: '#1a1d26',
-                        borderColor: func.color,
-                        animation: `fadeIn 0.6s ease-out ${i * 100 + 500}ms both`,
+                        animationDelay: `${i * 80}ms`,
                       }}
                     >
-                      <span className="font-serif text-base font-semibold" style={{ color: func.color }}>
-                        {func.abbr}
-                      </span>
-                      <span className="text-[9px] uppercase tracking-wider text-[#6b6862] mt-0.5">
-                        {i < 4 ? 'Perceive' : 'Judge'}
-                      </span>
+                      <div className="flex items-baseline gap-2 mb-1">
+                        <span className="font-serif text-2xl font-semibold text-jung-primary group-hover:text-jung-accent transition-colors">
+                          {func.abbr}
+                        </span>
+                        <span className="text-[10px] uppercase tracking-wider text-jung-secondary">
+                          {func.type}
+                        </span>
+                      </div>
+                      <p className="text-xs text-jung-secondary leading-snug">{func.desc}</p>
                     </div>
-                  );
-                })}
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Bottom fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#1a1d26] to-transparent pointer-events-none" />
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════════════
-          PHILOSOPHY QUOTE - Full-width editorial moment
-      ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full py-24 px-6 relative" style={{ background: '#1a1d26' }}>
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#3d4455] to-transparent" />
-
-        <div className="max-w-4xl mx-auto text-center">
-          <span className="block font-serif text-6xl sm:text-7xl text-[#d4a574]/30 leading-none mb-6">"</span>
-          <blockquote className="font-serif text-2xl sm:text-3xl md:text-4xl text-[#f0ede8] leading-relaxed font-normal italic">
-            The shoe that fits one person pinches another; there is no recipe for living that suits all cases.
+      {/* ════════════════════════════════════════════════════════════════════
+          QUOTE - Full-width moment
+      ════════════════════════════════════════════════════════════════════ */}
+      <section className="bg-jung-dark py-16 md:py-20">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <blockquote className="font-serif text-xl sm:text-2xl md:text-3xl text-stone-200 leading-relaxed italic">
+            "The shoe that fits one person pinches another; there is no recipe for living that suits all cases."
           </blockquote>
-          <cite className="block mt-8 text-sm text-[#6b6862] tracking-wide not-italic">
-            — <span className="text-[#a8a4a0]">Carl Jung</span>, Modern Man in Search of a Soul
+          <cite className="block mt-6 text-sm text-stone-500 not-italic tracking-wide">
+            — Carl Jung, <span className="text-stone-400">Modern Man in Search of a Soul</span>
           </cite>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════════════
-          THE PROBLEM - Editorial two-column layout with sticky header
-      ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full py-24 px-6" style={{ background: '#0d0f14' }}>
-        <div className="max-w-6xl mx-auto">
+      {/* ════════════════════════════════════════════════════════════════════
+          THE PROBLEM - Editorial two-column
+      ════════════════════════════════════════════════════════════════════ */}
+      <section className="py-16 md:py-24">
+        <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-            {/* Left column - sticky */}
+            {/* Sticky left */}
             <div className="lg:col-span-4">
               <div className="lg:sticky lg:top-24">
-                <span className="text-[11px] font-medium tracking-[0.2em] uppercase text-[#d4a574] block mb-4">
+                <span className="text-xs font-medium tracking-[0.15em] uppercase text-jung-accent block mb-3">
                   The Problem
                 </span>
-                <h2 className="font-serif text-3xl sm:text-4xl text-[#f0ede8] leading-tight mb-6">
+                <h2 className="font-serif text-3xl md:text-4xl text-jung-dark leading-tight">
                   MBTI promised insight.<br />
-                  <span className="italic text-[#d4a574]">It delivered horoscopes.</span>
+                  <span className="text-jung-accent italic">It delivered horoscopes.</span>
                 </h2>
               </div>
             </div>
 
-            {/* Right column - content */}
-            <div className="lg:col-span-8 space-y-8">
-              <p className="text-lg text-[#a8a4a0] leading-relaxed">
+            {/* Scrolling right */}
+            <div className="lg:col-span-8 space-y-6">
+              <p className="text-lg text-jung-secondary leading-relaxed">
                 You've been typed as an INFJ. Or an ENTP. Or whatever four letters the internet assigned you last Tuesday.
               </p>
-              <p className="text-lg text-[#a8a4a0] leading-relaxed">
+              <p className="text-lg text-jung-secondary leading-relaxed">
                 But here's the thing—you've also tested as three other types depending on your mood, the website, or whether you had coffee that morning.
               </p>
-              <p className="text-xl text-[#f0ede8] font-medium leading-relaxed">
+              <p className="text-xl text-jung-dark font-medium leading-relaxed">
                 That's not your fault. It's the test's fault.
               </p>
-              <p className="text-lg text-[#a8a4a0] leading-relaxed">
-                Most personality assessments force you into 16 predetermined boxes using crude either/or questions. Thinking <em className="text-[#d4a574]">or</em> Feeling. Sensing <em className="text-[#d4a574]">or</em> Intuition. As if human psychology works in binary.
+              <p className="text-lg text-jung-secondary leading-relaxed">
+                Most personality assessments force you into 16 predetermined boxes using crude either/or questions. Thinking <em className="text-jung-accent font-medium not-italic">or</em> Feeling. Sensing <em className="text-jung-accent font-medium not-italic">or</em> Intuition. As if human psychology works in binary.
               </p>
-              <p className="text-lg text-[#a8a4a0] leading-relaxed">
+              <p className="text-lg text-jung-secondary leading-relaxed">
                 It doesn't. Carl Jung knew this. His original work described 8 distinct cognitive functions that exist on a spectrum—present in everyone to varying degrees.
               </p>
-              <p className="text-lg italic text-[#6b6862] border-l-2 border-[#3d4455] pl-6">
+              <p className="text-lg text-jung-secondary italic border-l-2 border-jung-accent pl-6 py-2">
                 Somewhere along the way, pop psychology threw out the nuance and gave us horoscopes with better marketing.
               </p>
 
               {/* Problem cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-6">
                 {[
                   { title: 'Binary thinking', desc: 'Forced dichotomies ignore cognitive spectrums' },
                   { title: 'Hidden functions', desc: 'The meaningful insight gets buried in letters' },
@@ -367,10 +298,10 @@ export const Home: React.FC = () => {
                 ].map((item, i) => (
                   <div
                     key={i}
-                    className="border-l-2 border-[#3d4455] hover:border-[#d4a574] pl-4 py-2 transition-colors"
+                    className="border-l-2 border-stone-300 hover:border-jung-primary pl-4 py-2 transition-colors"
                   >
-                    <h3 className="text-[#f0ede8] font-medium mb-1">{item.title}</h3>
-                    <p className="text-sm text-[#6b6862]">{item.desc}</p>
+                    <h3 className="font-medium text-jung-dark mb-1">{item.title}</h3>
+                    <p className="text-sm text-jung-secondary">{item.desc}</p>
                   </div>
                 ))}
               </div>
@@ -379,66 +310,66 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════════════
-          METHODOLOGY - Scientific foundation
-      ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full py-24 px-6 border-t border-[#252a38]" style={{ background: '#1a1d26' }}>
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="text-[11px] font-medium tracking-[0.2em] uppercase text-[#d4a574] block mb-4">
+      {/* ════════════════════════════════════════════════════════════════════
+          METHODOLOGY - Cards
+      ════════════════════════════════════════════════════════════════════ */}
+      <section className="bg-stone-100 py-16 md:py-24">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <span className="text-xs font-medium tracking-[0.15em] uppercase text-jung-accent block mb-3">
               Why 132 Questions?
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-[#f0ede8] leading-tight mb-6">
+            <h2 className="font-serif text-3xl md:text-4xl text-jung-dark mb-4">
               Built on Scientific Methodology
             </h2>
-            <p className="text-lg text-[#a8a4a0] max-w-2xl mx-auto">
+            <p className="text-lg text-jung-secondary max-w-2xl mx-auto">
               This isn't another 10-minute quiz. We use a validated approach that captures the true complexity of your psyche.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Singer-Loomis Card */}
-            <div className="p-8 border border-[#252a38] hover:border-[#3d4455] transition-colors">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Singer-Loomis */}
+            <div className="bg-white p-8 rounded-sm border border-stone-200">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 border border-[#6b8f71] flex items-center justify-center">
-                  <Brain className="w-6 h-6 text-[#6b8f71]" />
+                <div className="w-12 h-12 rounded-sm bg-jung-primary/10 flex items-center justify-center">
+                  <Brain className="w-6 h-6 text-jung-primary" />
                 </div>
                 <div>
-                  <h3 className="font-serif text-xl text-[#f0ede8]">Singer-Loomis Methodology</h3>
-                  <p className="text-sm text-[#6b6862]">Peer-reviewed since 1980</p>
+                  <h3 className="font-serif text-xl text-jung-dark">Singer-Loomis Methodology</h3>
+                  <p className="text-sm text-jung-secondary">Peer-reviewed since 1980</p>
                 </div>
               </div>
-              <p className="text-[#a8a4a0] mb-6 leading-relaxed">
-                Unlike MBTI's forced-choice format that assumes you're either Thinking OR Feeling, we measure each of the 8 cognitive functions <strong className="text-[#f0ede8]">independently</strong>.
+              <p className="text-jung-secondary mb-6 leading-relaxed">
+                Unlike MBTI's forced-choice format that assumes you're either Thinking OR Feeling, we measure each of the 8 cognitive functions <strong className="text-jung-dark">independently</strong>.
               </p>
               <ul className="space-y-3">
                 {['Each function scored on its own scale', 'No false dichotomies', 'Reveals nuanced development'].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-[#a8a4a0]">
-                    <Check className="w-4 h-4 text-[#6b8f71]" />
+                  <li key={i} className="flex items-center gap-3 text-jung-secondary">
+                    <Check className="w-4 h-4 text-jung-accent flex-shrink-0" />
                     {item}
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Scientific Validation Card */}
-            <div className="p-8 border border-[#252a38] hover:border-[#3d4455] transition-colors">
+            {/* Scientific Validation */}
+            <div className="bg-white p-8 rounded-sm border border-stone-200">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 border border-[#d4a574] flex items-center justify-center">
-                  <Beaker className="w-6 h-6 text-[#d4a574]" />
+                <div className="w-12 h-12 rounded-sm bg-jung-accent/10 flex items-center justify-center">
+                  <Beaker className="w-6 h-6 text-jung-accent" />
                 </div>
                 <div>
-                  <h3 className="font-serif text-xl text-[#f0ede8]">Scientific Validation</h3>
-                  <p className="text-sm text-[#6b6862]">Grounded in research</p>
+                  <h3 className="font-serif text-xl text-jung-dark">Scientific Validation</h3>
+                  <p className="text-sm text-jung-secondary">Grounded in research</p>
                 </div>
               </div>
-              <p className="text-[#a8a4a0] mb-6 leading-relaxed">
+              <p className="text-jung-secondary mb-6 leading-relaxed">
                 132 questions isn't arbitrary. It's the minimum needed to reliably measure 8 distinct cognitive functions with proper statistical validity.
               </p>
               <ul className="space-y-3">
                 {['~16 questions per function', 'Stress/grip probes for accuracy', 'Based on Jung\'s original work'].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-[#a8a4a0]">
-                    <Check className="w-4 h-4 text-[#d4a574]" />
+                  <li key={i} className="flex items-center gap-3 text-jung-secondary">
+                    <Check className="w-4 h-4 text-jung-accent flex-shrink-0" />
                     {item}
                   </li>
                 ))}
@@ -448,67 +379,66 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════════════
-          THE 8 FUNCTIONS - Grid display
-      ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full py-24 px-6" style={{ background: '#0d0f14' }}>
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="text-[11px] font-medium tracking-[0.2em] uppercase text-[#d4a574] block mb-4">
+      {/* ════════════════════════════════════════════════════════════════════
+          THE 8 FUNCTIONS - Grid
+      ════════════════════════════════════════════════════════════════════ */}
+      <section className="py-16 md:py-24">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <span className="text-xs font-medium tracking-[0.15em] uppercase text-jung-accent block mb-3">
               The 8 Functions
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-[#f0ede8] leading-tight mb-6">
+            <h2 className="font-serif text-3xl md:text-4xl text-jung-dark mb-4">
               A more complete map
             </h2>
-            <p className="text-lg text-[#a8a4a0] max-w-2xl mx-auto">
+            <p className="text-lg text-jung-secondary max-w-2xl mx-auto">
               Jung identified eight cognitive functions—four ways of perceiving and four ways of judging. We measure each independently.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-[#252a38]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-stone-200 border border-stone-200">
             {[
-              { abbr: 'Ni', name: 'Introverted Intuition', desc: 'Synthesizes into singular insights. Future-focused pattern recognition.', color: '#6b8f71' },
-              { abbr: 'Ne', name: 'Extraverted Intuition', desc: 'Generates possibilities. Explores connections and tangents.', color: '#6b7a8c' },
-              { abbr: 'Si', name: 'Introverted Sensing', desc: 'Stores detailed impressions. Values tradition and experience.', color: '#6b7a8c' },
-              { abbr: 'Se', name: 'Extraverted Sensing', desc: 'Engages with the present moment. Seeks sensory experience.', color: '#6b8f71' },
-              { abbr: 'Ti', name: 'Introverted Thinking', desc: 'Builds internal logic frameworks. Analyzes from first principles.', color: '#c67d5e' },
-              { abbr: 'Te', name: 'Extraverted Thinking', desc: 'Organizes externally. Values systems and measurable results.', color: '#d4a574' },
-              { abbr: 'Fi', name: 'Introverted Feeling', desc: 'Navigates by internal values. Seeks authenticity.', color: '#d4a574' },
-              { abbr: 'Fe', name: 'Extraverted Feeling', desc: 'Reads social dynamics. Values harmony and connection.', color: '#c67d5e' },
-            ].map((func, i) => (
+              { abbr: 'Ni', name: 'Introverted Intuition', desc: 'Synthesizes into singular insights. Future-focused pattern recognition.' },
+              { abbr: 'Ne', name: 'Extraverted Intuition', desc: 'Generates possibilities. Explores connections and tangents.' },
+              { abbr: 'Si', name: 'Introverted Sensing', desc: 'Stores detailed impressions. Values tradition and experience.' },
+              { abbr: 'Se', name: 'Extraverted Sensing', desc: 'Engages with the present moment. Seeks sensory experience.' },
+              { abbr: 'Ti', name: 'Introverted Thinking', desc: 'Builds internal logic frameworks. Analyzes from first principles.' },
+              { abbr: 'Te', name: 'Extraverted Thinking', desc: 'Organizes externally. Values systems and measurable results.' },
+              { abbr: 'Fi', name: 'Introverted Feeling', desc: 'Navigates by internal values. Seeks authenticity.' },
+              { abbr: 'Fe', name: 'Extraverted Feeling', desc: 'Reads social dynamics. Values harmony and connection.' },
+            ].map((func) => (
               <div
                 key={func.abbr}
-                className="p-6 hover:bg-[#1a1d26] transition-colors"
-                style={{ background: '#0d0f14' }}
+                className="bg-jung-base p-6 hover:bg-white transition-colors"
               >
-                <div className="flex items-baseline gap-3 mb-3">
-                  <span className="font-serif text-3xl font-semibold" style={{ color: func.color }}>
+                <div className="flex items-baseline gap-2 mb-2">
+                  <span className="font-serif text-3xl font-semibold text-jung-primary">
                     {func.abbr}
                   </span>
-                  <span className="text-xs text-[#6b6862]">{func.name}</span>
                 </div>
-                <p className="text-sm text-[#a8a4a0] leading-relaxed">{func.desc}</p>
+                <p className="text-xs text-jung-secondary mb-2">{func.name}</p>
+                <p className="text-sm text-jung-secondary leading-relaxed">{func.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════════════
-          HOW IT WORKS - Three steps
-      ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full py-24 px-6 border-t border-[#252a38]" style={{ background: '#1a1d26' }}>
-        <div className="max-w-5xl mx-auto">
+      {/* ════════════════════════════════════════════════════════════════════
+          HOW IT WORKS - Steps
+      ════════════════════════════════════════════════════════════════════ */}
+      <section className="bg-stone-100 py-16 md:py-24">
+        <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-16">
-            <span className="text-[11px] font-medium tracking-[0.2em] uppercase text-[#d4a574] block mb-4">
+            <span className="text-xs font-medium tracking-[0.15em] uppercase text-jung-accent block mb-3">
               The Process
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-[#f0ede8] leading-tight">
+            <h2 className="font-serif text-3xl md:text-4xl text-jung-dark">
               Three steps to actual understanding
             </h2>
           </div>
 
-          <div className="space-y-16">
+          <div className="space-y-12">
             {[
               {
                 num: '01',
@@ -526,84 +456,84 @@ export const Home: React.FC = () => {
                 desc: 'Get AI-generated insights about your specific pattern. Not copy-pasted descriptions. Analysis written for your exact results.'
               }
             ].map((step, i) => (
-              <div key={i} className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+              <div key={i} className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
                 <div className="md:col-span-2">
-                  <span className="font-serif text-6xl text-[#252a38]">{step.num}</span>
+                  <span className="font-serif text-6xl text-stone-300">{step.num}</span>
                 </div>
-                <div className="md:col-span-10 md:pt-4">
-                  <h3 className="font-serif text-2xl text-[#d4a574] mb-4">{step.title}</h3>
-                  <p className="text-lg text-[#a8a4a0] leading-relaxed max-w-2xl">{step.desc}</p>
+                <div className="md:col-span-10">
+                  <h3 className="font-serif text-xl md:text-2xl text-jung-primary mb-3">{step.title}</h3>
+                  <p className="text-lg text-jung-secondary leading-relaxed max-w-2xl">{step.desc}</p>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="text-center mt-16">
+          <div className="text-center mt-12">
             <Button size="lg" onClick={() => navigate('/assessment')}>
-              Start My Free Assessment <ArrowRight className="ml-2 w-4 h-4" />
+              Start My Free Assessment
+              <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
-            <p className="text-[#6b6862] text-sm mt-4">Most people finish in 12-15 minutes</p>
+            <p className="text-jung-secondary text-sm mt-4">Most people finish in 12-15 minutes</p>
           </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════════════
+      {/* ════════════════════════════════════════════════════════════════════
           AI TYPE COACH DEMO
-      ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full py-24 px-6" style={{ background: '#0d0f14' }}>
-        <div className="max-w-5xl mx-auto">
+      ════════════════════════════════════════════════════════════════════ */}
+      <section className="py-16 md:py-24">
+        <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
-            <span className="text-[11px] font-medium tracking-[0.2em] uppercase text-[#d4a574] block mb-4">
+            <span className="text-xs font-medium tracking-[0.15em] uppercase text-jung-accent block mb-3">
               Premium Feature
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-[#f0ede8] leading-tight mb-6">
+            <h2 className="font-serif text-3xl md:text-4xl text-jung-dark mb-4">
               AI Type Coach in Action
             </h2>
-            <p className="text-lg text-[#a8a4a0] max-w-2xl mx-auto">
+            <p className="text-lg text-jung-secondary max-w-2xl mx-auto">
               Ask deep questions about your psychology. Get personalized, Jungian-informed insights.
             </p>
           </div>
 
-          {/* Chat Demo */}
           <div className="max-w-3xl mx-auto">
-            <div className="border border-[#252a38] overflow-hidden">
-              {/* Chat Header */}
-              <div className="px-6 py-4 flex items-center gap-3 border-b border-[#252a38]" style={{ background: '#1a1d26' }}>
-                <div className="w-10 h-10 border border-[#d4a574] flex items-center justify-center">
-                  <MessageCircle className="w-5 h-5 text-[#d4a574]" />
+            <div className="border border-stone-200 rounded-sm overflow-hidden bg-white shadow-sm">
+              {/* Header */}
+              <div className="px-6 py-4 flex items-center gap-3 border-b border-stone-200 bg-stone-50">
+                <div className="w-10 h-10 rounded-sm bg-jung-accent/10 flex items-center justify-center">
+                  <MessageCircle className="w-5 h-5 text-jung-accent" />
                 </div>
                 <div>
-                  <h4 className="font-medium text-[#f0ede8]">AI Type Coach</h4>
-                  <p className="text-sm text-[#6b6862]">Powered by your assessment results</p>
+                  <h4 className="font-medium text-jung-dark">AI Type Coach</h4>
+                  <p className="text-sm text-jung-secondary">Powered by your assessment results</p>
                 </div>
               </div>
 
-              {/* Chat Messages */}
-              <div className="p-6 space-y-6 min-h-[400px]" style={{ background: '#0d0f14' }}>
-                {/* User Message */}
+              {/* Messages */}
+              <div className="p-6 space-y-6 min-h-[350px] bg-stone-50/50">
+                {/* User */}
                 <div className="flex justify-end">
-                  <div className="px-5 py-3 max-w-[85%] text-[#f0ede8]" style={{ background: '#252a38' }}>
+                  <div className="px-4 py-3 bg-jung-primary text-white rounded-sm max-w-[80%]">
                     <p>{AI_DEMO_CONVERSATION[0].message}</p>
                   </div>
                 </div>
 
-                {/* AI Response */}
+                {/* AI */}
                 {showResponse && (
                   <div className="flex justify-start">
-                    <div className="px-5 py-3 max-w-[85%] border border-[#252a38]" style={{ background: '#1a1d26' }}>
+                    <div className="px-4 py-3 bg-white border border-stone-200 rounded-sm max-w-[80%]">
                       <div className="space-y-3">
                         {displayedMessage.split('\n\n').map((paragraph, idx) => {
                           if (paragraph.startsWith('**')) {
                             return (
-                              <p key={idx} className="font-semibold text-[#f0ede8] mt-4 first:mt-0">
+                              <p key={idx} className="font-medium text-jung-dark mt-4 first:mt-0">
                                 {paragraph.replace(/\*\*/g, '')}
                               </p>
                             );
                           }
-                          return <p key={idx} className="text-[#a8a4a0] leading-relaxed">{paragraph}</p>;
+                          return <p key={idx} className="text-jung-secondary leading-relaxed">{paragraph}</p>;
                         })}
                         {isTyping && (
-                          <span className="inline-block w-0.5 h-4 bg-[#d4a574] animate-pulse ml-1" />
+                          <span className="inline-block w-0.5 h-4 bg-jung-accent animate-pulse ml-1" />
                         )}
                       </div>
                     </div>
@@ -611,49 +541,49 @@ export const Home: React.FC = () => {
                 )}
               </div>
 
-              {/* Chat Input (decorative) */}
-              <div className="border-t border-[#252a38] px-4 py-3" style={{ background: '#1a1d26' }}>
+              {/* Input */}
+              <div className="border-t border-stone-200 px-4 py-3 bg-white">
                 <div className="flex items-center gap-3">
                   <input
                     type="text"
                     placeholder="Ask about your type, relationships, career..."
-                    className="flex-1 px-4 py-2 bg-[#0d0f14] border border-[#252a38] text-sm text-[#6b6862] cursor-not-allowed"
+                    className="flex-1 px-4 py-2 bg-stone-100 border border-stone-200 rounded-sm text-sm text-jung-secondary cursor-not-allowed"
                     disabled
                   />
-                  <button className="w-10 h-10 border border-[#252a38] flex items-center justify-center cursor-not-allowed">
-                    <ArrowRight className="w-5 h-5 text-[#3d4455]" />
+                  <button className="w-10 h-10 rounded-sm border border-stone-200 flex items-center justify-center cursor-not-allowed bg-stone-100">
+                    <ArrowRight className="w-5 h-5 text-stone-400" />
                   </button>
                 </div>
               </div>
             </div>
 
-            <p className="text-center text-[#6b6862] text-sm mt-6">
+            <p className="text-center text-jung-secondary text-sm mt-6">
               Unlock the AI Type Coach with your premium assessment results
             </p>
           </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════════════
+      {/* ════════════════════════════════════════════════════════════════════
           COMPARISON TABLE
-      ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full py-24 px-6 border-t border-[#252a38]" style={{ background: '#1a1d26' }}>
-        <div className="max-w-5xl mx-auto">
+      ════════════════════════════════════════════════════════════════════ */}
+      <section className="bg-stone-100 py-16 md:py-24">
+        <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="font-serif text-3xl sm:text-4xl text-[#f0ede8] leading-tight">
+            <h2 className="font-serif text-3xl md:text-4xl text-jung-dark">
               How we compare
             </h2>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
+            <table className="w-full border-collapse bg-white rounded-sm overflow-hidden">
               <thead>
-                <tr>
-                  <th className="text-left py-4 px-4 text-[#6b6862] text-sm font-medium border-b border-[#252a38]"></th>
-                  <th className="py-4 px-4 text-[#6b6862] text-sm font-medium border-b border-[#252a38]">16Personalities</th>
-                  <th className="py-4 px-4 text-[#6b6862] text-sm font-medium border-b border-[#252a38]">Enneagram</th>
-                  <th className="py-4 px-4 text-[#6b6862] text-sm font-medium border-b border-[#252a38]">Big Five</th>
-                  <th className="py-4 px-4 text-[#d4a574] text-sm font-medium border-b border-[#d4a574]">JungianTypology</th>
+                <tr className="bg-stone-50">
+                  <th className="text-left py-4 px-4 text-jung-secondary text-sm font-medium border-b border-stone-200"></th>
+                  <th className="py-4 px-4 text-jung-secondary text-sm font-medium border-b border-stone-200">16Personalities</th>
+                  <th className="py-4 px-4 text-jung-secondary text-sm font-medium border-b border-stone-200">Enneagram</th>
+                  <th className="py-4 px-4 text-jung-secondary text-sm font-medium border-b border-stone-200">Big Five</th>
+                  <th className="py-4 px-4 text-jung-primary text-sm font-semibold border-b-2 border-jung-accent bg-jung-accent/5">JungianTypology</th>
                 </tr>
               </thead>
               <tbody className="text-sm">
@@ -664,12 +594,12 @@ export const Home: React.FC = () => {
                   ['Growth path', 'Read about type', 'Work on wing', 'None', 'Individuation roadmap'],
                   ['Price', '$30-40', '$29+', 'Free-$50', 'Free / $19 / $39'],
                 ].map((row, i) => (
-                  <tr key={i} className="border-b border-[#252a38]/50">
-                    <td className="py-4 px-4 text-[#f0ede8] font-medium">{row[0]}</td>
-                    <td className="py-4 px-4 text-center text-[#6b6862]">{row[1]}</td>
-                    <td className="py-4 px-4 text-center text-[#6b6862]">{row[2]}</td>
-                    <td className="py-4 px-4 text-center text-[#6b6862]">{row[3]}</td>
-                    <td className="py-4 px-4 text-center text-[#f0ede8] font-medium" style={{ background: 'rgba(212, 165, 116, 0.05)' }}>{row[4]}</td>
+                  <tr key={i} className="border-b border-stone-100 last:border-b-0">
+                    <td className="py-4 px-4 text-jung-dark font-medium">{row[0]}</td>
+                    <td className="py-4 px-4 text-center text-jung-secondary">{row[1]}</td>
+                    <td className="py-4 px-4 text-center text-jung-secondary">{row[2]}</td>
+                    <td className="py-4 px-4 text-center text-jung-secondary">{row[3]}</td>
+                    <td className="py-4 px-4 text-center text-jung-dark font-medium bg-jung-accent/5">{row[4]}</td>
                   </tr>
                 ))}
               </tbody>
@@ -678,138 +608,127 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════════════
-          PRICING - Three tiers
-      ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full py-24 px-6" style={{ background: '#0d0f14' }}>
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="text-[11px] font-medium tracking-[0.2em] uppercase text-[#d4a574] block mb-4">
+      {/* ════════════════════════════════════════════════════════════════════
+          PRICING
+      ════════════════════════════════════════════════════════════════════ */}
+      <section className="py-16 md:py-24">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <span className="text-xs font-medium tracking-[0.15em] uppercase text-jung-accent block mb-3">
               Choose Your Path
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-[#f0ede8] leading-tight mb-4">
+            <h2 className="font-serif text-3xl md:text-4xl text-jung-dark mb-4">
               Start free, go deeper when ready
             </h2>
-            <p className="text-[#6b6862]">
+            <p className="text-jung-secondary">
               Professional assessments cost $50-200. Get validated results starting at $0.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* FREE Tier */}
-            <div className="border border-[#252a38] p-8 hover:border-[#3d4455] transition-colors">
+            {/* FREE */}
+            <div className="border border-stone-200 p-8 bg-white rounded-sm">
               <div className="text-center mb-8">
-                <Compass className="w-8 h-8 text-[#6b6862] mx-auto mb-4" />
-                <h3 className="text-xs font-medium tracking-[0.2em] uppercase text-[#6b6862] mb-2">Free</h3>
-                <div className="font-serif text-5xl text-[#f0ede8]">$0</div>
-                <p className="text-sm text-[#6b6862] mt-2">See Your Profile</p>
+                <Compass className="w-8 h-8 text-jung-secondary mx-auto mb-4" />
+                <h3 className="text-xs font-medium tracking-[0.15em] uppercase text-jung-secondary mb-2">Free</h3>
+                <div className="font-serif text-5xl text-jung-dark">$0</div>
+                <p className="text-sm text-jung-secondary mt-2">See Your Profile</p>
               </div>
               <ul className="space-y-4 mb-8">
                 {['132-question assessment', 'Radar chart visualization', 'Basic AI insight', 'Shareable results'].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-[#a8a4a0]">
-                    <Check className="w-4 h-4 text-[#6b6862]" />
+                  <li key={i} className="flex items-center gap-3 text-jung-secondary">
+                    <Check className="w-4 h-4 text-jung-secondary flex-shrink-0" />
                     {item}
                   </li>
                 ))}
               </ul>
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={() => navigate('/assessment')}
-              >
+              <Button variant="outline" className="w-full" onClick={() => navigate('/assessment')}>
                 Take Free Assessment
               </Button>
             </div>
 
-            {/* INSIGHT Tier - Featured */}
-            <div className="border-2 border-[#d4a574] p-8 relative" style={{ background: 'rgba(212, 165, 116, 0.03)' }}>
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 text-xs font-medium tracking-wider uppercase" style={{ background: '#d4a574', color: '#0d0f14' }}>
+            {/* INSIGHT - Featured */}
+            <div className="border-2 border-jung-accent p-8 bg-white rounded-sm relative shadow-lg">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 text-xs font-medium tracking-wider uppercase bg-jung-accent text-white rounded-sm">
                 Most Popular
               </div>
               <div className="text-center mb-8">
-                <Brain className="w-8 h-8 text-[#d4a574] mx-auto mb-4" />
-                <h3 className="text-xs font-medium tracking-[0.2em] uppercase text-[#d4a574] mb-2">Insight</h3>
-                <div className="font-serif text-5xl text-[#d4a574]">$19</div>
-                <p className="text-sm text-[#6b6862] mt-2">Understand What It Means</p>
+                <Brain className="w-8 h-8 text-jung-accent mx-auto mb-4" />
+                <h3 className="text-xs font-medium tracking-[0.15em] uppercase text-jung-accent mb-2">Insight</h3>
+                <div className="font-serif text-5xl text-jung-primary">$19</div>
+                <p className="text-sm text-jung-secondary mt-2">Understand What It Means</p>
               </div>
               <ul className="space-y-4 mb-8">
                 {['25-page PDF report', 'Full 8-function analysis', 'Relationship insights', 'Career alignment guide'].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-[#f0ede8]">
-                    <Check className="w-4 h-4 text-[#d4a574]" />
+                  <li key={i} className="flex items-center gap-3 text-jung-dark">
+                    <Check className="w-4 h-4 text-jung-accent flex-shrink-0" />
                     {item}
                   </li>
                 ))}
               </ul>
-              <Button
-                className="w-full"
-                onClick={() => navigate('/pricing')}
-              >
+              <Button className="w-full" onClick={() => navigate('/pricing')}>
                 Get Insight
               </Button>
-              <p className="text-center text-xs text-[#6b6862] mt-4">One-time payment</p>
+              <p className="text-center text-xs text-jung-secondary mt-4">One-time payment</p>
             </div>
 
-            {/* MASTERY Tier */}
-            <div className="border border-[#252a38] p-8 hover:border-[#3d4455] transition-colors">
+            {/* MASTERY */}
+            <div className="border border-stone-200 p-8 bg-white rounded-sm">
               <div className="text-center mb-8">
-                <Sparkles className="w-8 h-8 text-[#c67d5e] mx-auto mb-4" />
-                <h3 className="text-xs font-medium tracking-[0.2em] uppercase text-[#c67d5e] mb-2">Mastery</h3>
-                <div className="font-serif text-5xl text-[#f0ede8]">$39</div>
-                <p className="text-sm text-[#6b6862] mt-2">Transform With Guidance</p>
+                <Sparkles className="w-8 h-8 text-jung-primary mx-auto mb-4" />
+                <h3 className="text-xs font-medium tracking-[0.15em] uppercase text-jung-primary mb-2">Mastery</h3>
+                <div className="font-serif text-5xl text-jung-dark">$39</div>
+                <p className="text-sm text-jung-secondary mt-2">Transform With Guidance</p>
               </div>
               <ul className="space-y-4 mb-8">
                 {['AI Type Coach (unlimited)', 'Growth exercises', 'Dream journaling guide', 'Everything in Insight'].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-[#a8a4a0]">
-                    <Sparkles className="w-4 h-4 text-[#c67d5e]" />
+                  <li key={i} className="flex items-center gap-3 text-jung-secondary">
+                    <Sparkles className="w-4 h-4 text-jung-primary flex-shrink-0" />
                     {item}
                   </li>
                 ))}
               </ul>
-              <Button
-                variant="outline"
-                className="w-full border-[#c67d5e] text-[#c67d5e] hover:bg-[#c67d5e]/10"
-                onClick={() => navigate('/pricing')}
-              >
+              <Button variant="outline" className="w-full" onClick={() => navigate('/pricing')}>
                 Get Mastery
               </Button>
-              <p className="text-center text-xs text-[#6b6862] mt-4">Lifetime access</p>
+              <p className="text-center text-xs text-jung-secondary mt-4">Lifetime access</p>
             </div>
           </div>
 
-          {/* Money-back guarantee */}
-          <div className="text-center mt-12 pt-8 border-t border-[#252a38]">
-            <div className="flex items-center justify-center gap-3 text-[#6b6862]">
-              <ShieldCheck className="w-5 h-5 text-[#6b8f71]" />
+          {/* Guarantee */}
+          <div className="text-center mt-12 pt-8 border-t border-stone-200">
+            <div className="flex items-center justify-center gap-3 text-jung-secondary">
+              <ShieldCheck className="w-5 h-5 text-jung-accent" />
               <p className="text-sm">
-                <strong className="text-[#a8a4a0]">30-day money-back guarantee.</strong> Not satisfied? Full refund, no questions.
+                <strong className="text-jung-dark">30-day money-back guarantee.</strong> Not satisfied? Full refund, no questions.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════════════
+      {/* ════════════════════════════════════════════════════════════════════
           TESTIMONIALS
-      ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full py-24 px-6 border-t border-[#252a38]" style={{ background: '#1a1d26' }}>
-        <div className="max-w-5xl mx-auto">
+      ════════════════════════════════════════════════════════════════════ */}
+      <section className="bg-stone-100 py-16 md:py-24">
+        <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="font-serif text-3xl sm:text-4xl text-[#f0ede8] leading-tight">
+            <h2 className="font-serif text-3xl md:text-4xl text-jung-dark">
               "Finally, a test that didn't try to box me in"
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {TESTIMONIALS.map((testimonial, index) => (
-              <div key={index} className="border border-[#252a38] p-6">
-                <p className="text-[#a8a4a0] italic mb-6 leading-relaxed">"{testimonial.quote}"</p>
+              <div key={index} className="bg-white p-6 rounded-sm border border-stone-200">
+                <p className="text-jung-secondary italic mb-6 leading-relaxed">"{testimonial.quote}"</p>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 border border-[#3d4455] flex items-center justify-center">
-                    <span className="font-serif text-[#d4a574]">{testimonial.name[0]}</span>
+                  <div className="w-10 h-10 rounded-full bg-jung-primary/10 flex items-center justify-center">
+                    <span className="font-serif text-jung-primary font-semibold">{testimonial.name[0]}</span>
                   </div>
                   <div>
-                    <p className="text-[#f0ede8] font-medium">{testimonial.name}</p>
-                    <p className="text-sm text-[#6b6862]">{testimonial.role}</p>
+                    <p className="text-jung-dark font-medium">{testimonial.name}</p>
+                    <p className="text-sm text-jung-secondary">{testimonial.role}</p>
                   </div>
                 </div>
               </div>
@@ -818,34 +737,34 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════════════
+      {/* ════════════════════════════════════════════════════════════════════
           FAQ
-      ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full py-24 px-6" style={{ background: '#0d0f14' }}>
-        <div className="max-w-3xl mx-auto">
+      ════════════════════════════════════════════════════════════════════ */}
+      <section className="py-16 md:py-24">
+        <div className="max-w-3xl mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="font-serif text-3xl sm:text-4xl text-[#f0ede8] leading-tight">
+            <h2 className="font-serif text-3xl md:text-4xl text-jung-dark">
               Questions people ask
             </h2>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             {FAQ_ITEMS.map((item, index) => (
-              <div key={index} className="border border-[#252a38]">
+              <div key={index} className="border border-stone-200 rounded-sm bg-white overflow-hidden">
                 <button
-                  className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-[#1a1d26] transition-colors"
+                  className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-stone-50 transition-colors"
                   onClick={() => setOpenFaq(openFaq === index ? null : index)}
                 >
-                  <span className="font-medium text-[#f0ede8] pr-4">{item.question}</span>
+                  <span className="font-medium text-jung-dark pr-4">{item.question}</span>
                   {openFaq === index ? (
-                    <ChevronUp className="w-5 h-5 text-[#6b6862] flex-shrink-0" />
+                    <ChevronUp className="w-5 h-5 text-jung-secondary flex-shrink-0" />
                   ) : (
-                    <ChevronDown className="w-5 h-5 text-[#6b6862] flex-shrink-0" />
+                    <ChevronDown className="w-5 h-5 text-jung-secondary flex-shrink-0" />
                   )}
                 </button>
                 {openFaq === index && (
-                  <div className="px-6 py-4 border-t border-[#252a38]" style={{ background: '#1a1d26' }}>
-                    <p className="text-[#a8a4a0] leading-relaxed">{item.answer}</p>
+                  <div className="px-6 py-4 border-t border-stone-200 bg-stone-50">
+                    <p className="text-jung-secondary leading-relaxed">{item.answer}</p>
                   </div>
                 )}
               </div>
@@ -854,34 +773,36 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════════════
+      {/* ════════════════════════════════════════════════════════════════════
           FINAL CTA
-      ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full py-24 px-6" style={{ background: '#d4a574' }}>
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl leading-tight mb-6" style={{ color: '#0d0f14' }}>
+      ════════════════════════════════════════════════════════════════════ */}
+      <section className="bg-jung-primary py-16 md:py-20">
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <h2 className="font-serif text-3xl md:text-4xl text-white leading-tight mb-6">
             Stop fitting yourself into boxes
           </h2>
-          <p className="text-lg mb-10 max-w-xl mx-auto" style={{ color: '#451a03' }}>
+          <p className="text-lg text-stone-300 mb-8 max-w-xl mx-auto">
             Take the assessment Jung would have built. See all 8 of your cognitive functions. Get insights that actually mean something.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               size="lg"
               onClick={() => navigate('/assessment')}
-              className="bg-[#0d0f14] hover:bg-[#1a1d26] text-[#f0ede8]"
+              className="bg-white text-jung-primary hover:bg-stone-100"
             >
-              Take the Free Assessment <ArrowRight className="ml-2 w-4 h-4" />
+              Take the Free Assessment
+              <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
-            <button
+            <Button
+              variant="outline"
+              size="lg"
               onClick={() => navigate('/learn')}
-              className="px-6 py-3 border-2 hover:bg-[#0d0f14]/10 transition-colors font-medium"
-              style={{ borderColor: '#0d0f14', color: '#0d0f14' }}
+              className="border-white text-white hover:bg-white/10"
             >
               Learn the Theory First
-            </button>
+            </Button>
           </div>
-          <p className="text-sm mt-8 flex items-center justify-center gap-4 flex-wrap" style={{ color: '#451a03' }}>
+          <p className="text-sm text-stone-400 mt-8 flex items-center justify-center gap-4 flex-wrap">
             <span>15 minutes</span>
             <span>·</span>
             <span>No signup</span>
@@ -891,40 +812,37 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════════════
-          EXIT INTENT POPUP
-      ═══════════════════════════════════════════════════════════════════════════ */}
+      {/* ════════════════════════════════════════════════════════════════════
+          EXIT POPUP
+      ════════════════════════════════════════════════════════════════════ */}
       {showExitPopup && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-          <div
-            className="max-w-md w-full p-8 relative border border-[#252a38]"
-            style={{ background: '#1a1d26' }}
-          >
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-white max-w-md w-full p-8 rounded-sm relative shadow-xl">
             <button
               onClick={() => setShowExitPopup(false)}
-              className="absolute top-4 right-4 text-[#6b6862] hover:text-[#a8a4a0] transition-colors"
+              className="absolute top-4 right-4 text-jung-secondary hover:text-jung-dark transition-colors"
             >
               <X className="w-6 h-6" />
             </button>
 
             <div className="text-center">
-              <div className="w-16 h-16 border border-[#d4a574] flex items-center justify-center mx-auto mb-6">
-                <Compass className="w-8 h-8 text-[#d4a574]" />
+              <div className="w-16 h-16 rounded-full bg-jung-accent/10 flex items-center justify-center mx-auto mb-6">
+                <Compass className="w-8 h-8 text-jung-accent" />
               </div>
 
-              <h3 className="font-serif text-2xl text-[#f0ede8] mb-4">
+              <h3 className="font-serif text-2xl text-jung-dark mb-4">
                 Before you go...
               </h3>
 
-              <p className="text-[#a8a4a0] mb-6">
-                Did you know most people get <strong className="text-[#f0ede8]">different results</strong> every time they take a personality test? Ours measures all 8 cognitive functions independently—so your results stay consistent.
+              <p className="text-jung-secondary mb-6">
+                Did you know most people get <strong className="text-jung-dark">different results</strong> every time they take a personality test? Ours measures all 8 cognitive functions independently—so your results stay consistent.
               </p>
 
-              <div className="border border-[#252a38] p-4 mb-6 text-left" style={{ background: '#0d0f14' }}>
-                <p className="text-sm text-[#a8a4a0] italic">
+              <div className="bg-stone-50 border border-stone-200 p-4 mb-6 text-left rounded-sm">
+                <p className="text-sm text-jung-secondary italic">
                   "I've taken MBTI tests 20 times and always got different results. This finally explained why."
                 </p>
-                <p className="text-xs text-[#6b6862] mt-2">— Sarah K.</p>
+                <p className="text-xs text-jung-secondary mt-2">— Sarah K.</p>
               </div>
 
               <Button
@@ -935,12 +853,13 @@ export const Home: React.FC = () => {
                   navigate('/assessment');
                 }}
               >
-                Try the Free Assessment <ArrowRight className="ml-2 w-4 h-4" />
+                Try the Free Assessment
+                <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
 
               <button
                 onClick={() => setShowExitPopup(false)}
-                className="mt-4 text-sm text-[#6b6862] hover:text-[#a8a4a0] transition-colors"
+                className="mt-4 text-sm text-jung-secondary hover:text-jung-dark transition-colors"
               >
                 No thanks, I'll pass
               </button>
@@ -948,18 +867,6 @@ export const Home: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Keyframes */}
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: scale(0.9); }
-          to { opacity: 1; transform: scale(1); }
-        }
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
 };

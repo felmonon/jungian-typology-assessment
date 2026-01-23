@@ -91,7 +91,7 @@ export const CheckoutSuccess: React.FC = () => {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center bg-jung-surface">
         <Loader2 className="w-16 h-16 text-jung-accent animate-spin mb-4" />
-        <h1 className="text-2xl font-serif font-bold text-jung-text mb-2">
+        <h1 className="text-2xl font-serif font-bold text-jung-dark mb-2">
           Verifying your payment...
         </h1>
         <p className="text-jung-secondary">Please wait a moment.</p>
@@ -105,7 +105,7 @@ export const CheckoutSuccess: React.FC = () => {
         <div className="bg-red-100 rounded-full p-4 mb-6">
           <XCircle className="w-16 h-16 text-red-500" />
         </div>
-        <h1 className="text-2xl font-serif font-bold text-jung-text mb-2">
+        <h1 className="text-2xl font-serif font-bold text-jung-dark mb-2">
           Something went wrong
         </h1>
         <p className="text-jung-secondary mb-6">{error || 'Unable to verify payment'}</p>
@@ -132,7 +132,7 @@ export const CheckoutSuccess: React.FC = () => {
             <span className="text-4xl font-serif text-emerald-600">ψ</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-jung-text mb-4">
+          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-jung-dark mb-4">
             Welcome to Your Complete Jungian Analysis
           </h1>
 
@@ -154,8 +154,8 @@ export const CheckoutSuccess: React.FC = () => {
         </div>
 
         {/* Features card */}
-        <div className="bg-jung-card rounded-2xl border border-jung-border shadow-md p-6 mb-8">
-          <h2 className="text-lg font-serif font-bold text-jung-text mb-5 flex items-center gap-2">
+        <div className="bg-jung-surface rounded-2xl border border-jung-border shadow-md p-6 mb-8">
+          <h2 className="text-lg font-serif font-bold text-jung-dark mb-5 flex items-center gap-2">
             <CheckCircle className="w-5 h-5 text-emerald-500" />
             What You've Unlocked
           </h2>

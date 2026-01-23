@@ -3,7 +3,7 @@ import { BookOpen, Compass, Layers, Activity, ArrowRight } from 'lucide-react';
 
 export const Learn: React.FC = () => {
   return (
-    <div className="editorial-container py-12 font-body text-lg leading-relaxed text-jung-text">
+    <div className="editorial-container py-12 font-body text-lg leading-relaxed text-jung-dark">
 
       {/* Header */}
       <div className="mb-12 border-b border-jung-border pb-8">
@@ -11,7 +11,7 @@ export const Learn: React.FC = () => {
           <BookOpen className="w-6 h-6" />
           <span className="font-sans font-bold uppercase tracking-widest text-sm">The Theory</span>
         </div>
-        <h1 className="text-display text-jung-text mb-6">
+        <h1 className="text-display text-jung-dark mb-6">
           Jungian Depth Psychology
         </h1>
         <p className="text-xl text-jung-secondary leading-relaxed font-sans font-light">
@@ -23,7 +23,7 @@ export const Learn: React.FC = () => {
 
         {/* Section 1: Core Concept */}
         <section className="mb-16">
-          <h2 className="text-3xl font-serif font-bold text-jung-text mb-6 flex items-center gap-3">
+          <h2 className="text-3xl font-serif font-bold text-jung-dark mb-6 flex items-center gap-3">
             <Compass className="w-8 h-8 text-jung-accent" />
             Orientation of Consciousness
           </h2>
@@ -34,7 +34,7 @@ export const Learn: React.FC = () => {
           </p>
           <p className="text-jung-secondary">
             The goal of Jungian psychology is not to identify with your type, but to understand your one-sidedness so you can begin the process of
-            <strong className="text-jung-text"> Individuation</strong>—the move toward wholeness.
+            <strong className="text-jung-dark"> Individuation</strong>—the move toward wholeness.
           </p>
         </section>
 
@@ -48,7 +48,7 @@ export const Learn: React.FC = () => {
 
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div>
-              <h4 className="font-bold text-jung-text border-b border-jung-accent/30 pb-2 mb-3 font-sans">Rational (Judging) Functions</h4>
+              <h4 className="font-bold text-jung-dark border-b border-jung-accent/30 pb-2 mb-3 font-sans">Rational (Judging) Functions</h4>
               <p className="text-base mb-4 text-jung-secondary">
                 These functions evaluate experience based on a norm or standard.
               </p>
@@ -65,7 +65,7 @@ export const Learn: React.FC = () => {
             </div>
 
             <div>
-              <h4 className="font-bold text-jung-text border-b border-jung-accent/30 pb-2 mb-3 font-sans">Irrational (Perceiving) Functions</h4>
+              <h4 className="font-bold text-jung-dark border-b border-jung-accent/30 pb-2 mb-3 font-sans">Irrational (Perceiving) Functions</h4>
               <p className="text-base mb-4 text-jung-secondary">
                 These functions gather data without judgment or evaluation.
               </p>
@@ -91,20 +91,20 @@ export const Learn: React.FC = () => {
           </p>
           <div className="grid md:grid-cols-2 gap-8 my-8">
             <div className="bg-jung-surface p-6 rounded-2xl border-l-4 border-jung-muted">
-              <h4 className="font-bold text-jung-text mb-2 text-xl font-sans">Extraversion (E)</h4>
+              <h4 className="font-bold text-jung-dark mb-2 text-xl font-sans">Extraversion (E)</h4>
               <p className="text-base text-jung-secondary">
-                The flow of energy is directed <strong className="text-jung-text">outward</strong> toward the object. The subject aligns themselves with external conditions, collective facts, and the environment. Action, interaction, and objective data are primary.
+                The flow of energy is directed <strong className="text-jung-dark">outward</strong> toward the object. The subject aligns themselves with external conditions, collective facts, and the environment. Action, interaction, and objective data are primary.
               </p>
             </div>
-            <div className="bg-jung-surface p-6 rounded-2xl border-l-4 border-jung-text">
-               <h4 className="font-bold text-jung-text mb-2 text-xl font-sans">Introversion (I)</h4>
+            <div className="bg-jung-surface p-6 rounded-2xl border-l-4 border-jung-dark">
+               <h4 className="font-bold text-jung-dark mb-2 text-xl font-sans">Introversion (I)</h4>
               <p className="text-base text-jung-secondary">
-                The flow of energy is directed <strong className="text-jung-text">inward</strong> toward the subject. The subject validates experience against internal structures, archetypes, and subjective impressions. Reflection, abstraction, and depth are primary.
+                The flow of energy is directed <strong className="text-jung-dark">inward</strong> toward the subject. The subject validates experience against internal structures, archetypes, and subjective impressions. Reflection, abstraction, and depth are primary.
               </p>
             </div>
           </div>
           <div className="bg-jung-accent/10 p-4 rounded-2xl text-base text-jung-secondary italic border border-jung-accent/20">
-            <strong className="text-jung-text">Important:</strong> In Jungian theory, Extraversion is NOT social confidence, and Introversion is NOT shyness. They are orientations of energy, not social skills.
+            <strong className="text-jung-dark">Important:</strong> In Jungian theory, Extraversion is NOT social confidence, and Introversion is NOT shyness. They are orientations of energy, not social skills.
           </div>
         </section>
 
@@ -129,7 +129,7 @@ export const Learn: React.FC = () => {
               <div key={f.code} className="flex items-start gap-4 p-4 border border-jung-border rounded-2xl hover:bg-jung-surface transition-colors">
                 <span className="font-mono font-bold text-lg text-jung-accent">{f.code}</span>
                 <div>
-                  <strong className="block text-jung-text font-sans">{f.name}</strong>
+                  <strong className="block text-jung-dark font-sans">{f.name}</strong>
                   <span className="text-sm text-jung-secondary">{f.desc}</span>
                 </div>
               </div>
@@ -139,12 +139,12 @@ export const Learn: React.FC = () => {
 
         {/* Section 5: The Dynamics */}
         <section className="mb-16">
-           <h2 className="text-3xl font-serif font-bold text-jung-text mb-6 flex items-center gap-3">
+           <h2 className="text-3xl font-serif font-bold text-jung-dark mb-6 flex items-center gap-3">
             <Layers className="w-8 h-8 text-jung-accent" />
             The Dynamics of the Stack
           </h2>
           <p className="text-jung-secondary">
-             The most critical aspect of Jung's theory is often lost in modern adaptations: the <strong className="text-jung-text">Compensatory Relationship</strong> between consciousness and the unconscious.
+             The most critical aspect of Jung's theory is often lost in modern adaptations: the <strong className="text-jung-dark">Compensatory Relationship</strong> between consciousness and the unconscious.
           </p>
 
           <div className="my-8 space-y-8">
@@ -164,7 +164,7 @@ export const Learn: React.FC = () => {
                 <li>It acts in "archaic, infantile, and primitive" ways.</li>
                 <li>It is where you are "touchy," hypersensitive, and reactive.</li>
                 <li>It is the "doorway to the unconscious" (von Franz).</li>
-                <li><strong className="text-jung-text">Integration of this function is the primary work of mid-life development.</strong></li>
+                <li><strong className="text-jung-dark">Integration of this function is the primary work of mid-life development.</strong></li>
               </ul>
             </div>
           </div>

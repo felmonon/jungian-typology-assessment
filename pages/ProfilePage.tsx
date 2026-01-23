@@ -281,7 +281,7 @@ export const ProfilePage: React.FC = () => {
           {/* Form Fields */}
           <div className="space-y-5">
             <div>
-              <label className="block text-ui text-sm font-medium text-jung-text mb-2">
+              <label className="block text-ui text-sm font-medium text-jung-dark mb-2">
                 Email
               </label>
               <input
@@ -299,7 +299,7 @@ export const ProfilePage: React.FC = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-ui text-sm font-medium text-jung-text mb-2">
+                <label className="block text-ui text-sm font-medium text-jung-dark mb-2">
                   First Name
                 </label>
                 <input
@@ -307,7 +307,7 @@ export const ProfilePage: React.FC = () => {
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   className="
-                    w-full px-4 py-3.5 text-body text-jung-text
+                    w-full px-4 py-3.5 text-body text-jung-dark
                     bg-jung-surface border border-jung-border rounded-lg
                     focus:ring-2 focus:ring-jung-accent focus:border-transparent
                     outline-none transition-all duration-200
@@ -317,7 +317,7 @@ export const ProfilePage: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="block text-ui text-sm font-medium text-jung-text mb-2">
+                <label className="block text-ui text-sm font-medium text-jung-dark mb-2">
                   Last Name
                 </label>
                 <input
@@ -325,7 +325,7 @@ export const ProfilePage: React.FC = () => {
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   className="
-                    w-full px-4 py-3.5 text-body text-jung-text
+                    w-full px-4 py-3.5 text-body text-jung-dark
                     bg-jung-surface border border-jung-border rounded-lg
                     focus:ring-2 focus:ring-jung-accent focus:border-transparent
                     outline-none transition-all duration-200
@@ -403,8 +403,8 @@ export const ProfilePage: React.FC = () => {
                     disabled={isDeleting}
                     className="
                       w-full sm:w-auto px-5 py-3 min-h-[48px]
-                      bg-jung-surface text-jung-text rounded-lg
-                      hover:bg-jung-card transition-colors
+                      bg-jung-surface text-jung-dark rounded-lg
+                      hover:bg-jung-surface transition-colors
                       disabled:opacity-50
                     "
                   >
@@ -474,7 +474,7 @@ export const ProfilePage: React.FC = () => {
               <div className="w-16 h-16 rounded-full bg-jung-surface flex items-center justify-center mx-auto mb-4">
                 <History className="w-8 h-8 text-jung-muted/50" />
               </div>
-              <p className="text-body font-medium text-jung-text mb-2">No assessments yet</p>
+              <p className="text-body font-medium text-jung-dark mb-2">No assessments yet</p>
               <p className="text-sm text-jung-muted mb-6">Take your first assessment to see your results here.</p>
               <button
                 onClick={() => navigate('/assessment')}
@@ -503,7 +503,7 @@ export const ProfilePage: React.FC = () => {
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div className="flex-1 min-w-0">
-                      <p className="text-ui font-semibold text-jung-text truncate">
+                      <p className="text-ui font-semibold text-jung-dark truncate">
                         {getDominantFunctionDisplay(result)}
                       </p>
                       <p className="text-sm text-jung-muted mt-1">
@@ -539,7 +539,7 @@ export const ProfilePage: React.FC = () => {
                             disabled={deletingResultId === result.id}
                             className="
                               px-4 py-2 min-h-[44px]
-                              bg-jung-card text-jung-text text-sm font-medium rounded-lg
+                              bg-jung-surface text-jung-dark text-sm font-medium rounded-lg
                               hover:bg-jung-surface transition-colors
                               disabled:opacity-50
                             "

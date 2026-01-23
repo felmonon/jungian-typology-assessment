@@ -14,24 +14,24 @@ interface LeaderboardData {
 
 const FUNCTION_COLORS: Record<string, string> = {
   Te: 'bg-jung-accent',
-  Ti: 'bg-jung-text',
+  Ti: 'bg-jung-dark',
   Fe: 'bg-jung-accent/80',
   Fi: 'bg-jung-secondary',
   Se: 'bg-jung-accent/60',
   Si: 'bg-jung-muted',
   Ne: 'bg-jung-accent/70',
-  Ni: 'bg-jung-text/80',
+  Ni: 'bg-jung-dark/80',
 };
 
 const FUNCTION_BG_COLORS: Record<string, string> = {
   Te: 'bg-jung-accent/10 text-jung-accent',
-  Ti: 'bg-jung-text/10 text-jung-text',
+  Ti: 'bg-jung-dark/10 text-jung-dark',
   Fe: 'bg-jung-accent/10 text-jung-accent',
   Fi: 'bg-jung-secondary/10 text-jung-secondary',
   Se: 'bg-jung-accent/10 text-jung-accent',
   Si: 'bg-jung-muted/20 text-jung-muted',
   Ne: 'bg-jung-accent/10 text-jung-accent',
-  Ni: 'bg-jung-text/10 text-jung-text',
+  Ni: 'bg-jung-dark/10 text-jung-dark',
 };
 
 export const Leaderboard: React.FC = () => {
@@ -86,7 +86,7 @@ export const Leaderboard: React.FC = () => {
         <div className="inline-block p-3 rounded-full bg-jung-accent/10 mb-4">
           <Trophy className="w-8 h-8 sm:w-10 sm:h-10 text-jung-accent" />
         </div>
-        <h1 className="text-display text-jung-text mb-4">
+        <h1 className="text-display text-jung-dark mb-4">
           Community Leaderboard
         </h1>
         <p className="text-base sm:text-lg text-jung-secondary max-w-2xl mx-auto px-2 font-body">
@@ -98,7 +98,7 @@ export const Leaderboard: React.FC = () => {
         <div className="flex items-center justify-center gap-3 text-center">
           <Users className="w-6 h-6 sm:w-8 sm:h-8 text-jung-accent" />
           <div>
-            <p className="text-2xl sm:text-3xl font-bold text-jung-text font-serif">{data?.total || 0}</p>
+            <p className="text-2xl sm:text-3xl font-bold text-jung-dark font-serif">{data?.total || 0}</p>
             <p className="text-xs sm:text-sm text-jung-muted font-sans">Total Assessments Completed</p>
           </div>
         </div>
@@ -108,13 +108,13 @@ export const Leaderboard: React.FC = () => {
         <div className="bg-jung-accent/5 rounded-2xl border border-jung-accent/20 p-4 sm:p-6 mb-6 sm:mb-8">
           <div className="flex items-center gap-2 mb-3 sm:mb-4">
             <TrendingUp className="w-5 h-5 text-jung-accent" />
-            <h2 className="text-base sm:text-lg font-serif font-bold text-jung-text">Most Common Dominant Functions</h2>
+            <h2 className="text-base sm:text-lg font-serif font-bold text-jung-dark">Most Common Dominant Functions</h2>
           </div>
           <div className="flex flex-wrap gap-2 sm:gap-3">
             {data.leaderboard.slice(0, 3).map((entry, index) => (
               <div
                 key={entry.function}
-                className="flex items-center gap-2 bg-jung-card rounded-full px-4 py-2 shadow-sm border border-jung-border"
+                className="flex items-center gap-2 bg-jung-surface rounded-full px-4 py-2 shadow-sm border border-jung-border"
               >
                 <span className="text-lg font-bold text-jung-accent font-serif">#{index + 1}</span>
                 <span className={`px-2 py-1 rounded-lg text-sm font-bold font-sans ${FUNCTION_BG_COLORS[entry.function] || 'bg-jung-surface text-jung-muted'}`}>
@@ -130,7 +130,7 @@ export const Leaderboard: React.FC = () => {
       <div className="card-elevated rounded-2xl overflow-hidden">
         <div className="px-6 py-4 border-b border-jung-border flex items-center gap-2">
           <BarChart3 className="w-5 h-5 text-jung-accent" />
-          <h2 className="text-lg font-serif font-bold text-jung-text">Function Distribution</h2>
+          <h2 className="text-lg font-serif font-bold text-jung-dark">Function Distribution</h2>
         </div>
 
         {!data || data.leaderboard.length === 0 ? (
@@ -138,7 +138,7 @@ export const Leaderboard: React.FC = () => {
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-jung-accent/10 flex items-center justify-center">
               <BarChart3 className="w-8 h-8 text-jung-accent/50" />
             </div>
-            <h3 className="text-lg font-semibold text-jung-text mb-2 font-serif">Building Our Community</h3>
+            <h3 className="text-lg font-semibold text-jung-dark mb-2 font-serif">Building Our Community</h3>
             <p className="text-jung-muted mb-6 max-w-md mx-auto font-body">
               Be among the first to complete the assessment and help establish the community baseline for cognitive function distribution.
             </p>
@@ -167,7 +167,7 @@ export const Leaderboard: React.FC = () => {
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-jung-text truncate font-body">{entry.title}</p>
+                      <p className="font-medium text-jung-dark truncate font-body">{entry.title}</p>
                       <div className="mt-2 h-2 bg-jung-surface rounded-full overflow-hidden">
                         <div
                           className={`h-full rounded-full transition-all duration-500 ${FUNCTION_COLORS[entry.function] || 'bg-jung-muted'}`}
@@ -177,7 +177,7 @@ export const Leaderboard: React.FC = () => {
                     </div>
 
                     <div className="text-right">
-                      <p className="font-bold text-jung-text font-serif">{entry.count}</p>
+                      <p className="font-bold text-jung-dark font-serif">{entry.count}</p>
                       <p className="text-xs text-jung-muted font-sans">{percentage.toFixed(1)}%</p>
                     </div>
                   </div>

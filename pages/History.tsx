@@ -175,7 +175,7 @@ export const History: React.FC = () => {
       {/* Results table */}
       <div className="card-elevated rounded-2xl overflow-hidden">
         <div className="p-5 border-b border-jung-border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <h2 className="text-lg font-serif font-bold text-jung-text">Your Results</h2>
+          <h2 className="text-lg font-serif font-bold text-jung-dark">Your Results</h2>
           <div className="flex gap-3 flex-wrap">
             {selectedResults.length > 0 && (
               <Button
@@ -228,7 +228,7 @@ export const History: React.FC = () => {
                 >
                   <button
                     onClick={() => toggleSelection(result.id)}
-                    className="flex-shrink-0 text-jung-accent hover:text-jung-text transition-colors"
+                    className="flex-shrink-0 text-jung-accent hover:text-jung-dark transition-colors"
                     title={isSelected ? 'Deselect' : 'Select for comparison'}
                   >
                     {isSelected ? (
@@ -240,7 +240,7 @@ export const History: React.FC = () => {
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-serif font-bold text-jung-text">{funcTitle}</span>
+                      <span className="font-serif font-bold text-jung-dark">{funcTitle}</span>
                       <span className="text-xs font-sans font-medium bg-jung-accent/10 text-jung-accent px-2 py-0.5 rounded">
                         {dominantFunc}
                       </span>
@@ -264,7 +264,7 @@ export const History: React.FC = () => {
 
                   <button
                     onClick={() => viewResult(result)}
-                    className="flex-shrink-0 text-jung-accent hover:text-jung-text transition-colors"
+                    className="flex-shrink-0 text-jung-accent hover:text-jung-dark transition-colors"
                     title="View full result"
                   >
                     <Eye className="w-5 h-5" />
@@ -355,7 +355,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ results, onClear, forma
   return (
     <div className="card-elevated rounded-2xl mb-8 overflow-hidden">
       <div className="p-5 border-b border-jung-border flex justify-between items-center">
-        <h2 className="text-xl font-serif font-bold text-jung-text flex items-center gap-2">
+        <h2 className="text-xl font-serif font-bold text-jung-dark flex items-center gap-2">
           <GitCompare className="w-5 h-5 text-jung-accent" />
           Comparison Results
         </h2>
@@ -370,7 +370,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ results, onClear, forma
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div className="bg-jung-accent/5 rounded-xl p-4 border-l-4 border-jung-accent">
             <p className="text-xs text-jung-muted uppercase tracking-widest mb-1 font-sans">Earlier Result</p>
-            <p className="font-serif font-bold text-jung-text">
+            <p className="font-serif font-bold text-jung-dark">
               {FUNCTION_DESCRIPTIONS[dominant1]?.title || dominant1}
             </p>
             <p className="text-sm text-jung-secondary flex items-center gap-1">
@@ -378,9 +378,9 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ results, onClear, forma
               {formatDate(result1.createdAt)}
             </p>
           </div>
-          <div className="bg-jung-text/5 rounded-xl p-4 border-l-4 border-jung-text">
+          <div className="bg-jung-dark/5 rounded-xl p-4 border-l-4 border-jung-dark">
             <p className="text-xs text-jung-muted uppercase tracking-widest mb-1 font-sans">Later Result</p>
-            <p className="font-serif font-bold text-jung-text">
+            <p className="font-serif font-bold text-jung-dark">
               {FUNCTION_DESCRIPTIONS[dominant2]?.title || dominant2}
             </p>
             <p className="text-sm text-jung-secondary flex items-center gap-1">
@@ -397,7 +397,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ results, onClear, forma
               Dominant Function Changed:
               <span className="bg-jung-accent/20 text-jung-accent px-2 py-0.5 rounded">{dominant1}</span>
               <ArrowRight className="w-4 h-4" />
-              <span className="bg-jung-text/20 text-jung-text px-2 py-0.5 rounded">{dominant2}</span>
+              <span className="bg-jung-dark/20 text-jung-dark px-2 py-0.5 rounded">{dominant2}</span>
             </div>
           </div>
         )}
@@ -448,9 +448,9 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ results, onClear, forma
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-jung-border">
-                    <th className="text-left py-2 px-3 font-bold text-jung-text">Function</th>
+                    <th className="text-left py-2 px-3 font-bold text-jung-dark">Function</th>
                     <th className="text-center py-2 px-3 font-bold text-jung-accent">Earlier</th>
-                    <th className="text-center py-2 px-3 font-bold text-jung-text">Later</th>
+                    <th className="text-center py-2 px-3 font-bold text-jung-dark">Later</th>
                     <th className="text-center py-2 px-3 font-bold text-jung-secondary">Change</th>
                   </tr>
                 </thead>
@@ -465,7 +465,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ results, onClear, forma
                         className="border-b border-jung-border/50 hover:bg-jung-surface"
                       >
                         <td className="py-2 px-3">
-                          <span className="font-medium text-jung-text">
+                          <span className="font-medium text-jung-dark">
                             {FUNCTION_DESCRIPTIONS[score1.function]?.title?.split(' ')[0] || score1.function}
                           </span>
                           <span className="text-jung-muted ml-1 text-xs">({score1.function})</span>
@@ -473,7 +473,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ results, onClear, forma
                         <td className="text-center py-2 px-3 font-mono text-jung-accent">
                           {score1.score}
                         </td>
-                        <td className="text-center py-2 px-3 font-mono text-jung-text">
+                        <td className="text-center py-2 px-3 font-mono text-jung-dark">
                           {score2?.score || 0}
                         </td>
                         <td className="text-center py-2 px-3">

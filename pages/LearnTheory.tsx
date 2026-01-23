@@ -15,7 +15,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ title, code, children, de
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <div className="border border-jung-border rounded-lg overflow-hidden bg-jung-card transition-all duration-300 hover:shadow-md">
+    <div className="border border-jung-border rounded-lg overflow-hidden bg-jung-surface transition-all duration-300 hover:shadow-md">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between p-5 md:p-6 text-left hover:bg-jung-surface-alt transition-colors"
@@ -26,7 +26,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ title, code, children, de
               {code}
             </span>
           )}
-          <span className="font-serif text-lg md:text-xl font-semibold text-jung-text">{title}</span>
+          <span className="font-serif text-lg md:text-xl font-semibold text-jung-dark">{title}</span>
         </div>
         <ChevronDown
           className={`w-5 h-5 text-jung-muted transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}
@@ -47,7 +47,7 @@ const SectionHeader: React.FC<{ icon: React.ReactNode; title: string; subtitle?:
       {icon}
     </div>
     <div>
-      <h2 className="text-display text-jung-text">{title}</h2>
+      <h2 className="text-display text-jung-dark">{title}</h2>
       {subtitle && <p className="text-body text-jung-muted mt-1">{subtitle}</p>}
     </div>
   </div>
@@ -77,7 +77,7 @@ export const LearnTheory: React.FC = () => {
               <span className="text-5xl font-serif">ψ</span>
               <BookOpen className="w-8 h-8" />
             </div>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-jung-text mb-6 leading-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-jung-dark mb-6 leading-tight">
               Learn the Theory
             </h1>
             <p className="text-xl text-jung-secondary max-w-2xl mx-auto leading-relaxed">
@@ -121,7 +121,7 @@ export const LearnTheory: React.FC = () => {
               </p>
 
               <div className="card-elevated p-6 my-8">
-                <h4 className="font-serif font-bold text-jung-text mb-3 flex items-center gap-2">
+                <h4 className="font-serif font-bold text-jung-dark mb-3 flex items-center gap-2">
                   <Compass className="w-5 h-5 text-jung-accent" />
                   Simple Analogy
                 </h4>
@@ -177,14 +177,14 @@ export const LearnTheory: React.FC = () => {
                   <div className="w-10 h-10 rounded-full bg-jung-accent/10 flex items-center justify-center mb-3">
                     {item.icon}
                   </div>
-                  <h4 className="font-serif font-semibold text-jung-text mb-2">{item.title}</h4>
+                  <h4 className="font-serif font-semibold text-jung-dark mb-2">{item.title}</h4>
                   <p className="text-sm text-jung-muted">{item.desc}</p>
                 </div>
               ))}
             </div>
 
             <div className="bg-jung-surface-alt rounded-xl p-6 text-center">
-              <p className="text-jung-text font-serif text-lg">
+              <p className="text-jung-dark font-serif text-lg">
                 No 4-letter codes. No rigid boxes. Just a mirror for your current psychic configuration.
               </p>
             </div>
@@ -206,7 +206,7 @@ export const LearnTheory: React.FC = () => {
               </p>
 
               <div className="bg-gradient-to-r from-jung-accent/10 to-transparent rounded-xl p-6 my-8 border-l-4 border-jung-accent">
-                <h4 className="font-serif font-bold text-jung-text mb-2">Analogy</h4>
+                <h4 className="font-serif font-bold text-jung-dark mb-2">Analogy</h4>
                 <p className="text-jung-secondary">
                   Libido flows like water in a river. It naturally takes one main course—but dams or blocks
                   cause floods (unconscious eruptions). Understanding your flow pattern is the first step
@@ -233,7 +233,7 @@ export const LearnTheory: React.FC = () => {
 
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               <div className="card-elevated p-6 border-l-4 border-jung-accent">
-                <h3 className="font-serif text-xl font-bold text-jung-text mb-3 flex items-center gap-2">
+                <h3 className="font-serif text-xl font-bold text-jung-dark mb-3 flex items-center gap-2">
                   <span className="text-2xl text-jung-accent">→</span>
                   Extraversion — Outward Flow
                 </h3>
@@ -251,7 +251,7 @@ export const LearnTheory: React.FC = () => {
               </div>
 
               <div className="card-elevated p-6 border-l-4 border-jung-secondary">
-                <h3 className="font-serif text-xl font-bold text-jung-text mb-3 flex items-center gap-2">
+                <h3 className="font-serif text-xl font-bold text-jung-dark mb-3 flex items-center gap-2">
                   <span className="text-2xl text-jung-secondary">←</span>
                   Introversion — Inward Flow
                 </h3>
@@ -275,7 +275,7 @@ export const LearnTheory: React.FC = () => {
 
             <div className="bg-jung-surface-alt rounded-xl p-6">
               <p className="text-jung-secondary">
-                <strong className="text-jung-text">Key insight:</strong> Everyone possesses both attitudes—but one dominates
+                <strong className="text-jung-dark">Key insight:</strong> Everyone possesses both attitudes—but one dominates
                 conscious life. The opposite builds in the unconscious, creating a compensatory dynamic that shapes our growth.
               </p>
             </div>
@@ -351,7 +351,7 @@ export const LearnTheory: React.FC = () => {
             </div>
 
             <div className="bg-jung-surface-alt rounded-xl p-6">
-              <h4 className="font-serif font-bold text-jung-text mb-3">Law of Opposites</h4>
+              <h4 className="font-serif font-bold text-jung-dark mb-3">Law of Opposites</h4>
               <p className="text-jung-secondary">
                 Functions compensate each other. Strong Thinking → weak/unconscious Feeling (and vice versa).
                 Strong Sensation → weak Intuition. Like left and right hands—one dominant, the other
@@ -444,7 +444,7 @@ export const LearnTheory: React.FC = () => {
                         <p className="text-sm text-jung-secondary">{position.development}</p>
                       </div>
                       <div className="bg-jung-surface-alt rounded-lg p-4">
-                        <h5 className="font-semibold text-jung-text mb-2">Shadow Aspect</h5>
+                        <h5 className="font-semibold text-jung-dark mb-2">Shadow Aspect</h5>
                         <p className="text-sm text-jung-muted">{position.shadow}</p>
                       </div>
                     </div>
@@ -497,7 +497,7 @@ export const LearnTheory: React.FC = () => {
             </div>
 
             <details className="card-elevated overflow-hidden group">
-              <summary className="p-5 cursor-pointer font-serif font-semibold text-jung-text hover:bg-jung-surface-alt transition-colors flex items-center justify-between">
+              <summary className="p-5 cursor-pointer font-serif font-semibold text-jung-dark hover:bg-jung-surface-alt transition-colors flex items-center justify-between">
                 <span>View Grip Patterns by Dominant Function</span>
                 <ChevronDown className="w-5 h-5 text-jung-muted group-open:rotate-180 transition-transform" />
               </summary>
@@ -533,7 +533,7 @@ export const LearnTheory: React.FC = () => {
                 { myth: '"Better types exist"', truth: 'All types have unique strengths and blind spots. No hierarchy.' }
               ].map((item, idx) => (
                 <div key={idx} className="card-elevated p-5">
-                  <h4 className="font-semibold text-jung-text mb-2">{item.myth}</h4>
+                  <h4 className="font-semibold text-jung-dark mb-2">{item.myth}</h4>
                   <p className="text-jung-muted text-sm">
                     <strong className="text-jung-accent">Actually:</strong> {item.truth}
                   </p>
@@ -576,7 +576,7 @@ export const LearnTheory: React.FC = () => {
               </BlockQuote>
 
               <div className="bg-gradient-to-r from-jung-accent/10 to-transparent rounded-xl p-6 border-l-4 border-jung-accent">
-                <h4 className="font-serif font-bold text-jung-text mb-3">Key Insight</h4>
+                <h4 className="font-serif font-bold text-jung-dark mb-3">Key Insight</h4>
                 <p className="text-jung-secondary">
                   Your lowest scores? That's your <strong>growth edge</strong>—the "treasure hard to attain" that holds
                   the key to psychological wholeness.
@@ -588,7 +588,7 @@ export const LearnTheory: React.FC = () => {
           {/* CTA Section */}
           <section className="text-center py-16 border-t border-jung-border">
             <div className="inline-block text-5xl font-serif text-jung-accent mb-6">ψ</div>
-            <h2 className="text-display text-jung-text mb-4">
+            <h2 className="text-display text-jung-dark mb-4">
               Ready to Reflect?
             </h2>
             <p className="text-body text-jung-secondary mb-8 max-w-xl mx-auto">
@@ -605,7 +605,7 @@ export const LearnTheory: React.FC = () => {
           {/* Footer */}
           <footer className="pt-12 border-t border-jung-border text-center">
             <div className="font-serif text-jung-accent text-2xl mb-3">ψ</div>
-            <p className="font-serif text-jung-text mb-2">Jungian Typology</p>
+            <p className="font-serif text-jung-dark mb-2">Jungian Typology</p>
             <p className="text-sm text-jung-muted mb-4">
               A self-exploration tool based on Jung's <em>Psychological Types</em> (1921). Not diagnostic—just reflection.
             </p>

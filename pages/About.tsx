@@ -55,7 +55,7 @@ export const About: React.FC = () => {
             <div className="flex items-start gap-4">
               <Lightbulb className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" />
               <div>
-                <h4 className="text-ui font-semibold text-jung-text mb-2">Simple Analogy</h4>
+                <h4 className="text-ui font-semibold text-jung-dark mb-2">Simple Analogy</h4>
                 <p className="text-body text-jung-secondary">
                   Typology is like a mirror showing your current "driving style" (habits). The goal isn't
                   "I'm a sedan!"—it's learning to drive better in all conditions.
@@ -117,7 +117,7 @@ export const About: React.FC = () => {
                 <item.icon className="w-5 h-5 text-jung-accent" />
               </div>
               <div>
-                <h4 className="text-ui font-semibold text-jung-text mb-1">{item.title}</h4>
+                <h4 className="text-ui font-semibold text-jung-dark mb-1">{item.title}</h4>
                 <p className="text-body text-sm text-jung-muted">{item.description}</p>
               </div>
             </div>
@@ -359,7 +359,7 @@ export const About: React.FC = () => {
             className="
               inline-flex items-center justify-center gap-2
               px-8 py-4 min-h-[56px]
-              bg-jung-card text-jung-accent text-ui font-semibold
+              bg-jung-surface text-jung-accent text-ui font-semibold
               rounded-lg border-2 border-jung-accent
               hover:bg-jung-accent/5 hover:-translate-y-0.5
               transition-all duration-200
@@ -376,7 +376,7 @@ export const About: React.FC = () => {
         <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-jung-accent/10 mb-4">
           <span className="text-jung-accent font-serif text-xl">ψ</span>
         </div>
-        <p className="text-ui font-semibold text-jung-text mb-2">Jungian Typology</p>
+        <p className="text-ui font-semibold text-jung-dark mb-2">Jungian Typology</p>
         <p className="text-body text-sm text-jung-muted mb-4 max-w-md mx-auto">
           A self-exploration tool based on Jung's <em>Psychological Types</em> (1921). Mirror for reflection—not fixed label.
         </p>

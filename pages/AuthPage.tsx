@@ -120,7 +120,7 @@ export const AuthPage: React.FC = () => {
                 flex items-center justify-center gap-2
                 ${activeTab === 'login'
                   ? 'bg-jung-accent text-white'
-                  : 'text-jung-muted hover:bg-jung-surface hover:text-jung-text'}
+                  : 'text-jung-muted hover:bg-jung-surface hover:text-jung-dark'}
               `}
             >
               <LogIn className="w-4 h-4" />
@@ -133,7 +133,7 @@ export const AuthPage: React.FC = () => {
                 flex items-center justify-center gap-2
                 ${activeTab === 'signup'
                   ? 'bg-jung-accent text-white'
-                  : 'text-jung-muted hover:bg-jung-surface hover:text-jung-text'}
+                  : 'text-jung-muted hover:bg-jung-surface hover:text-jung-dark'}
               `}
             >
               <UserPlus className="w-4 h-4" />
@@ -153,7 +153,7 @@ export const AuthPage: React.FC = () => {
             {activeTab === 'login' ? (
               <form onSubmit={handleLogin} className="space-y-5">
                 <div>
-                  <label className="block text-ui text-sm font-medium text-jung-text mb-2">
+                  <label className="block text-ui text-sm font-medium text-jung-dark mb-2">
                     Email Address
                   </label>
                   <div className="relative">
@@ -163,7 +163,7 @@ export const AuthPage: React.FC = () => {
                       value={loginForm.email}
                       onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
                       className="
-                        w-full pl-12 pr-4 py-3.5 text-body text-jung-text
+                        w-full pl-12 pr-4 py-3.5 text-body text-jung-dark
                         bg-jung-surface border border-jung-border rounded-lg
                         focus:ring-2 focus:ring-jung-accent focus:border-transparent
                         outline-none transition-all duration-200
@@ -175,7 +175,7 @@ export const AuthPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-ui text-sm font-medium text-jung-text mb-2">
+                  <label className="block text-ui text-sm font-medium text-jung-dark mb-2">
                     Password
                   </label>
                   <div className="relative">
@@ -185,7 +185,7 @@ export const AuthPage: React.FC = () => {
                       value={loginForm.password}
                       onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
                       className="
-                        w-full pl-12 pr-4 py-3.5 text-body text-jung-text
+                        w-full pl-12 pr-4 py-3.5 text-body text-jung-dark
                         bg-jung-surface border border-jung-border rounded-lg
                         focus:ring-2 focus:ring-jung-accent focus:border-transparent
                         outline-none transition-all duration-200
@@ -216,7 +216,7 @@ export const AuthPage: React.FC = () => {
               <form onSubmit={handleSignup} className="space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-ui text-sm font-medium text-jung-text mb-2">
+                    <label className="block text-ui text-sm font-medium text-jung-dark mb-2">
                       First Name
                     </label>
                     <div className="relative">
@@ -226,7 +226,7 @@ export const AuthPage: React.FC = () => {
                         value={signupForm.firstName}
                         onChange={(e) => setSignupForm({ ...signupForm, firstName: e.target.value })}
                         className="
-                          w-full pl-12 pr-4 py-3.5 text-body text-jung-text
+                          w-full pl-12 pr-4 py-3.5 text-body text-jung-dark
                           bg-jung-surface border border-jung-border rounded-lg
                           focus:ring-2 focus:ring-jung-accent focus:border-transparent
                           outline-none transition-all duration-200
@@ -237,7 +237,7 @@ export const AuthPage: React.FC = () => {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-ui text-sm font-medium text-jung-text mb-2">
+                    <label className="block text-ui text-sm font-medium text-jung-dark mb-2">
                       Last Name
                     </label>
                     <input
@@ -245,7 +245,7 @@ export const AuthPage: React.FC = () => {
                       value={signupForm.lastName}
                       onChange={(e) => setSignupForm({ ...signupForm, lastName: e.target.value })}
                       className="
-                        w-full px-4 py-3.5 text-body text-jung-text
+                        w-full px-4 py-3.5 text-body text-jung-dark
                         bg-jung-surface border border-jung-border rounded-lg
                         focus:ring-2 focus:ring-jung-accent focus:border-transparent
                         outline-none transition-all duration-200
@@ -257,7 +257,7 @@ export const AuthPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-ui text-sm font-medium text-jung-text mb-2">
+                  <label className="block text-ui text-sm font-medium text-jung-dark mb-2">
                     Email Address
                   </label>
                   <div className="relative">
@@ -267,7 +267,7 @@ export const AuthPage: React.FC = () => {
                       value={signupForm.email}
                       onChange={(e) => setSignupForm({ ...signupForm, email: e.target.value })}
                       className="
-                        w-full pl-12 pr-4 py-3.5 text-body text-jung-text
+                        w-full pl-12 pr-4 py-3.5 text-body text-jung-dark
                         bg-jung-surface border border-jung-border rounded-lg
                         focus:ring-2 focus:ring-jung-accent focus:border-transparent
                         outline-none transition-all duration-200
@@ -279,7 +279,7 @@ export const AuthPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-ui text-sm font-medium text-jung-text mb-2">
+                  <label className="block text-ui text-sm font-medium text-jung-dark mb-2">
                     Password
                   </label>
                   <div className="relative">
@@ -289,7 +289,7 @@ export const AuthPage: React.FC = () => {
                       value={signupForm.password}
                       onChange={(e) => setSignupForm({ ...signupForm, password: e.target.value })}
                       className="
-                        w-full pl-12 pr-4 py-3.5 text-body text-jung-text
+                        w-full pl-12 pr-4 py-3.5 text-body text-jung-dark
                         bg-jung-surface border border-jung-border rounded-lg
                         focus:ring-2 focus:ring-jung-accent focus:border-transparent
                         outline-none transition-all duration-200
@@ -302,7 +302,7 @@ export const AuthPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-ui text-sm font-medium text-jung-text mb-2">
+                  <label className="block text-ui text-sm font-medium text-jung-dark mb-2">
                     Confirm Password
                   </label>
                   <div className="relative">
@@ -312,7 +312,7 @@ export const AuthPage: React.FC = () => {
                       value={signupForm.confirmPassword}
                       onChange={(e) => setSignupForm({ ...signupForm, confirmPassword: e.target.value })}
                       className="
-                        w-full pl-12 pr-4 py-3.5 text-body text-jung-text
+                        w-full pl-12 pr-4 py-3.5 text-body text-jung-dark
                         bg-jung-surface border border-jung-border rounded-lg
                         focus:ring-2 focus:ring-jung-accent focus:border-transparent
                         outline-none transition-all duration-200
@@ -347,7 +347,7 @@ export const AuthPage: React.FC = () => {
                 <div className="w-full border-t border-jung-border"></div>
               </div>
               <div className="relative flex justify-center">
-                <span className="px-4 bg-jung-card text-jung-muted text-sm">or continue with</span>
+                <span className="px-4 bg-jung-surface text-jung-muted text-sm">or continue with</span>
               </div>
             </div>
 
@@ -358,8 +358,8 @@ export const AuthPage: React.FC = () => {
                 w-full flex items-center justify-center gap-3
                 py-3.5 min-h-[56px]
                 bg-jung-surface border border-jung-border rounded-lg
-                text-jung-text text-ui font-medium
-                hover:bg-jung-card hover:border-jung-accent/30
+                text-jung-dark text-ui font-medium
+                hover:bg-jung-surface hover:border-jung-accent/30
                 transition-all duration-200
               "
             >

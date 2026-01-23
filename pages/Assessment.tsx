@@ -75,7 +75,7 @@ export const Assessment: React.FC = () => {
               <p className="text-ui text-jung-muted uppercase tracking-widest">
                 Section {currentIdx + 1} of {totalPages}
               </p>
-              <h1 className="text-heading text-jung-text font-serif">
+              <h1 className="text-heading text-jung-dark font-serif">
                 Cognitive Functions Assessment
               </h1>
             </div>
@@ -171,7 +171,7 @@ export const Assessment: React.FC = () => {
                     `}>
                       {isAnswered ? <CheckCircle2 className="w-5 h-5" /> : questionNumber}
                     </span>
-                    <h3 className="text-body text-jung-text leading-relaxed font-serif flex-1">
+                    <h3 className="text-body text-jung-dark leading-relaxed font-serif flex-1">
                       {q.text}
                     </h3>
                   </div>
@@ -198,7 +198,7 @@ export const Assessment: React.FC = () => {
                             focus:outline-none focus-visible:ring-2 focus-visible:ring-jung-accent focus-visible:ring-offset-2
                             ${answers[q.id] === val
                               ? 'bg-jung-accent text-white scale-105 shadow-lg shadow-jung-accent/25'
-                              : 'bg-jung-surface-alt text-jung-muted hover:bg-jung-border hover:text-jung-text'
+                              : 'bg-jung-surface-alt text-jung-muted hover:bg-jung-border hover:text-jung-dark'
                             }
                           `}
                           aria-label={`Rate ${val} out of 5: ${scaleLabels[val - 1]}`}
@@ -269,15 +269,15 @@ export const Assessment: React.FC = () => {
             <h4 className="text-ui text-jung-muted uppercase tracking-widest mb-4">Assessment Tips</h4>
             <div className="grid sm:grid-cols-3 gap-6 text-sm text-jung-muted">
               <div>
-                <p className="font-serif text-jung-text mb-1">Be Authentic</p>
+                <p className="font-serif text-jung-dark mb-1">Be Authentic</p>
                 <p>Answer based on how you naturally think and act, not how you wish to be.</p>
               </div>
               <div>
-                <p className="font-serif text-jung-text mb-1">First Instinct</p>
+                <p className="font-serif text-jung-dark mb-1">First Instinct</p>
                 <p>Go with your gut reaction. Over-thinking often leads to less accurate results.</p>
               </div>
               <div>
-                <p className="font-serif text-jung-text mb-1">No Right Answers</p>
+                <p className="font-serif text-jung-dark mb-1">No Right Answers</p>
                 <p>There are no good or bad responses—only your honest self-reflection.</p>
               </div>
             </div>

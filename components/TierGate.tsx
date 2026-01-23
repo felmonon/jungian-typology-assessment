@@ -26,9 +26,9 @@ const TIER_INFO = {
     price: '$39',
     priceId: import.meta.env.VITE_STRIPE_MASTERY_PRICE_ID,
     icon: Crown,
-    gradient: 'from-jung-text to-jung-secondary',
-    bgLight: 'bg-jung-text/10',
-    textColor: 'text-jung-text',
+    gradient: 'from-jung-dark to-jung-secondary',
+    bgLight: 'bg-jung-dark/10',
+    textColor: 'text-jung-dark',
     features: ['AI Type Coach chatbot', 'Individuation roadmap', 'Active imagination prompts', 'Dream journaling guide', 'Shadow work exercises']
   }
 };
@@ -97,7 +97,7 @@ export const TierGate: React.FC<TierGateProps> = ({
 
       {/* Overlay with gate content */}
       <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-jung-surface/60 to-jung-surface/95">
-        <div className="bg-jung-card rounded-2xl shadow-xl border border-jung-border p-8 max-w-md mx-4 text-center">
+        <div className="bg-jung-surface rounded-2xl shadow-xl border border-jung-border p-8 max-w-md mx-4 text-center">
           {/* Icon */}
           <div className={`inline-flex items-center justify-center w-14 h-14 rounded-full mb-5 ${tierInfo.bgLight}`}>
             {isUpgrade ? (
@@ -108,7 +108,7 @@ export const TierGate: React.FC<TierGateProps> = ({
           </div>
 
           {/* Heading */}
-          <h3 className="text-xl font-serif font-bold text-jung-text mb-3">
+          <h3 className="text-xl font-serif font-bold text-jung-dark mb-3">
             {isUpgrade ? `Upgrade to ${tierInfo.name}` : `Unlock with ${tierInfo.name}`}
           </h3>
 

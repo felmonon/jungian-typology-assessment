@@ -157,7 +157,7 @@ export const Pricing: React.FC = () => {
         <div className="editorial-container relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <p className="text-ui text-jung-accent uppercase tracking-widest mb-4">Pricing</p>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-jung-text mb-6 leading-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-jung-dark mb-6 leading-tight">
               Choose Your Path to<br />Self-Understanding
             </h1>
             <p className="text-xl text-jung-secondary max-w-2xl mx-auto leading-relaxed">
@@ -174,7 +174,7 @@ export const Pricing: React.FC = () => {
             <div
               key={tier.name}
               className={`
-                relative bg-jung-card rounded-2xl p-6 sm:p-8 transition-all duration-300
+                relative bg-jung-surface rounded-2xl p-6 sm:p-8 transition-all duration-300
                 ${tier.highlighted
                   ? 'border-2 border-jung-accent shadow-xl shadow-jung-accent/10 md:-translate-y-4 md:scale-105'
                   : tier.bestValue
@@ -202,11 +202,11 @@ export const Pricing: React.FC = () => {
 
               {/* Header */}
               <div className="text-center mb-6 pt-2">
-                <h3 className="text-lg font-serif font-bold text-jung-text mb-2">
+                <h3 className="text-lg font-serif font-bold text-jung-dark mb-2">
                   {tier.name}
                 </h3>
                 <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-5xl font-serif font-bold text-jung-text">{tier.price}</span>
+                  <span className="text-5xl font-serif font-bold text-jung-dark">{tier.price}</span>
                   {tier.price !== '$0' && <span className="text-jung-muted">one-time</span>}
                 </div>
                 <p className="text-jung-secondary mt-2">{tier.tagline}</p>
@@ -228,7 +228,7 @@ export const Pricing: React.FC = () => {
                     <li key={idx} className="flex items-start gap-3">
                       <Check className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
                       <div>
-                        <span className="text-jung-text text-sm">{text}</span>
+                        <span className="text-jung-dark text-sm">{text}</span>
                         {subtext && (
                           <span className="block text-xs text-jung-muted mt-0.5">
                             {subtext}
@@ -295,7 +295,7 @@ export const Pricing: React.FC = () => {
                 <div className="w-12 h-12 rounded-full bg-jung-accent/10 flex items-center justify-center text-jung-accent mb-3">
                   {item.icon}
                 </div>
-                <h4 className="font-serif font-semibold text-jung-text mb-1">{item.title}</h4>
+                <h4 className="font-serif font-semibold text-jung-dark mb-1">{item.title}</h4>
                 <p className="text-sm text-jung-muted">{item.desc}</p>
               </div>
             ))}
@@ -307,7 +307,7 @@ export const Pricing: React.FC = () => {
       <section className="editorial-container py-20">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-display text-jung-text mb-4">
+            <h2 className="text-display text-jung-dark mb-4">
               Feature Comparison
             </h2>
             <p className="text-body text-jung-secondary">
@@ -316,7 +316,7 @@ export const Pricing: React.FC = () => {
           </div>
 
           <div className="overflow-x-auto rounded-xl border border-jung-border">
-            <table className="w-full bg-jung-card">
+            <table className="w-full bg-jung-surface">
               <thead>
                 <tr className="bg-jung-primary text-white">
                   <th className="px-6 py-4 text-left font-serif font-medium">Feature</th>
@@ -333,9 +333,9 @@ export const Pricing: React.FC = () => {
                 {COMPARISON_FEATURES.map((feature, idx) => (
                   <tr
                     key={idx}
-                    className={`border-t border-jung-border ${idx % 2 === 0 ? 'bg-jung-card' : 'bg-jung-surface-alt'}`}
+                    className={`border-t border-jung-border ${idx % 2 === 0 ? 'bg-jung-surface' : 'bg-jung-surface-alt'}`}
                   >
-                    <td className="px-6 py-3 font-medium text-jung-text">
+                    <td className="px-6 py-3 font-medium text-jung-dark">
                       {feature.name}
                     </td>
                     <td className="px-4 py-3 text-center">
@@ -372,7 +372,7 @@ export const Pricing: React.FC = () => {
         <div className="editorial-container">
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-display text-jung-text mb-4">
+              <h2 className="text-display text-jung-dark mb-4">
                 Frequently Asked Questions
               </h2>
               <p className="text-body text-jung-secondary">
@@ -390,7 +390,7 @@ export const Pricing: React.FC = () => {
                     onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
                     className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-jung-surface-alt transition-colors"
                   >
-                    <span className="font-serif font-medium text-jung-text pr-4">
+                    <span className="font-serif font-medium text-jung-dark pr-4">
                       {item.question}
                     </span>
                     {openFaq === idx ? (

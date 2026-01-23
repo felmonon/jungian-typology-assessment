@@ -68,7 +68,7 @@ export const PaywallGate: React.FC<PaywallGateProps> = ({ onUnlock }) => {
             <Lock className="w-8 h-8 text-jung-accent" />
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-jung-text mb-4">
+          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-jung-dark mb-4">
             Unlock Your Complete Analysis
           </h2>
 
@@ -82,7 +82,7 @@ export const PaywallGate: React.FC<PaywallGateProps> = ({ onUnlock }) => {
         <div className="grid md:grid-cols-2 gap-8 mb-8">
           {/* Features list */}
           <div className="space-y-3 order-2 md:order-1">
-            <h3 className="font-serif font-bold text-jung-text mb-4 flex items-center gap-2">
+            <h3 className="font-serif font-bold text-jung-dark mb-4 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-jung-accent" />
               Premium Includes:
             </h3>
@@ -111,7 +111,7 @@ export const PaywallGate: React.FC<PaywallGateProps> = ({ onUnlock }) => {
                   </div>
                   <span
                     className={`text-sm leading-relaxed ${
-                      isHighlight ? 'text-jung-text font-medium' : 'text-jung-secondary'
+                      isHighlight ? 'text-jung-dark font-medium' : 'text-jung-secondary'
                     }`}
                   >
                     {feature.text}
@@ -122,7 +122,7 @@ export const PaywallGate: React.FC<PaywallGateProps> = ({ onUnlock }) => {
           </div>
 
           {/* Pricing card */}
-          <div className="bg-jung-card rounded-2xl p-6 sm:p-8 shadow-md border border-jung-border order-1 md:order-2">
+          <div className="bg-jung-surface rounded-2xl p-6 sm:p-8 shadow-md border border-jung-border order-1 md:order-2">
             <div className="text-center">
               <p className="text-sm text-jung-muted uppercase tracking-widest mb-3 font-sans">
                 One-Time Payment
@@ -133,7 +133,7 @@ export const PaywallGate: React.FC<PaywallGateProps> = ({ onUnlock }) => {
               </div>
 
               <div className="flex items-baseline justify-center gap-1 mb-3">
-                <span className="text-5xl font-serif font-bold text-jung-text">$10</span>
+                <span className="text-5xl font-serif font-bold text-jung-dark">$10</span>
                 <span className="text-jung-muted ml-1 font-sans">CAD</span>
               </div>
 

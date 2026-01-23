@@ -17,7 +17,7 @@ export const TermsOfService: React.FC = () => {
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-jung-accent/10 mb-4">
           <FileText className="w-8 h-8 text-jung-accent" />
         </div>
-        <h1 className="text-display text-jung-text mb-4">
+        <h1 className="text-display text-jung-dark mb-4">
           Terms of Service
         </h1>
         <p className="text-jung-muted text-sm font-sans">
@@ -35,7 +35,7 @@ export const TermsOfService: React.FC = () => {
             <div className="flex-shrink-0 w-10 h-10 rounded-full bg-jung-accent/10 flex items-center justify-center">
               <FileText className="w-5 h-5 text-jung-accent" />
             </div>
-            <h2 className="text-2xl font-serif font-bold text-jung-text m-0">Service Description</h2>
+            <h2 className="text-2xl font-serif font-bold text-jung-dark m-0">Service Description</h2>
           </div>
 
           <div className="pl-14 text-jung-secondary font-body">
@@ -55,9 +55,9 @@ export const TermsOfService: React.FC = () => {
           <div className="flex items-start gap-4">
             <AlertTriangle className="w-8 h-8 flex-shrink-0 text-jung-accent mt-1" />
             <div>
-              <h2 className="text-xl font-serif font-bold text-jung-text mb-4">Important Disclaimer</h2>
+              <h2 className="text-xl font-serif font-bold text-jung-dark mb-4">Important Disclaimer</h2>
               <div className="text-jung-secondary space-y-3 font-body">
-                <p className="font-semibold text-jung-text">
+                <p className="font-semibold text-jung-dark">
                   This assessment is for educational and self-exploration purposes only.
                 </p>
                 <p>
@@ -85,26 +85,26 @@ export const TermsOfService: React.FC = () => {
             <div className="flex-shrink-0 w-10 h-10 rounded-full bg-jung-accent/10 flex items-center justify-center">
               <CreditCard className="w-5 h-5 text-jung-accent" />
             </div>
-            <h2 className="text-2xl font-serif font-bold text-jung-text m-0">Payment Terms</h2>
+            <h2 className="text-2xl font-serif font-bold text-jung-dark m-0">Payment Terms</h2>
           </div>
 
           <div className="space-y-4 pl-14">
             <div className="card-elevated rounded-2xl p-5">
-              <h3 className="font-semibold text-jung-text mb-2 font-sans">Pricing</h3>
+              <h3 className="font-semibold text-jung-dark mb-2 font-sans">Pricing</h3>
               <p className="text-jung-secondary text-sm m-0 font-body">
-                Premium access to full assessment results is available for a one-time payment of <strong className="text-jung-text">$10 USD</strong>. This is a non-recurring charge that provides lifetime access to your detailed results.
+                Premium access to full assessment results is available for a one-time payment of <strong className="text-jung-dark">$10 USD</strong>. This is a non-recurring charge that provides lifetime access to your detailed results.
               </p>
             </div>
 
             <div className="card-elevated rounded-2xl p-5">
-              <h3 className="font-semibold text-jung-text mb-2 font-sans">Refund Policy</h3>
+              <h3 className="font-semibold text-jung-dark mb-2 font-sans">Refund Policy</h3>
               <p className="text-jung-secondary text-sm m-0 font-body">
-                We offer a <strong className="text-jung-text">30-day refund policy</strong>. If you are not satisfied with your assessment results, you may request a full refund within 30 days of purchase. To request a refund, please contact us with your order details.
+                We offer a <strong className="text-jung-dark">30-day refund policy</strong>. If you are not satisfied with your assessment results, you may request a full refund within 30 days of purchase. To request a refund, please contact us with your order details.
               </p>
             </div>
 
             <div className="card-elevated rounded-2xl p-5">
-              <h3 className="font-semibold text-jung-text mb-2 font-sans">Payment Processing</h3>
+              <h3 className="font-semibold text-jung-dark mb-2 font-sans">Payment Processing</h3>
               <p className="text-jung-secondary text-sm m-0 font-body">
                 All payments are processed securely through Stripe. By making a purchase, you agree to Stripe's terms of service. We do not store your credit card information.
               </p>
@@ -117,7 +117,7 @@ export const TermsOfService: React.FC = () => {
             <div className="flex-shrink-0 w-10 h-10 rounded-full bg-jung-accent/10 flex items-center justify-center">
               <User className="w-5 h-5 text-jung-accent" />
             </div>
-            <h2 className="text-2xl font-serif font-bold text-jung-text m-0">Account Responsibilities</h2>
+            <h2 className="text-2xl font-serif font-bold text-jung-dark m-0">Account Responsibilities</h2>
           </div>
 
           <div className="pl-14 text-jung-secondary font-body">
@@ -141,7 +141,7 @@ export const TermsOfService: React.FC = () => {
             <div className="flex-shrink-0 w-10 h-10 rounded-full bg-jung-accent/10 flex items-center justify-center">
               <Scale className="w-5 h-5 text-jung-accent" />
             </div>
-            <h2 className="text-2xl font-serif font-bold text-jung-text m-0">Intellectual Property</h2>
+            <h2 className="text-2xl font-serif font-bold text-jung-dark m-0">Intellectual Property</h2>
           </div>
 
           <div className="pl-14 text-jung-secondary font-body">
@@ -168,7 +168,7 @@ export const TermsOfService: React.FC = () => {
             <div className="flex-shrink-0 w-10 h-10 rounded-full bg-jung-accent/10 flex items-center justify-center">
               <Shield className="w-5 h-5 text-jung-accent" />
             </div>
-            <h2 className="text-2xl font-serif font-bold text-jung-text m-0">Limitation of Liability</h2>
+            <h2 className="text-2xl font-serif font-bold text-jung-dark m-0">Limitation of Liability</h2>
           </div>
 
           <div className="pl-14 text-jung-secondary font-body">
@@ -193,7 +193,7 @@ export const TermsOfService: React.FC = () => {
             <div className="flex-shrink-0 w-10 h-10 rounded-full bg-jung-accent/10 flex items-center justify-center">
               <FileText className="w-5 h-5 text-jung-accent" />
             </div>
-            <h2 className="text-2xl font-serif font-bold text-jung-text m-0">Changes to Terms</h2>
+            <h2 className="text-2xl font-serif font-bold text-jung-dark m-0">Changes to Terms</h2>
           </div>
 
           <div className="pl-14 text-jung-secondary font-body">
@@ -204,7 +204,7 @@ export const TermsOfService: React.FC = () => {
         </section>
 
         <section className="mb-12 bg-jung-surface rounded-2xl p-6 border border-jung-border">
-          <h2 className="text-xl font-serif font-bold text-jung-text mb-4">Contact Us</h2>
+          <h2 className="text-xl font-serif font-bold text-jung-dark mb-4">Contact Us</h2>
           <p className="text-jung-secondary m-0 font-body">
             If you have any questions about these Terms of Service, please contact us at:
           </p>

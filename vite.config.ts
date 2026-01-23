@@ -13,6 +13,15 @@ export default defineConfig(({ mode }) => {
       build: {
         outDir: 'dist/public',
         emptyOutDir: true,
+        rollupOptions: {
+          output: {
+            manualChunks: {
+              'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+              'charts': ['recharts'],
+              'ui': ['lucide-react'],
+            }
+          }
+        }
       },
       plugins: [react()],
       define: {

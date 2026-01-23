@@ -9,7 +9,7 @@ interface SEOConfig {
   noIndex?: boolean;
 }
 
-const BASE_URL = 'https://jungiantypology.com'; // Update with your actual domain
+const BASE_URL = 'https://typejung.com';
 const DEFAULT_IMAGE = '/og-image.png';
 const SITE_NAME = 'Jungian Typology Assessment';
 

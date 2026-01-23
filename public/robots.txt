@@ -10,4 +10,4 @@ Disallow: /#/history
 Disallow: /#/results
 
 # Sitemap location
-Sitemap: https://jungiantypology.com/sitemap.xml
+Sitemap: https://typejung.com/sitemap.xml

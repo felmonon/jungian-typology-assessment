@@ -55,7 +55,11 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             >
               <div className="relative">
                 <div className="absolute inset-0 bg-jung-accent/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
-                <Activity className="relative h-6 w-6 lg:h-7 lg:w-7 text-jung-primary transition-transform group-hover:scale-110" />
+                <img
+                  src="/logo.svg"
+                  alt="Jungian Typology Logo"
+                  className="relative h-8 w-8 lg:h-10 lg:w-10 transition-transform group-hover:scale-110"
+                />
               </div>
               <span className="text-display text-lg lg:text-xl text-jung-dark">
                 Jungian<span className="text-jung-accent">Typology</span>

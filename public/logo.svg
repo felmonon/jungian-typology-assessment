@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <!-- Gradient for depth -->
+    <linearGradient id="tealGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2dd4bf;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#14b8a6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="darkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#374151;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1f2937;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background circle (optional, can be removed for transparent) -->
+  <circle cx="100" cy="100" r="95" fill="none" stroke="url(#darkGradient)" stroke-width="2"/>
+
+  <!-- Outer ring representing the Self -->
+  <circle cx="100" cy="100" r="80" fill="none" stroke="url(#tealGradient)" stroke-width="3"/>
+
+  <!-- Four quadrants representing Jung's four functions -->
+  <!-- Top - Intuition -->
+  <circle cx="100" cy="55" r="28" fill="none" stroke="url(#darkGradient)" stroke-width="2.5"/>
+  <!-- Right - Thinking -->
+  <circle cx="145" cy="100" r="28" fill="none" stroke="url(#darkGradient)" stroke-width="2.5"/>
+  <!-- Bottom - Sensation -->
+  <circle cx="100" cy="145" r="28" fill="none" stroke="url(#darkGradient)" stroke-width="2.5"/>
+  <!-- Left - Feeling -->
+  <circle cx="55" cy="100" r="28" fill="none" stroke="url(#darkGradient)" stroke-width="2.5"/>
+
+  <!-- Center circle - the Ego -->
+  <circle cx="100" cy="100" r="18" fill="url(#tealGradient)"/>
+
+  <!-- Connecting lines forming a cross -->
+  <line x1="100" y1="27" x2="100" y2="82" stroke="url(#tealGradient)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="100" y1="118" x2="100" y2="173" stroke="url(#tealGradient)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="27" y1="100" x2="82" y2="100" stroke="url(#tealGradient)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="118" y1="100" x2="173" y2="100" stroke="url(#tealGradient)" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Small dots at cardinal points -->
+  <circle cx="100" cy="27" r="4" fill="url(#tealGradient)"/>
+  <circle cx="173" cy="100" r="4" fill="url(#tealGradient)"/>
+  <circle cx="100" cy="173" r="4" fill="url(#tealGradient)"/>
+  <circle cx="27" cy="100" r="4" fill="url(#tealGradient)"/>
+</svg>

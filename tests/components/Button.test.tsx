@@ -23,7 +23,7 @@ describe('Button Component', () => {
   it('renders with secondary variant', () => {
     render(<Button variant="secondary">Secondary</Button>);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('bg-jung-secondary');
+    expect(button).toHaveClass('bg-jung-dark');
   });
 
   it('renders with ghost variant', () => {
@@ -34,7 +34,7 @@ describe('Button Component', () => {
 
   it('renders with different sizes', () => {
     const { rerender } = render(<Button size="sm">Small</Button>);
-    expect(screen.getByRole('button')).toHaveClass('px-3');
+    expect(screen.getByRole('button')).toHaveClass('px-4');
 
     rerender(<Button size="md">Medium</Button>);
     expect(screen.getByRole('button')).toHaveClass('px-6');

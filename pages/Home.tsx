@@ -7,6 +7,8 @@ import {
   ChevronDown, ChevronUp, Check, X, Clock, Shield, Star, Crown,
   Quote, ShieldCheck, ArrowUpRight, Minus
 } from 'lucide-react';
+import { useSEO, PAGE_SEO } from '../hooks/useSEO';
+import { AnalyticsEvents } from '../lib/analytics';
 
 const AI_DEMO_CONVERSATION = [
   {
@@ -78,6 +80,9 @@ export const Home: React.FC = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [showExitPopup, setShowExitPopup] = useState(false);
   const [hasShownPopup, setHasShownPopup] = useState(false);
+
+  // SEO meta tags
+  useSEO(PAGE_SEO.home);
 
   // Exit intent detection
   useEffect(() => {

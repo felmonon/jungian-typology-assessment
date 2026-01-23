@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, Link, useLocation } from 'react-router-dom';
 import { LogIn, LogOut, User, Menu, X, Trophy, BookOpen, Shield, History, ChevronRight } from 'lucide-react';
 import { useAuth } from '../../hooks/use-auth';
+import { usePageTracking } from '../../hooks/useAnalytics';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navigate = useNavigate();
@@ -9,6 +10,9 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   const { user, isLoading, isAuthenticated, logout, isLoggingOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  // Track page views for analytics
+  usePageTracking();
 
   // Track scroll for header styling
   useEffect(() => {

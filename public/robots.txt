@@ -1,0 +1,13 @@
+# Robots.txt for Jungian Typology Assessment
+
+User-agent: *
+Allow: /
+
+# Disallow admin and personal pages
+Disallow: /#/admin
+Disallow: /#/profile
+Disallow: /#/history
+Disallow: /#/results
+
+# Sitemap location
+Sitemap: https://jungiantypology.com/sitemap.xml

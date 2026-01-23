@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { AlertTriangle, FileText, Users, BookOpen, ArrowRight, Target, Lightbulb, Scale } from 'lucide-react';
+import { useSEO, PAGE_SEO } from '../hooks/useSEO';
 
 export const About: React.FC = () => {
+  useSEO(PAGE_SEO.about);
+
   return (
     <div className="editorial-container py-12 md:py-20">
       {/* Hero Header */}

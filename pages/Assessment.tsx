@@ -4,11 +4,17 @@ import { questions } from '../data/questions';
 import { calculateResults } from '../utils/scoring';
 import { Button } from '../components/ui/Button';
 import { ArrowLeft, ArrowRight, CheckCircle2, Circle } from 'lucide-react';
+import { useSEO, PAGE_SEO } from '../hooks/useSEO';
+import { useAssessmentTracking } from '../hooks/useAnalytics';
 
 export const Assessment: React.FC = () => {
   const navigate = useNavigate();
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
+  const assessmentTracking = useAssessmentTracking();
+
+  // SEO meta tags
+  useSEO(PAGE_SEO.assessment);
 
   const QUESTIONS_PER_PAGE = 4;
   const totalPages = Math.ceil(questions.length / QUESTIONS_PER_PAGE);

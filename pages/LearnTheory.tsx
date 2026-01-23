@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { BookOpen, Brain, Compass, Layers, AlertTriangle, ChevronDown, ArrowRight, Sparkles, Zap, HelpCircle, Quote, ExternalLink } from 'lucide-react';
 import { FUNCTION_DESCRIPTIONS, STACK_POSITIONS, THE_GRIP } from '../data/questions';
 import { Button } from '../components/ui/Button';
+import { useSEO, PAGE_SEO } from '../hooks/useSEO';
+import { AnalyticsEvents } from '../lib/analytics';
 
 interface AccordionItemProps {
   title: string;
@@ -65,6 +67,12 @@ const BlockQuote: React.FC<{ children: React.ReactNode; author: string }> = ({ c
 
 export const LearnTheory: React.FC = () => {
   const functionOrder = ['Te', 'Ti', 'Fe', 'Fi', 'Se', 'Si', 'Ne', 'Ni'];
+
+  // SEO and analytics
+  useSEO(PAGE_SEO.learn);
+  React.useEffect(() => {
+    AnalyticsEvents.theoryPageViewed();
+  }, []);
 
   return (
     <div className="min-h-screen bg-jung-surface">

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Check, X, ChevronDown, ChevronUp, Loader2, Sparkles, Star, Crown, ArrowRight, Shield, Clock, Zap } from 'lucide-react';
+import { useSEO, PAGE_SEO } from '../hooks/useSEO';
 
 const TIERS = [
   {
@@ -111,6 +112,9 @@ export const Pricing: React.FC = () => {
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  // SEO meta tags
+  useSEO(PAGE_SEO.pricing);
 
   const handleCheckout = async (tier: string) => {
     if (tier === 'free') {

@@ -674,7 +674,7 @@ export const Home: React.FC = () => {
             </div>
 
             {/* MASTERY Tier */}
-            <div className="card-elevated p-6 sm:p-8 bg-gradient-to-br from-jung-accent-light to-jung-surface">
+            <div className="relative card-elevated p-6 sm:p-8 bg-gradient-to-br from-jung-accent-light to-jung-surface">
               <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                 <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-jung-dark text-white text-sm font-sans font-medium rounded-full">
                   <Crown className="w-4 h-4" /> Best Value

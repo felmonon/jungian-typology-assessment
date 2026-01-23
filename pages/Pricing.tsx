@@ -168,7 +168,7 @@ export const Pricing: React.FC = () => {
       </section>
 
       {/* Pricing Cards */}
-      <section className="editorial-container pb-20 -mt-8">
+      <section className="editorial-container pb-20 -mt-8 pt-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
           {TIERS.map((tier) => (
             <div

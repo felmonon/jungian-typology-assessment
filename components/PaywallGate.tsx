@@ -57,68 +57,100 @@ export const PaywallGate: React.FC<PaywallGateProps> = ({ onUnlock }) => {
 
   return (
     <div className="relative my-12">
-      <div className="absolute -top-20 left-0 right-0 h-20 bg-gradient-to-b from-transparent to-stone-100 pointer-events-none" />
+      {/* Top gradient fade */}
+      <div className="absolute -top-20 left-0 right-0 h-20 bg-gradient-to-b from-transparent to-jung-surface pointer-events-none" />
 
-      <div className="bg-gradient-to-br from-stone-100 to-stone-200 rounded-2xl p-5 sm:p-8 md:p-12 border border-stone-300 shadow-lg">
-        <div className="text-center mb-6 sm:mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-jung-primary/10 rounded-full mb-4">
-            <Lock className="w-7 h-7 sm:w-8 sm:h-8 text-jung-primary" />
+      {/* Main container */}
+      <div className="bg-jung-surface rounded-2xl p-6 sm:p-8 md:p-12 border border-jung-border shadow-lg">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-jung-accent/10 rounded-full mb-5">
+            <Lock className="w-8 h-8 text-jung-accent" />
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-jung-dark mb-3">
+          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-jung-text mb-4">
             Unlock Your Complete Analysis
           </h2>
 
-          <p className="text-stone-600 max-w-xl mx-auto">
-            You've seen the basics. Dive deeper into your psychological type with a comprehensive analysis that reveals your archetypal patterns, stress responses, and path to individuation.
+          <p className="text-jung-secondary max-w-xl mx-auto leading-relaxed">
+            You've seen the basics. Dive deeper into your psychological type with a comprehensive
+            analysis that reveals your archetypal patterns, stress responses, and path to individuation.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mb-6 sm:mb-8">
-          <div className="space-y-2 sm:space-y-3 order-2 md:order-1">
-            <h3 className="font-bold text-jung-dark mb-3 sm:mb-4 flex items-center gap-2 text-sm sm:text-base">
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-jung-primary" />
+        {/* Two-column layout */}
+        <div className="grid md:grid-cols-2 gap-8 mb-8">
+          {/* Features list */}
+          <div className="space-y-3 order-2 md:order-1">
+            <h3 className="font-serif font-bold text-jung-text mb-4 flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-jung-accent" />
               Premium Includes:
             </h3>
             {PREMIUM_FEATURES.map((feature, i) => {
               const Icon = feature.icon;
               const isHighlight = 'highlight' in feature && feature.highlight;
               return (
-                <div key={i} className={`flex items-start gap-2 sm:gap-3 ${isHighlight ? 'bg-purple-50 p-2 rounded-lg border border-purple-200' : ''}`}>
-                  <div className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5 ${isHighlight ? 'bg-purple-100' : 'bg-emerald-100'}`}>
-                    <Icon className={`w-3 h-3 ${isHighlight ? 'text-purple-600' : 'text-emerald-600'}`} />
+                <div
+                  key={i}
+                  className={`flex items-start gap-3 ${
+                    isHighlight
+                      ? 'bg-jung-accent/5 p-3 rounded-xl border border-jung-accent/20'
+                      : ''
+                  }`}
+                >
+                  <div
+                    className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-0.5 ${
+                      isHighlight ? 'bg-jung-accent/20' : 'bg-emerald-100'
+                    }`}
+                  >
+                    <Icon
+                      className={`w-3.5 h-3.5 ${
+                        isHighlight ? 'text-jung-accent' : 'text-emerald-600'
+                      }`}
+                    />
                   </div>
-                  <span className={`text-xs sm:text-sm ${isHighlight ? 'text-purple-800 font-medium' : 'text-stone-700'}`}>{feature.text}</span>
+                  <span
+                    className={`text-sm leading-relaxed ${
+                      isHighlight ? 'text-jung-text font-medium' : 'text-jung-secondary'
+                    }`}
+                  >
+                    {feature.text}
+                  </span>
                 </div>
               );
             })}
           </div>
 
-          <div className="bg-white rounded-xl p-5 sm:p-6 shadow-sm border border-stone-200 order-1 md:order-2">
+          {/* Pricing card */}
+          <div className="bg-jung-card rounded-2xl p-6 sm:p-8 shadow-md border border-jung-border order-1 md:order-2">
             <div className="text-center">
-              <p className="text-sm text-stone-500 uppercase tracking-wide mb-2">One-Time Payment</p>
-              
+              <p className="text-sm text-jung-muted uppercase tracking-widest mb-3 font-sans">
+                One-Time Payment
+              </p>
+
               <div className="mb-2">
-                <span className="text-stone-400 line-through text-lg">$150 value</span>
-              </div>
-              
-              <div className="flex items-baseline justify-center gap-1 mb-2">
-                <span className="text-4xl sm:text-5xl font-bold text-jung-dark">$10</span>
-                <span className="text-stone-500 ml-1">CAD</span>
+                <span className="text-jung-muted line-through text-lg">$150 value</span>
               </div>
 
-              <p className="text-sm text-jung-primary font-medium mb-4">
+              <div className="flex items-baseline justify-center gap-1 mb-3">
+                <span className="text-5xl font-serif font-bold text-jung-text">$10</span>
+                <span className="text-jung-muted ml-1 font-sans">CAD</span>
+              </div>
+
+              <p className="text-sm text-jung-accent font-medium mb-4">
                 Equivalent to a 2-hour Jungian consultation
               </p>
 
-              <p className="text-sm text-stone-500 mb-6">
+              <p className="text-sm text-jung-muted mb-6">
                 Lifetime access to this assessment
               </p>
 
               <Button
                 onClick={handleUnlock}
                 disabled={isLoading}
-                className="w-full py-4 sm:py-5 text-base sm:text-lg font-bold bg-jung-primary hover:bg-jung-primary/90 shadow-md hover:shadow-lg transition-all min-h-[52px]"
+                variant="accent"
+                size="lg"
+                className="w-full"
               >
                 {isLoading ? (
                   <>
@@ -137,29 +169,30 @@ export const PaywallGate: React.FC<PaywallGateProps> = ({ onUnlock }) => {
                 <p className="mt-4 text-sm text-red-600">{error}</p>
               )}
 
-              <div className="mt-4 flex items-center justify-center gap-2 text-emerald-600">
+              <div className="mt-5 flex items-center justify-center gap-2 text-emerald-600">
                 <Shield className="w-4 h-4" />
                 <span className="text-sm font-medium">30-Day Money-Back Guarantee</span>
               </div>
 
-              <p className="mt-3 text-xs text-stone-400">
+              <p className="mt-3 text-xs text-jung-muted">
                 Secure payment powered by Stripe
               </p>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-6 text-xs text-stone-500 border-t border-stone-300 pt-6">
-          <span className="flex items-center gap-1">
+        {/* Trust badges */}
+        <div className="flex flex-wrap justify-center gap-6 text-xs text-jung-muted border-t border-jung-border pt-6">
+          <span className="flex items-center gap-2">
             <Check className="w-4 h-4 text-emerald-500" /> Instant Access
           </span>
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-2">
             <Check className="w-4 h-4 text-emerald-500" /> No Subscription
           </span>
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-2">
             <Check className="w-4 h-4 text-emerald-500" /> Secure Checkout
           </span>
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-2">
             <Shield className="w-4 h-4 text-emerald-500" /> 30-Day Guarantee
           </span>
         </div>

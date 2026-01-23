@@ -25,7 +25,7 @@ export function FormattedText({ text, className = '' }: FormattedTextProps) {
   return (
     <div className={`space-y-4 ${className}`}>
       {paragraphs.map((paragraph, index) => (
-        <p key={index} className="text-stone-700 leading-relaxed">
+        <p key={index} className="text-jung-text leading-relaxed font-body">
           {paragraph.split('\n').map((line, lineIndex, arr) => (
             <React.Fragment key={lineIndex}>
               {line}

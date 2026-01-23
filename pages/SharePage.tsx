@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 import { FUNCTION_DESCRIPTIONS } from '../data/questions';
 import { Button } from '../components/ui/Button';
-import { Brain, ArrowRight, Loader2 } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 
 interface SharedResult {
   id: string;
@@ -53,10 +53,10 @@ export const SharePage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-jung-base px-4">
+      <div className="min-h-screen flex items-center justify-center bg-jung-surface px-4">
         <div className="text-center">
-          <Loader2 className="w-10 h-10 md:w-12 md:h-12 animate-spin text-jung-primary mx-auto mb-4" />
-          <p className="text-stone-600 text-sm md:text-base">Loading shared result...</p>
+          <Loader2 className="w-10 h-10 md:w-12 md:h-12 animate-spin text-jung-accent mx-auto mb-4" />
+          <p className="text-jung-secondary text-sm md:text-base">Loading shared result...</p>
         </div>
       </div>
     );
@@ -64,11 +64,13 @@ export const SharePage: React.FC = () => {
 
   if (error || !result) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-jung-base px-4">
+      <div className="min-h-screen flex items-center justify-center bg-jung-surface px-4">
         <div className="text-center max-w-md mx-auto">
-          <Brain className="w-12 h-12 md:w-16 md:h-16 text-stone-300 mx-auto mb-4" />
-          <h1 className="text-xl md:text-2xl font-serif font-bold text-jung-dark mb-2">Result Not Found</h1>
-          <p className="text-stone-600 mb-6 text-sm md:text-base">{error || 'This shared result could not be found.'}</p>
+          <div className="w-16 h-16 rounded-full bg-jung-accent/10 flex items-center justify-center mx-auto mb-5">
+            <span className="text-3xl font-serif text-jung-accent">ψ</span>
+          </div>
+          <h1 className="text-xl md:text-2xl font-serif font-bold text-jung-text mb-3">Result Not Found</h1>
+          <p className="text-jung-secondary mb-6 text-sm md:text-base">{error || 'This shared result could not be found.'}</p>
           <Link to="/">
             <Button className="w-full sm:w-auto min-h-[48px]">Take Your Own Assessment</Button>
           </Link>
@@ -86,49 +88,55 @@ export const SharePage: React.FC = () => {
   }));
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 md:py-12">
-      <div className="text-center mb-6 md:mb-8">
-        <div className="flex items-center justify-center gap-2 md:gap-3 mb-3 md:mb-4">
-          <Brain className="w-6 h-6 md:w-8 md:h-8 text-jung-primary" />
-          <span className="text-xs md:text-sm font-bold tracking-widest uppercase text-jung-secondary">
+    <div className="editorial-container py-8 md:py-12">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-full bg-jung-accent/10 flex items-center justify-center">
+            <span className="text-xl font-serif text-jung-accent">ψ</span>
+          </div>
+          <span className="text-xs md:text-sm font-sans font-bold tracking-widest uppercase text-jung-secondary">
             Jungian Typology Assessment
           </span>
         </div>
-        <p className="text-stone-500 text-sm md:text-base">Someone shared their psychological type profile with you</p>
+        <p className="text-jung-muted text-sm md:text-base">Someone shared their psychological type profile with you</p>
       </div>
 
-      <div className="bg-gradient-to-r from-jung-primary to-jung-accent text-white p-5 md:p-8 rounded-lg mb-6 md:mb-8 shadow-lg">
+      {/* Hero card */}
+      <div className="bg-jung-text text-white p-6 md:p-10 rounded-2xl mb-8 shadow-xl">
         <div className="text-center">
-          <p className="text-xs md:text-sm uppercase tracking-widest opacity-80 mb-2">Dominant Function</p>
-          <h1 className="text-2xl md:text-4xl font-serif font-bold mb-2">
+          <p className="text-xs md:text-sm uppercase tracking-widest opacity-70 mb-3 font-sans">Dominant Function</p>
+          <h1 className="text-2xl md:text-4xl font-serif font-bold mb-3">
             {funcDescription?.title || dominantFunc} ({dominantFunc})
           </h1>
-          <p className="text-base md:text-xl opacity-90 italic max-w-2xl mx-auto">
+          <p className="text-base md:text-xl opacity-90 italic max-w-2xl mx-auto font-serif">
             "{funcDescription?.quote}"
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-8 md:mb-12">
-        <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-stone-100">
-          <h3 className="text-base md:text-lg font-bold text-jung-secondary mb-3 md:mb-4 tracking-wider uppercase text-center">
+      {/* Content grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        {/* Radar chart */}
+        <div className="card-elevated p-6 rounded-2xl">
+          <h3 className="text-sm md:text-base font-sans font-bold text-jung-secondary mb-4 tracking-widest uppercase text-center">
             Function-Attitude Energy
           </h3>
           <div className="w-full h-[280px] md:h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart cx="50%" cy="50%" outerRadius="75%" data={chartData}>
-                <PolarGrid stroke="#e7e5e4" />
-                <PolarAngleAxis 
-                  dataKey="subject" 
-                  tick={{ fill: '#451a03', fontSize: 11, fontWeight: 'bold' }} 
+                <PolarGrid stroke="#E8E4DE" />
+                <PolarAngleAxis
+                  dataKey="subject"
+                  tick={{ fill: '#3D2914', fontSize: 11, fontWeight: 'bold' }}
                 />
                 <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
                 <Radar
                   name="Score"
                   dataKey="A"
-                  stroke="#b45309"
+                  stroke="#B87333"
                   strokeWidth={2}
-                  fill="#b45309"
+                  fill="#B87333"
                   fillOpacity={0.4}
                 />
               </RadarChart>
@@ -136,50 +144,53 @@ export const SharePage: React.FC = () => {
           </div>
         </div>
 
+        {/* Function stack */}
         <div className="flex flex-col justify-center">
-          <div className="bg-white p-4 md:p-6 rounded-lg border border-stone-200 mb-4">
-            <h3 className="text-base md:text-lg font-serif font-bold text-jung-dark mb-3 md:mb-4">Function Stack</h3>
-            <div className="space-y-2 md:space-y-3">
-              <div className="flex justify-between items-center py-2 border-b border-stone-100">
-                <span className="font-medium text-jung-primary text-sm md:text-base">1. Dominant</span>
-                <span className="font-bold text-base md:text-lg">{result.stack.dominant.function}</span>
+          <div className="card-elevated p-6 rounded-2xl mb-5">
+            <h3 className="text-base md:text-lg font-serif font-bold text-jung-text mb-4">Function Stack</h3>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center py-3 border-b border-jung-border">
+                <span className="font-medium text-jung-accent text-sm md:text-base font-sans">1. Dominant</span>
+                <span className="font-serif font-bold text-base md:text-lg">{result.stack.dominant.function}</span>
               </div>
-              <div className="flex justify-between items-center py-2 border-b border-stone-100">
-                <span className="font-medium text-jung-accent text-sm md:text-base">2. Auxiliary</span>
-                <span className="font-bold text-base md:text-lg">{result.stack.auxiliary.function}</span>
+              <div className="flex justify-between items-center py-3 border-b border-jung-border">
+                <span className="font-medium text-jung-secondary text-sm md:text-base font-sans">2. Auxiliary</span>
+                <span className="font-serif font-bold text-base md:text-lg">{result.stack.auxiliary.function}</span>
               </div>
-              <div className="flex justify-between items-center py-2 border-b border-stone-100">
-                <span className="font-medium text-stone-500 text-sm md:text-base">3. Tertiary</span>
-                <span className="font-bold text-base md:text-lg">{result.stack.tertiary.function}</span>
+              <div className="flex justify-between items-center py-3 border-b border-jung-border">
+                <span className="font-medium text-jung-muted text-sm md:text-base font-sans">3. Tertiary</span>
+                <span className="font-serif font-bold text-base md:text-lg">{result.stack.tertiary.function}</span>
               </div>
-              <div className="flex justify-between items-center py-2">
-                <span className="font-medium text-stone-400 text-sm md:text-base">4. Inferior</span>
-                <span className="font-bold text-base md:text-lg">{result.stack.inferior.function}</span>
+              <div className="flex justify-between items-center py-3">
+                <span className="font-medium text-jung-muted/70 text-sm md:text-base font-sans">4. Inferior</span>
+                <span className="font-serif font-bold text-base md:text-lg text-jung-muted">{result.stack.inferior.function}</span>
               </div>
             </div>
           </div>
 
-          <p className="text-xs md:text-sm text-stone-500 italic text-center">
+          <p className="text-xs md:text-sm text-jung-muted italic text-center font-serif">
             {funcDescription?.desc?.slice(0, 200)}...
           </p>
         </div>
       </div>
 
-      <div className="bg-stone-100 rounded-xl p-5 md:p-8 text-center">
-        <h2 className="text-xl md:text-2xl font-serif font-bold text-jung-dark mb-2 md:mb-3">
+      {/* CTA section */}
+      <div className="bg-jung-surface rounded-2xl p-6 md:p-10 text-center border border-jung-border">
+        <h2 className="text-xl md:text-2xl font-serif font-bold text-jung-text mb-3">
           Discover Your Own Psychological Type
         </h2>
-        <p className="text-stone-600 mb-5 md:mb-6 max-w-xl mx-auto text-sm md:text-base">
+        <p className="text-jung-secondary mb-6 max-w-xl mx-auto text-sm md:text-base">
           Take the Jungian Typology Assessment to uncover your dominant cognitive functions and receive a personalized analysis based on Carl Jung's theory of psychological types.
         </p>
         <Link to="/assessment">
-          <Button size="lg" className="w-full sm:w-auto min-h-[48px]">
+          <Button variant="accent" size="lg" className="w-full sm:w-auto min-h-[48px]">
             Take Your Own Assessment <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
         </Link>
       </div>
 
-      <div className="text-center text-xs text-stone-400 mt-6 md:mt-8 pt-5 md:pt-6 border-t border-stone-200">
+      {/* Footer */}
+      <div className="text-center text-xs text-jung-muted mt-8 pt-6 border-t border-jung-border">
         <p>Based on the typological work of Carl Gustav Jung (Psychological Types, CW Vol. 6)</p>
       </div>
     </div>

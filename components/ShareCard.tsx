@@ -1,7 +1,6 @@
 import React from 'react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer } from 'recharts';
 import { FUNCTION_DESCRIPTIONS } from '../data/questions';
-import { Brain } from 'lucide-react';
 
 interface ShareCardProps {
   dominantFunction: string;
@@ -24,70 +23,146 @@ export const ShareCard: React.FC<ShareCardProps> = ({ dominantFunction, scores, 
   const funcDescription = FUNCTION_DESCRIPTIONS[dominantFunction];
 
   return (
-    <div 
-      className="bg-gradient-to-br from-stone-50 to-stone-100 border-2 border-stone-200 rounded-xl overflow-hidden shadow-xl"
-      style={{ width: '1200px', height: '630px' }}
+    <div
+      className="overflow-hidden"
+      style={{
+        width: '1200px',
+        height: '630px',
+        background: 'linear-gradient(135deg, #FAF9F7 0%, #F5F3F0 50%, #EBE8E3 100%)',
+        fontFamily: '"Source Serif 4", Georgia, serif'
+      }}
     >
       <div className="h-full flex">
-        <div className="flex-1 p-10 flex flex-col justify-between">
+        {/* Left content area */}
+        <div className="flex-1 p-10 flex flex-col justify-between border-r border-[#E8E4DE]">
           <div>
-            <div className="flex items-center gap-3 mb-6">
-              <Brain className="w-8 h-8 text-jung-primary" />
-              <span className="text-sm font-bold tracking-widest uppercase text-jung-secondary">
+            {/* Logo/Brand */}
+            <div className="flex items-center gap-3 mb-8">
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center"
+                style={{ background: 'linear-gradient(135deg, #B87333 0%, #9A6229 100%)' }}
+              >
+                <span className="text-white text-xl" style={{ fontFamily: '"Playfair Display", serif' }}>ψ</span>
+              </div>
+              <span
+                className="text-sm font-semibold tracking-[0.2em] uppercase"
+                style={{ color: '#5C4033', fontFamily: '"DM Sans", sans-serif' }}
+              >
                 Jungian Typology Assessment
               </span>
             </div>
-            
-            <div className="mb-6">
-              <p className="text-sm uppercase tracking-widest text-jung-accent mb-2">Dominant Function</p>
-              <h1 className="text-5xl font-serif font-bold text-jung-dark mb-3">
+
+            {/* Main content */}
+            <div className="mb-8">
+              <p
+                className="text-sm uppercase tracking-[0.25em] mb-3"
+                style={{ color: '#B87333', fontFamily: '"DM Sans", sans-serif' }}
+              >
+                Dominant Function
+              </p>
+              <h1
+                className="text-5xl font-bold mb-4 leading-tight"
+                style={{ color: '#3D2914', fontFamily: '"Playfair Display", serif' }}
+              >
                 {funcDescription?.title || dominantFunction}
               </h1>
-              <p className="text-2xl font-mono font-bold text-jung-primary mb-4">({dominantFunction})</p>
-              <p className="text-lg text-stone-600 italic leading-relaxed max-w-xl">
+              <p
+                className="text-2xl font-bold mb-5"
+                style={{ color: '#B87333', fontFamily: '"DM Sans", sans-serif' }}
+              >
+                ({dominantFunction})
+              </p>
+              <p
+                className="text-lg italic leading-relaxed max-w-xl"
+                style={{ color: '#5C4033' }}
+              >
                 "{funcDescription?.quote}"
               </p>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg p-4 border border-stone-200">
-            <p className="text-xs uppercase tracking-widest text-stone-500 mb-3">Function Stack</p>
+          {/* Function stack */}
+          <div
+            className="rounded-xl p-5 border"
+            style={{ backgroundColor: '#FFFFFF', borderColor: '#E8E4DE' }}
+          >
+            <p
+              className="text-xs uppercase tracking-[0.2em] mb-4"
+              style={{ color: '#8B7355', fontFamily: '"DM Sans", sans-serif' }}
+            >
+              Function Stack
+            </p>
             <div className="grid grid-cols-4 gap-4">
               <div className="text-center">
-                <div className="text-xs text-jung-primary font-bold mb-1">Dominant</div>
-                <div className="text-lg font-bold text-jung-dark">{stack.dominant.function}</div>
+                <div
+                  className="text-xs font-bold mb-1"
+                  style={{ color: '#B87333', fontFamily: '"DM Sans", sans-serif' }}
+                >
+                  Dominant
+                </div>
+                <div className="text-lg font-bold" style={{ color: '#3D2914' }}>
+                  {stack.dominant.function}
+                </div>
               </div>
               <div className="text-center">
-                <div className="text-xs text-jung-accent font-bold mb-1">Auxiliary</div>
-                <div className="text-lg font-bold text-jung-dark">{stack.auxiliary.function}</div>
+                <div
+                  className="text-xs font-bold mb-1"
+                  style={{ color: '#C48542', fontFamily: '"DM Sans", sans-serif' }}
+                >
+                  Auxiliary
+                </div>
+                <div className="text-lg font-bold" style={{ color: '#3D2914' }}>
+                  {stack.auxiliary.function}
+                </div>
               </div>
               <div className="text-center">
-                <div className="text-xs text-stone-500 font-bold mb-1">Tertiary</div>
-                <div className="text-lg font-bold text-stone-600">{stack.tertiary.function}</div>
+                <div
+                  className="text-xs font-bold mb-1"
+                  style={{ color: '#8B7355', fontFamily: '"DM Sans", sans-serif' }}
+                >
+                  Tertiary
+                </div>
+                <div className="text-lg font-bold" style={{ color: '#5C4033' }}>
+                  {stack.tertiary.function}
+                </div>
               </div>
               <div className="text-center">
-                <div className="text-xs text-stone-400 font-bold mb-1">Inferior</div>
-                <div className="text-lg font-bold text-stone-500">{stack.inferior.function}</div>
+                <div
+                  className="text-xs font-bold mb-1"
+                  style={{ color: '#A39585', fontFamily: '"DM Sans", sans-serif' }}
+                >
+                  Inferior
+                </div>
+                <div className="text-lg font-bold" style={{ color: '#8B7355' }}>
+                  {stack.inferior.function}
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="w-[400px] bg-gradient-to-br from-jung-primary to-jung-accent flex items-center justify-center p-6">
-          <div className="bg-white/10 backdrop-blur rounded-xl p-4 w-full h-full flex items-center justify-center">
+        {/* Right chart area */}
+        <div
+          className="w-[400px] flex items-center justify-center p-6"
+          style={{ background: 'linear-gradient(135deg, #3D2914 0%, #5C4033 100%)' }}
+        >
+          <div
+            className="rounded-xl p-4 w-full h-full flex items-center justify-center"
+            style={{ backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
+          >
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart cx="50%" cy="50%" outerRadius="75%" data={chartData}>
-                <PolarGrid stroke="rgba(255,255,255,0.3)" />
-                <PolarAngleAxis 
-                  dataKey="subject" 
-                  tick={{ fill: '#ffffff', fontSize: 14, fontWeight: 'bold' }} 
+                <PolarGrid stroke="rgba(255, 255, 255, 0.2)" />
+                <PolarAngleAxis
+                  dataKey="subject"
+                  tick={{ fill: '#FFFFFF', fontSize: 14, fontWeight: 'bold' }}
                 />
                 <Radar
                   name="Score"
                   dataKey="A"
-                  stroke="#ffffff"
+                  stroke="#B87333"
                   strokeWidth={3}
-                  fill="#ffffff"
+                  fill="#B87333"
                   fillOpacity={0.3}
                 />
               </RadarChart>

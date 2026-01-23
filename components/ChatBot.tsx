@@ -61,16 +61,16 @@ export const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.error || 'Failed to get response');
       }
 
       setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
     } catch (error: any) {
-      setMessages(prev => [...prev, { 
-        role: 'assistant', 
-        content: 'Sorry, I had trouble responding. Please try again.' 
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: 'Sorry, I had trouble responding. Please try again.'
       }]);
     } finally {
       setIsLoading(false);
@@ -93,38 +93,45 @@ export const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
 
   return (
     <>
+      {/* Floating button when closed */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-5 py-4 rounded-full shadow-lg transition-all hover:scale-105"
+          className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-jung-text hover:bg-jung-secondary text-white px-6 py-4 rounded-full shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl min-h-[56px]"
         >
           <MessageCircle className="w-5 h-5" />
-          <span className="font-medium">Ask Your Type Coach</span>
+          <span className="font-sans font-medium tracking-wide">Ask Your Type Coach</span>
         </button>
       )}
 
+      {/* Chat panel when open */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 w-[360px] sm:w-[400px] max-h-[600px] bg-white rounded-2xl shadow-2xl border border-stone-200 flex flex-col overflow-hidden">
-          <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-4 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5" />
+        <div className="fixed bottom-6 right-6 z-50 w-[360px] sm:w-[400px] max-h-[600px] bg-jung-card rounded-2xl shadow-2xl border border-jung-border flex flex-col overflow-hidden">
+          {/* Header */}
+          <div className="bg-jung-text text-white p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-jung-accent" />
+              </div>
               <div>
-                <h3 className="font-bold">Jungian Type Coach</h3>
-                <p className="text-xs opacity-80">Ask about your type and growth</p>
+                <h3 className="font-serif font-bold text-lg">Jungian Type Coach</h3>
+                <p className="text-xs text-white/70 font-sans">Ask about your type and growth</p>
               </div>
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="p-1.5 hover:bg-white/20 rounded-lg transition-colors"
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              aria-label="Close chat"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[300px] max-h-[400px] bg-stone-50">
+          {/* Messages area */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[300px] max-h-[400px] bg-jung-surface">
             {messages.length === 0 && (
-              <div className="space-y-3">
-                <p className="text-stone-600 text-sm text-center">
+              <div className="space-y-4">
+                <p className="text-jung-secondary text-sm text-center font-serif italic">
                   Ask me anything about your cognitive functions and how to grow.
                 </p>
                 <div className="space-y-2">
@@ -135,7 +142,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
                         setInput(q);
                         inputRef.current?.focus();
                       }}
-                      className="w-full text-left text-sm p-3 bg-white rounded-lg border border-stone-200 hover:border-purple-300 hover:bg-purple-50 transition-colors"
+                      className="w-full text-left text-sm p-3 bg-jung-card rounded-xl border border-jung-border hover:border-jung-accent hover:bg-jung-accent/5 transition-all duration-200 text-jung-text font-sans"
                     >
                       {q}
                     </button>
@@ -150,10 +157,10 @@ export const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[85%] p-3 rounded-2xl text-sm leading-relaxed ${
+                  className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed ${
                     msg.role === 'user'
-                      ? 'bg-purple-600 text-white rounded-br-md'
-                      : 'bg-white border border-stone-200 text-stone-700 rounded-bl-md'
+                      ? 'bg-jung-text text-white rounded-br-md'
+                      : 'bg-jung-card border border-jung-border text-jung-text rounded-bl-md shadow-sm'
                   }`}
                 >
                   {msg.content}
@@ -163,8 +170,8 @@ export const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
 
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-white border border-stone-200 p-3 rounded-2xl rounded-bl-md">
-                  <Loader2 className="w-5 h-5 animate-spin text-purple-500" />
+                <div className="bg-jung-card border border-jung-border p-4 rounded-2xl rounded-bl-md shadow-sm">
+                  <Loader2 className="w-5 h-5 animate-spin text-jung-accent" />
                 </div>
               </div>
             )}
@@ -172,8 +179,9 @@ export const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
             <div ref={messagesEndRef} />
           </div>
 
-          <div className="p-3 border-t border-stone-200 bg-white">
-            <div className="flex gap-2">
+          {/* Input area */}
+          <div className="p-4 border-t border-jung-border bg-jung-card">
+            <div className="flex gap-3">
               <input
                 ref={inputRef}
                 type="text"
@@ -181,13 +189,14 @@ export const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Ask about your type..."
-                className="flex-1 px-4 py-3 rounded-full border border-stone-300 focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100 text-sm"
+                className="flex-1 px-4 py-3 rounded-full border border-jung-border bg-jung-surface focus:outline-none focus:border-jung-accent focus:ring-2 focus:ring-jung-accent/20 text-sm text-jung-text placeholder:text-jung-muted font-sans transition-all duration-200"
                 disabled={isLoading}
               />
               <button
                 onClick={sendMessage}
                 disabled={!input.trim() || isLoading}
-                className="p-3 bg-purple-600 text-white rounded-full hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="p-3 bg-jung-accent text-white rounded-full hover:bg-jung-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 min-w-[48px] min-h-[48px] flex items-center justify-center"
+                aria-label="Send message"
               >
                 <Send className="w-5 h-5" />
               </button>

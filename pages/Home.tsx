@@ -78,16 +78,6 @@ export const Home: React.FC = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [showExitPopup, setShowExitPopup] = useState(false);
   const [hasShownPopup, setHasShownPopup] = useState(false);
-  const [showStickyHeader, setShowStickyHeader] = useState(false);
-
-  // Sticky header on scroll
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowStickyHeader(window.scrollY > 600);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // Exit intent detection
   useEffect(() => {
@@ -127,30 +117,6 @@ export const Home: React.FC = () => {
 
   return (
     <div className="flex flex-col">
-      {/* Sticky CTA Header */}
-      <div
-        className={`fixed top-0 left-0 right-0 z-50 bg-jung-surface/98 backdrop-blur-md border-b border-jung-border shadow-sm transition-all duration-300 ${
-          showStickyHeader ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
-        }`}
-      >
-        <div className="editorial-container py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Activity className="w-5 h-5 text-jung-accent" />
-            <span className="text-display text-base text-jung-dark hidden sm:inline">
-              Jungian<span className="text-jung-accent">Typology</span>
-            </span>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-sm font-sans text-jung-muted hidden md:inline">
-              Free · 15 min · No signup
-            </span>
-            <Button size="sm" onClick={() => navigate('/assessment')}>
-              Start Assessment <ArrowRight className="ml-1.5 w-4 h-4" />
-            </Button>
-          </div>
-        </div>
-      </div>
-
       {/* Hero Section - Editorial Style */}
       <section className="relative min-h-[90vh] flex items-center overflow-hidden">
         {/* Subtle background texture */}

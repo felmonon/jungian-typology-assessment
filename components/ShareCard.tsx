@@ -38,12 +38,7 @@ export const ShareCard: React.FC<ShareCardProps> = ({ dominantFunction, scores, 
           <div>
             {/* Logo/Brand */}
             <div className="flex items-center gap-3 mb-8">
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #B87333 0%, #9A6229 100%)' }}
-              >
-                <span className="text-white text-xl" style={{ fontFamily: '"Playfair Display", serif' }}>ψ</span>
-              </div>
+              <img src="/logo.svg" alt="" className="w-10 h-10" />
               <span
                 className="text-sm font-semibold tracking-[0.2em] uppercase"
                 style={{ color: '#5C4033', fontFamily: '"DM Sans", sans-serif' }}

@@ -92,9 +92,7 @@ export const SharePage: React.FC = () => {
       {/* Header */}
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-jung-accent/10 flex items-center justify-center">
-            <span className="text-xl font-serif text-jung-accent">ψ</span>
-          </div>
+          <img src="/logo.svg" alt="Jungian Typology" className="w-10 h-10" />
           <span className="text-xs md:text-sm font-sans font-bold tracking-widest uppercase text-jung-secondary">
             Jungian Typology Assessment
           </span>

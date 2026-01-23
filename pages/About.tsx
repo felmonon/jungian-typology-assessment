@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Activity, AlertTriangle, FileText, Users, BookOpen, ArrowRight, Target, Lightbulb, Scale } from 'lucide-react';
+import { AlertTriangle, FileText, Users, BookOpen, ArrowRight, Target, Lightbulb, Scale } from 'lucide-react';
 
 export const About: React.FC = () => {
   return (
@@ -8,8 +8,7 @@ export const About: React.FC = () => {
       {/* Hero Header */}
       <header className="mb-16 md:mb-20 text-center">
         <div className="inline-flex items-center gap-3 mb-6">
-          <span className="text-jung-accent font-serif text-5xl">ψ</span>
-          <Activity className="w-7 h-7 text-jung-accent" />
+          <img src="/logo.svg" alt="Jungian Typology" className="w-12 h-12" />
         </div>
         <h1 className="text-display text-4xl sm:text-5xl md:text-6xl mb-6 max-w-3xl mx-auto">
           About This Assessment
@@ -99,7 +98,7 @@ export const About: React.FC = () => {
               description: 'Singer-Loomis method: All 8 processes scored separately on scales.'
             },
             {
-              icon: Activity,
+              icon: Scale,
               title: 'Nuanced Results',
               description: 'You might be high in both logical organization (Te) and personal values (Fi)—real life isn\'t black/white.'
             },
@@ -373,9 +372,7 @@ export const About: React.FC = () => {
 
       {/* Footer */}
       <footer className="mt-12 pt-10 border-t border-jung-border text-center">
-        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-jung-accent/10 mb-4">
-          <span className="text-jung-accent font-serif text-xl">ψ</span>
-        </div>
+        <img src="/logo.svg" alt="Jungian Typology" className="w-12 h-12 mx-auto mb-4" />
         <p className="text-ui font-semibold text-jung-dark mb-2">Jungian Typology</p>
         <p className="text-body text-sm text-jung-muted mb-4 max-w-md mx-auto">
           A self-exploration tool based on Jung's <em>Psychological Types</em> (1921). Mirror for reflection—not fixed label.

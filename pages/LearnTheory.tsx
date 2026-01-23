@@ -604,7 +604,7 @@ export const LearnTheory: React.FC = () => {
 
           {/* Footer */}
           <footer className="pt-12 border-t border-jung-border text-center">
-            <div className="font-serif text-jung-accent text-2xl mb-3">ψ</div>
+            <img src="/logo.svg" alt="Jungian Typology" className="w-12 h-12 mx-auto mb-3" />
             <p className="font-serif text-jung-dark mb-2">Jungian Typology</p>
             <p className="text-sm text-jung-muted mb-4">
               A self-exploration tool based on Jung's <em>Psychological Types</em> (1921). Not diagnostic—just reflection.

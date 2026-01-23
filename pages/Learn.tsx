@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, Compass, Layers, Activity, ArrowRight } from 'lucide-react';
+import { BookOpen, Compass, Layers, ArrowRight } from 'lucide-react';
 
 export const Learn: React.FC = () => {
   return (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, Link, useLocation } from 'react-router-dom';
-import { Activity, LogIn, LogOut, User, Menu, X, Trophy, BookOpen, Shield, History, ChevronRight } from 'lucide-react';
+import { LogIn, LogOut, User, Menu, X, Trophy, BookOpen, Shield, History, ChevronRight } from 'lucide-react';
 import { useAuth } from '../../hooks/use-auth';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -366,8 +366,8 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
             {/* Brand */}
             <div className="lg:col-span-1">
-              <Link to="/" className="flex items-center gap-2 mb-4">
-                <Activity className="h-6 w-6 text-jung-accent" />
+              <Link to="/" className="flex items-center gap-2.5 mb-4">
+                <img src="/logo.svg" alt="Jungian Typology Logo" className="h-8 w-8" />
                 <span className="text-display text-lg text-white">
                   Jungian<span className="text-jung-accent">Typology</span>
                 </span>

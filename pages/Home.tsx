@@ -155,36 +155,65 @@ export const Home: React.FC = () => {
         </div>
       </div>
 
-      {/* Hero Section */}
-      <section className="w-full bg-stone-100 py-12 sm:py-16 md:py-20 px-4 text-center border-b border-stone-200">
-        <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
-          {/* Social Proof Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-jung-primary/10 rounded-full text-jung-primary text-sm font-medium">
+      {/* Hero Section - Enhanced with Pencil-inspired design */}
+      <section className="w-full relative overflow-hidden bg-gradient-to-b from-stone-50 via-stone-100 to-amber-50/30 py-16 sm:py-20 md:py-28 px-4 text-center border-b border-stone-200">
+        {/* Decorative background elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Subtle dot grid */}
+          <div className="absolute inset-0 opacity-[0.03]" style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, #451a03 1px, transparent 0)`,
+            backgroundSize: '32px 32px'
+          }} />
+          {/* Glowing orbs */}
+          <div className="absolute top-20 left-[15%] w-72 h-72 bg-amber-200/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }} />
+          <div className="absolute bottom-32 right-[10%] w-96 h-96 bg-jung-primary/10 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '6s' }} />
+          {/* Concentric circles */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] border border-stone-200/40 rounded-full" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] border border-stone-200/30 rounded-full" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] border border-amber-200/20 rounded-full" />
+        </div>
+
+        <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8 relative z-10">
+          {/* Social Proof Badge - Enhanced */}
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/80 backdrop-blur-sm rounded-full text-jung-primary text-sm font-medium border border-stone-200/50 shadow-sm hover:shadow-md transition-shadow">
             <Users className="w-4 h-4" />
             <span>Based on <strong>Singer-Loomis</strong> validated methodology since 1980</span>
           </div>
 
-          <div className="inline-block p-3 rounded-full bg-jung-primary/5 mb-2 sm:mb-4">
-             <Compass className="w-10 h-10 sm:w-12 sm:h-12 text-jung-primary" />
+          {/* Compass Icon with glow effect */}
+          <div className="inline-flex items-center justify-center relative">
+            <div className="absolute inset-0 bg-amber-400/20 rounded-full blur-2xl scale-[2]" />
+            <div className="relative p-4 sm:p-5 rounded-full bg-gradient-to-br from-jung-primary to-jung-accent shadow-xl shadow-amber-900/20">
+              <Compass className="w-8 h-8 sm:w-10 sm:h-10 text-white" strokeWidth={1.5} />
+            </div>
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif text-jung-dark font-medium leading-tight">
-            Who are you, <span className="italic text-jung-accent">really</span>?
+
+          {/* Main Heading with gradient */}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif text-jung-dark font-medium leading-[1.1] tracking-tight">
+            Who are you,<br className="sm:hidden" />
+            <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-jung-primary via-jung-accent to-amber-500"> really</span>?
           </h1>
-          <p className="text-lg sm:text-xl text-stone-600 max-w-2xl mx-auto leading-relaxed px-2">
-            In just 15 minutes, see why you've gotten different results on every personality test. We measure all 8 cognitive functions independently—revealing your true psychological profile, not a 4-letter box.
+
+          {/* Subheading */}
+          <p className="text-lg sm:text-xl md:text-2xl text-stone-500 max-w-2xl mx-auto leading-relaxed px-2 font-light">
+            In just 15 minutes, discover why you've gotten different results on every personality test. We measure all 8 cognitive functions independently.
           </p>
-          <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" onClick={() => navigate('/assessment')}>
-              See My Cognitive Profile — Free <ArrowRight className="ml-2 w-4 h-4" />
+
+          {/* CTA Buttons - Enhanced */}
+          <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button size="lg" onClick={() => navigate('/assessment')} className="group shadow-lg shadow-amber-900/15 hover:shadow-xl hover:shadow-amber-900/25 transition-all duration-300 hover:-translate-y-0.5">
+              See My Cognitive Profile — Free <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button variant="outline" size="lg" onClick={() => navigate('/learn')}>
+            <Button variant="outline" size="lg" onClick={() => navigate('/learn')} className="backdrop-blur-sm bg-white/60 hover:bg-white/80 transition-all">
               Learn the Theory
             </Button>
           </div>
-          <p className="text-stone-500 text-sm flex items-center justify-center gap-4 flex-wrap">
-            <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> ~15 minutes</span>
-            <span className="flex items-center gap-1"><Shield className="w-4 h-4" /> No signup required</span>
-            <span className="flex items-center gap-1"><Zap className="w-4 h-4" /> Instant results</span>
+
+          {/* Trust indicators - Enhanced */}
+          <p className="text-stone-400 text-sm flex items-center justify-center gap-6 flex-wrap pt-2">
+            <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-stone-400" /> ~15 minutes</span>
+            <span className="flex items-center gap-1.5"><Shield className="w-4 h-4 text-stone-400" /> No signup required</span>
+            <span className="flex items-center gap-1.5"><Zap className="w-4 h-4 text-stone-400" /> Instant results</span>
           </p>
 
           {/* Results Preview */}
@@ -631,114 +660,133 @@ export const Home: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            {/* FREE Tier */}
-            <div className="bg-stone-50 rounded-2xl p-6 sm:p-8 border border-stone-200">
-              <div className="text-center mb-6">
-                <h3 className="text-xl font-serif font-bold text-jung-dark mb-1">FREE</h3>
-                <div className="text-3xl font-bold text-jung-dark mb-2">$0</div>
-                <p className="text-stone-600 text-sm">See Your Profile</p>
+            {/* FREE Tier - Enhanced */}
+            <div className="group relative bg-white rounded-2xl p-6 sm:p-8 border border-stone-200 hover:border-stone-300 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+              <div className="absolute inset-0 bg-gradient-to-b from-stone-50 to-white rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative">
+                <div className="text-center mb-6">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-stone-100 mb-4">
+                    <Compass className="w-6 h-6 text-stone-500" />
+                  </div>
+                  <h3 className="text-xl font-serif font-bold text-jung-dark mb-1">FREE</h3>
+                  <div className="text-4xl font-bold text-jung-dark mb-2">$0</div>
+                  <p className="text-stone-500 text-sm">See Your Profile</p>
+                </div>
+                <ul className="space-y-3 mb-6">
+                  <li className="flex items-start gap-3">
+                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span className="text-stone-600">132-question assessment</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span className="text-stone-600">Radar chart visualization</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span className="text-stone-600">Basic AI insight</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span className="text-stone-600">Shareable results</span>
+                  </li>
+                </ul>
+                <Button
+                  variant="outline"
+                  className="w-full py-3 group-hover:bg-stone-50 transition-colors"
+                  onClick={() => navigate('/assessment')}
+                >
+                  Take Free Assessment <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
               </div>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-stone-700">132-question assessment</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-stone-700">Radar chart visualization</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-stone-700">Basic AI insight</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-stone-700">Shareable results</span>
-                </li>
-              </ul>
-              <Button 
-                variant="outline" 
-                className="w-full py-3"
-                onClick={() => navigate('/assessment')}
-              >
-                Take Free Assessment <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
             </div>
 
-            {/* INSIGHT Tier - Highlighted */}
-            <div className="relative bg-gradient-to-br from-jung-primary/5 to-jung-accent/5 rounded-2xl p-6 sm:p-8 border-2 border-jung-primary shadow-xl md:-translate-y-2 md:scale-105">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full text-sm font-semibold flex items-center gap-1.5 bg-jung-primary text-white">
-                <Star className="w-4 h-4" />
-                Most Popular
+            {/* INSIGHT Tier - Enhanced & Highlighted */}
+            <div className="group relative rounded-2xl p-6 sm:p-8 md:-translate-y-3 md:scale-[1.02] transition-all duration-300 hover:-translate-y-4 hover:scale-[1.03]">
+              {/* Glow effect */}
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-jung-primary via-jung-accent to-jung-primary rounded-2xl opacity-75 blur group-hover:opacity-100 transition-opacity" />
+              <div className="relative bg-white rounded-2xl p-6 sm:p-8 h-full">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full text-sm font-semibold flex items-center gap-2 bg-gradient-to-r from-jung-primary to-jung-accent text-white shadow-lg">
+                  <Star className="w-4 h-4" />
+                  Most Popular
+                </div>
+                <div className="text-center mb-6 pt-2">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-jung-primary/10 mb-4">
+                    <Brain className="w-6 h-6 text-jung-primary" />
+                  </div>
+                  <h3 className="text-xl font-serif font-bold text-jung-dark mb-1">INSIGHT</h3>
+                  <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-jung-primary to-jung-accent mb-2">$19</div>
+                  <p className="text-stone-500 text-sm">Understand What It Means</p>
+                </div>
+                <ul className="space-y-3 mb-6">
+                  <li className="flex items-start gap-3">
+                    <Check className="w-5 h-5 text-jung-primary flex-shrink-0 mt-0.5" />
+                    <span className="text-stone-700 font-medium">25-page PDF report</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Check className="w-5 h-5 text-jung-primary flex-shrink-0 mt-0.5" />
+                    <span className="text-stone-700 font-medium">Full 8-function analysis</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Check className="w-5 h-5 text-jung-primary flex-shrink-0 mt-0.5" />
+                    <span className="text-stone-700 font-medium">Relationship insights</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Check className="w-5 h-5 text-jung-primary flex-shrink-0 mt-0.5" />
+                    <span className="text-stone-700 font-medium">Career alignment guide</span>
+                  </li>
+                </ul>
+                <Button
+                  className="w-full py-3 bg-gradient-to-r from-jung-primary to-jung-accent hover:opacity-90 shadow-lg shadow-jung-primary/25 transition-all"
+                  onClick={() => navigate('/pricing')}
+                >
+                  Get Insight
+                </Button>
+                <p className="text-center text-xs text-stone-400 mt-3">One-time payment</p>
               </div>
-              <div className="text-center mb-6">
-                <h3 className="text-xl font-serif font-bold text-jung-dark mb-1">INSIGHT</h3>
-                <div className="text-3xl font-bold text-jung-primary mb-2">$19</div>
-                <p className="text-stone-600 text-sm">Understand What It Means</p>
-              </div>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-jung-primary flex-shrink-0 mt-0.5" />
-                  <span className="text-stone-700">25-page PDF report</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-jung-primary flex-shrink-0 mt-0.5" />
-                  <span className="text-stone-700">Full 8-function analysis</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-jung-primary flex-shrink-0 mt-0.5" />
-                  <span className="text-stone-700">Relationship insights</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-jung-primary flex-shrink-0 mt-0.5" />
-                  <span className="text-stone-700">Career alignment guide</span>
-                </li>
-              </ul>
-              <Button 
-                className="w-full py-3 bg-jung-primary hover:bg-jung-primary/90"
-                onClick={() => navigate('/pricing')}
-              >
-                Get Insight
-              </Button>
-              <p className="text-center text-xs text-stone-500 mt-3">One-time payment</p>
             </div>
 
-            {/* MASTERY Tier */}
-            <div className="relative bg-gradient-to-br from-jung-accent/5 to-amber-50 rounded-2xl p-6 sm:p-8 border-2 border-jung-accent shadow-lg">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full text-sm font-semibold flex items-center gap-1.5 bg-jung-accent text-white">
-                <Crown className="w-4 h-4" />
-                Best Value
+            {/* MASTERY Tier - Enhanced */}
+            <div className="group relative bg-gradient-to-br from-amber-50 to-white rounded-2xl p-6 sm:p-8 border-2 border-jung-accent/50 hover:border-jung-accent transition-all duration-300 hover:shadow-xl hover:shadow-amber-100 hover:-translate-y-1">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-amber-200/20 rounded-full blur-2xl group-hover:bg-amber-200/40 transition-colors" />
+              <div className="relative">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full text-sm font-semibold flex items-center gap-2 bg-gradient-to-r from-jung-accent to-amber-500 text-white shadow-lg">
+                  <Crown className="w-4 h-4" />
+                  Best Value
+                </div>
+                <div className="text-center mb-6 pt-2">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-jung-accent/10 mb-4">
+                    <Sparkles className="w-6 h-6 text-jung-accent" />
+                  </div>
+                  <h3 className="text-xl font-serif font-bold text-jung-dark mb-1">MASTERY</h3>
+                  <div className="text-4xl font-bold text-jung-accent mb-2">$39</div>
+                  <p className="text-stone-500 text-sm">Transform With Guidance</p>
+                </div>
+                <ul className="space-y-3 mb-6">
+                  <li className="flex items-start gap-3">
+                    <Sparkles className="w-5 h-5 text-jung-accent flex-shrink-0 mt-0.5" />
+                    <span className="text-stone-700 font-medium">AI Type Coach (unlimited)</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Sparkles className="w-5 h-5 text-jung-accent flex-shrink-0 mt-0.5" />
+                    <span className="text-stone-700 font-medium">Growth exercises</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Sparkles className="w-5 h-5 text-jung-accent flex-shrink-0 mt-0.5" />
+                    <span className="text-stone-700 font-medium">Dream journaling guide</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Sparkles className="w-5 h-5 text-jung-accent flex-shrink-0 mt-0.5" />
+                    <span className="text-stone-700 font-medium">Everything in Insight</span>
+                  </li>
+                </ul>
+                <Button
+                  className="w-full py-3 bg-gradient-to-r from-jung-accent to-amber-500 hover:opacity-90 shadow-lg shadow-amber-500/25 transition-all"
+                  onClick={() => navigate('/pricing')}
+                >
+                  Get Mastery
+                </Button>
+                <p className="text-center text-xs text-stone-400 mt-3">Lifetime access</p>
               </div>
-              <div className="text-center mb-6">
-                <h3 className="text-xl font-serif font-bold text-jung-dark mb-1">MASTERY</h3>
-                <div className="text-3xl font-bold text-jung-accent mb-2">$39</div>
-                <p className="text-stone-600 text-sm">Transform With Guidance</p>
-              </div>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-start gap-3">
-                  <Sparkles className="w-5 h-5 text-jung-accent flex-shrink-0 mt-0.5" />
-                  <span className="text-stone-700">AI Type Coach (unlimited)</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Sparkles className="w-5 h-5 text-jung-accent flex-shrink-0 mt-0.5" />
-                  <span className="text-stone-700">Growth exercises</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Sparkles className="w-5 h-5 text-jung-accent flex-shrink-0 mt-0.5" />
-                  <span className="text-stone-700">Dream journaling guide</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Sparkles className="w-5 h-5 text-jung-accent flex-shrink-0 mt-0.5" />
-                  <span className="text-stone-700">Everything in Insight</span>
-                </li>
-              </ul>
-              <Button 
-                className="w-full py-3 bg-jung-accent hover:bg-jung-accent/90"
-                onClick={() => navigate('/pricing')}
-              >
-                Get Mastery
-              </Button>
-              <p className="text-center text-xs text-stone-500 mt-3">Lifetime access</p>
             </div>
           </div>
 

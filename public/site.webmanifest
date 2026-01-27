@@ -1,0 +1,17 @@
+{
+  "name": "TypeJung - Jungian Cognitive Function Assessment",
+  "short_name": "TypeJung",
+  "description": "Measure all 8 cognitive functions using the Singer-Loomis methodology",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#faf9f6",
+  "theme_color": "#451a03",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

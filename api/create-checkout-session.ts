@@ -1,4 +1,3 @@
-import Stripe from 'stripe';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -12,11 +11,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(500).json({ error: 'Stripe not configured' });
     }
 
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-    const { priceId, tier } = req.body;
+    const { tier } = req.body;
 
     // Resolve the price ID based on tier
-    let resolvedPriceId = priceId;
+    let resolvedPriceId;
     let resolvedTier = tier || 'insight';
 
     if (tier === 'insight') {
@@ -26,29 +24,38 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     if (!resolvedPriceId) {
-      resolvedPriceId = process.env.STRIPE_PRICE_ID;
+      return res.status(400).json({ error: 'Invalid tier' });
     }
 
     // Get the origin for redirect URLs
     const origin = req.headers.origin || 'https://typejung.com';
 
-    const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price: resolvedPriceId,
-          quantity: 1,
-        },
-      ],
-      allow_promotion_codes: true,
-      success_url: `${origin}/#/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/#/results`,
-      metadata: {
-        product: 'jungian_assessment_premium',
-        tier: resolvedTier,
+    // Use fetch directly to Stripe API
+    const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
+      body: new URLSearchParams({
+        'mode': 'payment',
+        'payment_method_types[0]': 'card',
+        'line_items[0][price]': resolvedPriceId,
+        'line_items[0][quantity]': '1',
+        'allow_promotion_codes': 'true',
+        'success_url': `${origin}/#/success?session_id={CHECKOUT_SESSION_ID}`,
+        'cancel_url': `${origin}/#/results`,
+        'metadata[product]': 'jungian_assessment_premium',
+        'metadata[tier]': resolvedTier,
+      }).toString(),
     });
+
+    const session = await response.json();
+
+    if (!response.ok) {
+      console.error('Stripe API error:', session);
+      return res.status(response.status).json({ error: session.error?.message || 'Stripe error' });
+    }
 
     return res.status(200).json({
       sessionId: session.id,
@@ -56,13 +63,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   } catch (error: any) {
     console.error('Stripe checkout error:', error);
-    console.error('Error type:', error.type);
-    console.error('Error code:', error.code);
-    console.error('Error raw:', JSON.stringify(error, null, 2));
     return res.status(500).json({
-      error: error.message || 'Failed to create checkout session',
-      type: error.type,
-      code: error.code
+      error: error.message || 'Failed to create checkout session'
     });
   }
 }

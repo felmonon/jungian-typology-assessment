@@ -1,8 +1,6 @@
 import Stripe from 'stripe';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -10,6 +8,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return res.status(500).json({ error: 'Stripe not configured' });
+    }
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     const { priceId, tier } = req.body;
 
     // Resolve the price ID based on tier

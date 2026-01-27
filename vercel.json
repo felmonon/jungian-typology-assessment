@@ -7,7 +7,7 @@
       "destination": "/api/:path*"
     },
     {
-      "source": "/((?!api/|.*\\.html$|.*\\.txt$|.*\\.xml$|.*\\.png$|.*\\.svg$|.*\\.ico$|.*\\.webmanifest$).*)",
+      "source": "/((?!api/|assets/|.*\\.html$|.*\\.txt$|.*\\.xml$|.*\\.png$|.*\\.svg$|.*\\.ico$|.*\\.webmanifest$|.*\\.css$|.*\\.js$|.*\\.woff2?$|.*\\.ttf$|.*\\.eot$).*)",
       "destination": "/index.html"
     }
   ],

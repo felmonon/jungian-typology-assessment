@@ -32,56 +32,51 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variants = {
     primary: `
+      bg-jung-dark text-white
+      shadow-lg shadow-jung-dark/20
+      hover:bg-jung-secondary hover:shadow-xl hover:shadow-jung-dark/25
+      active:shadow-lg
+    `,
+    secondary: `
+      bg-jung-surface-alt text-jung-dark
+      border border-jung-border
+      hover:bg-jung-surface hover:border-jung-dark/20 hover:shadow-md
+    `,
+    outline: `
+      bg-transparent text-jung-dark
+      border border-jung-border
+      hover:border-jung-dark hover:bg-jung-surface-alt
+    `,
+    ghost: `
+      bg-transparent text-jung-secondary
+      hover:bg-jung-surface-alt hover:text-jung-dark
+    `,
+    accent: `
       bg-gradient-to-r from-amber-600 to-amber-700
       text-white
       shadow-lg shadow-amber-600/25
-      hover:shadow-xl hover:shadow-amber-600/30
+      hover:shadow-xl hover:shadow-amber-600/35
       hover:from-amber-500 hover:to-amber-600
-      before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/0 before:via-white/20 before:to-white/0
-      before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-500
-    `,
-    secondary: `
-      bg-jung-dark text-white
-      shadow-lg shadow-stone-900/20
-      hover:bg-stone-800 hover:shadow-xl
-    `,
-    outline: `
-      bg-transparent
-      text-jung-dark
-      border-2 border-jung-border
-      hover:border-amber-600 hover:text-amber-700
-      hover:bg-amber-50/50
-    `,
-    ghost: `
-      bg-transparent text-jung-dark
-      hover:bg-stone-100
-    `,
-    accent: `
-      bg-gradient-to-r from-amber-500 to-amber-600
-      text-white
-      shadow-lg shadow-amber-500/30
-      hover:shadow-xl hover:shadow-amber-500/40
-      hover:from-amber-400 hover:to-amber-500
     `,
     inverted: `
       bg-white text-jung-dark
-      shadow-lg
-      hover:bg-stone-50 hover:shadow-xl
+      shadow-lg shadow-jung-dark/10
+      hover:shadow-xl hover:shadow-jung-dark/15
     `,
     gradient: `
-      bg-gradient-to-r from-amber-600 via-amber-500 to-orange-500
+      bg-gradient-to-r from-jung-dark via-jung-secondary to-jung-dark
       text-white
-      shadow-lg shadow-amber-600/30
-      hover:shadow-xl hover:shadow-amber-600/40
-      hover:scale-[1.02]
-      bg-[length:200%_100%] hover:bg-[length:200%_100%] animate-gradient
+      shadow-lg shadow-jung-dark/25
+      hover:shadow-xl
+      bg-[length:200%_100%] hover:bg-right
+      transition-all duration-500
     `,
     glass: `
-      bg-white/70 backdrop-blur-xl
+      bg-white/80 backdrop-blur-xl
       text-jung-dark
-      border border-white/50
-      shadow-lg shadow-stone-900/5
-      hover:bg-white/90 hover:shadow-xl
+      border border-jung-border/50
+      shadow-lg shadow-jung-dark/5
+      hover:bg-white hover:shadow-xl
     `
   };
 

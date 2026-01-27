@@ -20,7 +20,8 @@ import {
   ShareSection,
   ResultsLoading, 
   ResultsError, 
-  AuthRequired 
+  AuthRequired,
+  ResultsSkeleton
 } from '../components/results';
 import { 
   assessmentResultsSchema, 
@@ -378,7 +379,7 @@ export const Results: React.FC = () => {
 
   // Render states
   if (authLoading || state.status === 'loading') {
-    return <ResultsLoading />;
+    return <ResultsSkeleton />;
   }
 
   if (state.status === 'auth-required') {

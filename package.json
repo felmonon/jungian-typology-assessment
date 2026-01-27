@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "npx tsx server.ts",
-    "build": "vite build",
-    "build:full": "vite build && node scripts/prerender.mjs",
+    "build": "npm run generate:static && vite build && npm run generate:sitemap",
+    "build:full": "npm run generate:static && vite build && npm run generate:sitemap && node scripts/prerender.mjs",
     "prerender": "node scripts/prerender.mjs",
+    "generate:static": "npx tsx scripts/generate-static-pages.ts",
+    "generate:sitemap": "npx tsx scripts/generate-sitemap.ts",
     "start": "node --import tsx server-prod.ts",
     "preview": "vite preview",
     "db:push": "drizzle-kit push",

@@ -29,7 +29,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // Get the origin for redirect URLs
-    const origin = req.headers.origin || 'https://jungian-typology-assessment.vercel.app';
+    const origin = req.headers.origin || 'https://typejung.com';
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',

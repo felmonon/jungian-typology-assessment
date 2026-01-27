@@ -1,0 +1,134 @@
+# TypeJung - Measure All 8 Cognitive Functions
+# Website: https://typejung.com
+# Last Updated: 2026-01-26
+
+================================================================================
+ABOUT
+================================================================================
+
+TypeJung is a free psychological assessment tool based on Carl Jung's
+original theory of psychological types (1921) and the Singer-Loomis methodology.
+
+Unlike simplified 4-letter type indicators (MBTI), this assessment measures all
+8 cognitive functions independently on a spectrum, providing a unique profile
+rather than forcing users into one of 16 predetermined boxes.
+
+================================================================================
+THE 8 COGNITIVE FUNCTIONS
+================================================================================
+
+PERCEIVING FUNCTIONS:
+- Ni (Introverted Intuition): Pattern recognition, future visioning, convergent insights
+  Learn more: https://typejung.com/functions/ni
+
+- Ne (Extraverted Intuition): Possibilities, brainstorming, divergent thinking
+  Learn more: https://typejung.com/functions/ne
+
+- Si (Introverted Sensing): Memory, tradition, detailed recall
+  Learn more: https://typejung.com/functions/si
+
+- Se (Extraverted Sensing): Present-moment awareness, action, sensory engagement
+  Learn more: https://typejung.com/functions/se
+
+JUDGING FUNCTIONS:
+- Ti (Introverted Thinking): Internal logic, analysis, framework building
+  Learn more: https://typejung.com/functions/ti
+
+- Te (Extraverted Thinking): External organization, efficiency, measurable results
+  Learn more: https://typejung.com/functions/te
+
+- Fi (Introverted Feeling): Personal values, authenticity, moral compass
+  Learn more: https://typejung.com/functions/fi
+
+- Fe (Extraverted Feeling): Social harmony, emotional attunement, group dynamics
+  Learn more: https://typejung.com/functions/fe
+
+================================================================================
+THE 16 PERSONALITY TYPES
+================================================================================
+
+ANALYSTS (NT):
+- INTJ "The Architect" (Ni-Te-Fi-Se): Strategic visionaries with deep insight
+  Learn more: https://typejung.com/types/intj
+- INTP "The Logician" (Ti-Ne-Si-Fe): Innovative thinkers who build mental models
+  Learn more: https://typejung.com/types/intp
+- ENTJ "The Commander" (Te-Ni-Se-Fi): Natural leaders who organize for efficiency
+  Learn more: https://typejung.com/types/entj
+- ENTP "The Debater" (Ne-Ti-Fe-Si): Quick-witted innovators who love challenge
+  Learn more: https://typejung.com/types/entp
+
+DIPLOMATS (NF):
+- INFJ "The Advocate" (Ni-Fe-Ti-Se): Idealistic visionaries who help others grow
+  Learn more: https://typejung.com/types/infj
+- INFP "The Mediator" (Fi-Ne-Si-Te): Value-driven individuals seeking authenticity
+  Learn more: https://typejung.com/types/infp
+- ENFJ "The Protagonist" (Fe-Ni-Se-Ti): Charismatic leaders who inspire growth
+  Learn more: https://typejung.com/types/enfj
+- ENFP "The Campaigner" (Ne-Fi-Te-Si): Enthusiastic innovators with warmth
+  Learn more: https://typejung.com/types/enfp
+
+SENTINELS (SJ):
+- ISTJ "The Logistician" (Si-Te-Fi-Ne): Responsible organizers who value tradition
+  Learn more: https://typejung.com/types/istj
+- ISFJ "The Defender" (Si-Fe-Ti-Ne): Dedicated caretakers who work quietly
+  Learn more: https://typejung.com/types/isfj
+- ESTJ "The Executive" (Te-Si-Ne-Fi): Organized administrators who bring order
+  Learn more: https://typejung.com/types/estj
+- ESFJ "The Consul" (Fe-Si-Ne-Ti): Caring hosts who create harmony
+  Learn more: https://typejung.com/types/esfj
+
+EXPLORERS (SP):
+- ISTP "The Virtuoso" (Ti-Se-Ni-Fe): Practical problem-solvers who act in the moment
+  Learn more: https://typejung.com/types/istp
+- ISFP "The Adventurer" (Fi-Se-Ni-Te): Artistic souls who seek authenticity
+  Learn more: https://typejung.com/types/isfp
+- ESTP "The Entrepreneur" (Se-Ti-Fe-Ni): Energetic doers who live in the moment
+  Learn more: https://typejung.com/types/estp
+- ESFP "The Entertainer" (Se-Fi-Te-Ni): Spontaneous performers who bring energy
+  Learn more: https://typejung.com/types/esfp
+
+================================================================================
+FEATURES
+================================================================================
+
+FREE TIER:
+- 40-question cognitive function assessment
+- Radar chart visualization of all 8 functions
+- Basic AI-generated personality insights
+- Shareable results page
+- Type distribution leaderboard
+
+INSIGHT TIER ($19):
+- Extended AI analysis
+- Cognitive function deep-dive
+- Stress patterns (The Grip)
+- Growth recommendations
+
+MASTERY TIER ($39):
+- AI Type Coach chat
+- Comprehensive PDF report
+- Archetypal analysis
+- Career and relationship insights
+- Individuation roadmap
+
+================================================================================
+HOW IT WORKS
+================================================================================
+
+1. Take the 40-question assessment (15-20 minutes)
+2. View your cognitive function radar chart
+3. Read AI-generated insights about your type
+4. Explore detailed function breakdowns
+5. Optionally upgrade for deeper analysis
+
+================================================================================
+CONTACT & LINKS
+================================================================================
+
+Website: https://typejung.com
+Assessment: https://typejung.com/assessment
+Theory: https://typejung.com/learn
+Pricing: https://typejung.com/pricing
+About: https://typejung.com/about
+
+(c) 2026 TypeJung

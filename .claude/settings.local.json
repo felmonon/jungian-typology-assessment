@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Skill(vercel:deploy)",
+      "Bash(vercel --version:*)",
+      "Bash(vercel whoami:*)",
+      "Bash(vercel --prod --yes:*)",
+      "mcp__github__create_repository",
+      "Bash(gh repo create:*)",
+      "mcp__filesystem__directory_tree",
+      "mcp__filesystem__read_multiple_files",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "mcp__plugin_stripe_stripe__get_stripe_account_info",
+      "mcp__plugin_stripe_stripe__create_product",
+      "mcp__plugin_stripe_stripe__create_price",
+      "Bash(find:*)",
+      "WebSearch",
+      "Bash(lsof:*)",
+      "Bash(git pull:*)",
+      "Bash(git stash:*)",
+      "Bash(git rebase:*)",
+      "Bash(git fetch:*)",
+      "Bash(git reset:*)"
+    ]
+  }
+}

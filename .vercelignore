@@ -1,0 +1,9 @@
+# Vercel ignore file - we want dist to be uploaded
+node_modules
+*.log
+.env
+.env*.local
+coverage/
+.config/
+.firebaserc
+firebase.json

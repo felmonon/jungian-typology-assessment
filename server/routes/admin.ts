@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { sql } from "drizzle-orm";
 import { db } from "../db";
 import { users, assessmentResults } from "@shared/models/auth";
-import { isAuthenticated } from "../replit_integrations/auth/replitAuth";
+import { isAuthenticated } from "../integrations/auth/passport";
 
 function isAdmin(req: any, res: any, next: any) {
   const user = req.user as any;

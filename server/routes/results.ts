@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { eq, desc, sql } from "drizzle-orm";
 import { db } from "../db";
 import { assessmentResults } from "@shared/models/auth";
-import { isAuthenticated } from "../replit_integrations/auth/replitAuth";
+import { isAuthenticated } from "../integrations/auth/passport";
 import crypto from "crypto";
 
 const FUNCTION_TITLES: Record<string, string> = {

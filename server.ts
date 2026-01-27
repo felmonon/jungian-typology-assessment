@@ -3,7 +3,7 @@ import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import { rateLimit } from 'express-rate-limit';
 import { getUncachableStripeClient } from './stripeClient';
-import { setupAuth, registerAuthRoutes } from './server/replit_integrations/auth';
+import { setupAuth, registerAuthRoutes } from './server/integrations/auth';
 import { registerResultsRoutes } from './server/routes/results';
 import { registerAdminRoutes } from './server/routes/admin';
 import { sendPdfEmail } from './server/resend';

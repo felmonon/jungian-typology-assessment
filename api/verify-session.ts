@@ -7,9 +7,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   // Support both GET (query param) and POST (body)
+  // Frontend sends sessionId (camelCase), also support session_id (snake_case)
   const session_id = req.method === 'GET'
     ? req.query.session_id
-    : req.body?.session_id;
+    : (req.body?.sessionId || req.body?.session_id);
 
   if (!session_id || typeof session_id !== 'string') {
     return res.status(400).json({ error: 'Missing session_id parameter' });
@@ -35,10 +36,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     if (session.payment_status === 'paid') {
+      const tier = session.metadata?.tier || 'insight';
       return res.status(200).json({
         success: true,
         paid: true,
-        tier: session.metadata?.tier || 'insight',
+        tier,
+        metadata: { tier },
         customerEmail: session.customer_details?.email,
       });
     } else {

@@ -4,6 +4,7 @@ import { db } from "../db";
 import { assessmentResults } from "@shared/models/auth";
 import { isAuthenticated } from "../integrations/auth/passport";
 import crypto from "crypto";
+import { validate, schemas } from "../middleware/validate";
 
 const FUNCTION_TITLES: Record<string, string> = {
   Te: "Extraverted Thinking",
@@ -21,7 +22,7 @@ function generateShareSlug(): string {
 }
 
 export function registerResultsRoutes(app: Express): void {
-  app.post("/api/results", isAuthenticated, async (req, res) => {
+  app.post("/api/results", isAuthenticated, validate(schemas.assessmentResult), async (req, res) => {
     try {
       const user = req.user as any;
       if (!user?.id) {
@@ -29,11 +30,6 @@ export function registerResultsRoutes(app: Express): void {
       }
 
       const { scores, stack, attitudeScore, isUndifferentiated } = req.body;
-
-      if (!scores || !stack || attitudeScore === undefined || isUndifferentiated === undefined) {
-        return res.status(400).json({ message: "Missing required fields" });
-      }
-
       const shareSlug = generateShareSlug();
 
       const [result] = await db

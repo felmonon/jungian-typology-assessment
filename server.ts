@@ -2,10 +2,12 @@ import 'dotenv/config';
 import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import { rateLimit } from 'express-rate-limit';
+import helmet from 'helmet';
 import { getUncachableStripeClient } from './stripeClient';
 import { setupAuth, registerAuthRoutes } from './server/integrations/auth';
 import { registerResultsRoutes } from './server/routes/results';
 import { registerAdminRoutes } from './server/routes/admin';
+import { registerHealthRoutes } from './server/routes/health';
 import { sendPdfEmail } from './server/resend';
 import { db } from './server/db';
 import { purchases, users } from './shared/schema';
@@ -13,6 +15,8 @@ import { eq } from 'drizzle-orm';
 import { generateFreeAnalysis, generatePremiumAnalysis } from './server/ai-analysis';
 import { handleChatMessage } from './server/chat';
 import { z } from 'zod';
+import { requestLogger, errorLogger } from './server/middleware/logger';
+import { validate, schemas } from './server/middleware/validate';
 
 const analysisInputSchema = z.object({
   scores: z.array(z.object({
@@ -33,6 +37,23 @@ const analysisInputSchema = z.object({
 });
 
 const app = express();
+
+// Security headers
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", "https://api.stripe.com", "https://*.googleapis.com"],
+    },
+  },
+  crossOriginEmbedderPolicy: false, // Allow embedding
+}));
+
+// Request logging
+app.use(requestLogger);
 
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -170,6 +191,7 @@ async function startServer() {
   registerAuthRoutes(app);
   registerResultsRoutes(app);
   registerAdminRoutes(app);
+  registerHealthRoutes(app);
 
   app.get('/api/premium-status', async (req: any, res) => {
     try {
@@ -219,7 +241,7 @@ async function startServer() {
     }
   });
 
-  app.post('/api/create-checkout-session', checkoutLimiter, async (req: any, res) => {
+  app.post('/api/create-checkout-session', checkoutLimiter, validate(schemas.checkoutSession), async (req: any, res) => {
     try {
       const stripe = await getUncachableStripeClient();
       const { priceId, tier } = req.body;
@@ -275,7 +297,7 @@ async function startServer() {
     }
   });
 
-  app.post('/api/verify-session', async (req, res) => {
+  app.post('/api/verify-session', validate(schemas.verifySession), async (req, res) => {
     try {
       const stripe = await getUncachableStripeClient();
       const { sessionId } = req.body;
@@ -300,7 +322,11 @@ async function startServer() {
     }
   });
 
-  app.post('/api/send-pdf-email', emailLimiter, async (req: any, res) => {
+  app.post('/api/send-pdf-email', emailLimiter, validate(z.object({
+    pdfBase64: z.string().min(1),
+    userName: z.string().optional(),
+    dominantFunction: z.string().optional(),
+  })), async (req: any, res) => {
     try {
       if (!req.isAuthenticated || !req.isAuthenticated()) {
         return res.status(401).json({ error: 'Authentication required' });
@@ -469,6 +495,9 @@ async function startServer() {
       return res.status(500).json({ error: 'Chat service unavailable' });
     }
   });
+
+  // Error logging middleware (must be before Vite)
+  app.use(errorLogger);
 
   const vite = await createViteServer({
     server: { 

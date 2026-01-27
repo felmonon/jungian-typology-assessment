@@ -1,14 +1,25 @@
-import * as Sentry from '@sentry/react';
+// Sentry integration - gracefully handles missing dependency
+
+let Sentry: any = null;
+
+try {
+  Sentry = require('@sentry/react');
+} catch {
+  // Sentry not installed, that's okay
+  console.warn('Sentry not installed, error tracking disabled');
+}
 
 export function initSentry() {
+  if (!Sentry) return;
+  
   // Only initialize in production
   if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
     Sentry.init({
       dsn: import.meta.env.VITE_SENTRY_DSN,
       integrations: [
-        Sentry.browserTracingIntegration(),
-        Sentry.replayIntegration(),
-      ],
+        Sentry.browserTracingIntegration?.(),
+        Sentry.replayIntegration?.(),
+      ].filter(Boolean),
       // Performance Monitoring
       tracesSampleRate: 0.1, // Capture 10% of transactions
       // Session Replay

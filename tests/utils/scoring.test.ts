@@ -1,174 +1,346 @@
 import { describe, it, expect } from 'vitest';
+import { calculateResults } from '../../utils/scoring';
+import { questions } from '../../data/questions';
+import { FunctionAttitude } from '../../types';
 
-// Mock scoring functions for testing
-const calculateFunctionScore = (answers: number[]): number => {
-  if (answers.length === 0) return 0;
-  const sum = answers.reduce((acc, val) => acc + val, 0);
-  return Math.round((sum / (answers.length * 5)) * 100);
-};
-
-const determineAttitude = (scores: Record<string, number>): 'introvert' | 'extrovert' | 'balanced' => {
-  const introvertFunctions = ['Ni', 'Ti', 'Fi', 'Si'];
-  const extrovertFunctions = ['Ne', 'Te', 'Fe', 'Se'];
-
-  const introvertTotal = introvertFunctions.reduce((sum, fn) => sum + (scores[fn] || 0), 0);
-  const extrovertTotal = extrovertFunctions.reduce((sum, fn) => sum + (scores[fn] || 0), 0);
-
-  const diff = Math.abs(introvertTotal - extrovertTotal);
-  if (diff < 20) return 'balanced';
-  return introvertTotal > extrovertTotal ? 'introvert' : 'extrovert';
-};
-
-const getTopFunctions = (scores: Record<string, number>, count: number = 4): string[] => {
-  return Object.entries(scores)
-    .sort(([, a], [, b]) => b - a)
-    .slice(0, count)
-    .map(([fn]) => fn);
-};
-
-describe('Scoring Utilities', () => {
-  describe('calculateFunctionScore', () => {
-    it('calculates score correctly for full agreement', () => {
-      const answers = [5, 5, 5, 5]; // All strongly agree
-      expect(calculateFunctionScore(answers)).toBe(100);
+describe('calculateResults', () => {
+  // Helper to create answers for all questions
+  const createAnswers = (overrides: Record<string, number> = {}): Record<string, number> => {
+    const answers: Record<string, number> = {};
+    questions.forEach(q => {
+      answers[q.id] = overrides[q.id] || 3; // Default to neutral
     });
-
-    it('calculates score correctly for full disagreement', () => {
-      const answers = [1, 1, 1, 1]; // All strongly disagree
-      expect(calculateFunctionScore(answers)).toBe(20);
-    });
-
-    it('calculates score correctly for neutral', () => {
-      const answers = [3, 3, 3, 3]; // All neutral
-      expect(calculateFunctionScore(answers)).toBe(60);
-    });
-
-    it('calculates score correctly for mixed answers', () => {
-      const answers = [1, 3, 5]; // Mixed
-      const expected = Math.round((9 / 15) * 100);
-      expect(calculateFunctionScore(answers)).toBe(expected);
-    });
-
-    it('handles empty array', () => {
-      expect(calculateFunctionScore([])).toBe(0);
-    });
-  });
-
-  describe('determineAttitude', () => {
-    it('identifies introvert preference', () => {
-      const scores = {
-        Ni: 80,
-        Ti: 75,
-        Fi: 70,
-        Si: 65,
-        Ne: 40,
-        Te: 35,
-        Fe: 30,
-        Se: 25,
-      };
-      expect(determineAttitude(scores)).toBe('introvert');
-    });
-
-    it('identifies extrovert preference', () => {
-      const scores = {
-        Ne: 80,
-        Te: 75,
-        Fe: 70,
-        Se: 65,
-        Ni: 40,
-        Ti: 35,
-        Fi: 30,
-        Si: 25,
-      };
-      expect(determineAttitude(scores)).toBe('extrovert');
-    });
-
-    it('identifies balanced when scores are close', () => {
-      const scores = {
-        Ni: 60,
-        Ti: 55,
-        Fi: 50,
-        Si: 45,
-        Ne: 58,
-        Te: 52,
-        Fe: 48,
-        Se: 42,
-      };
-      expect(determineAttitude(scores)).toBe('balanced');
-    });
-  });
-
-  describe('getTopFunctions', () => {
-    it('returns top 4 functions by default', () => {
-      const scores = {
-        Ni: 80,
-        Ne: 70,
-        Ti: 60,
-        Te: 50,
-        Fi: 40,
-        Fe: 30,
-        Si: 20,
-        Se: 10,
-      };
-      const top = getTopFunctions(scores);
-      expect(top).toEqual(['Ni', 'Ne', 'Ti', 'Te']);
-      expect(top).toHaveLength(4);
-    });
-
-    it('returns custom count when specified', () => {
-      const scores = {
-        Ni: 80,
-        Ne: 70,
-        Ti: 60,
-        Te: 50,
-      };
-      const top = getTopFunctions(scores, 2);
-      expect(top).toEqual(['Ni', 'Ne']);
-    });
-
-    it('handles ties by original order', () => {
-      const scores = {
-        Ni: 80,
-        Ne: 80,
-        Ti: 60,
-      };
-      const top = getTopFunctions(scores, 2);
-      expect(top).toHaveLength(2);
-      expect(top).toContain('Ni');
-      expect(top).toContain('Ne');
-    });
-  });
-});
-
-describe('Type Mapping', () => {
-  const functionStackToType: Record<string, string> = {
-    'Ni-Te-Fi-Se': 'INTJ',
-    'Ni-Fe-Ti-Se': 'INFJ',
-    'Ne-Ti-Fe-Si': 'ENTP',
-    'Ne-Fi-Te-Si': 'ENFP',
-    'Si-Te-Fi-Ne': 'ISTJ',
-    'Si-Fe-Ti-Ne': 'ISFJ',
-    'Se-Ti-Fe-Ni': 'ISTP',
-    'Se-Fi-Te-Ni': 'ISFP',
-    'Ti-Ne-Si-Fe': 'INTP',
-    'Ti-Se-Ni-Fe': 'ISTP',
-    'Fi-Ne-Si-Te': 'INFP',
-    'Fi-Se-Ni-Te': 'ISFP',
-    'Te-Ni-Se-Fi': 'ENTJ',
-    'Te-Si-Ne-Fi': 'ESTJ',
-    'Fe-Ni-Se-Ti': 'ENFJ',
-    'Fe-Si-Ne-Ti': 'ESFJ',
+    return answers;
   };
 
-  it('maps INTJ function stack correctly', () => {
-    expect(functionStackToType['Ni-Te-Fi-Se']).toBe('INTJ');
+  // Helper to get questions for a specific function
+  const getQuestionsForFunction = (func: FunctionAttitude, category: 'A' | 'B') => {
+    return questions.filter(q => q.target === func && q.category === category);
+  };
+
+  describe('basic structure', () => {
+    it('returns all required fields', () => {
+      const answers = createAnswers();
+      const results = calculateResults(answers);
+
+      expect(results).toHaveProperty('scores');
+      expect(results).toHaveProperty('dominant');
+      expect(results).toHaveProperty('inferior');
+      expect(results).toHaveProperty('stack');
+      expect(results).toHaveProperty('differentiation');
+      expect(results).toHaveProperty('isUndifferentiated');
+      expect(results).toHaveProperty('attitudeScore');
+      expect(results.scores).toHaveLength(8);
+    });
+
+    it('returns exactly 8 function scores', () => {
+      const answers = createAnswers();
+      const results = calculateResults(answers);
+      const functions: FunctionAttitude[] = ['Te', 'Ti', 'Fe', 'Fi', 'Se', 'Si', 'Ne', 'Ni'];
+      
+      functions.forEach(func => {
+        const score = results.scores.find(s => s.function === func);
+        expect(score).toBeDefined();
+        expect(score).toHaveProperty('score');
+        expect(score).toHaveProperty('rawPreference');
+        expect(score).toHaveProperty('rawInferior');
+        expect(score).toHaveProperty('normalized');
+      });
+    });
   });
 
-  it('maps INFJ function stack correctly', () => {
-    expect(functionStackToType['Ni-Fe-Ti-Se']).toBe('INFJ');
+  describe('score calculation', () => {
+    it('gives high score when strongly agreeing with preference questions', () => {
+      const niPrefQuestions = getQuestionsForFunction('Ni', 'A');
+      const answers = createAnswers();
+      
+      // Answer all Ni preference questions with strongly agree
+      niPrefQuestions.forEach(q => {
+        answers[q.id] = 5;
+      });
+
+      const results = calculateResults(answers);
+      const niScore = results.scores.find(s => s.function === 'Ni');
+      
+      expect(niScore).toBeDefined();
+      expect(niScore!.score).toBeGreaterThan(70);
+    });
+
+    it('gives low score when strongly disagreeing with preference questions', () => {
+      const niPrefQuestions = getQuestionsForFunction('Ni', 'A');
+      const answers = createAnswers();
+      
+      // Answer all Ni preference questions with strongly disagree
+      niPrefQuestions.forEach(q => {
+        answers[q.id] = 1;
+      });
+
+      const results = calculateResults(answers);
+      const niScore = results.scores.find(s => s.function === 'Ni');
+      
+      expect(niScore).toBeDefined();
+      expect(niScore!.score).toBeLessThan(30);
+    });
+
+    it('handles inverse scoring for inferior questions', () => {
+      const niInfQuestions = getQuestionsForFunction('Ni', 'B');
+      const answers = createAnswers();
+      
+      // Answer all Ni inferior questions with strongly disagree (should boost Ni score)
+      niInfQuestions.forEach(q => {
+        answers[q.id] = 1;
+      });
+
+      const results = calculateResults(answers);
+      const niScore = results.scores.find(s => s.function === 'Ni');
+      
+      expect(niScore).toBeDefined();
+      // Since 1 becomes (6-1)=5 after inverse scoring, this should boost the score
+      expect(niScore!.rawInferior).toBeGreaterThan(4);
+    });
   });
 
-  it('maps ENTP function stack correctly', () => {
-    expect(functionStackToType['Ne-Ti-Fe-Si']).toBe('ENTP');
+  describe('dominant function selection', () => {
+    it('selects Ni as dominant when Ni scores highest', () => {
+      const answers = createAnswers();
+      
+      // Make Ni the highest scorer
+      getQuestionsForFunction('Ni', 'A').forEach(q => answers[q.id] = 5);
+      getQuestionsForFunction('Ni', 'B').forEach(q => answers[q.id] = 1);
+      
+      // Make others lower
+      getQuestionsForFunction('Ne', 'A').forEach(q => answers[q.id] = 2);
+      getQuestionsForFunction('Te', 'A').forEach(q => answers[q.id] = 2);
+
+      const results = calculateResults(answers);
+      expect(results.dominant.function).toBe('Ni');
+      expect(results.stack.dominant.function).toBe('Ni');
+    });
+
+    it('selects Te as dominant when Te scores highest', () => {
+      const answers = createAnswers();
+      
+      // Make Te the highest scorer
+      getQuestionsForFunction('Te', 'A').forEach(q => answers[q.id] = 5);
+      getQuestionsForFunction('Te', 'B').forEach(q => answers[q.id] = 1);
+      
+      // Make others lower
+      getQuestionsForFunction('Ti', 'A').forEach(q => answers[q.id] = 2);
+      getQuestionsForFunction('Fe', 'A').forEach(q => answers[q.id] = 2);
+
+      const results = calculateResults(answers);
+      expect(results.dominant.function).toBe('Te');
+    });
+  });
+
+  describe('stack calculation', () => {
+    it('calculates correct theoretical inferior (opposite of dominant)', () => {
+      const opposites: Record<FunctionAttitude, FunctionAttitude> = {
+        'Ni': 'Se', 'Se': 'Ni',
+        'Ne': 'Si', 'Si': 'Ne',
+        'Ti': 'Fe', 'Fe': 'Ti',
+        'Te': 'Fi', 'Fi': 'Te'
+      };
+
+      const testCases: FunctionAttitude[] = ['Ni', 'Ne', 'Ti', 'Te', 'Fi', 'Fe', 'Si', 'Se'];
+
+      for (const dominant of testCases) {
+        const answers = createAnswers();
+        const expectedInferior = opposites[dominant];
+        
+        // Make this function dominant
+        getQuestionsForFunction(dominant, 'A').forEach(q => answers[q.id] = 5);
+        
+        const results = calculateResults(answers);
+        expect(results.stack.inferior.function).toBe(expectedInferior);
+        expect(results.inferior.function).toBe(expectedInferior);
+      }
+    });
+
+    it('selects auxiliary of opposite rationality', () => {
+      const answers = createAnswers();
+      
+      // Make Ni (perceiving) dominant
+      getQuestionsForFunction('Ni', 'A').forEach(q => answers[q.id] = 5);
+      
+      // Make Ti (judging) second highest
+      getQuestionsForFunction('Ti', 'A').forEach(q => answers[q.id] = 4);
+      
+      // Make others lower
+      getQuestionsForFunction('Ne', 'A').forEach(q => answers[q.id] = 2);
+      getQuestionsForFunction('Te', 'A').forEach(q => answers[q.id] = 2);
+
+      const results = calculateResults(answers);
+      expect(results.stack.dominant.function).toBe('Ni');
+      // Auxiliary should be judging (Ti, Te, Fe, or Fi)
+      const aux = results.stack.auxiliary.function;
+      expect(['Ti', 'Te', 'Fe', 'Fi']).toContain(aux);
+    });
+
+    it('calculates tertiary as opposite of auxiliary', () => {
+      const answers = createAnswers();
+      
+      // Make Ni dominant
+      getQuestionsForFunction('Ni', 'A').forEach(q => answers[q.id] = 5);
+      
+      // Make Ti high (so it becomes auxiliary)
+      getQuestionsForFunction('Ti', 'A').forEach(q => answers[q.id] = 4);
+      
+      const results = calculateResults(answers);
+      
+      if (results.stack.auxiliary.function === 'Ti') {
+        // Tertiary should be Fe (opposite of Ti)
+        expect(results.stack.tertiary.function).toBe('Fe');
+      }
+    });
+  });
+
+  describe('attitude calculation', () => {
+    it('calculates positive attitude score for extraversion', () => {
+      const eQuestions = questions.filter(q => q.target === 'E' && q.category === 'C');
+      const iQuestions = questions.filter(q => q.target === 'I' && q.category === 'C');
+      
+      const answers = createAnswers();
+      
+      // Strongly agree with extraversion, disagree with introversion
+      eQuestions.forEach(q => answers[q.id] = 5);
+      iQuestions.forEach(q => answers[q.id] = 1);
+
+      const results = calculateResults(answers);
+      expect(results.attitudeScore).toBeGreaterThan(0);
+    });
+
+    it('calculates negative attitude score for introversion', () => {
+      const eQuestions = questions.filter(q => q.target === 'E' && q.category === 'C');
+      const iQuestions = questions.filter(q => q.target === 'I' && q.category === 'C');
+      
+      const answers = createAnswers();
+      
+      // Agree with introversion, disagree with extraversion
+      eQuestions.forEach(q => answers[q.id] = 1);
+      iQuestions.forEach(q => answers[q.id] = 5);
+
+      const results = calculateResults(answers);
+      expect(results.attitudeScore).toBeLessThan(0);
+    });
+  });
+
+  describe('differentiation calculation', () => {
+    it('identifies undifferentiated profile when scores are similar', () => {
+      const answers = createAnswers();
+      
+      // All neutral answers = similar scores
+      questions.forEach(q => {
+        answers[q.id] = 3;
+      });
+
+      const results = calculateResults(answers);
+      // With all neutral answers, scores should be very similar
+      expect(results.isUndifferentiated).toBe(true);
+    });
+
+    it('identifies differentiated profile when scores vary', () => {
+      const answers = createAnswers();
+      
+      // Create clear differentiation
+      getQuestionsForFunction('Ni', 'A').forEach(q => answers[q.id] = 5);
+      getQuestionsForFunction('Ni', 'B').forEach(q => answers[q.id] = 1);
+      getQuestionsForFunction('Se', 'A').forEach(q => answers[q.id] = 1);
+      getQuestionsForFunction('Se', 'B').forEach(q => answers[q.id] = 5);
+
+      const results = calculateResults(answers);
+      expect(results.isUndifferentiated).toBe(false);
+    });
+
+    it('calculates differentiation based on standard deviation', () => {
+      const answers = createAnswers();
+      
+      // Extreme differentiation
+      getQuestionsForFunction('Ni', 'A').forEach(q => answers[q.id] = 5);
+      getQuestionsForFunction('Se', 'A').forEach(q => answers[q.id] = 1);
+
+      const results = calculateResults(answers);
+      expect(results.differentiation).toBeGreaterThan(10);
+    });
+  });
+
+  describe('edge cases', () => {
+    it('handles missing answers gracefully', () => {
+      const answers: Record<string, number> = {};
+      
+      // Answer only half the questions
+      questions.slice(0, Math.floor(questions.length / 2)).forEach(q => {
+        answers[q.id] = 3;
+      });
+
+      const results = calculateResults(answers);
+      expect(results.scores).toHaveLength(8);
+      expect(results.dominant).toBeDefined();
+    });
+
+    it('handles all maximum scores', () => {
+      const answers = createAnswers();
+      questions.forEach(q => {
+        answers[q.id] = 5;
+      });
+
+      const results = calculateResults(answers);
+      expect(results.scores).toHaveLength(8);
+      expect(results.dominant).toBeDefined();
+    });
+
+    it('handles all minimum scores', () => {
+      const answers = createAnswers();
+      questions.forEach(q => {
+        answers[q.id] = 1;
+      });
+
+      const results = calculateResults(answers);
+      expect(results.scores).toHaveLength(8);
+      expect(results.dominant).toBeDefined();
+    });
+  });
+
+  describe('type mapping', () => {
+    it('produces correct INTJ-like stack (Ni-Te-Fi-Se)', () => {
+      const answers = createAnswers();
+      
+      // Prioritize Ni and Te
+      getQuestionsForFunction('Ni', 'A').forEach(q => answers[q.id] = 5);
+      getQuestionsForFunction('Ni', 'B').forEach(q => answers[q.id] = 1);
+      getQuestionsForFunction('Te', 'A').forEach(q => answers[q.id] = 4);
+      getQuestionsForFunction('Te', 'B').forEach(q => answers[q.id] = 2);
+      
+      // Lower other judging functions
+      getQuestionsForFunction('Ti', 'A').forEach(q => answers[q.id] = 2);
+      getQuestionsForFunction('Fe', 'A').forEach(q => answers[q.id] = 2);
+      getQuestionsForFunction('Fi', 'A').forEach(q => answers[q.id] = 3);
+
+      const results = calculateResults(answers);
+      expect(results.stack.dominant.function).toBe('Ni');
+      expect(results.stack.inferior.function).toBe('Se');
+      // Auxiliary should be a judging function
+      expect(['Te', 'Ti', 'Fe', 'Fi']).toContain(results.stack.auxiliary.function);
+    });
+
+    it('produces correct INTP-like stack (Ti-Ne-Si-Fe)', () => {
+      const answers = createAnswers();
+      
+      // Prioritize Ti and Ne
+      getQuestionsForFunction('Ti', 'A').forEach(q => answers[q.id] = 5);
+      getQuestionsForFunction('Ti', 'B').forEach(q => answers[q.id] = 1);
+      getQuestionsForFunction('Ne', 'A').forEach(q => answers[q.id] = 4);
+      getQuestionsForFunction('Ne', 'B').forEach(q => answers[q.id] = 2);
+      
+      // Lower other perceiving functions
+      getQuestionsForFunction('Ni', 'A').forEach(q => answers[q.id] = 2);
+      getQuestionsForFunction('Se', 'A').forEach(q => answers[q.id] = 2);
+
+      const results = calculateResults(answers);
+      expect(results.stack.dominant.function).toBe('Ti');
+      expect(results.stack.inferior.function).toBe('Fe');
+      // Auxiliary should be a perceiving function
+      expect(['Ne', 'Ni', 'Se', 'Si']).toContain(results.stack.auxiliary.function);
+    });
   });
 });

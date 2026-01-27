@@ -1,0 +1,14 @@
+export { HeroSection } from './HeroSection';
+export { SocialProofBar } from './SocialProofBar';
+export { ProblemSection } from './ProblemSection';
+export { ScientificValidationSection } from './ScientificValidationSection';
+export { HowItWorksSection } from './HowItWorksSection';
+export { AITypeCoachSection } from './AITypeCoachSection';
+export { DifferentiatorsSection } from './DifferentiatorsSection';
+export { ComparisonTableSection } from './ComparisonTableSection';
+export { PricingSection } from './PricingSection';
+export { TestimonialsSection } from './TestimonialsSection';
+export { FAQSection } from './FAQSection';
+export { FinalCTASection } from './FinalCTASection';
+export { ExitIntentPopup } from './ExitIntentPopup';
+export * from './data';

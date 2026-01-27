@@ -30,3 +30,4 @@ coverage/
 .config/
 .firebaserc
 firebase.json
+model.pt

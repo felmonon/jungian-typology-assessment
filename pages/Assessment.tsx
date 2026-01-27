@@ -3,15 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { questions } from '../data/questions';
 import { calculateResults } from '../utils/scoring';
 import { Button } from '../components/ui/Button';
-import { ArrowLeft, ArrowRight, CheckCircle2, Circle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useSEO, PAGE_SEO } from '../hooks/useSEO';
 import { useAssessmentTracking } from '../hooks/useAnalytics';
+import { useAssessmentProgress } from '../hooks/useAssessmentStorage';
+import { assessmentResultsSchema } from '../lib/validation';
 
 export const Assessment: React.FC = () => {
   const navigate = useNavigate();
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const assessmentTracking = useAssessmentTracking();
+  const { progress, saveProgress, isLoaded } = useAssessmentProgress();
 
   // SEO meta tags
   useSEO(PAGE_SEO.assessment);
@@ -20,26 +23,18 @@ export const Assessment: React.FC = () => {
   const totalPages = Math.ceil(questions.length / QUESTIONS_PER_PAGE);
   const currentQuestions = questions.slice(currentIdx * QUESTIONS_PER_PAGE, (currentIdx + 1) * QUESTIONS_PER_PAGE);
 
+  // Load saved progress
   useEffect(() => {
-    const saved = localStorage.getItem('jungian_assessment_progress');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        setAnswers(parsed.answers || {});
-        setCurrentIdx(parsed.currentStep || 0);
-      } catch (e) {
-        console.error("Failed to load progress", e);
-      }
+    if (isLoaded && progress) {
+      setAnswers(progress.answers);
+      setCurrentIdx(progress.currentStep);
     }
-  }, []);
+  }, [isLoaded, progress]);
 
   const handleAnswer = (qid: string, value: number) => {
     const newAnswers = { ...answers, [qid]: value };
     setAnswers(newAnswers);
-    localStorage.setItem('jungian_assessment_progress', JSON.stringify({
-      answers: newAnswers,
-      currentStep: currentIdx
-    }));
+    saveProgress(newAnswers, currentIdx);
   };
 
   const handleNext = () => {
@@ -60,13 +55,23 @@ export const Assessment: React.FC = () => {
 
   const finishAssessment = () => {
     const results = calculateResults(answers);
-    localStorage.setItem('jungian_assessment_results', JSON.stringify(results));
-    localStorage.removeItem('jungian_assessment_progress');
-    navigate('/results');
+    const validatedResults = assessmentResultsSchema.safeParse(results);
+    
+    if (validatedResults.success) {
+      localStorage.setItem('jungian_assessment_results', JSON.stringify(validatedResults.data));
+      localStorage.removeItem('jungian_assessment_progress');
+      navigate('/results');
+    } else {
+      console.error('Results validation failed:', validatedResults.error);
+      // Still navigate - the results page will handle validation
+      localStorage.setItem('jungian_assessment_results', JSON.stringify(results));
+      localStorage.removeItem('jungian_assessment_progress');
+      navigate('/results');
+    }
   };
 
   const isPageComplete = currentQuestions.every(q => answers[q.id] !== undefined);
-  const progress = ((currentIdx) / totalPages) * 100;
+  const progressPercent = ((currentIdx) / totalPages) * 100;
   const answeredCount = Object.keys(answers).length;
 
   const scaleLabels = ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'];
@@ -119,7 +124,7 @@ export const Assessment: React.FC = () => {
             <div className="w-full bg-jung-border h-1 rounded-full overflow-hidden">
               <div
                 className="bg-gradient-to-r from-jung-accent to-jung-accent-hover h-full transition-all duration-500 ease-out"
-                style={{ width: `${progress}%` }}
+                style={{ width: `${progressPercent}%` }}
               />
             </div>
           </div>

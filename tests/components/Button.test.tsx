@@ -11,25 +11,30 @@ describe('Button Component', () => {
   it('renders with primary variant by default', () => {
     render(<Button>Primary</Button>);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('bg-jung-primary');
+    expect(button).toHaveClass('from-amber-600');
+    expect(button).toHaveClass('to-amber-700');
+    expect(button).toHaveClass('text-white');
   });
 
   it('renders with outline variant', () => {
     render(<Button variant="outline">Outline</Button>);
     const button = screen.getByRole('button');
     expect(button).toHaveClass('border-2');
+    expect(button).toHaveClass('bg-transparent');
   });
 
   it('renders with secondary variant', () => {
     render(<Button variant="secondary">Secondary</Button>);
     const button = screen.getByRole('button');
     expect(button).toHaveClass('bg-jung-dark');
+    expect(button).toHaveClass('text-white');
   });
 
   it('renders with ghost variant', () => {
     render(<Button variant="ghost">Ghost</Button>);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('text-jung-primary');
+    expect(button).toHaveClass('bg-transparent');
+    expect(button).toHaveClass('text-jung-dark');
   });
 
   it('renders with different sizes', () => {
@@ -77,5 +82,21 @@ describe('Button Component', () => {
 
     expect(screen.getByTestId('icon')).toBeInTheDocument();
     expect(screen.getByRole('button')).toHaveTextContent('Text');
+  });
+
+  it('shows loading state', () => {
+    render(<Button isLoading>Loading</Button>);
+    const button = screen.getByRole('button');
+    expect(button).toHaveClass('disabled:opacity-50');
+  });
+
+  it('renders with left and right icons', () => {
+    render(
+      <Button leftIcon={<span data-testid="left-icon">L</span>} rightIcon={<span data-testid="right-icon">R</span>}>
+        Text
+      </Button>
+    );
+    expect(screen.getByTestId('left-icon')).toBeInTheDocument();
+    expect(screen.getByTestId('right-icon')).toBeInTheDocument();
   });
 });

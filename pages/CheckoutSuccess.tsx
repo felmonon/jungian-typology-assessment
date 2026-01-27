@@ -25,7 +25,25 @@ export const CheckoutSuccess: React.FC = () => {
   const [dominantFunction, setDominantFunction] = useState<string | null>(null);
 
   useEffect(() => {
-    const sessionId = searchParams.get('session_id');
+    // Try multiple ways to get session_id (hash routing can be tricky)
+    let sessionId = searchParams.get('session_id');
+
+    // Fallback: parse from window.location.hash
+    if (!sessionId) {
+      const hash = window.location.hash;
+      const match = hash.match(/session_id=([^&]+)/);
+      if (match) {
+        sessionId = match[1];
+      }
+    }
+
+    // Fallback: parse from window.location.search
+    if (!sessionId) {
+      const urlParams = new URLSearchParams(window.location.search);
+      sessionId = urlParams.get('session_id');
+    }
+
+    console.log('Session ID found:', sessionId);
 
     const savedResults = localStorage.getItem('jungian_assessment_results');
     if (savedResults) {

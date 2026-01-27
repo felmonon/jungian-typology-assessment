@@ -1,12 +1,15 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', 'GET');
+  if (req.method !== 'GET' && req.method !== 'POST') {
+    res.setHeader('Allow', 'GET, POST');
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { session_id } = req.query;
+  // Support both GET (query param) and POST (body)
+  const session_id = req.method === 'GET'
+    ? req.query.session_id
+    : req.body?.session_id;
 
   if (!session_id || typeof session_id !== 'string') {
     return res.status(400).json({ error: 'Missing session_id parameter' });

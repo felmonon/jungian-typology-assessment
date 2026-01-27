@@ -56,8 +56,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   } catch (error: any) {
     console.error('Stripe checkout error:', error);
+    console.error('Error type:', error.type);
+    console.error('Error code:', error.code);
+    console.error('Error raw:', JSON.stringify(error, null, 2));
     return res.status(500).json({
-      error: error.message || 'Failed to create checkout session'
+      error: error.message || 'Failed to create checkout session',
+      type: error.type,
+      code: error.code
     });
   }
 }

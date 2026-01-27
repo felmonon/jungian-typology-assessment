@@ -1,12 +1,11 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { GoogleGenAI } from '@google/genai';
 
 interface FunctionScore {
   function: string;
   score: number;
-  rawPreference: number;
-  rawInferior: number;
-  normalized: number;
+  rawPreference?: number;
+  rawInferior?: number;
+  normalized?: number;
 }
 
 interface Stack {
@@ -19,8 +18,8 @@ interface Stack {
 interface AnalysisInput {
   scores: FunctionScore[];
   stack: Stack;
-  attitudeScore: number;
-  isUndifferentiated: boolean;
+  attitudeScore?: number;
+  isUndifferentiated?: boolean;
 }
 
 const FUNCTION_NAMES: Record<string, string> = {
@@ -37,17 +36,17 @@ const FUNCTION_NAMES: Record<string, string> = {
 function formatScoresForPrompt(input: AnalysisInput): string {
   const sortedScores = [...input.scores].sort((a, b) => b.score - a.score);
   const scoresList = sortedScores
-    .map((s, i) => `${i + 1}. ${FUNCTION_NAMES[s.function]} (${s.function}): ${s.score.toFixed(1)}%`)
+    .map((s, i) => `${i + 1}. ${FUNCTION_NAMES[s.function] || s.function} (${s.function}): ${s.score.toFixed(1)}%`)
     .join("\n");
 
   const stackInfo = `
 Cognitive Stack:
-- Dominant: ${FUNCTION_NAMES[input.stack.dominant.function]} (${input.stack.dominant.function}) - ${input.stack.dominant.score.toFixed(1)}%
-- Auxiliary: ${FUNCTION_NAMES[input.stack.auxiliary.function]} (${input.stack.auxiliary.function}) - ${input.stack.auxiliary.score.toFixed(1)}%
-- Tertiary: ${FUNCTION_NAMES[input.stack.tertiary.function]} (${input.stack.tertiary.function}) - ${input.stack.tertiary.score.toFixed(1)}%
-- Inferior: ${FUNCTION_NAMES[input.stack.inferior.function]} (${input.stack.inferior.function}) - ${input.stack.inferior.score.toFixed(1)}%`;
+- Dominant: ${FUNCTION_NAMES[input.stack.dominant.function] || input.stack.dominant.function} (${input.stack.dominant.function}) - ${input.stack.dominant.score.toFixed(1)}%
+- Auxiliary: ${FUNCTION_NAMES[input.stack.auxiliary.function] || input.stack.auxiliary.function} (${input.stack.auxiliary.function}) - ${input.stack.auxiliary.score.toFixed(1)}%
+- Tertiary: ${FUNCTION_NAMES[input.stack.tertiary.function] || input.stack.tertiary.function} (${input.stack.tertiary.function}) - ${input.stack.tertiary.score.toFixed(1)}%
+- Inferior: ${FUNCTION_NAMES[input.stack.inferior.function] || input.stack.inferior.function} (${input.stack.inferior.function}) - ${input.stack.inferior.score.toFixed(1)}%`;
 
-  const attitude = input.attitudeScore > 0 ? "Extraverted" : "Introverted";
+  const attitude = (input.attitudeScore || 0) > 0 ? "Extraverted" : "Introverted";
 
   return `
 Assessment Results:
@@ -55,7 +54,7 @@ ${scoresList}
 
 ${stackInfo}
 
-Overall Attitude: ${attitude} (score: ${input.attitudeScore.toFixed(1)})
+Overall Attitude: ${attitude} (score: ${(input.attitudeScore || 0).toFixed(1)})
 Differentiation Status: ${input.isUndifferentiated ? "Undifferentiated (scores are relatively even)" : "Differentiated"}
 `;
 }
@@ -78,8 +77,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(500).json({ error: 'AI service not configured' });
     }
 
-    const ai = new GoogleGenAI({ apiKey });
-
     const prompt = `You are an expert in Jungian psychology and cognitive function typology. Based on the following Singer-Loomis assessment results, provide a brief but insightful personalized analysis.
 
 ${formatScoresForPrompt({ scores, stack, attitudeScore: attitudeScore || 0, isUndifferentiated: isUndifferentiated || false })}
@@ -91,12 +88,32 @@ Write a personalized analysis in 150-200 words that:
 
 Keep the tone warm, encouraging, and psychologically grounded. Use second person ("you"). Do not mention that this is a free or limited analysis. Do not use bullet points, headers, or any markdown formatting like asterisks. Write in plain flowing paragraphs only.`;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash-latest",
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-    });
+    // Use fetch directly to Gemini API
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 500,
+          },
+        }),
+      }
+    );
 
-    const analysis = response.text || "Unable to generate analysis at this time.";
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('Gemini API error:', data);
+      return res.status(500).json({ error: data.error?.message || 'AI service error' });
+    }
+
+    const analysis = data.candidates?.[0]?.content?.parts?.[0]?.text || "Unable to generate analysis at this time.";
 
     return res.status(200).json({ analysis });
   } catch (error: any) {

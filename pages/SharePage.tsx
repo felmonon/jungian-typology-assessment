@@ -93,7 +93,7 @@ export const SharePage: React.FC = () => {
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-3 mb-4">
           <img src="/logo.svg" alt="Jungian Typology" className="w-10 h-10" />
-          <span className="text-xs md:text-sm font-sans font-bold tracking-widest uppercase text-jung-secondary">
+          <span className="text-xs md:text-sm font-data font-bold tracking-widest uppercase text-jung-secondary">
             Jungian Typology Assessment
           </span>
         </div>
@@ -103,7 +103,7 @@ export const SharePage: React.FC = () => {
       {/* Hero card */}
       <div className="bg-jung-dark text-white p-6 md:p-10 rounded-2xl mb-8 shadow-xl">
         <div className="text-center">
-          <p className="text-xs md:text-sm uppercase tracking-widest opacity-70 mb-3 font-sans">Dominant Function</p>
+          <p className="text-xs md:text-sm uppercase tracking-widest opacity-70 mb-3 font-data">Dominant Function</p>
           <h1 className="text-2xl md:text-4xl font-serif font-bold mb-3">
             {funcDescription?.title || dominantFunc} ({dominantFunc})
           </h1>
@@ -117,7 +117,7 @@ export const SharePage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         {/* Radar chart */}
         <div className="card-elevated p-6 rounded-2xl">
-          <h3 className="text-sm md:text-base font-sans font-bold text-jung-secondary mb-4 tracking-widest uppercase text-center">
+          <h3 className="text-sm md:text-base font-data font-bold text-jung-secondary mb-4 tracking-widest uppercase text-center">
             Function-Attitude Energy
           </h3>
           <div className="w-full h-[280px] md:h-[350px]">
@@ -148,19 +148,19 @@ export const SharePage: React.FC = () => {
             <h3 className="text-base md:text-lg font-serif font-bold text-jung-dark mb-4">Function Stack</h3>
             <div className="space-y-3">
               <div className="flex justify-between items-center py-3 border-b border-jung-border">
-                <span className="font-medium text-jung-accent text-sm md:text-base font-sans">1. Dominant</span>
+                <span className="font-medium text-jung-accent text-sm md:text-base font-serif">1. Dominant</span>
                 <span className="font-serif font-bold text-base md:text-lg">{result.stack.dominant.function}</span>
               </div>
               <div className="flex justify-between items-center py-3 border-b border-jung-border">
-                <span className="font-medium text-jung-secondary text-sm md:text-base font-sans">2. Auxiliary</span>
+                <span className="font-medium text-jung-secondary text-sm md:text-base font-serif">2. Auxiliary</span>
                 <span className="font-serif font-bold text-base md:text-lg">{result.stack.auxiliary.function}</span>
               </div>
               <div className="flex justify-between items-center py-3 border-b border-jung-border">
-                <span className="font-medium text-jung-muted text-sm md:text-base font-sans">3. Tertiary</span>
+                <span className="font-medium text-jung-muted text-sm md:text-base font-serif">3. Tertiary</span>
                 <span className="font-serif font-bold text-base md:text-lg">{result.stack.tertiary.function}</span>
               </div>
               <div className="flex justify-between items-center py-3">
-                <span className="font-medium text-jung-muted/70 text-sm md:text-base font-sans">4. Inferior</span>
+                <span className="font-medium text-jung-muted/70 text-sm md:text-base font-serif">4. Inferior</span>
                 <span className="font-serif font-bold text-base md:text-lg text-jung-muted">{result.stack.inferior.function}</span>
               </div>
             </div>

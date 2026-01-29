@@ -2,7 +2,7 @@ import React from 'react';
 
 export const ProblemSection: React.FC = () => {
   return (
-    <section className="py-20 lg:py-28">
+    <section className="py-20 lg:py-28 bg-jung-surface border-y border-jung-border">
       <div className="editorial-container">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-display text-3xl sm:text-4xl md:text-5xl text-jung-dark mb-12 leading-tight text-center">

@@ -15,17 +15,17 @@ const CustomTooltip: React.FC<any> = ({ active, payload, label }) => {
     const score = payload[0].value;
     const funcData = FUNCTION_DESCRIPTIONS[label as keyof typeof FUNCTION_DESCRIPTIONS];
     const intensity = score >= 70 ? 'Strong' : score >= 50 ? 'Moderate' : score >= 30 ? 'Developing' : 'Emerging';
-    
+
     return (
       <div className="bg-jung-surface border border-jung-border rounded-xl p-4 shadow-lg max-w-[280px]">
         <div className="flex items-center gap-2 mb-2">
           <span className="text-2xl font-bold text-jung-accent">{label}</span>
-          <span className="text-xs px-2 py-0.5 bg-jung-accent/10 text-jung-accent rounded-full">
+          <span className="text-xs px-2 py-0.5 bg-jung-accent-light text-jung-accent rounded-full">
             {intensity}
           </span>
         </div>
-        <p className="text-lg font-bold text-jung-dark mb-1">{score}%</p>
-        <p className="text-sm text-jung-muted mb-2">{funcData?.title}</p>
+        <p className="text-lg font-bold text-jung-dark mb-1 font-mono">{score}%</p>
+        <p className="text-sm text-jung-muted mb-2 font-serif">{funcData?.title}</p>
         <p className="text-xs text-jung-secondary leading-relaxed">{funcData?.desc}</p>
       </div>
     );
@@ -41,31 +41,31 @@ const FunctionDetailTooltip: React.FC<{
 }> = ({ func, score, position }) => {
   const funcData = FUNCTION_DESCRIPTIONS[func as keyof typeof FUNCTION_DESCRIPTIONS];
   const [isVisible, setIsVisible] = useState(false);
-  
+
   return (
-    <div 
+    <div
       className="relative inline-block"
       onMouseEnter={() => setIsVisible(true)}
       onMouseLeave={() => setIsVisible(false)}
       onFocus={() => setIsVisible(true)}
       onBlur={() => setIsVisible(false)}
     >
-      <button 
+      <button
         className="p-1 rounded-full hover:bg-jung-border/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-jung-accent"
         aria-label={`More info about ${func}`}
       >
         <Info className="w-4 h-4 text-jung-muted" />
       </button>
-      
+
       {isVisible && (
         <div className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-4 bg-jung-surface border border-jung-border rounded-xl shadow-xl animate-scale-in">
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 rotate-45 w-3 h-3 bg-jung-surface border-r border-b border-jung-border" />
-          
+
           <div className="relative">
-            <h4 className="font-bold text-jung-dark mb-1">{funcData?.title}</h4>
+            <h4 className="font-bold text-jung-dark mb-1 font-serif">{funcData?.title}</h4>
             <p className="text-xs text-jung-accent mb-2">{func}</p>
             <p className="text-xs text-jung-secondary leading-relaxed mb-3">{funcData?.desc}</p>
-            
+
             <div className="space-y-2">
               <div className="text-xs">
                 <span className="font-medium text-emerald-700">+ Positive:</span>{' '}
@@ -76,7 +76,7 @@ const FunctionDetailTooltip: React.FC<{
                 <span className="text-jung-secondary">{funcData?.negative}</span>
               </div>
             </div>
-            
+
             {position && (
               <div className="mt-3 pt-3 border-t border-jung-border">
                 <p className="text-xs text-jung-muted">
@@ -98,8 +98,8 @@ const FunctionDetailTooltip: React.FC<{
 export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
   const reducedMotion = useReducedMotion();
   const [hoveredFunction, setHoveredFunction] = useState<string | null>(null);
-  
-  const chartData = useMemo(() => 
+
+  const chartData = useMemo(() =>
     results.scores.map(s => ({
       subject: s.function,
       A: s.score,
@@ -111,9 +111,9 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
 
   const attitude = results.attitudeScore > 0 ? ATTITUDE_DESCRIPTIONS.E : ATTITUDE_DESCRIPTIONS.I;
   const attitudeType = results.attitudeScore > 0 ? 'Extraversion' : 'Introversion';
-  
+
   // Calculate average score for comparison
-  const averageScore = useMemo(() => 
+  const averageScore = useMemo(() =>
     Math.round(results.scores.reduce((sum, s) => sum + s.score, 0) / results.scores.length),
     [results.scores]
   );
@@ -131,26 +131,26 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 mb-16">
       <div className="card-elevated p-6 md:p-8 flex flex-col items-center">
         <div className="flex items-center gap-2 mb-6">
-          <h3 className="text-ui text-sm font-semibold text-jung-muted uppercase tracking-wider">
+          <h3 className="text-ui text-sm font-semibold text-jung-muted uppercase tracking-wider font-serif">
             Function-Attitude Energy
           </h3>
           <div className="group relative">
             <Info className="w-4 h-4 text-jung-muted cursor-help" />
             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-jung-surface border border-jung-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
               <p className="text-xs text-jung-secondary">
-                This radar chart shows your relative strength across all 8 cognitive functions. 
+                This radar chart shows your relative strength across all 8 cognitive functions.
                 Hover over any point to see details. The shape reveals your unique psychological fingerprint.
               </p>
             </div>
           </div>
         </div>
-        
+
         <div className="w-full h-[280px] sm:h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
-            <RadarChart 
-              cx="50%" 
-              cy="50%" 
-              outerRadius="70%" 
+            <RadarChart
+              cx="50%"
+              cy="50%"
+              outerRadius="70%"
               data={chartData}
               onMouseMove={(e: any) => {
                 if (e && e.activeLabel) {
@@ -159,21 +159,21 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
               }}
               onMouseLeave={() => setHoveredFunction(null)}
             >
-              <PolarGrid stroke="#E8E4DE" />
-              <PolarAngleAxis 
-                dataKey="subject" 
+              <PolarGrid stroke="#D8D5CE" />
+              <PolarAngleAxis
+                dataKey="subject"
                 tick={(props: any) => {
                   const { x, y, payload } = props;
                   const isHovered = hoveredFunction === payload.value;
                   const position = getFunctionPosition(payload.value);
                   const colors = {
-                    dominant: '#A65D31',
-                    auxiliary: '#4A4540',
-                    tertiary: '#7A7570',
-                    inferior: '#B5B0A8',
-                    null: '#3D2914'
+                    dominant: '#1F7A67',
+                    auxiliary: '#2E2E52',
+                    tertiary: '#6B6B8D',
+                    inferior: '#9090AD',
+                    null: '#1B1B3A'
                   };
-                  
+
                   return (
                     <text
                       x={x}
@@ -194,9 +194,9 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
               <Radar
                 name="Your Score"
                 dataKey="A"
-                stroke="#B87333"
+                stroke="#1F7A67"
                 strokeWidth={hoveredFunction ? 4 : 3}
-                fill="#B87333"
+                fill="#1F7A67"
                 fillOpacity={hoveredFunction ? 0.5 : 0.4}
                 className={reducedMotion ? '' : 'transition-all duration-300'}
               />
@@ -204,7 +204,7 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
               <Radar
                 name="Average"
                 dataKey="fullMark"
-                stroke="#E8E4DE"
+                stroke="#D8D5CE"
                 strokeWidth={1}
                 strokeDasharray="4 4"
                 fill="none"
@@ -213,7 +213,7 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
             </RadarChart>
           </ResponsiveContainer>
         </div>
-        
+
         {/* Legend */}
         <div className="flex flex-wrap justify-center gap-4 mt-4 text-xs text-jung-muted">
           <div className="flex items-center gap-1.5">
@@ -240,7 +240,7 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
         <div className="bg-jung-surface p-6 rounded-xl border-l-4 border-jung-accent">
           <div className="flex items-center gap-2 mb-2">
             <TrendingUp className="w-5 h-5 text-jung-accent" />
-            <h3 className="text-heading text-xl">
+            <h3 className="text-heading text-xl font-serif">
               General Attitude: {attitudeType}
             </h3>
           </div>
@@ -248,7 +248,7 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
             Your energy naturally flows {results.attitudeScore > 0 ? 'outward toward the external world' : 'inward toward your inner experience'}.
           </p>
           <div className="mt-3 flex items-center gap-2 text-xs text-jung-muted">
-            <span>Score: {Math.abs(results.attitudeScore).toFixed(1)}</span>
+            <span className="font-mono">Score: {Math.abs(results.attitudeScore).toFixed(1)}</span>
             <span className="text-jung-border">|</span>
             <span>{Math.abs(results.attitudeScore) > 10 ? 'Clear preference' : 'Moderate preference'}</span>
           </div>
@@ -256,8 +256,8 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
 
         {/* Differentiation Warning */}
         {results.isUndifferentiated && (
-          <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl">
-            <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-amber-600" />
+          <div className="flex items-start gap-3 p-4 bg-jung-accent-light border border-jung-accent/20 text-jung-dark rounded-xl">
+            <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-jung-accent" />
             <div className="text-sm">
               <strong>Differentiation Note:</strong> Your profile is relatively balanced. The analysis below shows your theoretical function hierarchy.
             </div>
@@ -266,7 +266,7 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
 
         {/* Function Stack */}
         <div className="card-elevated p-6">
-          <h3 className="text-heading text-lg mb-4">Your Function Stack</h3>
+          <h3 className="text-heading text-lg mb-4 font-serif">Your Function Stack</h3>
           <div className="space-y-2 text-sm">
             {[
               { key: 'dominant', label: 'Dominant', color: 'text-jung-accent' },
@@ -276,14 +276,14 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
             ].map(({ key, label, color }, index) => {
               const func = results.stack[key as keyof typeof results.stack];
               return (
-                <div 
+                <div
                   key={key}
                   className="flex justify-between items-center py-3 border-b border-jung-border last:border-0 group"
                 >
                   <div className="flex items-center gap-2">
                     <span className={`font-medium ${color}`}>{index + 1}. {label}</span>
-                    <FunctionDetailTooltip 
-                      func={func.function} 
+                    <FunctionDetailTooltip
+                      func={func.function}
                       score={func.score}
                       position={key as any}
                     />
@@ -297,12 +297,12 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
             })}
           </div>
         </div>
-        
+
         {/* Score Stats */}
         <div className="bg-jung-surface-alt rounded-xl p-4 text-sm">
           <div className="flex justify-between items-center mb-2">
             <span className="text-jung-muted">Average Function Score</span>
-            <span className="font-bold text-jung-dark">{averageScore}%</span>
+            <span className="font-bold text-jung-dark font-mono">{averageScore}%</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-jung-muted">Differentiation</span>

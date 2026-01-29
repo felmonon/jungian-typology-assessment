@@ -162,7 +162,7 @@ export const CheckoutSuccess: React.FC = () => {
 
           <div className="flex items-center justify-center gap-2 text-emerald-600 mb-4">
             <Sparkles className="w-5 h-5" />
-            <span className="font-medium font-sans">Premium Unlocked Successfully</span>
+            <span className="font-medium font-serif">Premium Unlocked Successfully</span>
             <Sparkles className="w-5 h-5" />
           </div>
 

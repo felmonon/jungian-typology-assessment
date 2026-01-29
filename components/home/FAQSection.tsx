@@ -25,7 +25,7 @@ export const FAQSection: React.FC = () => {
                   aria-expanded={openFaq === index}
                   aria-controls={`faq-panel-${index}`}
                 >
-                  <span className="font-sans font-medium text-jung-dark pr-4">{item.question}</span>
+                  <span className="font-serif font-medium text-jung-dark pr-4">{item.question}</span>
                   {openFaq === index ? (
                     <Minus className="w-5 h-5 text-jung-accent flex-shrink-0" aria-hidden="true" />
                   ) : (

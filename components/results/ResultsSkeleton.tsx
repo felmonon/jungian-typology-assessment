@@ -135,7 +135,7 @@ export const ResultsSkeleton: React.FC = () => {
         </div>
 
         {/* AI Analysis Skeleton */}
-        <div className="bg-gradient-to-br from-purple-50/80 to-indigo-50/80 rounded-2xl border border-purple-200/50 p-6 md:p-8">
+        <div className="bg-jung-surface-alt rounded-lg border border-jung-border p-6 md:p-8">
           <div className="flex items-center gap-4 mb-6">
             <SkeletonBlock className="h-12 w-12 rounded-xl" delay={900} reducedMotion={reducedMotion} />
             <div className="space-y-2">
@@ -152,7 +152,7 @@ export const ResultsSkeleton: React.FC = () => {
 
         {/* Loading message */}
         <div className="text-center text-jung-muted">
-          <p className="font-sans text-sm animate-pulse">
+          <p className="font-serif text-sm animate-pulse">
             Analyzing your cognitive function profile...
           </p>
           <p className="text-xs mt-1 opacity-70">

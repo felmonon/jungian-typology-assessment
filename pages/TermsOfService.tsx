@@ -7,7 +7,7 @@ export const TermsOfService: React.FC = () => {
     <div className="editorial-container py-8 md:py-12">
       <Link
         to="/"
-        className="inline-flex items-center gap-2 text-jung-secondary hover:text-jung-accent transition-colors mb-8 font-sans"
+        className="inline-flex items-center gap-2 text-jung-secondary hover:text-jung-accent transition-colors mb-8 font-serif"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Home
@@ -20,7 +20,7 @@ export const TermsOfService: React.FC = () => {
         <h1 className="text-display text-jung-dark mb-4">
           Terms of Service
         </h1>
-        <p className="text-jung-muted text-sm font-sans">
+        <p className="text-jung-muted text-sm font-serif">
           Last updated: January 12, 2026
         </p>
       </header>
@@ -90,21 +90,21 @@ export const TermsOfService: React.FC = () => {
 
           <div className="space-y-4 pl-14">
             <div className="card-elevated rounded-2xl p-5">
-              <h3 className="font-semibold text-jung-dark mb-2 font-sans">Pricing</h3>
+              <h3 className="font-semibold text-jung-dark mb-2 font-serif">Pricing</h3>
               <p className="text-jung-secondary text-sm m-0 font-body">
                 Premium access to full assessment results is available for a one-time payment of <strong className="text-jung-dark">$10 USD</strong>. This is a non-recurring charge that provides lifetime access to your detailed results.
               </p>
             </div>
 
             <div className="card-elevated rounded-2xl p-5">
-              <h3 className="font-semibold text-jung-dark mb-2 font-sans">Refund Policy</h3>
+              <h3 className="font-semibold text-jung-dark mb-2 font-serif">Refund Policy</h3>
               <p className="text-jung-secondary text-sm m-0 font-body">
                 We offer a <strong className="text-jung-dark">30-day refund policy</strong>. If you are not satisfied with your assessment results, you may request a full refund within 30 days of purchase. To request a refund, please contact us with your order details.
               </p>
             </div>
 
             <div className="card-elevated rounded-2xl p-5">
-              <h3 className="font-semibold text-jung-dark mb-2 font-sans">Payment Processing</h3>
+              <h3 className="font-semibold text-jung-dark mb-2 font-serif">Payment Processing</h3>
               <p className="text-jung-secondary text-sm m-0 font-body">
                 All payments are processed securely through Stripe. By making a purchase, you agree to Stripe's terms of service. We do not store your credit card information.
               </p>
@@ -208,7 +208,7 @@ export const TermsOfService: React.FC = () => {
           <p className="text-jung-secondary m-0 font-body">
             If you have any questions about these Terms of Service, please contact us at:
           </p>
-          <p className="text-jung-accent font-medium mt-3 m-0 font-sans">
+          <p className="text-jung-accent font-medium mt-3 m-0 font-serif">
             [Contact Email Placeholder]
           </p>
         </section>
@@ -220,7 +220,7 @@ export const TermsOfService: React.FC = () => {
           <div className="mt-6">
             <Link
               to="/privacy"
-              className="text-jung-accent hover:underline transition-colors font-medium font-sans"
+              className="text-jung-accent hover:underline transition-colors font-medium font-serif"
             >
               View Privacy Policy →
             </Link>

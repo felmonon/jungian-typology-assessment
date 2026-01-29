@@ -48,23 +48,51 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
   return (
     <section
       ref={heroRef}
-      className="relative min-h-screen flex items-center overflow-hidden bg-pattern-subtle"
+      className="relative min-h-screen flex items-center overflow-hidden bg-jung-base"
     >
-      {/* Animated Background Orbs */}
+      {/* Decorative Mandala SVG Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="orb orb-1 -top-40 -right-40" />
-        <div className="orb orb-2 top-1/3 -left-20" />
-        <div className="orb orb-3 bottom-0 right-1/4" />
-
-        {/* Grid Pattern Overlay */}
-        <div
-          className="absolute inset-0 opacity-[0.02]"
-          style={{
-            backgroundImage: `linear-gradient(rgba(180, 83, 9, 0.3) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(180, 83, 9, 0.3) 1px, transparent 1px)`,
-            backgroundSize: '60px 60px'
-          }}
-        />
+        <svg
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] opacity-[0.03]"
+          viewBox="0 0 400 400"
+          fill="none"
+        >
+          {/* Outer circle */}
+          <circle cx="200" cy="200" r="190" stroke="#1B1B3A" strokeWidth="1" />
+          <circle cx="200" cy="200" r="150" stroke="#1B1B3A" strokeWidth="1" />
+          <circle cx="200" cy="200" r="110" stroke="#1B1B3A" strokeWidth="1" />
+          <circle cx="200" cy="200" r="70" stroke="#1B1B3A" strokeWidth="1" />
+          {/* Diamond patterns */}
+          {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => {
+            const rad = (angle * Math.PI) / 180;
+            const x1 = 200 + 190 * Math.cos(rad);
+            const y1 = 200 + 190 * Math.sin(rad);
+            return (
+              <line
+                key={angle}
+                x1="200"
+                y1="200"
+                x2={x1}
+                y2={y1}
+                stroke="#1B1B3A"
+                strokeWidth="0.5"
+              />
+            );
+          })}
+          {/* Inner diamonds */}
+          <polygon
+            points="200,50 350,200 200,350 50,200"
+            stroke="#1B1B3A"
+            strokeWidth="0.75"
+            fill="none"
+          />
+          <polygon
+            points="200,90 310,200 200,310 90,200"
+            stroke="#1B1B3A"
+            strokeWidth="0.75"
+            fill="none"
+          />
+        </svg>
       </div>
 
       <div className="editorial-container relative z-10 py-20 lg:py-0">
@@ -74,31 +102,26 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
           <div className="space-y-8 lg:pr-8">
             {/* Premium Badge */}
             <div
-              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full transition-all duration-700 ${
+              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-jung-accent-light border border-jung-accent/15 transition-all duration-700 ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
               }`}
-              style={{
-                background: 'linear-gradient(135deg, rgba(180, 83, 9, 0.08), rgba(245, 158, 11, 0.08))',
-                border: '1px solid rgba(180, 83, 9, 0.15)',
-                boxShadow: '0 2px 20px rgba(180, 83, 9, 0.1)'
-              }}
             >
-              <Sparkles className="w-4 h-4 text-amber-600" />
-              <span className="text-sm font-sans font-semibold text-amber-800 tracking-wide">
+              <Sparkles className="w-4 h-4 text-jung-accent" />
+              <span className="text-sm font-serif font-semibold text-jung-accent tracking-wide">
                 Singer-Loomis Validated Methodology
               </span>
             </div>
 
             {/* Main Headline */}
             <h1
-              className={`text-display-lg text-5xl sm:text-6xl lg:text-7xl xl:text-8xl text-jung-dark leading-[0.95] transition-all duration-1000 delay-100 ${
+              className={`text-display text-5xl sm:text-6xl lg:text-7xl xl:text-8xl text-jung-dark leading-[0.95] transition-all duration-1000 delay-100 ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
             >
               Discover Your
               <br />
               <span className="relative inline-block mt-2">
-                <span className="gradient-text">True Nature</span>
+                <span className="text-jung-accent">True Nature</span>
                 <svg
                   className="absolute -bottom-2 left-0 w-full"
                   viewBox="0 0 300 12"
@@ -107,18 +130,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
                 >
                   <path
                     d="M2 8C50 2 100 2 150 6C200 10 250 10 298 4"
-                    stroke="url(#gradient)"
+                    stroke="#1F7A67"
                     strokeWidth="3"
                     strokeLinecap="round"
                     className={`transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
                   />
-                  <defs>
-                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#B45309" />
-                      <stop offset="50%" stopColor="#F59E0B" />
-                      <stop offset="100%" stopColor="#D97706" />
-                    </linearGradient>
-                  </defs>
                 </svg>
               </span>
             </h1>
@@ -168,31 +184,31 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
               }`}
             >
               <div className="flex items-center gap-2 text-jung-muted">
-                <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center">
-                  <Users className="w-5 h-5 text-amber-600" />
+                <div className="w-10 h-10 rounded-full bg-jung-accent-light flex items-center justify-center">
+                  <Users className="w-5 h-5 text-jung-accent" />
                 </div>
                 <div>
-                  <p className="text-jung-dark font-semibold font-sans">{assessmentCount}+</p>
+                  <p className="text-jung-dark font-semibold font-serif">{assessmentCount}+</p>
                   <p className="text-xs">assessments taken</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 text-jung-muted">
-                <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center">
-                  <Clock className="w-5 h-5 text-amber-600" />
+                <div className="w-10 h-10 rounded-full bg-jung-accent-light flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-jung-accent" />
                 </div>
                 <div>
-                  <p className="text-jung-dark font-semibold font-sans">~15 min</p>
+                  <p className="text-jung-dark font-semibold font-serif">~15 min</p>
                   <p className="text-xs">to complete</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 text-jung-muted">
-                <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center">
-                  <Shield className="w-5 h-5 text-amber-600" />
+                <div className="w-10 h-10 rounded-full bg-jung-accent-light flex items-center justify-center">
+                  <Shield className="w-5 h-5 text-jung-accent" />
                 </div>
                 <div>
-                  <p className="text-jung-dark font-semibold font-sans">Private</p>
+                  <p className="text-jung-dark font-semibold font-serif">Private</p>
                   <p className="text-xs">secure data</p>
                 </div>
               </div>
@@ -207,19 +223,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
           >
             {/* Main Card */}
             <div className="relative">
-              {/* Glow Effect */}
-              <div className="absolute -inset-4 bg-gradient-to-r from-amber-500/20 to-orange-500/20 rounded-[2.5rem] blur-3xl opacity-60" />
-
               {/* Card */}
-              <div className="relative glass rounded-[2rem] p-8 shadow-2xl">
+              <div className="relative card-elevated rounded-2xl p-8 shadow-md">
                 {/* Card Header */}
                 <div className="flex items-center gap-4 mb-8">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/30">
-                    <span className="text-2xl font-serif text-white">ψ</span>
+                  <div className="w-14 h-14 rounded-xl bg-jung-accent flex items-center justify-center shadow-sm">
+                    <span className="text-2xl font-serif text-white">&psi;</span>
                   </div>
                   <div>
                     <h3 className="text-heading text-xl text-jung-dark">Your Cognitive Profile</h3>
-                    <p className="text-sm text-jung-muted font-sans">8 functions visualized</p>
+                    <p className="text-sm text-jung-muted font-serif">8 functions visualized</p>
                   </div>
                 </div>
 
@@ -237,7 +250,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
                           return `${x},${y}`;
                         }).join(' ')}
                         fill="none"
-                        stroke="#E7E5E4"
+                        stroke="#EDEAE3"
                         strokeWidth="1"
                         strokeDasharray={i % 2 === 0 ? "4 4" : "none"}
                       />
@@ -246,11 +259,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
                     {/* Data shape */}
                     <polygon
                       points="140,30 210,65 230,140 200,205 140,230 80,200 50,140 70,65"
-                      fill="url(#radarGradient)"
-                      stroke="#B45309"
+                      fill="rgba(31, 122, 103, 0.12)"
+                      stroke="#1F7A67"
                       strokeWidth="2.5"
-                      className="animate-pulse-glow"
-                      style={{ filter: 'drop-shadow(0 4px 12px rgba(180, 83, 9, 0.3))' }}
+                      style={{ filter: 'drop-shadow(0 4px 12px rgba(31, 122, 103, 0.2))' }}
                     />
 
                     {/* Function labels */}
@@ -265,20 +277,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
                           y={y}
                           textAnchor="middle"
                           dominantBaseline="middle"
-                          className="text-sm font-sans font-bold"
-                          fill={['Ni', 'Te', 'Si', 'Fe'].includes(fn) ? '#B45309' : '#78716C'}
+                          className="text-sm font-serif font-bold"
+                          fill={['Ni', 'Te', 'Si', 'Fe'].includes(fn) ? '#1F7A67' : '#6B6B8D'}
                         >
                           {fn}
                         </text>
                       );
                     })}
-
-                    <defs>
-                      <linearGradient id="radarGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="rgba(180, 83, 9, 0.25)" />
-                        <stop offset="100%" stopColor="rgba(245, 158, 11, 0.15)" />
-                      </linearGradient>
-                    </defs>
                   </svg>
                 </div>
 
@@ -287,11 +292,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
                   {['Dominant', 'Auxiliary', 'Tertiary', 'Inferior'].map((pos, i) => (
                     <span
                       key={pos}
-                      className="px-3 py-1.5 rounded-full text-xs font-sans font-medium"
+                      className="px-3 py-1.5 rounded-full text-xs font-serif font-medium"
                       style={{
-                        background: i === 0 ? 'linear-gradient(135deg, #FEF3C7, #FDE68A)' : '#F5F5F4',
-                        color: i === 0 ? '#92400E' : '#78716C',
-                        border: `1px solid ${i === 0 ? 'rgba(180, 83, 9, 0.2)' : 'transparent'}`
+                        background: i === 0 ? '#E0F2ED' : '#EDEAE3',
+                        color: i === 0 ? '#1F7A67' : '#6B6B8D',
+                        border: `1px solid ${i === 0 ? 'rgba(31, 122, 103, 0.2)' : 'transparent'}`
                       }}
                     >
                       {pos}
@@ -302,12 +307,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
 
               {/* Floating Testimonial Card */}
               <div
-                className="absolute -bottom-6 -left-6 glass rounded-2xl p-5 shadow-xl max-w-[240px] animate-float hidden md:block"
-                style={{ animationDelay: '1s' }}
+                className="absolute -bottom-6 -left-6 card-elevated rounded-xl p-5 shadow-md max-w-[240px] hidden md:block"
               >
                 <div className="flex items-center gap-1 mb-2">
                   {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                    <svg key={i} className="w-4 h-4 text-jung-gold" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   ))}
@@ -316,7 +320,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
                   "Finally, a test that understood my complexity. The insights were uncanny."
                 </p>
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white text-sm font-bold">
+                  <div className="w-8 h-8 rounded-full bg-jung-accent flex items-center justify-center text-white text-sm font-bold">
                     S
                   </div>
                   <div>
@@ -328,17 +332,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
 
               {/* Stats Badge */}
               <div
-                className="absolute -top-4 -right-4 glass rounded-2xl p-4 shadow-xl animate-float hidden md:block"
-                style={{ animationDelay: '2s' }}
+                className="absolute -top-4 -right-4 card-elevated rounded-xl p-4 shadow-md hidden md:block"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-jung-accent flex items-center justify-center">
                     <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
                   <div>
-                    <p className="text-jung-dark text-lg font-bold font-sans">94%</p>
+                    <p className="text-jung-dark text-lg font-bold font-serif">94%</p>
                     <p className="text-jung-muted text-xs">Accuracy Rate</p>
                   </div>
                 </div>
@@ -348,8 +351,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
         </div>
       </div>
 
-      {/* Bottom Gradient Fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-jung-base to-transparent pointer-events-none" />
+      {/* Bottom Fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-jung-base pointer-events-none" style={{ maskImage: 'linear-gradient(to top, black, transparent)' }} />
     </section>
   );
 };

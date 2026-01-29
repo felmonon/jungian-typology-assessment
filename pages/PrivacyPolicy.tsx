@@ -7,7 +7,7 @@ export const PrivacyPolicy: React.FC = () => {
     <div className="editorial-container py-8 md:py-12">
       <Link
         to="/"
-        className="inline-flex items-center gap-2 text-jung-secondary hover:text-jung-accent transition-colors mb-8 font-sans"
+        className="inline-flex items-center gap-2 text-jung-secondary hover:text-jung-accent transition-colors mb-8 font-serif"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Home
@@ -20,7 +20,7 @@ export const PrivacyPolicy: React.FC = () => {
         <h1 className="text-display text-jung-dark mb-4">
           Privacy Policy
         </h1>
-        <p className="text-jung-muted text-sm font-sans">
+        <p className="text-jung-muted text-sm font-serif">
           Last updated: January 12, 2026
         </p>
       </header>
@@ -40,21 +40,21 @@ export const PrivacyPolicy: React.FC = () => {
 
           <div className="space-y-4 pl-14">
             <div className="card-elevated rounded-2xl p-5">
-              <h3 className="font-semibold text-jung-dark mb-2 font-sans">Account Information</h3>
+              <h3 className="font-semibold text-jung-dark mb-2 font-serif">Account Information</h3>
               <p className="text-jung-secondary text-sm m-0 font-body">
                 When you create an account, we collect your email address and basic profile information provided through Google OAuth authentication. This includes your name and profile picture if available.
               </p>
             </div>
 
             <div className="card-elevated rounded-2xl p-5">
-              <h3 className="font-semibold text-jung-dark mb-2 font-sans">Assessment Responses</h3>
+              <h3 className="font-semibold text-jung-dark mb-2 font-serif">Assessment Responses</h3>
               <p className="text-jung-secondary text-sm m-0 font-body">
                 We store your responses to the typology assessment questions and the calculated results. This data is used to generate your personalized psychological profile and is linked to your account.
               </p>
             </div>
 
             <div className="card-elevated rounded-2xl p-5">
-              <h3 className="font-semibold text-jung-dark mb-2 font-sans">Payment Information</h3>
+              <h3 className="font-semibold text-jung-dark mb-2 font-serif">Payment Information</h3>
               <p className="text-jung-secondary text-sm m-0 font-body">
                 When you purchase premium access, payment processing is handled by Stripe. We do not store your credit card details. We receive confirmation of successful payment and your purchase status.
               </p>
@@ -88,7 +88,7 @@ export const PrivacyPolicy: React.FC = () => {
 
           <div className="space-y-4 pl-14">
             <div className="card-elevated rounded-2xl p-5">
-              <h3 className="font-semibold text-jung-dark mb-2 flex items-center gap-2 font-sans">
+              <h3 className="font-semibold text-jung-dark mb-2 flex items-center gap-2 font-serif">
                 <CreditCard className="w-4 h-4 text-jung-muted" />
                 Stripe (Payment Processing)
               </h3>
@@ -98,7 +98,7 @@ export const PrivacyPolicy: React.FC = () => {
             </div>
 
             <div className="card-elevated rounded-2xl p-5">
-              <h3 className="font-semibold text-jung-dark mb-2 flex items-center gap-2 font-sans">
+              <h3 className="font-semibold text-jung-dark mb-2 flex items-center gap-2 font-serif">
                 <Shield className="w-4 h-4 text-jung-muted" />
                 Google (Authentication)
               </h3>
@@ -108,7 +108,7 @@ export const PrivacyPolicy: React.FC = () => {
             </div>
 
             <div className="card-elevated rounded-2xl p-5">
-              <h3 className="font-semibold text-jung-dark mb-2 flex items-center gap-2 font-sans">
+              <h3 className="font-semibold text-jung-dark mb-2 flex items-center gap-2 font-serif">
                 <Mail className="w-4 h-4 text-jung-muted" />
                 Resend (Email Delivery)
               </h3>
@@ -175,7 +175,7 @@ export const PrivacyPolicy: React.FC = () => {
           <p className="text-jung-secondary m-0 font-body">
             If you have any questions about this Privacy Policy or wish to exercise your data rights, please contact us at:
           </p>
-          <p className="text-jung-accent font-medium mt-3 m-0 font-sans">
+          <p className="text-jung-accent font-medium mt-3 m-0 font-serif">
             [Contact Email Placeholder]
           </p>
         </section>
@@ -187,7 +187,7 @@ export const PrivacyPolicy: React.FC = () => {
           <div className="mt-6">
             <Link
               to="/terms"
-              className="text-jung-accent hover:underline transition-colors font-medium font-sans"
+              className="text-jung-accent hover:underline transition-colors font-medium font-serif"
             >
               View Terms of Service →
             </Link>

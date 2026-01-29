@@ -7,14 +7,14 @@ import { Button } from '../components/ui/Button';
 type FunctionCode = typeof validFunctions[number];
 
 const functionColors: Record<FunctionCode, string> = {
-  ni: 'from-indigo-500 to-purple-600',
-  ne: 'from-yellow-400 to-orange-500',
-  si: 'from-green-500 to-teal-600',
-  se: 'from-red-500 to-pink-600',
-  ti: 'from-blue-500 to-cyan-600',
-  te: 'from-slate-600 to-zinc-700',
-  fi: 'from-rose-400 to-pink-500',
-  fe: 'from-amber-400 to-yellow-500',
+  ni: 'bg-indigo-600',
+  ne: 'bg-orange-500',
+  si: 'bg-teal-600',
+  se: 'bg-red-500',
+  ti: 'bg-blue-600',
+  te: 'bg-slate-700',
+  fi: 'bg-rose-500',
+  fe: 'bg-jung-accent',
 };
 
 const functionIcons: Record<FunctionCode, string> = {
@@ -68,9 +68,9 @@ export const FunctionDetailPage: React.FC = () => {
   const data = functionData[fnLower];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-stone-50 to-white">
+    <div className="min-h-screen bg-jung-surface">
       {/* Hero Section */}
-      <section className={`relative bg-gradient-to-br ${functionColors[fnLower]} text-white py-16 md:py-24`}>
+      <section className={`relative ${functionColors[fnLower]} text-white py-16 md:py-24`}>
         <div className="absolute inset-0 bg-black/20" />
         <div className="relative max-w-4xl mx-auto px-4">
           <Link
@@ -109,29 +109,29 @@ export const FunctionDetailPage: React.FC = () => {
 
         {/* Description */}
         <section className="mb-12">
-          <p className="text-lg md:text-xl text-stone-700 leading-relaxed">
+          <p className="text-lg md:text-xl text-jung-dark leading-relaxed">
             {data.description}
           </p>
         </section>
 
         {/* Quick Facts */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-stone-100">
-            <span className="text-xs text-stone-500 uppercase tracking-wider">Attitude</span>
+          <div className="bg-white rounded-xl p-4 shadow-sm border border-jung-border">
+            <span className="text-xs text-jung-muted uppercase tracking-wider">Attitude</span>
             <p className="font-semibold text-jung-dark">{data.attitude}</p>
           </div>
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-stone-100">
-            <span className="text-xs text-stone-500 uppercase tracking-wider">Category</span>
+          <div className="bg-white rounded-xl p-4 shadow-sm border border-jung-border">
+            <span className="text-xs text-jung-muted uppercase tracking-wider">Category</span>
             <p className="font-semibold text-jung-dark">{data.category}</p>
           </div>
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-stone-100">
-            <span className="text-xs text-stone-500 uppercase tracking-wider">Opposite</span>
+          <div className="bg-white rounded-xl p-4 shadow-sm border border-jung-border">
+            <span className="text-xs text-jung-muted uppercase tracking-wider">Opposite</span>
             <Link to={`/functions/${data.oppositeFunction.toLowerCase()}`} className="font-semibold text-jung-accent hover:underline">
               {data.oppositeFunction}
             </Link>
           </div>
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-stone-100">
-            <span className="text-xs text-stone-500 uppercase tracking-wider">Archetype</span>
+          <div className="bg-white rounded-xl p-4 shadow-sm border border-jung-border">
+            <span className="text-xs text-jung-muted uppercase tracking-wider">Archetype</span>
             <p className="font-semibold text-jung-dark">{data.archetype}</p>
           </div>
         </section>
@@ -146,9 +146,9 @@ export const FunctionDetailPage: React.FC = () => {
           </div>
           <div className="grid md:grid-cols-2 gap-3">
             {data.characteristics.map((char, idx) => (
-              <div key={idx} className="flex items-start gap-3 bg-white rounded-lg p-4 shadow-sm border border-stone-100">
+              <div key={idx} className="flex items-start gap-3 bg-white rounded-lg p-4 shadow-sm border border-jung-border">
                 <ChevronRight className="w-5 h-5 text-jung-accent flex-shrink-0 mt-0.5" />
-                <span className="text-stone-700">{char}</span>
+                <span className="text-jung-dark">{char}</span>
               </div>
             ))}
           </div>
@@ -169,7 +169,7 @@ export const FunctionDetailPage: React.FC = () => {
                   <span className="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-sm font-bold flex-shrink-0">
                     {idx + 1}
                   </span>
-                  <span className="text-stone-700">{strength}</span>
+                  <span className="text-jung-dark">{strength}</span>
                 </li>
               ))}
             </ul>
@@ -177,18 +177,18 @@ export const FunctionDetailPage: React.FC = () => {
 
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
-                <AlertTriangle className="w-5 h-5 text-amber-600" />
+              <div className="w-10 h-10 rounded-full bg-jung-accent-light flex items-center justify-center">
+                <AlertTriangle className="w-5 h-5 text-jung-accent" />
               </div>
               <h2 className="text-xl font-serif font-bold text-jung-dark">Challenges</h2>
             </div>
             <ul className="space-y-3">
               {data.challenges.map((challenge, idx) => (
                 <li key={idx} className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-sm font-bold flex-shrink-0">
+                  <span className="w-6 h-6 rounded-full bg-jung-accent-light text-jung-accent flex items-center justify-center text-sm font-bold flex-shrink-0">
                     {idx + 1}
                   </span>
-                  <span className="text-stone-700">{challenge}</span>
+                  <span className="text-jung-dark">{challenge}</span>
                 </li>
               ))}
             </ul>
@@ -197,14 +197,14 @@ export const FunctionDetailPage: React.FC = () => {
 
         {/* The Grip */}
         <section className="mb-12">
-          <div className="bg-gradient-to-r from-rose-50 to-orange-50 rounded-2xl p-6 md:p-8 border border-rose-100">
+          <div className="bg-rose-50 rounded-2xl p-6 md:p-8 border border-rose-100">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center">
                 <AlertTriangle className="w-5 h-5 text-rose-600" />
               </div>
               <h2 className="text-xl font-serif font-bold text-jung-dark">In The Grip (Under Stress)</h2>
             </div>
-            <p className="text-stone-700 leading-relaxed">
+            <p className="text-jung-dark leading-relaxed">
               {data.inTheGrip}
             </p>
           </div>
@@ -221,7 +221,7 @@ export const FunctionDetailPage: React.FC = () => {
 
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-sm uppercase tracking-wider text-stone-500 mb-3">Dominant Function</h3>
+              <h3 className="text-sm uppercase tracking-wider text-jung-muted mb-3">Dominant Function</h3>
               <div className="flex flex-wrap gap-2">
                 {data.dominantIn.map((type) => (
                   <Link
@@ -236,13 +236,13 @@ export const FunctionDetailPage: React.FC = () => {
             </div>
 
             <div>
-              <h3 className="text-sm uppercase tracking-wider text-stone-500 mb-3">Auxiliary Function</h3>
+              <h3 className="text-sm uppercase tracking-wider text-jung-muted mb-3">Auxiliary Function</h3>
               <div className="flex flex-wrap gap-2">
                 {data.auxiliaryIn.map((type) => (
                   <Link
                     key={type}
                     to={`/types/${type.toLowerCase()}`}
-                    className="px-4 py-2 bg-stone-200 text-stone-700 rounded-lg font-mono font-bold hover:bg-stone-300 transition-colors"
+                    className="px-4 py-2 bg-jung-border text-jung-dark rounded-lg font-mono font-bold hover:bg-jung-border transition-colors"
                   >
                     {type}
                   </Link>
@@ -253,7 +253,7 @@ export const FunctionDetailPage: React.FC = () => {
         </section>
 
         {/* CTA */}
-        <section className="text-center py-12 border-t border-stone-200">
+        <section className="text-center py-12 border-t border-jung-border">
           <div className="inline-flex items-center gap-2 text-jung-accent mb-4">
             <Sparkles className="w-5 h-5" />
             <span className="text-sm font-semibold uppercase tracking-wider">Discover Your Profile</span>
@@ -261,7 +261,7 @@ export const FunctionDetailPage: React.FC = () => {
           <h2 className="text-2xl md:text-3xl font-serif font-bold text-jung-dark mb-4">
             Want to know your {data.code} score?
           </h2>
-          <p className="text-stone-600 mb-8 max-w-lg mx-auto">
+          <p className="text-jung-secondary mb-8 max-w-lg mx-auto">
             Take our free assessment to measure all 8 cognitive functions and discover your unique psychological profile.
           </p>
           <Button onClick={() => navigate('/assessment')} size="lg">
@@ -270,14 +270,14 @@ export const FunctionDetailPage: React.FC = () => {
         </section>
 
         {/* Explore Other Functions */}
-        <section className="pt-8 border-t border-stone-200">
+        <section className="pt-8 border-t border-jung-border">
           <h3 className="text-lg font-serif font-bold text-jung-dark mb-4">Explore Other Functions</h3>
           <div className="flex flex-wrap gap-2">
             {validFunctions.filter(f => f !== fnLower).map((func) => (
               <Link
                 key={func}
                 to={`/functions/${func}`}
-                className="px-3 py-1.5 bg-stone-100 text-stone-600 rounded-lg font-mono text-sm hover:bg-stone-200 transition-colors"
+                className="px-3 py-1.5 bg-jung-surface-alt text-jung-secondary rounded-lg font-mono text-sm hover:bg-jung-border transition-colors"
               >
                 {func.toUpperCase()}
               </Link>

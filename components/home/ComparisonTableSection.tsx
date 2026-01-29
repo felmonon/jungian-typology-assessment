@@ -15,14 +15,14 @@ export const ComparisonTableSection: React.FC = () => {
           <table className="w-full bg-jung-base rounded-xl overflow-hidden border border-jung-border">
             <thead>
               <tr className="bg-jung-dark text-white">
-                <th className="px-4 py-4 text-left font-sans font-medium text-sm"></th>
-                <th className="px-4 py-4 text-center font-sans font-medium text-sm">16Personalities</th>
-                <th className="px-4 py-4 text-center font-sans font-medium text-sm">Enneagram</th>
-                <th className="px-4 py-4 text-center font-sans font-medium text-sm">Big Five</th>
-                <th className="px-4 py-4 text-center font-sans font-medium text-sm bg-jung-accent">JungianTypology</th>
+                <th className="px-4 py-4 text-left font-serif font-medium text-sm"></th>
+                <th className="px-4 py-4 text-center font-serif font-medium text-sm">16Personalities</th>
+                <th className="px-4 py-4 text-center font-serif font-medium text-sm">Enneagram</th>
+                <th className="px-4 py-4 text-center font-serif font-medium text-sm">Big Five</th>
+                <th className="px-4 py-4 text-center font-serif font-medium text-sm bg-jung-accent">JungianTypology</th>
               </tr>
             </thead>
-            <tbody className="text-sm font-sans">
+            <tbody className="text-sm font-serif">
               {COMPARISON_ROWS.map((row, idx) => (
                 <tr key={idx} className="border-b border-jung-border last:border-0">
                   <td className="px-4 py-4 font-medium text-jung-dark">{row.label}</td>

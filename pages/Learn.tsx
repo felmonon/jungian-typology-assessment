@@ -9,12 +9,12 @@ export const Learn: React.FC = () => {
       <div className="mb-12 border-b border-jung-border pb-8">
         <div className="flex items-center gap-3 text-jung-accent mb-4">
           <BookOpen className="w-6 h-6" />
-          <span className="font-sans font-bold uppercase tracking-widest text-sm">The Theory</span>
+          <span className="font-serif font-bold uppercase tracking-widest text-sm">The Theory</span>
         </div>
         <h1 className="text-display text-jung-dark mb-6">
           Jungian Depth Psychology
         </h1>
-        <p className="text-xl text-jung-secondary leading-relaxed font-sans font-light">
+        <p className="text-xl text-jung-secondary leading-relaxed font-serif font-light">
           "The classification of individuals means nothing, nothing at all. To understand them, you have to be on the spot."
         </p>
       </div>
@@ -48,34 +48,34 @@ export const Learn: React.FC = () => {
 
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div>
-              <h4 className="font-bold text-jung-dark border-b border-jung-accent/30 pb-2 mb-3 font-sans">Rational (Judging) Functions</h4>
+              <h4 className="font-bold text-jung-dark border-b border-jung-accent/30 pb-2 mb-3 font-serif">Rational (Judging) Functions</h4>
               <p className="text-base mb-4 text-jung-secondary">
                 These functions evaluate experience based on a norm or standard.
               </p>
               <ul className="space-y-4 text-base">
                 <li className="flex gap-3">
-                  <span className="font-bold text-jung-accent min-w-[80px] font-sans">Thinking</span>
+                  <span className="font-bold text-jung-accent min-w-[80px] font-serif">Thinking</span>
                   <span className="text-jung-secondary">Evaluates <i>truth/falsity</i> through logical inference and conceptual connection. "What is this?"</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-jung-accent min-w-[80px] font-sans">Feeling</span>
+                  <span className="font-bold text-jung-accent min-w-[80px] font-serif">Feeling</span>
                   <span className="text-jung-secondary">Evaluates <i>value/worth</i> (acceptance or rejection) through an ego-based value system. "What is this worth to me?" (Note: This is not emotion; it is rational judgment).</span>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-bold text-jung-dark border-b border-jung-accent/30 pb-2 mb-3 font-sans">Irrational (Perceiving) Functions</h4>
+              <h4 className="font-bold text-jung-dark border-b border-jung-accent/30 pb-2 mb-3 font-serif">Irrational (Perceiving) Functions</h4>
               <p className="text-base mb-4 text-jung-secondary">
                 These functions gather data without judgment or evaluation.
               </p>
               <ul className="space-y-4 text-base">
                 <li className="flex gap-3">
-                  <span className="font-bold text-jung-accent min-w-[80px] font-sans">Sensation</span>
+                  <span className="font-bold text-jung-accent min-w-[80px] font-serif">Sensation</span>
                   <span className="text-jung-secondary">Perceives <i>that</i> something exists through physical stimuli. Focuses on reality and facts.</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-jung-accent min-w-[80px] font-sans">Intuition</span>
+                  <span className="font-bold text-jung-accent min-w-[80px] font-serif">Intuition</span>
                   <span className="text-jung-secondary">Perceives <i>possibilities</i> and patterns via the unconscious. Focuses on where things came from and where they are going.</span>
                 </li>
               </ul>
@@ -91,13 +91,13 @@ export const Learn: React.FC = () => {
           </p>
           <div className="grid md:grid-cols-2 gap-8 my-8">
             <div className="bg-jung-surface p-6 rounded-2xl border-l-4 border-jung-muted">
-              <h4 className="font-bold text-jung-dark mb-2 text-xl font-sans">Extraversion (E)</h4>
+              <h4 className="font-bold text-jung-dark mb-2 text-xl font-serif">Extraversion (E)</h4>
               <p className="text-base text-jung-secondary">
                 The flow of energy is directed <strong className="text-jung-dark">outward</strong> toward the object. The subject aligns themselves with external conditions, collective facts, and the environment. Action, interaction, and objective data are primary.
               </p>
             </div>
             <div className="bg-jung-surface p-6 rounded-2xl border-l-4 border-jung-dark">
-               <h4 className="font-bold text-jung-dark mb-2 text-xl font-sans">Introversion (I)</h4>
+               <h4 className="font-bold text-jung-dark mb-2 text-xl font-serif">Introversion (I)</h4>
               <p className="text-base text-jung-secondary">
                 The flow of energy is directed <strong className="text-jung-dark">inward</strong> toward the subject. The subject validates experience against internal structures, archetypes, and subjective impressions. Reflection, abstraction, and depth are primary.
               </p>
@@ -129,7 +129,7 @@ export const Learn: React.FC = () => {
               <div key={f.code} className="flex items-start gap-4 p-4 border border-jung-border rounded-2xl hover:bg-jung-surface transition-colors">
                 <span className="font-mono font-bold text-lg text-jung-accent">{f.code}</span>
                 <div>
-                  <strong className="block text-jung-dark font-sans">{f.name}</strong>
+                  <strong className="block text-jung-dark font-serif">{f.name}</strong>
                   <span className="text-sm text-jung-secondary">{f.desc}</span>
                 </div>
               </div>
@@ -149,14 +149,14 @@ export const Learn: React.FC = () => {
 
           <div className="my-8 space-y-8">
             <div>
-              <h3 className="text-xl font-bold text-jung-accent font-sans">1. The Dominant (Superior) Function</h3>
+              <h3 className="text-xl font-bold text-jung-accent font-serif">1. The Dominant (Superior) Function</h3>
               <p className="text-base text-jung-secondary">
                 This is your "hero" function—the most differentiated and conscious tool you have. It is how you primarily adapt to reality. If you are a Thinking type, you navigate the world through logic.
               </p>
             </div>
 
             <div>
-              <h3 className="text-xl font-bold text-jung-accent font-sans">2. The Inferior Function</h3>
+              <h3 className="text-xl font-bold text-jung-accent font-serif">2. The Inferior Function</h3>
               <p className="text-base text-jung-secondary">
                 Because energy is finite, specializing in one area (e.g., Thinking) necessarily deprives its opposite (Feeling) of energy. The opposite function drops into the unconscious.
               </p>
@@ -171,7 +171,7 @@ export const Learn: React.FC = () => {
 
           <blockquote className="border-l-4 border-jung-accent pl-6 italic my-8 text-jung-secondary text-xl">
             "The inferior function is the ever-bleeding wound of the conscious personality, but through it the unconscious can always come in."
-            <footer className="text-sm font-bold mt-2 not-italic text-jung-accent font-sans">— Marie-Louise von Franz</footer>
+            <footer className="text-sm font-bold mt-2 not-italic text-jung-accent font-serif">— Marie-Louise von Franz</footer>
           </blockquote>
         </section>
 

@@ -20,7 +20,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) =>
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-jung-accent-light rounded-full mb-4">
             <Zap className="w-4 h-4 text-jung-accent" />
-            <span className="text-sm font-sans font-medium text-jung-primary">Launch pricing — Save 40% this week</span>
+            <span className="text-sm font-serif font-medium text-jung-primary">Launch pricing — Save 40% this week</span>
           </div>
           <h2 className="text-display text-3xl sm:text-4xl text-jung-dark mb-4">
             Choose Your Path
@@ -37,24 +37,24 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) =>
               <div 
                 key={index} 
                 className={`relative ${tier.popular ? 'md:-translate-y-4' : ''} ${
-                  tier.name === 'MASTERY' ? 'bg-gradient-to-br from-jung-accent-light to-jung-surface' : ''
+                  tier.name === 'MASTERY' ? 'bg-jung-accent-light' : ''
                 }`}
               >
                 {tier.popular && (
-                  <div className="absolute -inset-px bg-gradient-to-b from-jung-accent to-jung-primary rounded-2xl" />
+                  <div className="absolute -inset-px bg-jung-accent rounded-2xl" />
                 )}
                 <div className={`relative ${tier.popular ? 'bg-jung-surface' : 'card-elevated'} rounded-2xl p-6 sm:p-8 h-full`}>
                   {/* Badge */}
                   {tier.popular && (
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                      <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-jung-accent text-white text-sm font-sans font-medium rounded-full">
+                      <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-jung-accent text-white text-sm font-serif font-medium rounded-full">
                         <Star className="w-4 h-4" /> Most Popular
                       </span>
                     </div>
                   )}
                   {tier.name === 'MASTERY' && (
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                      <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-jung-dark text-white text-sm font-sans font-medium rounded-full">
+                      <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-jung-dark text-white text-sm font-serif font-medium rounded-full">
                         <Crown className="w-4 h-4" /> Best Value
                       </span>
                     </div>
@@ -73,7 +73,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) =>
                     <div className={`text-display text-4xl ${tier.name === 'INSIGHT' ? 'text-jung-accent' : 'text-jung-dark'} mb-2`}>
                       {tier.price}
                     </div>
-                    <p className="text-sm font-sans text-jung-muted">{tier.description}</p>
+                    <p className="text-sm font-serif text-jung-muted">{tier.description}</p>
                   </div>
                   
                   <ul className="space-y-3 mb-6">
@@ -112,7 +112,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) =>
         <div className="text-center mt-10">
           <button
             onClick={() => onNavigate('/pricing')}
-            className="text-jung-accent hover:text-jung-primary font-sans font-medium inline-flex items-center gap-1 transition-colors"
+            className="text-jung-accent hover:text-jung-primary font-serif font-medium inline-flex items-center gap-1 transition-colors"
           >
             See full feature comparison <ArrowUpRight className="w-4 h-4" />
           </button>
@@ -122,7 +122,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) =>
         <div className="mt-12 pt-8 border-t border-jung-border">
           <div className="flex items-center justify-center gap-3 text-jung-secondary">
             <ShieldCheck className="w-6 h-6 text-success" />
-            <p className="text-sm font-sans">
+            <p className="text-sm font-serif">
               <strong className="text-jung-dark">30-day money-back guarantee.</strong> Not satisfied? Get a full refund, no questions asked.
             </p>
           </div>

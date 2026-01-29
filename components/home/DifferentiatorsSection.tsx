@@ -15,11 +15,11 @@ export const DifferentiatorsSection: React.FC = () => {
           {DIFFERENTIATORS.map((item, index) => {
             const Icon = item.icon;
             return (
-              <div key={index} className="space-y-4">
-                <div className="w-12 h-12 bg-jung-accent-light rounded-xl flex items-center justify-center">
+              <div key={index} className="card-elevated p-8 transition-transform duration-200 hover:-translate-y-px">
+                <div className="w-12 h-12 bg-jung-accent-light rounded-xl flex items-center justify-center mb-4">
                   <Icon className="w-6 h-6 text-jung-accent" />
                 </div>
-                <h3 className="text-heading text-xl text-jung-dark">{item.title}</h3>
+                <h3 className="text-heading text-xl text-jung-dark mb-3">{item.title}</h3>
                 <p className="text-body text-jung-secondary leading-relaxed">{item.description}</p>
               </div>
             );

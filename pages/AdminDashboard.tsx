@@ -95,7 +95,7 @@ export const AdminDashboard: React.FC = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-stone-500">Loading...</div>
+        <div className="animate-pulse text-jung-muted">Loading...</div>
       </div>
     );
   }
@@ -112,44 +112,44 @@ export const AdminDashboard: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-        <div className="bg-white rounded-lg shadow-sm border border-stone-200 p-4 sm:p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-jung-border p-4 sm:p-6">
           <div className="flex items-center gap-2 sm:gap-3 mb-2">
             <Users className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
-            <h3 className="text-xs sm:text-sm font-medium text-stone-500">Total Users</h3>
+            <h3 className="text-xs sm:text-sm font-medium text-jung-muted">Total Users</h3>
           </div>
-          <p className="text-2xl sm:text-3xl font-bold text-stone-800">
+          <p className="text-2xl sm:text-3xl font-bold text-jung-dark">
             {statsLoading ? '...' : stats?.userCount ?? 0}
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-stone-200 p-4 sm:p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-jung-border p-4 sm:p-6">
           <div className="flex items-center gap-2 sm:gap-3 mb-2">
             <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
-            <h3 className="text-xs sm:text-sm font-medium text-stone-500">Total Assessments</h3>
+            <h3 className="text-xs sm:text-sm font-medium text-jung-muted">Total Assessments</h3>
           </div>
-          <p className="text-2xl sm:text-3xl font-bold text-stone-800">
+          <p className="text-2xl sm:text-3xl font-bold text-jung-dark">
             {statsLoading ? '...' : stats?.assessmentCount ?? 0}
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-stone-200 p-4 sm:p-6 sm:col-span-2 md:col-span-1">
+        <div className="bg-white rounded-lg shadow-sm border border-jung-border p-4 sm:p-6 sm:col-span-2 md:col-span-1">
           <div className="flex items-center gap-2 sm:gap-3 mb-2">
             <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
-            <h3 className="text-xs sm:text-sm font-medium text-stone-500">Revenue (Mock)</h3>
+            <h3 className="text-xs sm:text-sm font-medium text-jung-muted">Revenue (Mock)</h3>
           </div>
-          <p className="text-2xl sm:text-3xl font-bold text-stone-800">$1,234</p>
-          <p className="text-xs text-stone-400 mt-1">Coming soon</p>
+          <p className="text-2xl sm:text-3xl font-bold text-jung-dark">$1,234</p>
+          <p className="text-xs text-jung-muted mt-1">Coming soon</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white rounded-lg shadow-sm border border-stone-200 p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-jung-border p-6">
           <div className="flex items-center gap-2 mb-4">
             <PieChart className="w-5 h-5 text-jung-primary" />
-            <h2 className="text-xl font-serif font-semibold text-stone-800">Popular Types</h2>
+            <h2 className="text-xl font-serif font-semibold text-jung-dark">Popular Types</h2>
           </div>
           {analyticsLoading ? (
-            <div className="animate-pulse text-stone-500">Loading...</div>
+            <div className="animate-pulse text-jung-muted">Loading...</div>
           ) : analytics?.popularTypes && analytics.popularTypes.length > 0 ? (
             <div className="space-y-3">
               {analytics.popularTypes.slice(0, 8).map((item, index) => {
@@ -158,20 +158,20 @@ export const AdminDashboard: React.FC = () => {
                 const color = FUNCTION_COLORS[item.type] || '#6b7280';
                 return (
                   <div key={item.type} className="flex items-center gap-3">
-                    <span className="w-8 text-sm font-medium text-stone-500">#{index + 1}</span>
+                    <span className="w-8 text-sm font-medium text-jung-muted">#{index + 1}</span>
                     <span 
                       className="inline-block px-2 py-0.5 rounded text-xs font-bold text-white min-w-[36px] text-center"
                       style={{ backgroundColor: color }}
                     >
                       {item.type}
                     </span>
-                    <div className="flex-1 bg-stone-100 rounded-full h-4 overflow-hidden">
-                      <div 
-                        className="h-full rounded-full transition-all duration-300"
+                    <div className="flex-1 bg-jung-surface-alt rounded-lg h-4 overflow-hidden">
+                      <div
+                        className="h-full rounded-lg transition-all duration-300"
                         style={{ width: `${percentage}%`, backgroundColor: color }}
                       />
                     </div>
-                    <span className="text-sm text-stone-600 min-w-[60px] text-right">
+                    <span className="text-sm text-jung-secondary min-w-[60px] text-right">
                       {item.count} ({percentage}%)
                     </span>
                   </div>
@@ -179,23 +179,23 @@ export const AdminDashboard: React.FC = () => {
               })}
             </div>
           ) : (
-            <p className="text-stone-500">No data available</p>
+            <p className="text-jung-muted">No data available</p>
           )}
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-stone-200 p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-jung-border p-6">
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="w-5 h-5 text-jung-primary" />
-            <h2 className="text-xl font-serif font-semibold text-stone-800">Engagement Metrics</h2>
+            <h2 className="text-xl font-serif font-semibold text-jung-dark">Engagement Metrics</h2>
           </div>
           {analyticsLoading ? (
-            <div className="animate-pulse text-stone-500">Loading...</div>
+            <div className="animate-pulse text-jung-muted">Loading...</div>
           ) : analytics ? (
             <div className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-stone-50 rounded-lg p-4">
-                  <p className="text-sm text-stone-500 mb-1">This Week</p>
-                  <p className="text-2xl font-bold text-stone-800">{analytics.totalThisWeek}</p>
+                <div className="bg-jung-surface rounded-lg p-4">
+                  <p className="text-sm text-jung-muted mb-1">This Week</p>
+                  <p className="text-2xl font-bold text-jung-dark">{analytics.totalThisWeek}</p>
                   {analytics.totalLastWeek > 0 && (
                     <p className={`text-xs mt-1 ${
                       analytics.totalThisWeek >= analytics.totalLastWeek ? 'text-green-600' : 'text-red-600'
@@ -205,16 +205,16 @@ export const AdminDashboard: React.FC = () => {
                     </p>
                   )}
                 </div>
-                <div className="bg-stone-50 rounded-lg p-4">
-                  <p className="text-sm text-stone-500 mb-1">This Month</p>
-                  <p className="text-2xl font-bold text-stone-800">{analytics.totalThisMonth}</p>
+                <div className="bg-jung-surface rounded-lg p-4">
+                  <p className="text-sm text-jung-muted mb-1">This Month</p>
+                  <p className="text-2xl font-bold text-jung-dark">{analytics.totalThisMonth}</p>
                 </div>
               </div>
 
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <Activity className="w-4 h-4 text-stone-500" />
-                  <p className="text-sm font-medium text-stone-600">Daily Trend (Last 7 Days)</p>
+                  <Activity className="w-4 h-4 text-jung-muted" />
+                  <p className="text-sm font-medium text-jung-secondary">Daily Trend (Last 7 Days)</p>
                 </div>
                 {analytics.dailyAssessments.length > 0 ? (
                   <div className="h-32">
@@ -235,30 +235,30 @@ export const AdminDashboard: React.FC = () => {
                     </ResponsiveContainer>
                   </div>
                 ) : (
-                  <p className="text-sm text-stone-500">No recent data</p>
+                  <p className="text-sm text-jung-muted">No recent data</p>
                 )}
               </div>
             </div>
           ) : (
-            <p className="text-stone-500">No data available</p>
+            <p className="text-jung-muted">No data available</p>
           )}
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-stone-200 p-4 sm:p-6 mb-6 sm:mb-8">
+      <div className="bg-white rounded-lg shadow-sm border border-jung-border p-4 sm:p-6 mb-6 sm:mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6">
           <div className="flex items-center gap-2">
             <FileText className="w-5 h-5 text-jung-primary" />
-            <h2 className="text-lg sm:text-xl font-serif font-semibold text-stone-800">Questions Management</h2>
-            <span className="text-xs sm:text-sm text-stone-500">({filteredQuestions.length})</span>
+            <h2 className="text-lg sm:text-xl font-serif font-semibold text-jung-dark">Questions Management</h2>
+            <span className="text-xs sm:text-sm text-jung-muted">({filteredQuestions.length})</span>
           </div>
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <div className="flex items-center gap-2">
-              <Filter className="w-4 h-4 text-stone-400" />
+              <Filter className="w-4 h-4 text-jung-muted" />
               <select
                 value={functionFilter}
                 onChange={(e) => setFunctionFilter(e.target.value)}
-                className="text-sm border border-stone-300 rounded-md px-2 py-2 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-jung-primary"
+                className="text-sm border border-jung-border rounded-md px-2 py-2 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-jung-primary"
               >
                 <option value="all">All Functions</option>
                 {functions.map(f => (
@@ -269,7 +269,7 @@ export const AdminDashboard: React.FC = () => {
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="text-sm border border-stone-300 rounded-md px-2 py-2 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-jung-primary"
+              className="text-sm border border-jung-border rounded-md px-2 py-2 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-jung-primary"
             >
               <option value="all">All Categories</option>
               {categories.map(c => (
@@ -282,11 +282,11 @@ export const AdminDashboard: React.FC = () => {
         {/* Mobile: Card layout */}
         <div className="block sm:hidden space-y-3">
           {filteredQuestions.slice(0, 20).map(q => (
-            <div key={q.id} className="p-3 border border-stone-200 rounded-lg">
+            <div key={q.id} className="p-3 border border-jung-border rounded-lg">
               <div className="flex items-center gap-2 mb-2">
                 <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
                   q.category === 'A' ? 'bg-green-100 text-green-700' :
-                  q.category === 'B' ? 'bg-amber-100 text-amber-700' :
+                  q.category === 'B' ? 'bg-jung-accent-light text-jung-accent' :
                   'bg-blue-100 text-blue-700'
                 }`}>
                   {q.category}
@@ -294,13 +294,13 @@ export const AdminDashboard: React.FC = () => {
                 <span className="inline-block px-2 py-0.5 rounded bg-jung-primary/10 text-jung-primary text-xs font-medium">
                   {q.target}
                 </span>
-                <span className="text-xs text-stone-400 font-mono">{q.id}</span>
+                <span className="text-xs text-jung-muted font-mono">{q.id}</span>
               </div>
-              <p className="text-sm text-stone-700">{q.text}</p>
+              <p className="text-sm text-jung-dark">{q.text}</p>
             </div>
           ))}
           {filteredQuestions.length > 20 && (
-            <p className="text-center text-sm text-stone-500 py-2">
+            <p className="text-center text-sm text-jung-muted py-2">
               Showing 20 of {filteredQuestions.length} questions
             </p>
           )}
@@ -311,21 +311,21 @@ export const AdminDashboard: React.FC = () => {
           <div className="min-w-[600px] sm:min-w-0">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-stone-200">
-                  <th className="text-left py-3 px-2 font-medium text-stone-600">ID</th>
-                  <th className="text-left py-3 px-2 font-medium text-stone-600">Category</th>
-                  <th className="text-left py-3 px-2 font-medium text-stone-600">Target</th>
-                  <th className="text-left py-3 px-2 font-medium text-stone-600">Question Text</th>
+                <tr className="border-b border-jung-border">
+                  <th className="text-left py-3 px-2 font-medium text-jung-secondary">ID</th>
+                  <th className="text-left py-3 px-2 font-medium text-jung-secondary">Category</th>
+                  <th className="text-left py-3 px-2 font-medium text-jung-secondary">Target</th>
+                  <th className="text-left py-3 px-2 font-medium text-jung-secondary">Question Text</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredQuestions.map(q => (
-                  <tr key={q.id} className="border-b border-stone-100 hover:bg-stone-50">
-                    <td className="py-3 px-2 font-mono text-xs text-stone-500">{q.id}</td>
+                  <tr key={q.id} className="border-b border-jung-border hover:bg-jung-surface">
+                    <td className="py-3 px-2 font-mono text-xs text-jung-muted">{q.id}</td>
                     <td className="py-3 px-2">
                       <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
                         q.category === 'A' ? 'bg-green-100 text-green-700' :
-                        q.category === 'B' ? 'bg-amber-100 text-amber-700' :
+                        q.category === 'B' ? 'bg-jung-accent-light text-jung-accent' :
                         'bg-blue-100 text-blue-700'
                       }`}>
                         {q.category}
@@ -336,7 +336,7 @@ export const AdminDashboard: React.FC = () => {
                         {q.target}
                       </span>
                     </td>
-                    <td className="py-3 px-2 text-stone-700 max-w-md truncate">{q.text}</td>
+                    <td className="py-3 px-2 text-jung-dark max-w-md truncate">{q.text}</td>
                   </tr>
                 ))}
               </tbody>
@@ -346,32 +346,32 @@ export const AdminDashboard: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow-sm border border-stone-200 p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-jung-border p-6">
           <div className="flex items-center gap-2 mb-4">
             <Settings className="w-5 h-5 text-jung-primary" />
-            <h2 className="text-xl font-serif font-semibold text-stone-800">Function Descriptions</h2>
+            <h2 className="text-xl font-serif font-semibold text-jung-dark">Function Descriptions</h2>
           </div>
           <div className="space-y-2">
             {Object.entries(FUNCTION_DESCRIPTIONS).map(([key, desc]) => (
-              <div key={key} className="border border-stone-200 rounded-lg">
+              <div key={key} className="border border-jung-border rounded-lg">
                 <button
                   onClick={() => setExpandedFunction(expandedFunction === key ? null : key)}
-                  className="w-full flex items-center justify-between p-3 text-left hover:bg-stone-50"
+                  className="w-full flex items-center justify-between p-3 text-left hover:bg-jung-surface"
                 >
                   <div className="flex items-center gap-2">
                     <span className="inline-block px-2 py-0.5 rounded bg-jung-primary/10 text-jung-primary text-xs font-medium">
                       {key}
                     </span>
-                    <span className="font-medium text-stone-800">{desc.title}</span>
+                    <span className="font-medium text-jung-dark">{desc.title}</span>
                   </div>
                   {expandedFunction === key ? (
-                    <ChevronUp className="w-4 h-4 text-stone-400" />
+                    <ChevronUp className="w-4 h-4 text-jung-muted" />
                   ) : (
-                    <ChevronDown className="w-4 h-4 text-stone-400" />
+                    <ChevronDown className="w-4 h-4 text-jung-muted" />
                   )}
                 </button>
                 {expandedFunction === key && (
-                  <div className="px-3 pb-3 text-sm text-stone-600 space-y-2">
+                  <div className="px-3 pb-3 text-sm text-jung-secondary space-y-2">
                     <p><strong>Description:</strong> {desc.desc}</p>
                     <p><strong>Quote:</strong> <em>"{desc.quote}"</em></p>
                     <p><strong>Positive:</strong> {desc.positive}</p>
@@ -383,32 +383,32 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-stone-200 p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-jung-border p-6">
           <div className="flex items-center gap-2 mb-4">
             <Settings className="w-5 h-5 text-jung-primary" />
-            <h2 className="text-xl font-serif font-semibold text-stone-800">Stack Positions</h2>
+            <h2 className="text-xl font-serif font-semibold text-jung-dark">Stack Positions</h2>
           </div>
           <div className="space-y-2">
             {Object.entries(STACK_POSITIONS).map(([key, pos]) => (
-              <div key={key} className="border border-stone-200 rounded-lg">
+              <div key={key} className="border border-jung-border rounded-lg">
                 <button
                   onClick={() => setExpandedPosition(expandedPosition === key ? null : key)}
-                  className="w-full flex items-center justify-between p-3 text-left hover:bg-stone-50"
+                  className="w-full flex items-center justify-between p-3 text-left hover:bg-jung-surface"
                 >
                   <div className="flex items-center gap-2">
                     <span className="inline-block px-2 py-0.5 rounded bg-purple-100 text-purple-700 text-xs font-medium capitalize">
                       {key}
                     </span>
-                    <span className="font-medium text-stone-800">{pos.name} - {pos.archetype}</span>
+                    <span className="font-medium text-jung-dark">{pos.name} - {pos.archetype}</span>
                   </div>
                   {expandedPosition === key ? (
-                    <ChevronUp className="w-4 h-4 text-stone-400" />
+                    <ChevronUp className="w-4 h-4 text-jung-muted" />
                   ) : (
-                    <ChevronDown className="w-4 h-4 text-stone-400" />
+                    <ChevronDown className="w-4 h-4 text-jung-muted" />
                   )}
                 </button>
                 {expandedPosition === key && (
-                  <div className="px-3 pb-3 text-sm text-stone-600 space-y-2">
+                  <div className="px-3 pb-3 text-sm text-jung-secondary space-y-2">
                     <p><strong>Description:</strong> {pos.description}</p>
                     <p><strong>Development:</strong> {pos.development}</p>
                     <p><strong>Shadow:</strong> {pos.shadow}</p>

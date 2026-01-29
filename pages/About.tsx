@@ -13,10 +13,10 @@ export const About: React.FC = () => {
         <div className="inline-flex items-center gap-3 mb-6">
           <img src="/logo.svg" alt="Jungian Typology" className="w-12 h-12" />
         </div>
-        <h1 className="text-display text-4xl sm:text-5xl md:text-6xl mb-6 max-w-3xl mx-auto">
+        <h1 className="text-display text-4xl sm:text-5xl md:text-6xl mb-6 max-w-3xl mx-auto font-serif">
           About This Assessment
         </h1>
-        <p className="text-body text-xl text-jung-muted max-w-2xl mx-auto leading-relaxed">
+        <p className="text-body text-xl text-jung-muted max-w-2xl mx-auto leading-relaxed font-serif">
           Why this is not another MBTI clone—and how we stay true to Jung's original clinical insights.
         </p>
       </header>
@@ -28,18 +28,18 @@ export const About: React.FC = () => {
             <AlertTriangle className="w-7 h-7 text-jung-accent" />
           </div>
           <div>
-            <h2 className="text-heading text-2xl md:text-3xl">Jung's Warning</h2>
-            <p className="text-body text-jung-muted mt-1">Typology isn't a game</p>
+            <h2 className="text-heading text-2xl md:text-3xl font-serif">Jung's Warning</h2>
+            <p className="text-body text-jung-muted mt-1 font-serif">Typology isn't a game</p>
           </div>
         </div>
 
-        <div className="prose-editorial">
+        <div className="prose-editorial font-serif">
           <p>
             Carl Jung never wanted his ideas turned into quick labels or fixed categories. In 1934, he wrote:
           </p>
 
-          <blockquote className="my-8 pl-6 border-l-4 border-jung-accent bg-jung-surface/50 py-6 pr-6 rounded-r-lg">
-            <p className="text-lg md:text-xl italic text-jung-secondary leading-relaxed">
+          <blockquote className="my-8 pl-6 border-l-4 border-jung-accent bg-jung-surface-alt py-6 pr-6 rounded-r-lg">
+            <p className="text-lg md:text-xl italic text-jung-secondary leading-relaxed font-serif">
               "Using [typology] to stick labels on people at first sight is nothing but a childish parlor game."
             </p>
             <footer className="mt-4 text-sm font-semibold text-jung-accent not-italic">
@@ -53,12 +53,12 @@ export const About: React.FC = () => {
             more whole, unique self).
           </p>
 
-          <div className="card-elevated p-6 my-8 bg-amber-50/50 border-amber-200/50">
+          <div className="card-elevated p-6 my-8 bg-jung-accent-light border-jung-accent">
             <div className="flex items-start gap-4">
-              <Lightbulb className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" />
+              <Lightbulb className="w-6 h-6 text-jung-accent flex-shrink-0 mt-0.5" />
               <div>
                 <h4 className="text-ui font-semibold text-jung-dark mb-2">Simple Analogy</h4>
-                <p className="text-body text-jung-secondary">
+                <p className="text-body text-jung-secondary font-serif">
                   Typology is like a mirror showing your current "driving style" (habits). The goal isn't
                   "I'm a sedan!"—it's learning to drive better in all conditions.
                 </p>
@@ -80,12 +80,12 @@ export const About: React.FC = () => {
             <Scale className="w-7 h-7 text-jung-accent" />
           </div>
           <div>
-            <h2 className="text-heading text-2xl md:text-3xl">How This Assessment Differs</h2>
-            <p className="text-body text-jung-muted mt-1">A fundamentally different approach</p>
+            <h2 className="text-heading text-2xl md:text-3xl font-serif">How This Assessment Differs</h2>
+            <p className="text-body text-jung-muted mt-1 font-serif">A fundamentally different approach</p>
           </div>
         </div>
 
-        <div className="prose-editorial mb-10">
+        <div className="prose-editorial mb-10 font-serif">
           <p>
             Most tests (e.g., MBTI) force choices: "Logic OR feelings?" This assumes opposites cancel
             each other—and outputs rigid 16 types.
@@ -120,14 +120,14 @@ export const About: React.FC = () => {
               </div>
               <div>
                 <h4 className="text-ui font-semibold text-jung-dark mb-1">{item.title}</h4>
-                <p className="text-body text-sm text-jung-muted">{item.description}</p>
+                <p className="text-body text-sm text-jung-muted font-serif">{item.description}</p>
               </div>
             </div>
           ))}
         </div>
 
         <div className="bg-jung-surface rounded-xl p-6 text-center border border-jung-border">
-          <p className="text-body text-jung-secondary font-medium">
+          <p className="text-body text-jung-secondary font-medium font-serif">
             No 4-letter codes. No boxes. Just an honest psychic profile.
           </p>
         </div>
@@ -140,12 +140,12 @@ export const About: React.FC = () => {
             <FileText className="w-7 h-7 text-jung-accent" />
           </div>
           <div>
-            <h2 className="text-heading text-2xl md:text-3xl">Our Methodology</h2>
-            <p className="text-body text-jung-muted mt-1">Honoring clinical roots</p>
+            <h2 className="text-heading text-2xl md:text-3xl font-serif">Our Methodology</h2>
+            <p className="text-body text-jung-muted mt-1 font-serif">Honoring clinical roots</p>
           </div>
         </div>
 
-        <p className="text-body text-jung-secondary mb-10">
+        <p className="text-body text-jung-secondary mb-10 font-serif">
           We draw from Jung's writings, von Franz (his closest student), and Singer-Loomis (Jungian analysts' research).
         </p>
 
@@ -156,7 +156,7 @@ export const About: React.FC = () => {
               <span className="w-8 h-8 rounded-full bg-jung-accent text-white flex items-center justify-center text-sm">1</span>
               Independent Measurement of 8 Processes
             </h3>
-            <div className="text-body text-jung-secondary space-y-4 pl-10">
+            <div className="text-body text-jung-secondary space-y-4 pl-10 font-serif">
               <p>
                 Traditional tests pit functions against each other (mutually exclusive). We follow
                 <strong> Singer-Loomis</strong> (validated 1984 research): Each process (Te, Ti, Fe, etc.)
@@ -180,7 +180,7 @@ export const About: React.FC = () => {
               <span className="w-8 h-8 rounded-full bg-jung-accent text-white flex items-center justify-center text-sm">2</span>
               Probing the Unconscious (Dysfunction & Grip Questions)
             </h3>
-            <div className="text-body text-jung-secondary space-y-4 pl-10">
+            <div className="text-body text-jung-secondary space-y-4 pl-10 font-serif">
               <p>
                 Self-report often shows "who we want to be" (Persona—social mask). Following
                 <strong> Marie-Louise von Franz</strong>: We include questions on stress reactivity,
@@ -207,7 +207,7 @@ export const About: React.FC = () => {
               <span className="w-8 h-8 rounded-full bg-jung-accent text-white flex items-center justify-center text-sm">3</span>
               Empirical Scores + Theoretical Insights
             </h3>
-            <div className="text-body text-jung-secondary space-y-4 pl-10">
+            <div className="text-body text-jung-secondary space-y-4 pl-10 font-serif">
               <p>
                 <strong>Empirical:</strong> What you actually report (current habits).
               </p>
@@ -229,12 +229,12 @@ export const About: React.FC = () => {
             <ArrowRight className="w-7 h-7 text-jung-accent" />
           </div>
           <div>
-            <h2 className="text-heading text-2xl md:text-3xl">Why This Matters</h2>
-            <p className="text-body text-jung-muted mt-1">One-sidedness & growth</p>
+            <h2 className="text-heading text-2xl md:text-3xl font-serif">Why This Matters</h2>
+            <p className="text-body text-jung-muted mt-1 font-serif">One-sidedness & growth</p>
           </div>
         </div>
 
-        <div className="prose-editorial">
+        <div className="prose-editorial font-serif">
           <p>
             Jung saw type as <strong>problematic bias</strong>—strengths create blind spots. Over-rely on logic?
             Emotions become primitive/unconscious.
@@ -253,8 +253,8 @@ export const About: React.FC = () => {
             </li>
           </ul>
 
-          <div className="card-elevated p-6 my-8 bg-blue-50/50 border-blue-200/50">
-            <p className="text-body text-blue-800">
+          <div className="card-elevated p-6 my-8 bg-jung-accent-light border-jung-accent">
+            <p className="text-body text-jung-dark font-serif">
               <strong>Analogy:</strong> Like exercising weak muscles—the "inferior" is where real development happens.
             </p>
           </div>
@@ -263,34 +263,34 @@ export const About: React.FC = () => {
 
       {/* Limitations */}
       <section className="mb-16 md:mb-20">
-        <div className="card-elevated p-6 md:p-8 bg-amber-50/30 border-amber-200/50 rounded-2xl">
+        <div className="card-elevated p-6 md:p-8 bg-jung-accent-light border-jung-accent rounded-2xl">
           <div className="flex items-start gap-4">
-            <AlertTriangle className="w-8 h-8 flex-shrink-0 text-amber-700 mt-1" />
+            <AlertTriangle className="w-8 h-8 flex-shrink-0 text-jung-accent mt-1" />
             <div>
-              <h3 className="text-heading text-xl md:text-2xl text-amber-900 mb-4">Honest Limitations</h3>
-              <p className="text-body text-amber-800 mb-6">We're transparent—no tool is perfect.</p>
+              <h3 className="text-heading text-xl md:text-2xl text-jung-dark mb-4 font-serif">Honest Limitations</h3>
+              <p className="text-body text-jung-secondary mb-6 font-serif">We're transparent—no tool is perfect.</p>
 
               <div className="space-y-6">
                 <div>
-                  <p className="font-semibold text-amber-900 mb-1">1. Persona Problem</p>
-                  <p className="text-sm text-amber-800">
+                  <p className="font-semibold text-jung-dark mb-1">1. Persona Problem</p>
+                  <p className="text-sm text-jung-secondary font-serif">
                     Self-report captures conscious image, not full unconscious (Jung: "Every mind contains unacknowledged contents").
                   </p>
-                  <p className="text-sm text-amber-700 italic mt-2">
+                  <p className="text-sm text-jung-muted italic mt-2 font-serif">
                     Analogy: Like a mirror (surface reflection)—not an X-ray (deep scan). True depth needs dreams/therapy.
                   </p>
                 </div>
 
                 <div>
-                  <p className="font-semibold text-amber-900 mb-1">2. Type Isn't Static</p>
-                  <p className="text-sm text-amber-800">
+                  <p className="font-semibold text-jung-dark mb-1">2. Type Isn't Static</p>
+                  <p className="text-sm text-jung-secondary font-serif">
                     Jung: "The type changes in the course of life." Results = snapshot.
                   </p>
                 </div>
 
                 <div>
-                  <p className="font-semibold text-amber-900 mb-1">3. Not Diagnosis</p>
-                  <p className="text-sm text-amber-800">
+                  <p className="font-semibold text-jung-dark mb-1">3. Not Diagnosis</p>
+                  <p className="text-sm text-jung-secondary font-serif">
                     Educational/reflective only. Deep work requires trained analyst.
                   </p>
                 </div>
@@ -304,10 +304,10 @@ export const About: React.FC = () => {
       <section className="mb-16 md:mb-20 border-t border-jung-border pt-10">
         <div className="flex items-center gap-3 mb-6">
           <Users className="w-6 h-6 text-jung-muted" />
-          <h3 className="text-heading text-xl">Primary Sources & Credits</h3>
+          <h3 className="text-heading text-xl font-serif">Primary Sources & Credits</h3>
         </div>
-        <p className="text-body text-jung-muted mb-6">Faithful to originals:</p>
-        <ul className="text-body text-sm text-jung-secondary space-y-3">
+        <p className="text-body text-jung-muted mb-6 font-serif">Faithful to originals:</p>
+        <ul className="text-body text-sm text-jung-secondary space-y-3 font-serif">
           <li className="flex items-start gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-jung-accent mt-2 flex-shrink-0" />
             <span><strong>C.G. Jung:</strong> <em>Psychological Types</em> (CW 6, 1921).</span>
@@ -325,7 +325,7 @@ export const About: React.FC = () => {
             <span><strong>John Beebe:</strong> Archetypal extensions (2016).</span>
           </li>
         </ul>
-        <p className="text-sm text-jung-muted mt-6 italic">
+        <p className="text-sm text-jung-muted mt-6 italic font-serif">
           Inspired by clinical Jungians—aiming for insight, not entertainment.
         </p>
       </section>
@@ -335,10 +335,10 @@ export const About: React.FC = () => {
         <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-jung-accent/10 mb-6">
           <span className="text-jung-accent font-serif text-4xl">ψ</span>
         </div>
-        <h2 className="text-display text-2xl md:text-3xl mb-4">
+        <h2 className="text-display text-2xl md:text-3xl mb-4 font-serif">
           Ready for Reflection?
         </h2>
-        <p className="text-body text-jung-muted mb-8 max-w-md mx-auto">
+        <p className="text-body text-jung-muted mb-8 max-w-md mx-auto font-serif">
           Begin your journey of self-discovery with an assessment rooted in authentic Jungian psychology.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -349,7 +349,7 @@ export const About: React.FC = () => {
               px-8 py-4 min-h-[56px]
               bg-jung-accent text-white text-ui font-semibold
               rounded-lg shadow-lg shadow-jung-accent/20
-              hover:bg-jung-accent-hover hover:-translate-y-0.5
+              hover:bg-jung-accent-hover hover:-translate-y-px
               transition-all duration-200
             "
           >
@@ -363,7 +363,7 @@ export const About: React.FC = () => {
               px-8 py-4 min-h-[56px]
               bg-jung-surface text-jung-accent text-ui font-semibold
               rounded-lg border-2 border-jung-accent
-              hover:bg-jung-accent/5 hover:-translate-y-0.5
+              hover:bg-jung-accent/5 hover:-translate-y-px
               transition-all duration-200
             "
           >
@@ -376,17 +376,17 @@ export const About: React.FC = () => {
       {/* Footer */}
       <footer className="mt-12 pt-10 border-t border-jung-border text-center">
         <img src="/logo.svg" alt="Jungian Typology" className="w-12 h-12 mx-auto mb-4" />
-        <p className="text-ui font-semibold text-jung-dark mb-2">Jungian Typology</p>
-        <p className="text-body text-sm text-jung-muted mb-4 max-w-md mx-auto">
+        <p className="text-ui font-semibold text-jung-dark mb-2 font-serif">Jungian Typology</p>
+        <p className="text-body text-sm text-jung-muted mb-4 max-w-md mx-auto font-serif">
           A self-exploration tool based on Jung's <em>Psychological Types</em> (1921). Mirror for reflection—not fixed label.
         </p>
-        <p className="text-xs text-jung-muted mb-2">
+        <p className="text-xs text-jung-muted mb-2 font-serif">
           <strong>Key Concepts:</strong> Individuation • One-Sidedness • Inferior Function • 8 Processes
         </p>
-        <p className="text-xs text-jung-muted/70">
+        <p className="text-xs text-jung-muted/70 font-serif">
           <strong>Disclaimer:</strong> Self-report only. Results = current configuration, not permanent identity.
         </p>
-        <p className="mt-6 text-xs text-jung-muted/50">© 2026 Jungian Typology Assessment</p>
+        <p className="mt-6 text-xs text-jung-muted/50 font-serif">© 2026 Jungian Typology Assessment</p>
       </footer>
     </div>
   );

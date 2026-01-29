@@ -8,7 +8,7 @@ export const ScientificValidationSection: React.FC = () => {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-jung-accent-light rounded-full mb-6">
             <Beaker className="w-4 h-4 text-jung-accent" />
-            <span className="text-sm font-sans font-medium text-jung-primary">Why 132 Questions?</span>
+            <span className="text-sm font-serif font-medium text-jung-accent">Why 132 Questions?</span>
           </div>
           <h2 className="text-display text-3xl sm:text-4xl text-jung-dark mb-4">
             Built on Scientific Methodology
@@ -27,7 +27,7 @@ export const ScientificValidationSection: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-heading text-xl text-jung-dark">Singer-Loomis Methodology</h3>
-                <p className="text-sm font-sans text-jung-muted mt-1">Peer-reviewed since 1980</p>
+                <p className="text-sm font-serif text-jung-muted mt-1">Peer-reviewed since 1980</p>
               </div>
             </div>
             <p className="text-body text-jung-secondary mb-6">
@@ -35,15 +35,15 @@ export const ScientificValidationSection: React.FC = () => {
             </p>
             <ul className="space-y-3">
               <li className="flex items-start gap-3 text-jung-secondary">
-                <CheckCircle className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-5 h-5 text-jung-accent flex-shrink-0 mt-0.5" />
                 <span>Each function scored on its own scale</span>
               </li>
               <li className="flex items-start gap-3 text-jung-secondary">
-                <CheckCircle className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-5 h-5 text-jung-accent flex-shrink-0 mt-0.5" />
                 <span>No false dichotomies or forced choices</span>
               </li>
               <li className="flex items-start gap-3 text-jung-secondary">
-                <CheckCircle className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-5 h-5 text-jung-accent flex-shrink-0 mt-0.5" />
                 <span>Reveals nuanced function development</span>
               </li>
             </ul>
@@ -57,7 +57,7 @@ export const ScientificValidationSection: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-heading text-xl text-jung-dark">Scientific Validation</h3>
-                <p className="text-sm font-sans text-jung-muted mt-1">Grounded in research</p>
+                <p className="text-sm font-serif text-jung-muted mt-1">Grounded in research</p>
               </div>
             </div>
             <p className="text-body text-jung-secondary mb-6">
@@ -65,15 +65,15 @@ export const ScientificValidationSection: React.FC = () => {
             </p>
             <ul className="space-y-3">
               <li className="flex items-start gap-3 text-jung-secondary">
-                <CheckCircle className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-5 h-5 text-jung-accent flex-shrink-0 mt-0.5" />
                 <span>~16 questions per function for reliability</span>
               </li>
               <li className="flex items-start gap-3 text-jung-secondary">
-                <CheckCircle className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-5 h-5 text-jung-accent flex-shrink-0 mt-0.5" />
                 <span>Stress/grip probes for accuracy</span>
               </li>
               <li className="flex items-start gap-3 text-jung-secondary">
-                <CheckCircle className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-5 h-5 text-jung-accent flex-shrink-0 mt-0.5" />
                 <span>Based on Jung's original clinical work</span>
               </li>
             </ul>

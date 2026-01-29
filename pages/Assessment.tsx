@@ -12,9 +12,9 @@ import { useToast } from '../components/ui/Toast';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 
 // Success celebration component
-const CompletionCelebration: React.FC<{ onComplete: () => void; reducedMotion: boolean }> = ({ 
-  onComplete, 
-  reducedMotion 
+const CompletionCelebration: React.FC<{ onComplete: () => void; reducedMotion: boolean }> = ({
+  onComplete,
+  reducedMotion
 }) => {
   useEffect(() => {
     const timer = setTimeout(onComplete, reducedMotion ? 500 : 2000);
@@ -25,8 +25,8 @@ const CompletionCelebration: React.FC<{ onComplete: () => void; reducedMotion: b
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-jung-dark/90">
         <div className="text-center text-white p-8">
-          <CheckCircle2 className="w-16 h-16 mx-auto mb-4 text-emerald-400" />
-          <h2 className="text-2xl font-display mb-2">Assessment Complete!</h2>
+          <CheckCircle2 className="w-16 h-16 mx-auto mb-4 text-jung-accent" />
+          <h2 className="text-2xl font-serif mb-2">Assessment Complete!</h2>
           <p className="text-jung-subtle">Preparing your results...</p>
         </div>
       </div>
@@ -34,29 +34,12 @@ const CompletionCelebration: React.FC<{ onComplete: () => void; reducedMotion: b
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-jung-dark/95 backdrop-blur-sm">
-      {/* Animated particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {Array.from({ length: 20 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-2 h-2 bg-jung-accent rounded-full animate-ping"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 0.5}s`,
-              animationDuration: `${1 + Math.random()}s`,
-            }}
-          />
-        ))}
-      </div>
-      
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-jung-dark/95">
       <div className="relative text-center text-white p-8 animate-scale-in">
         <div className="relative mb-6">
-          <div className="absolute inset-0 bg-jung-accent/30 rounded-full blur-2xl animate-pulse" />
-          <Sparkles className="relative w-20 h-20 mx-auto text-jung-accent animate-bounce" />
+          <Sparkles className="relative w-20 h-20 mx-auto text-jung-accent" />
         </div>
-        <h2 className="text-3xl md:text-4xl font-display mb-3 animate-slide-up">
+        <h2 className="text-3xl md:text-4xl font-serif mb-3 animate-slide-up">
           Assessment Complete!
         </h2>
         <p className="text-lg text-jung-subtle animate-slide-up stagger-1">
@@ -80,7 +63,7 @@ const KeyboardHints: React.FC = () => {
     const timer = setTimeout(() => setIsVisible(false), 5000);
     const handleKeyPress = () => setIsVisible(false);
     window.addEventListener('keydown', handleKeyPress, { once: true });
-    
+
     return () => {
       clearTimeout(timer);
       window.removeEventListener('keydown', handleKeyPress);
@@ -91,10 +74,10 @@ const KeyboardHints: React.FC = () => {
 
   return (
     <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-30 animate-fade-in">
-      <div className="flex items-center gap-3 px-4 py-2 bg-jung-dark/90 text-white rounded-full text-sm backdrop-blur-sm shadow-lg">
+      <div className="flex items-center gap-3 px-4 py-2 bg-jung-dark text-white rounded-full text-sm shadow-lg">
         <Keyboard className="w-4 h-4" />
         <span>Press <kbd className="px-2 py-0.5 bg-white/20 rounded text-xs mx-1">1-5</kbd> to answer</span>
-        <button 
+        <button
           onClick={() => setIsVisible(false)}
           className="ml-2 text-white/60 hover:text-white"
           aria-label="Dismiss keyboard hint"
@@ -144,14 +127,14 @@ export const Assessment: React.FC = () => {
   const handleAnswer = useCallback((qid: string, value: number) => {
     setAnswers(prev => {
       const newAnswers = { ...prev, [qid]: value };
-      
+
       // Debounced save notification
       const now = Date.now();
       if (now - lastSavedRef.current > 2000) {
         success('Progress saved', 1500);
         lastSavedRef.current = now;
       }
-      
+
       saveProgress(newAnswers, currentIdx);
       return newAnswers;
     });
@@ -163,12 +146,12 @@ export const Assessment: React.FC = () => {
       window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
     } else {
       setShowCelebration(true);
-      
+
       // Delay calculation and navigation for celebration
       setTimeout(() => {
         const results = calculateResults(answers);
         const validatedResults = assessmentResultsSchema.safeParse(results);
-        
+
         if (validatedResults.success) {
           localStorage.setItem('jungian_assessment_results', JSON.stringify(validatedResults.data));
           localStorage.removeItem('jungian_assessment_progress');
@@ -213,13 +196,13 @@ export const Assessment: React.FC = () => {
       if (['1', '2', '3', '4', '5'].includes(e.key)) {
         const focusedEl = document.activeElement;
         const questionCard = focusedEl?.closest('[data-question-index]');
-        
+
         if (questionCard) {
           const qIndex = parseInt(questionCard.getAttribute('data-question-index') || '0');
           const question = currentQuestionsRef.current[qIndex];
           if (question) {
             handleAnswerRef.current(question.id, parseInt(e.key));
-            
+
             // Auto-focus next question
             if (qIndex < currentQuestionsRef.current.length - 1) {
               const nextCard = document.querySelector(`[data-question-index="${qIndex + 1}"]`);
@@ -243,7 +226,7 @@ export const Assessment: React.FC = () => {
           handleBackRef.current();
         }
       }
-      
+
       if (e.key === 'ArrowRight' && !e.shiftKey && e.metaKey === false && e.ctrlKey === false) {
         const focusedEl = document.activeElement;
         // Check page completion dynamically
@@ -267,7 +250,7 @@ export const Assessment: React.FC = () => {
   // Calculate if page was just completed for micro-animation
   const [showCompletionPulse, setShowCompletionPulse] = useState(false);
   const wasPageCompleteRef = useRef(false);
-  
+
   useEffect(() => {
     if (isPageComplete && !wasPageCompleteRef.current && answeredCount > 0) {
       setShowCompletionPulse(true);
@@ -282,23 +265,31 @@ export const Assessment: React.FC = () => {
   return (
     <>
       <ToastContainer />
-      
+
       {showCelebration && (
-        <CompletionCelebration 
-          onComplete={() => {}} 
-          reducedMotion={reducedMotion} 
+        <CompletionCelebration
+          onComplete={() => {}}
+          reducedMotion={reducedMotion}
         />
       )}
-      
+
       <KeyboardHints />
-      
-      <div className="min-h-screen bg-jung-surface">
+
+      <div className="min-h-screen bg-jung-base">
+        {/* Progress line - thin 2px at top */}
+        <div className="sticky top-0 z-50 h-0.5 w-full bg-jung-surface-alt">
+          <div
+            className="bg-jung-accent h-full transition-all duration-500 ease-out"
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
+
         {/* Progress Header */}
-        <div className="sticky top-0 z-40 bg-jung-surface/95 backdrop-blur-sm border-b border-jung-border">
-          <div className="editorial-container py-4">
+        <div className="sticky top-0.5 z-40 bg-jung-surface border-b border-jung-border">
+          <div className="max-w-2xl mx-auto px-6 py-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <p className="text-ui text-jung-muted uppercase tracking-widest">
+                <p className="text-ui text-jung-muted uppercase tracking-widest font-serif">
                   Section {currentIdx + 1} of {totalPages}
                 </p>
                 <h1 className="text-heading text-jung-dark font-serif">
@@ -307,7 +298,7 @@ export const Assessment: React.FC = () => {
               </div>
               <div className="flex items-center gap-4">
                 <div className="text-right">
-                  <p className="text-sm text-jung-muted">{answeredCount} of {questions.length}</p>
+                  <p className="text-sm text-jung-muted font-mono">{answeredCount} of {questions.length}</p>
                   <p className="text-xs text-jung-muted">questions answered</p>
                 </div>
                 <div className={`w-16 h-16 relative transition-transform duration-300 ${showCompletionPulse ? 'scale-110' : ''}`}>
@@ -326,32 +317,22 @@ export const Assessment: React.FC = () => {
                       strokeDasharray={`${(answeredCount / questions.length) * 100}, 100`}
                       className="transition-all duration-500 ease-out"
                       style={{
-                        filter: showCompletionPulse ? 'drop-shadow(0 0 8px rgba(45, 106, 79, 0.5))' : 'none'
+                        filter: showCompletionPulse ? 'drop-shadow(0 0 8px rgba(31, 122, 103, 0.5))' : 'none'
                       }}
                     />
                   </svg>
-                  <span className={`absolute inset-0 flex items-center justify-center text-sm font-bold transition-colors duration-300 ${isPageComplete ? 'text-success' : 'text-jung-accent'}`}>
+                  <span className={`absolute inset-0 flex items-center justify-center text-sm font-bold font-mono transition-colors duration-300 ${isPageComplete ? 'text-success' : 'text-jung-accent'}`}>
                     {Math.round((answeredCount / questions.length) * 100)}%
                   </span>
                 </div>
-              </div>
-            </div>
-
-            {/* Progress Bar */}
-            <div className="mt-4">
-              <div className="w-full bg-jung-border h-1 rounded-full overflow-hidden">
-                <div
-                  className="bg-gradient-to-r from-jung-accent to-jung-accent-hover h-full transition-all duration-500 ease-out"
-                  style={{ width: `${progressPercent}%` }}
-                />
               </div>
             </div>
           </div>
         </div>
 
         {/* Questions */}
-        <div className="editorial-container py-12">
-          <div className="max-w-3xl mx-auto">
+        <div className="py-12">
+          <div className="max-w-2xl mx-auto px-6">
             {/* Section Progress Dots */}
             <div className="flex justify-center gap-2 mb-12">
               {Array.from({ length: totalPages }).map((_, idx) => (
@@ -431,10 +412,10 @@ export const Assessment: React.FC = () => {
                               transition-all duration-200 ease-out
                               focus:outline-none focus-visible:ring-2 focus-visible:ring-jung-accent focus-visible:ring-offset-2
                               ${answers[q.id] === val
-                                ? 'bg-jung-accent text-white scale-105 shadow-lg shadow-jung-accent/25'
+                                ? 'bg-jung-accent text-white shadow-md'
                                 : 'bg-jung-surface-alt text-jung-muted hover:bg-jung-border hover:text-jung-dark'
                               }
-                              ${reducedMotion ? '' : 'hover:scale-105'}
+                              ${reducedMotion ? '' : 'hover:-translate-y-px'}
                             `}
                             aria-label={`Rate ${val} out of 5: ${scaleLabels[val - 1]}`}
                             aria-pressed={answers[q.id] === val}
@@ -474,7 +455,7 @@ export const Assessment: React.FC = () => {
                 variant={isPageComplete ? 'accent' : 'primary'}
                 onClick={handleNext}
                 disabled={!isPageComplete}
-                className={`w-full sm:w-auto ${showCompletionPulse ? 'animate-pulse' : ''}`}
+                className={`w-full sm:w-auto`}
               >
                 {currentIdx === totalPages - 1 ? (
                   <>
@@ -493,11 +474,11 @@ export const Assessment: React.FC = () => {
 
             {/* Encouragement Message */}
             {!isPageComplete && (
-              <p className="text-center text-sm text-jung-muted mt-6 animate-pulse">
+              <p className="text-center text-sm text-jung-muted mt-6">
                 Answer all questions in this section to continue
               </p>
             )}
-            
+
             {/* Completion hint */}
             {isPageComplete && currentIdx < totalPages - 1 && (
               <p className="text-center text-sm text-success mt-6">
@@ -510,22 +491,20 @@ export const Assessment: React.FC = () => {
 
         {/* Tips Footer */}
         <div className="border-t border-jung-border bg-jung-surface-alt">
-          <div className="editorial-container py-8">
-            <div className="max-w-3xl mx-auto">
-              <h4 className="text-ui text-jung-muted uppercase tracking-widest mb-4">Assessment Tips</h4>
-              <div className="grid sm:grid-cols-3 gap-6 text-sm text-jung-muted">
-                <div>
-                  <p className="font-serif text-jung-dark mb-1">Be Authentic</p>
-                  <p>Answer based on how you naturally think and act, not how you wish to be.</p>
-                </div>
-                <div>
-                  <p className="font-serif text-jung-dark mb-1">First Instinct</p>
-                  <p>Go with your gut reaction. Over-thinking often leads to less accurate results.</p>
-                </div>
-                <div>
-                  <p className="font-serif text-jung-dark mb-1">Keyboard Shortcut</p>
-                  <p>Press <kbd className="px-1.5 py-0.5 bg-jung-border rounded text-xs">1-5</kbd> to rate, <kbd className="px-1.5 py-0.5 bg-jung-border rounded text-xs">← →</kbd> to navigate</p>
-                </div>
+          <div className="max-w-2xl mx-auto px-6 py-8">
+            <h4 className="text-ui text-jung-muted uppercase tracking-widest mb-4 font-serif">Assessment Tips</h4>
+            <div className="grid sm:grid-cols-3 gap-6 text-sm text-jung-muted">
+              <div>
+                <p className="font-serif text-jung-dark mb-1">Be Authentic</p>
+                <p>Answer based on how you naturally think and act, not how you wish to be.</p>
+              </div>
+              <div>
+                <p className="font-serif text-jung-dark mb-1">First Instinct</p>
+                <p>Go with your gut reaction. Over-thinking often leads to less accurate results.</p>
+              </div>
+              <div>
+                <p className="font-serif text-jung-dark mb-1">Keyboard Shortcut</p>
+                <p>Press <kbd className="px-1.5 py-0.5 bg-jung-border rounded text-xs">1-5</kbd> to rate, <kbd className="px-1.5 py-0.5 bg-jung-border rounded text-xs">← →</kbd> to navigate</p>
               </div>
             </div>
           </div>

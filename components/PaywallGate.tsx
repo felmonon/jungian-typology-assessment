@@ -124,7 +124,7 @@ export const PaywallGate: React.FC<PaywallGateProps> = ({ onUnlock }) => {
           {/* Pricing card */}
           <div className="bg-jung-surface rounded-2xl p-6 sm:p-8 shadow-md border border-jung-border order-1 md:order-2">
             <div className="text-center">
-              <p className="text-sm text-jung-muted uppercase tracking-widest mb-3 font-sans">
+              <p className="text-sm text-jung-muted uppercase tracking-widest mb-3 font-data">
                 One-Time Payment
               </p>
 
@@ -134,7 +134,7 @@ export const PaywallGate: React.FC<PaywallGateProps> = ({ onUnlock }) => {
 
               <div className="flex items-baseline justify-center gap-1 mb-3">
                 <span className="text-5xl font-serif font-bold text-jung-dark">$10</span>
-                <span className="text-jung-muted ml-1 font-sans">CAD</span>
+                <span className="text-jung-muted ml-1 font-data">CAD</span>
               </div>
 
               <p className="text-sm text-jung-accent font-medium mb-4">

@@ -22,8 +22,8 @@ export const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-jung-dark/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
-      <div className="bg-jung-surface rounded-2xl max-w-md w-full p-8 relative shadow-2xl animate-scale-in">
+    <div className="fixed inset-0 bg-jung-dark/60 z-50 flex items-center justify-center p-4 animate-fade-in">
+      <div className="bg-jung-surface rounded-2xl max-w-md w-full p-8 relative shadow-xl border border-jung-border animate-scale-in">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-jung-muted hover:text-jung-dark transition-colors p-2"
@@ -49,7 +49,7 @@ export const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({
             <p className="text-sm italic text-jung-secondary">
               "I've taken MBTI tests 20 times and always got different results. This finally explained why."
             </p>
-            <p className="text-xs font-sans text-jung-muted mt-2">— Sarah K.</p>
+            <p className="text-xs font-serif text-jung-muted mt-2">— Sarah K.</p>
           </div>
 
           <Button
@@ -62,7 +62,7 @@ export const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({
 
           <button
             onClick={onClose}
-            className="mt-4 text-sm font-sans text-jung-muted hover:text-jung-dark transition-colors"
+            className="mt-4 text-sm font-serif text-jung-muted hover:text-jung-dark transition-colors"
           >
             No thanks, I'll pass
           </button>

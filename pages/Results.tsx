@@ -12,23 +12,23 @@ import { usePremiumStatus } from '../hooks/use-premium-status';
 import { useAiAnalysis } from '../hooks/use-ai-analysis';
 import { FormattedText } from '../components/FormattedText';
 import { ChatBot } from '../components/ChatBot';
-import { 
-  ResultsHeader, 
-  FunctionChart, 
-  ScoreBreakdown, 
-  QuickInsights, 
+import {
+  ResultsHeader,
+  FunctionChart,
+  ScoreBreakdown,
+  QuickInsights,
   ShareSection,
-  ResultsLoading, 
-  ResultsError, 
+  ResultsLoading,
+  ResultsError,
   AuthRequired,
   ResultsSkeleton
 } from '../components/results';
-import { 
-  assessmentResultsSchema, 
-  safeParseLocalStorage, 
+import {
+  assessmentResultsSchema,
+  safeParseLocalStorage,
   safeRemoveLocalStorage,
   STORAGE_KEYS,
-  ValidatedAssessmentResults 
+  ValidatedAssessmentResults
 } from '../lib/validation';
 
 // Lazy load Instagram story card (heavy component)
@@ -44,7 +44,7 @@ interface SavedResult {
   createdAt: string;
 }
 
-type ResultsState = 
+type ResultsState =
   | { status: 'loading' }
   | { status: 'auth-required' }
   | { status: 'error'; message: string }
@@ -55,7 +55,7 @@ export const Results: React.FC = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const { tier, isPremium, isLoading: premiumLoading } = usePremiumStatus();
-  
+
   const [state, setState] = useState<ResultsState>({ status: 'loading' });
   const [shareSlug, setShareSlug] = useState<string | null>(null);
   const [historyResults, setHistoryResults] = useState<SavedResult[]>([]);
@@ -68,7 +68,7 @@ export const Results: React.FC = () => {
   const [emailSent, setEmailSent] = useState(false);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
-  
+
   const contentRef = useRef<HTMLDivElement>(null);
   const instagramCardRef = useRef<HTMLDivElement>(null);
   const saveAttemptedRef = useRef(false);
@@ -94,7 +94,7 @@ export const Results: React.FC = () => {
   // Load results from localStorage
   const loadResults = useCallback(() => {
     const saved = safeParseLocalStorage(STORAGE_KEYS.RESULTS, assessmentResultsSchema, null);
-    
+
     if (saved) {
       setState({ status: 'ready', results: saved });
     } else {
@@ -278,7 +278,7 @@ export const Results: React.FC = () => {
         scale: 2,
         useCORS: true,
         logging: false,
-        backgroundColor: '#FAF9F7',
+        backgroundColor: '#F7F5F0',
         windowWidth: 1200,
       });
 
@@ -388,20 +388,20 @@ export const Results: React.FC = () => {
 
   if (state.status === 'error') {
     return (
-      <ResultsError 
-        message={state.message} 
+      <ResultsError
+        message={state.message}
         onRetry={() => {
           saveAttemptedRef.current = false;
           loadResults();
-        }} 
+        }}
       />
     );
   }
 
   if (state.status === 'no-results') {
     return (
-      <ResultsError 
-        message="No assessment results found. Please complete the assessment first." 
+      <ResultsError
+        message="No assessment results found. Please complete the assessment first."
         onRetry={handleRetake}
       />
     );
@@ -422,7 +422,7 @@ export const Results: React.FC = () => {
 
         {/* Stack Explanation Note */}
         <div className="mb-12 p-5 bg-jung-surface rounded-xl border border-jung-border">
-          <p className="text-body text-sm text-jung-secondary">
+          <p className="text-body text-sm text-jung-secondary font-serif">
             <strong>Note:</strong> Your stack is <em>theoretical</em>—based on Jung's principle of opposites and compensation.
             Your empirical scores may vary. Discrepancies aren't errors—they're opportunities for reflection:
             "Why might I avoid this function?"
@@ -430,21 +430,21 @@ export const Results: React.FC = () => {
         </div>
 
         {/* AI-Powered Personalized Analysis (Free) */}
-        <section className="mb-12 bg-gradient-to-br from-purple-50/80 to-indigo-50/80 rounded-2xl border border-purple-200/50 p-6 md:p-8">
+        <section className="mb-12 bg-jung-surface-alt rounded-2xl border border-jung-border p-6 md:p-8">
           <div className="flex items-center gap-4 mb-6">
-            <div className="p-3 bg-purple-100 rounded-xl">
-              <Brain className="w-6 h-6 text-purple-600" />
+            <div className="p-3 bg-jung-accent-light rounded-xl">
+              <Brain className="w-6 h-6 text-jung-accent" />
             </div>
             <div>
-              <h2 className="text-heading text-xl md:text-2xl text-purple-900">AI-Powered Personal Insight</h2>
-              <p className="text-body text-sm text-purple-600">Personalized analysis generated just for you</p>
+              <h2 className="text-heading text-xl md:text-2xl text-jung-dark font-serif">AI-Powered Personal Insight</h2>
+              <p className="text-body text-sm text-jung-secondary">Personalized analysis generated just for you</p>
             </div>
           </div>
 
           {isLoadingFree ? (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-8 h-8 animate-spin text-purple-500 mr-3" />
-              <span className="text-body text-purple-600">Generating your personalized insight...</span>
+              <Loader2 className="w-8 h-8 animate-spin text-jung-accent mr-3" />
+              <span className="text-body text-jung-secondary">Generating your personalized insight...</span>
             </div>
           ) : freeError ? (
             <div className="flex items-center gap-3 text-red-600 py-6">
@@ -456,7 +456,7 @@ export const Results: React.FC = () => {
               <FormattedText text={freeAnalysis} />
             </div>
           ) : (
-            <div className="text-body text-jung-muted italic py-6">
+            <div className="text-body text-jung-muted italic py-6 font-serif">
               Loading personalized analysis...
             </div>
           )}
@@ -464,14 +464,14 @@ export const Results: React.FC = () => {
 
         {/* Conversion Trigger for Free Users */}
         {tier === 'free' && (
-          <div className="mb-12 bg-gradient-to-r from-jung-accent/10 to-jung-accent-hover/10 rounded-2xl p-6 md:p-8 border border-jung-accent/20">
+          <div className="mb-12 bg-jung-accent-light rounded-2xl p-6 md:p-8 border border-jung-accent/20">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-jung-accent/20 rounded-full">
                   <Sparkles className="w-7 h-7 text-jung-accent" />
                 </div>
                 <div>
-                  <h3 className="text-heading text-lg text-jung-dark">Your full 8-function analysis is ready</h3>
+                  <h3 className="text-heading text-lg text-jung-dark font-serif">Your full 8-function analysis is ready</h3>
                   <p className="text-body text-sm text-jung-muted">Unlock detailed insights into your archetypal stack, relationships, career alignment, and more.</p>
                 </div>
               </div>
@@ -490,15 +490,15 @@ export const Results: React.FC = () => {
 
         {/* Conversion Trigger for Insight Users */}
         {tier === 'insight' && (
-          <div className="mb-12 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl p-6 md:p-8 border border-purple-200">
+          <div className="mb-12 bg-jung-surface-alt rounded-2xl p-6 md:p-8 border border-jung-border">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-purple-100 rounded-full">
-                  <Crown className="w-7 h-7 text-purple-600" />
+                <div className="p-3 bg-jung-secondary/10 rounded-full">
+                  <Crown className="w-7 h-7 text-jung-secondary" />
                 </div>
                 <div>
-                  <h3 className="text-heading text-lg text-purple-900">Questions about your results?</h3>
-                  <p className="text-body text-sm text-purple-700">Chat with your AI Type Coach for personalized guidance and deeper exploration.</p>
+                  <h3 className="text-heading text-lg text-jung-dark font-serif">Questions about your results?</h3>
+                  <p className="text-body text-sm text-jung-secondary">Chat with your AI Type Coach for personalized guidance and deeper exploration.</p>
                 </div>
               </div>
               <Button
@@ -506,7 +506,7 @@ export const Results: React.FC = () => {
                   const element = document.getElementById('mastery-content');
                   element?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="whitespace-nowrap bg-purple-600 hover:bg-purple-700"
+                className="whitespace-nowrap bg-jung-secondary hover:bg-jung-dark"
               >
                 Chat with AI Coach →
               </Button>
@@ -517,13 +517,13 @@ export const Results: React.FC = () => {
         {/* INSIGHT TIER CONTENT */}
         <div id="insight-content">
           <div className="flex items-center justify-center gap-3 mb-10">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-jung-accent/30 to-transparent" />
-            <div className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-jung-accent to-jung-accent-hover rounded-full shadow-md shadow-jung-accent/20">
+            <div className="h-px flex-1 bg-jung-border" />
+            <div className="flex items-center gap-2 px-5 py-2.5 bg-jung-accent rounded-full">
               <Sparkles className="w-4 h-4 text-white" />
-              <span className="text-xs font-bold uppercase tracking-wider text-white">Insight Analysis</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-white font-serif">Insight Analysis</span>
               <Sparkles className="w-4 h-4 text-white" />
             </div>
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-jung-accent/30 to-transparent" />
+            <div className="h-px flex-1 bg-jung-border" />
           </div>
 
           <TierGate requiredTier="insight" currentTier={tier} featureDescription="Unlock complete type analysis including archetypes, relationships, and career guidance">
@@ -550,13 +550,13 @@ export const Results: React.FC = () => {
         {/* MASTERY TIER CONTENT */}
         <div id="mastery-content">
           <div className="flex items-center justify-center gap-3 mb-10 mt-16">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-300 to-transparent" />
-            <div className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full shadow-md shadow-purple-500/20">
+            <div className="h-px flex-1 bg-jung-border" />
+            <div className="flex items-center gap-2 px-5 py-2.5 bg-jung-secondary rounded-full">
               <Crown className="w-4 h-4 text-white" />
-              <span className="text-xs font-bold uppercase tracking-wider text-white">Mastery Tools</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-white font-serif">Mastery Tools</span>
               <Crown className="w-4 h-4 text-white" />
             </div>
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-300 to-transparent" />
+            <div className="h-px flex-1 bg-jung-border" />
           </div>
 
           <TierGate requiredTier="mastery" currentTier={tier} featureDescription="Unlock advanced tools including AI Type Coach, individuation roadmap, and shadow work exercises">
@@ -568,7 +568,7 @@ export const Results: React.FC = () => {
 
         {/* AI Deep Analysis */}
         <TierGate requiredTier="insight" currentTier={tier} featureDescription="Unlock AI-powered personalized analysis with detailed insights">
-          <AiDeepAnalysis 
+          <AiDeepAnalysis
             isLoading={isLoadingPremium}
             error={premiumError}
             analysis={premiumAnalysis}
@@ -577,7 +577,7 @@ export const Results: React.FC = () => {
 
         {/* Footer */}
         <div className="text-center text-xs text-jung-muted pt-8 border-t border-jung-border">
-          <p>Based on the typological work of Carl Gustav Jung (Psychological Types, CW Vol. 6)</p>
+          <p className="font-serif">Based on the typological work of Carl Gustav Jung (Psychological Types, CW Vol. 6)</p>
           <p className="mt-2 italic font-serif">"The meeting of two personalities is like the contact of two chemical substances: if there is any reaction, both are transformed."</p>
         </div>
       </div>
@@ -603,10 +603,10 @@ export const Results: React.FC = () => {
           </Button>
         </div>
 
-        <ShareSection 
-          results={results} 
-          shareSlug={shareSlug} 
-          onInstagramClick={() => setShowInstagramPreview(true)} 
+        <ShareSection
+          results={results}
+          shareSlug={shareSlug}
+          onInstagramClick={() => setShowInstagramPreview(true)}
         />
 
         {isAuthenticated && (
@@ -656,7 +656,7 @@ const TypePhenomenologyCard: React.FC<{ typePhenomenology: any }> = ({ typePheno
     <div className="absolute top-0 right-0 bg-jung-accent text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-bl-lg">
       Premium
     </div>
-    <h3 className="text-heading text-lg mb-6 flex items-center gap-2">
+    <h3 className="text-heading text-lg mb-6 flex items-center gap-2 font-serif">
       <BookOpen className="w-5 h-5 text-jung-accent" />
       {typePhenomenology.typeName}
     </h3>
@@ -671,7 +671,7 @@ const TypePhenomenologyCard: React.FC<{ typePhenomenology: any }> = ({ typePheno
       </div>
       <div>
         <span className="font-semibold text-jung-dark">Historical Parallel: </span>
-        <span className="text-jung-secondary italic">{typePhenomenology.historicalExample}</span>
+        <span className="text-jung-secondary italic font-serif">{typePhenomenology.historicalExample}</span>
       </div>
     </div>
   </div>
@@ -681,7 +681,7 @@ const AttitudeCard: React.FC<{ attitudeScore: number }> = ({ attitudeScore }) =>
   const attitude = attitudeScore > 0 ? { type: 'Extraversion', desc: 'E' } : { type: 'Introversion', desc: 'I' };
   return (
     <div className="bg-jung-surface p-6 md:p-8 rounded-xl border-l-4 border-jung-accent">
-      <h3 className="text-heading text-xl mb-3">
+      <h3 className="text-heading text-xl mb-3 font-serif">
         General Attitude: {attitude.type}
       </h3>
       <p className="text-body text-jung-secondary text-sm mb-6">
@@ -694,11 +694,11 @@ const AttitudeCard: React.FC<{ attitudeScore: number }> = ({ attitudeScore }) =>
 const ArchetypalStackSection: React.FC<{ stack: Stack }> = ({ stack }) => (
   <section className="mb-16">
     <div className="flex items-start sm:items-center gap-4 mb-8 border-b border-jung-border pb-4">
-      <div className="w-12 h-12 rounded-full bg-jung-accent/10 flex items-center justify-center flex-shrink-0">
+      <div className="w-12 h-12 rounded-full bg-jung-accent-light flex items-center justify-center flex-shrink-0">
         <Layers className="w-6 h-6 text-jung-accent" />
       </div>
       <div>
-        <h2 className="text-heading text-2xl md:text-3xl">The Archetypal Stack</h2>
+        <h2 className="text-heading text-2xl md:text-3xl font-serif">The Archetypal Stack</h2>
         <p className="text-body text-sm text-jung-muted">The hierarchy of psychic functions from conscious to unconscious</p>
       </div>
     </div>
@@ -709,35 +709,35 @@ const ArchetypalStackSection: React.FC<{ stack: Stack }> = ({ stack }) => (
 
     <div className="space-y-6">
       {/* Dominant */}
-      <StackCard 
-        position={stack.dominant} 
+      <StackCard
+        position={stack.dominant}
         positionInfo={STACK_POSITIONS.dominant}
         variant="dominant"
       />
       <div className="flex justify-center py-2 text-jung-border"><ArrowDown className="w-6 h-6" /></div>
-      
+
       {/* Auxiliary */}
-      <StackCard 
-        position={stack.auxiliary} 
+      <StackCard
+        position={stack.auxiliary}
         positionInfo={STACK_POSITIONS.auxiliary}
         variant="auxiliary"
       />
       <div className="flex justify-center py-2 text-jung-border"><ArrowDown className="w-6 h-6" /></div>
-      
+
       {/* Tertiary */}
-      <StackCard 
-        position={stack.tertiary} 
+      <StackCard
+        position={stack.tertiary}
         positionInfo={STACK_POSITIONS.tertiary}
         variant="tertiary"
       />
       <div className="flex justify-center py-2 text-jung-border"><ArrowDown className="w-6 h-6" /></div>
-      
+
       {/* Inferior */}
-      <div className="bg-jung-dark rounded-xl shadow-lg overflow-hidden text-jung-surface">
+      <div className="bg-jung-dark rounded-xl overflow-hidden text-jung-surface">
         <div className="p-6 md:p-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
             <div>
-              <span className="text-ui text-xs font-bold tracking-widest uppercase text-jung-surface/60 mb-2 block">
+              <span className="text-ui text-xs font-bold tracking-widest uppercase text-jung-surface/60 mb-2 block font-serif">
                 {STACK_POSITIONS.inferior.archetype} • {STACK_POSITIONS.inferior.name}
               </span>
               <h3 className="text-xl md:text-2xl font-serif font-bold text-white">
@@ -760,13 +760,13 @@ const ArchetypalStackSection: React.FC<{ stack: Stack }> = ({ stack }) => (
   </section>
 );
 
-const StackCard: React.FC<{ 
-  position: any; 
-  positionInfo: any; 
+const StackCard: React.FC<{
+  position: any;
+  positionInfo: any;
   variant: 'dominant' | 'auxiliary' | 'tertiary';
 }> = ({ position, positionInfo, variant }) => {
   const variants = {
-    dominant: { border: 'border-jung-accent', text: 'text-jung-accent', bg: 'bg-jung-accent/10' },
+    dominant: { border: 'border-jung-accent', text: 'text-jung-accent', bg: 'bg-jung-accent-light' },
     auxiliary: { border: 'border-jung-secondary', text: 'text-jung-secondary', bg: 'bg-jung-surface' },
     tertiary: { border: 'border-jung-muted', text: 'text-jung-muted', bg: 'bg-jung-surface opacity-90' },
   };
@@ -777,10 +777,10 @@ const StackCard: React.FC<{
       <div className="p-6 md:p-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
           <div>
-            <span className={`text-ui text-xs font-bold tracking-widest uppercase ${v.text} mb-2 block`}>
+            <span className={`text-ui text-xs font-bold tracking-widest uppercase ${v.text} mb-2 block font-serif`}>
               {positionInfo.archetype} • {positionInfo.name}
             </span>
-            <h3 className={`text-heading text-lg ${variant === 'dominant' ? 'md:text-xl' : ''} ${variant === 'tertiary' ? 'text-jung-secondary' : ''}`}>
+            <h3 className={`text-heading text-lg font-serif ${variant === 'dominant' ? 'md:text-xl' : ''} ${variant === 'tertiary' ? 'text-jung-secondary' : ''}`}>
               {FUNCTION_DESCRIPTIONS[position.function].title} ({position.function})
             </h3>
           </div>
@@ -793,11 +793,11 @@ const StackCard: React.FC<{
             <p className="text-body text-jung-secondary mb-6">{FUNCTION_DESCRIPTIONS[position.function].desc}</p>
             <div className="grid md:grid-cols-2 gap-4">
               <div className="bg-emerald-50/50 p-5 rounded-xl border border-emerald-200/50">
-                <h4 className="text-ui text-sm font-semibold text-emerald-800 mb-2">Positive Manifestation</h4>
+                <h4 className="text-ui text-sm font-semibold text-emerald-800 mb-2 font-serif">Positive Manifestation</h4>
                 <p className="text-body text-sm text-jung-secondary">{FUNCTION_DESCRIPTIONS[position.function].positive}</p>
               </div>
               <div className="bg-red-50/50 p-5 rounded-xl border border-red-200/50">
-                <h4 className="text-ui text-sm font-semibold text-red-800 mb-2">Shadow Manifestation</h4>
+                <h4 className="text-ui text-sm font-semibold text-red-800 mb-2 font-serif">Shadow Manifestation</h4>
                 <p className="text-body text-sm text-jung-secondary">{FUNCTION_DESCRIPTIONS[position.function].negative}</p>
               </div>
             </div>
@@ -813,36 +813,36 @@ const StackCard: React.FC<{
 const GripSection: React.FC<{ grip: any }> = ({ grip }) => (
   <section className="mb-16">
     <div className="flex items-start sm:items-center gap-4 mb-8 border-b border-jung-border pb-4">
-      <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
-        <AlertTriangle className="w-6 h-6 text-amber-600" />
+      <div className="w-12 h-12 rounded-full bg-jung-accent-light flex items-center justify-center flex-shrink-0">
+        <AlertTriangle className="w-6 h-6 text-jung-accent" />
       </div>
       <div>
-        <h2 className="text-heading text-2xl md:text-3xl">The Grip</h2>
+        <h2 className="text-heading text-2xl md:text-3xl font-serif">The Grip</h2>
         <p className="text-body text-sm text-jung-muted">When the Inferior Function Takes Over Under Stress</p>
       </div>
     </div>
 
-    <div className="bg-amber-50/50 border border-amber-200/50 rounded-2xl p-6 md:p-8 mb-8">
+    <div className="bg-jung-surface-alt border border-jung-border rounded-2xl p-6 md:p-8 mb-8">
       <p className="text-body text-jung-secondary mb-6">
         Under extreme stress, fatigue, or when your dominant function fails repeatedly, you may fall into "The Grip" — a state where your inferior function ({grip.inferiorFunction}) erupts in its most primitive, undifferentiated form.
       </p>
-      <div className="bg-jung-surface rounded-xl p-5 border border-amber-200/50">
-        <h4 className="text-ui font-semibold text-amber-800 mb-3">What The Grip Looks Like For You:</h4>
+      <div className="bg-jung-surface rounded-xl p-5 border border-jung-border">
+        <h4 className="text-ui font-semibold text-jung-dark mb-3 font-serif">What The Grip Looks Like For You:</h4>
         <p className="text-body text-sm text-jung-secondary">{grip.gripDescription}</p>
       </div>
     </div>
 
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div className="card-elevated p-5">
-        <h4 className="text-ui text-xs font-semibold uppercase tracking-wide text-jung-muted mb-3">Normal State</h4>
+        <h4 className="text-ui text-xs font-semibold uppercase tracking-wide text-jung-muted mb-3 font-serif">Normal State</h4>
         <p className="text-body text-sm text-jung-secondary">{grip.normalState}</p>
       </div>
       <div className="card-elevated p-5">
-        <h4 className="text-ui text-xs font-semibold uppercase tracking-wide text-jung-muted mb-3">Common Triggers</h4>
+        <h4 className="text-ui text-xs font-semibold uppercase tracking-wide text-jung-muted mb-3 font-serif">Common Triggers</h4>
         <p className="text-body text-sm text-jung-secondary">{grip.triggers}</p>
       </div>
       <div className="card-elevated p-5">
-        <h4 className="text-ui text-xs font-semibold uppercase tracking-wide text-jung-muted mb-3">Path to Recovery</h4>
+        <h4 className="text-ui text-xs font-semibold uppercase tracking-wide text-jung-muted mb-3 font-serif">Path to Recovery</h4>
         <p className="text-body text-sm text-jung-secondary">{grip.recovery}</p>
       </div>
     </div>
@@ -856,7 +856,7 @@ const RelationshipsSection: React.FC<{ dominantFunc: string }> = ({ dominantFunc
         <Heart className="w-6 h-6 text-rose-500" />
       </div>
       <div>
-        <h2 className="text-heading text-2xl md:text-3xl">Relationships & Compatibility</h2>
+        <h2 className="text-heading text-2xl md:text-3xl font-serif">Relationships & Compatibility</h2>
         <p className="text-body text-sm text-jung-muted">How your dominant function shapes your connections</p>
       </div>
     </div>
@@ -868,19 +868,19 @@ const RelationshipsSection: React.FC<{ dominantFunc: string }> = ({ dominantFunc
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="bg-emerald-50/50 rounded-xl p-5 border border-emerald-200/50">
-          <h4 className="text-ui font-semibold text-emerald-800 mb-3">Relationship Strengths</h4>
+          <h4 className="text-ui font-semibold text-emerald-800 mb-3 font-serif">Relationship Strengths</h4>
           <p className="text-body text-sm text-jung-secondary">{RELATIONSHIPS_INSIGHTS[dominantFunc]?.strengths}</p>
         </div>
-        <div className="bg-amber-50/50 rounded-xl p-5 border border-amber-200/50">
-          <h4 className="text-ui font-semibold text-amber-800 mb-3">Relationship Challenges</h4>
+        <div className="bg-jung-surface-alt rounded-xl p-5 border border-jung-border">
+          <h4 className="text-ui font-semibold text-jung-dark mb-3 font-serif">Relationship Challenges</h4>
           <p className="text-body text-sm text-jung-secondary">{RELATIONSHIPS_INSIGHTS[dominantFunc]?.challenges}</p>
         </div>
         <div className="bg-rose-50/50 rounded-xl p-5 border border-rose-200/50">
-          <h4 className="text-ui font-semibold text-rose-800 mb-3">Ideal Partners</h4>
+          <h4 className="text-ui font-semibold text-rose-800 mb-3 font-serif">Ideal Partners</h4>
           <p className="text-body text-sm text-jung-secondary">{RELATIONSHIPS_INSIGHTS[dominantFunc]?.idealPartners}</p>
         </div>
-        <div className="bg-jung-accent/5 rounded-xl p-5 border border-jung-accent/20">
-          <h4 className="text-ui font-semibold text-jung-dark mb-3">Growth in Relationships</h4>
+        <div className="bg-jung-accent-light rounded-xl p-5 border border-jung-accent/20">
+          <h4 className="text-ui font-semibold text-jung-dark mb-3 font-serif">Growth in Relationships</h4>
           <p className="text-body text-sm text-jung-secondary">{RELATIONSHIPS_INSIGHTS[dominantFunc]?.growthInRelationships}</p>
         </div>
       </div>
@@ -895,7 +895,7 @@ const CareerSection: React.FC<{ dominantFunc: string }> = ({ dominantFunc }) => 
         <Briefcase className="w-6 h-6 text-blue-600" />
       </div>
       <div>
-        <h2 className="text-heading text-2xl md:text-3xl">Career Alignment</h2>
+        <h2 className="text-heading text-2xl md:text-3xl font-serif">Career Alignment</h2>
         <p className="text-body text-sm text-jung-muted">Professional paths aligned with your cognitive strengths</p>
       </div>
     </div>
@@ -908,29 +908,29 @@ const CareerSection: React.FC<{ dominantFunc: string }> = ({ dominantFunc }) => 
       <div className="space-y-6">
         <div className="grid md:grid-cols-2 gap-6">
           <div className="bg-blue-50/50 rounded-xl p-5 border border-blue-200/50">
-            <h4 className="text-ui font-semibold text-blue-800 mb-3">Natural Strengths</h4>
+            <h4 className="text-ui font-semibold text-blue-800 mb-3 font-serif">Natural Strengths</h4>
             <p className="text-body text-sm text-jung-secondary">{CAREER_GUIDANCE[dominantFunc]?.naturalStrengths}</p>
           </div>
           <div className="bg-jung-surface rounded-xl p-5 border border-jung-border">
-            <h4 className="text-ui font-semibold text-jung-dark mb-3">Ideal Environments</h4>
+            <h4 className="text-ui font-semibold text-jung-dark mb-3 font-serif">Ideal Environments</h4>
             <p className="text-body text-sm text-jung-secondary">{CAREER_GUIDANCE[dominantFunc]?.idealEnvironments}</p>
           </div>
         </div>
 
         <div className="bg-jung-surface border border-jung-border rounded-xl p-5">
-          <h4 className="text-ui font-semibold text-jung-dark mb-4">Suggested Roles</h4>
+          <h4 className="text-ui font-semibold text-jung-dark mb-4 font-serif">Suggested Roles</h4>
           <div className="flex flex-wrap gap-2">
             {CAREER_GUIDANCE[dominantFunc]?.roles.map((role: string, index: number) => (
-              <span key={index} className="px-4 py-2 bg-jung-accent/10 text-jung-accent rounded-full text-sm font-medium">
+              <span key={index} className="px-4 py-2 bg-jung-accent-light text-jung-accent rounded-full text-sm font-medium">
                 {role}
               </span>
             ))}
           </div>
         </div>
 
-        <div className="bg-amber-50/50 border border-amber-200/50 rounded-xl p-5">
-          <h4 className="text-ui font-semibold text-amber-800 mb-2 flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-amber-600" />
+        <div className="bg-jung-surface-alt border border-jung-border rounded-xl p-5">
+          <h4 className="text-ui font-semibold text-jung-dark mb-2 flex items-center gap-2 font-serif">
+            <AlertTriangle className="w-5 h-5 text-jung-accent" />
             Watch Out For
           </h4>
           <p className="text-body text-sm text-jung-secondary">{CAREER_GUIDANCE[dominantFunc]?.watchOutFor}</p>
@@ -947,7 +947,7 @@ const IndividuationSection: React.FC<{ stack: Stack }> = ({ stack }) => (
         <Compass className="w-6 h-6 text-jung-secondary" />
       </div>
       <div>
-        <h2 className="text-heading text-2xl md:text-3xl">The Path of Individuation</h2>
+        <h2 className="text-heading text-2xl md:text-3xl font-serif">The Path of Individuation</h2>
         <p className="text-body text-sm text-jung-muted">The Journey Toward Wholeness</p>
       </div>
     </div>
@@ -957,7 +957,7 @@ const IndividuationSection: React.FC<{ stack: Stack }> = ({ stack }) => (
     </p>
 
     <div className="bg-jung-surface rounded-xl p-6 md:p-8 mb-8 border border-jung-border">
-      <h4 className="text-ui font-semibold text-jung-dark mb-4">Working With Your Inferior Function ({stack.inferior.function})</h4>
+      <h4 className="text-ui font-semibold text-jung-dark mb-4 font-serif">Working With Your Inferior Function ({stack.inferior.function})</h4>
       <p className="text-body text-sm text-jung-secondary">
         {INDIVIDUATION_GUIDANCE.inferiorFunctionWork}
       </p>
@@ -966,7 +966,7 @@ const IndividuationSection: React.FC<{ stack: Stack }> = ({ stack }) => (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {INDIVIDUATION_GUIDANCE.stages.slice(0, 3).map((stage, i) => (
         <div key={i} className="card-elevated p-5">
-          <h4 className="text-ui font-semibold text-jung-accent mb-2">{stage.name}</h4>
+          <h4 className="text-ui font-semibold text-jung-accent mb-2 font-serif">{stage.name}</h4>
           <p className="text-xs text-jung-muted mb-3">{stage.description}</p>
           <p className="text-body text-sm text-jung-secondary font-medium">{stage.task}</p>
         </div>
@@ -974,7 +974,7 @@ const IndividuationSection: React.FC<{ stack: Stack }> = ({ stack }) => (
     </div>
 
     <div className="mt-8 p-5 bg-jung-dark text-jung-surface rounded-xl">
-      <p className="text-sm italic">
+      <p className="text-sm italic font-serif">
         <strong>Caution:</strong> {INDIVIDUATION_GUIDANCE.warning}
       </p>
     </div>
@@ -984,11 +984,11 @@ const IndividuationSection: React.FC<{ stack: Stack }> = ({ stack }) => (
 const ActiveImaginationSection: React.FC = () => (
   <section className="mb-16">
     <div className="flex items-start sm:items-center gap-4 mb-8 border-b border-jung-border pb-4">
-      <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
-        <Sparkles className="w-6 h-6 text-purple-500" />
+      <div className="w-12 h-12 rounded-full bg-jung-secondary/10 flex items-center justify-center flex-shrink-0">
+        <Sparkles className="w-6 h-6 text-jung-secondary" />
       </div>
       <div>
-        <h2 className="text-heading text-2xl md:text-3xl">Active Imagination Exercises</h2>
+        <h2 className="text-heading text-2xl md:text-3xl font-serif">Active Imagination Exercises</h2>
         <p className="text-body text-sm text-jung-muted">Jung's technique for dialoguing with the unconscious</p>
       </div>
     </div>
@@ -1004,25 +1004,25 @@ const ActiveImaginationSection: React.FC = () => (
 
       <div className="space-y-4">
         {ACTIVE_IMAGINATION_PROMPTS.map((exercise, index) => (
-          <details key={index} className="group bg-purple-50/50 rounded-xl border border-purple-200/50 overflow-hidden">
-            <summary className="flex items-center justify-between p-5 cursor-pointer hover:bg-purple-100/50 transition-colors">
+          <details key={index} className="group bg-jung-surface-alt rounded-xl border border-jung-border overflow-hidden">
+            <summary className="flex items-center justify-between p-5 cursor-pointer hover:bg-jung-border/30 transition-colors">
               <div className="flex items-center gap-4">
-                <span className="w-9 h-9 bg-purple-200 text-purple-700 rounded-full flex items-center justify-center font-bold text-sm">
+                <span className="w-9 h-9 bg-jung-secondary/10 text-jung-secondary rounded-full flex items-center justify-center font-bold text-sm">
                   {index + 1}
                 </span>
-                <h4 className="text-ui font-semibold text-purple-900">{exercise.title}</h4>
+                <h4 className="text-ui font-semibold text-jung-dark font-serif">{exercise.title}</h4>
               </div>
-              <ChevronDown className="w-5 h-5 text-purple-500 group-open:rotate-180 transition-transform" />
+              <ChevronDown className="w-5 h-5 text-jung-muted group-open:rotate-180 transition-transform" />
             </summary>
-            <div className="px-5 pb-5 pt-2 bg-jung-surface border-t border-purple-200/50">
+            <div className="px-5 pb-5 pt-2 bg-jung-surface border-t border-jung-border">
               <p className="text-body text-sm text-jung-secondary leading-relaxed">{exercise.prompt}</p>
             </div>
           </details>
         ))}
       </div>
 
-      <div className="mt-8 p-5 bg-purple-100/50 rounded-xl">
-        <p className="text-body text-sm text-purple-900 italic">
+      <div className="mt-8 p-5 bg-jung-surface-alt rounded-xl border border-jung-border">
+        <p className="text-body text-sm text-jung-dark italic font-serif">
           <strong>Note:</strong> Active Imagination should be approached with respect. If you have a history of trauma or dissociation, consider working with a qualified therapist before engaging deeply with unconscious material.
         </p>
       </div>
@@ -1033,11 +1033,11 @@ const ActiveImaginationSection: React.FC = () => (
 const DreamJournalingSection: React.FC = () => (
   <section className="mb-16">
     <div className="flex items-start sm:items-center gap-4 mb-8 border-b border-jung-border pb-4">
-      <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
-        <Moon className="w-6 h-6 text-indigo-500" />
+      <div className="w-12 h-12 rounded-full bg-jung-secondary/10 flex items-center justify-center flex-shrink-0">
+        <Moon className="w-6 h-6 text-jung-secondary" />
       </div>
       <div>
-        <h2 className="text-heading text-2xl md:text-3xl">Dream Journaling Guide</h2>
+        <h2 className="text-heading text-2xl md:text-3xl font-serif">Dream Journaling Guide</h2>
         <p className="text-body text-sm text-jung-muted">The royal road to the unconscious</p>
       </div>
     </div>
@@ -1050,12 +1050,12 @@ const DreamJournalingSection: React.FC = () => (
       <p className="text-body text-jung-secondary mb-8">{DREAM_JOURNALING_TEMPLATE.intro}</p>
 
       <div className="grid md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-indigo-50/50 rounded-xl p-6 border border-indigo-200/50">
-          <h4 className="text-ui font-semibold text-indigo-800 mb-4">Questions to Ask About Your Dreams</h4>
+        <div className="bg-jung-surface-alt rounded-xl p-6 border border-jung-border">
+          <h4 className="text-ui font-semibold text-jung-dark mb-4 font-serif">Questions to Ask About Your Dreams</h4>
           <ol className="space-y-3 text-body text-sm text-jung-secondary">
             {DREAM_JOURNALING_TEMPLATE.questions.map((question, index) => (
               <li key={index} className="flex gap-2">
-                <span className="font-bold text-indigo-600 flex-shrink-0">{index + 1}.</span>
+                <span className="font-bold text-jung-accent flex-shrink-0">{index + 1}.</span>
                 <span>{question}</span>
               </li>
             ))}
@@ -1063,11 +1063,11 @@ const DreamJournalingSection: React.FC = () => (
         </div>
 
         <div className="bg-jung-surface rounded-xl p-6 border border-jung-border">
-          <h4 className="text-ui font-semibold text-jung-dark mb-4">Common Jungian Symbols</h4>
+          <h4 className="text-ui font-semibold text-jung-dark mb-4 font-serif">Common Jungian Symbols</h4>
           <ul className="space-y-2 text-body text-sm text-jung-secondary">
             {DREAM_JOURNALING_TEMPLATE.symbolsToNotice.map((symbol, index) => (
               <li key={index} className="flex items-start gap-2">
-                <span className="text-indigo-400 mt-1">◆</span>
+                <span className="text-jung-accent mt-1">◆</span>
                 <span>{symbol}</span>
               </li>
             ))}
@@ -1075,12 +1075,12 @@ const DreamJournalingSection: React.FC = () => (
         </div>
       </div>
 
-      <div className="bg-indigo-900 text-white rounded-xl p-6">
-        <h4 className="text-ui font-semibold mb-3 flex items-center gap-2">
+      <div className="bg-jung-dark text-white rounded-xl p-6">
+        <h4 className="text-ui font-semibold mb-3 flex items-center gap-2 font-serif">
           <Moon className="w-5 h-5" />
           Jungian Tip
         </h4>
-        <p className="text-sm text-indigo-100 leading-relaxed">{DREAM_JOURNALING_TEMPLATE.jungianTip}</p>
+        <p className="text-sm text-white/80 leading-relaxed font-serif">{DREAM_JOURNALING_TEMPLATE.jungianTip}</p>
       </div>
     </div>
   </section>
@@ -1092,21 +1092,21 @@ const AiDeepAnalysis: React.FC<{
   analysis: any;
 }> = ({ isLoading, error, analysis }) => (
   <section className="mb-16">
-    <div className="flex items-start sm:items-center gap-4 mb-8 border-b border-purple-200 pb-4">
-      <div className="p-3 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex-shrink-0">
+    <div className="flex items-start sm:items-center gap-4 mb-8 border-b border-jung-border pb-4">
+      <div className="p-3 bg-jung-secondary rounded-xl flex-shrink-0">
         <Brain className="w-6 h-6 text-white" />
       </div>
       <div>
-        <h2 className="text-heading text-2xl md:text-3xl">AI-Powered Deep Analysis</h2>
+        <h2 className="text-heading text-2xl md:text-3xl font-serif">AI-Powered Deep Analysis</h2>
         <p className="text-body text-sm text-jung-muted">Personalized insights generated specifically for your unique profile</p>
       </div>
     </div>
 
     {isLoading ? (
-      <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-purple-50/80 to-indigo-50/80 rounded-2xl border border-purple-200/50">
-        <Loader2 className="w-12 h-12 animate-spin text-purple-500 mb-4" />
-        <span className="text-body font-medium text-purple-700">Generating your comprehensive personalized analysis...</span>
-        <p className="text-body text-sm text-purple-500 mt-2">This may take a moment as we craft detailed insights for each section.</p>
+      <div className="flex flex-col items-center justify-center py-20 bg-jung-surface-alt rounded-2xl border border-jung-border">
+        <Loader2 className="w-12 h-12 animate-spin text-jung-accent mb-4" />
+        <span className="text-body font-medium text-jung-dark">Generating your comprehensive personalized analysis...</span>
+        <p className="text-body text-sm text-jung-muted mt-2">This may take a moment as we craft detailed insights for each section.</p>
       </div>
     ) : error ? (
       <div className="flex items-center gap-4 p-6 bg-red-50 border border-red-200 rounded-xl">
@@ -1120,10 +1120,10 @@ const AiDeepAnalysis: React.FC<{
       <div className="space-y-8">
         {Object.entries(analysis).map(([key, value]) => (
           <div key={key} className="card-elevated p-6 md:p-8 relative overflow-hidden">
-            <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-500 to-indigo-500 text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-bl-lg">
+            <div className="absolute top-0 right-0 bg-jung-secondary text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-bl-lg">
               AI Generated
             </div>
-            <h3 className="text-heading text-lg md:text-xl mb-4 capitalize">
+            <h3 className="text-heading text-lg md:text-xl mb-4 capitalize font-serif">
               {key.replace(/([A-Z])/g, ' $1').trim()}
             </h3>
             <div className="prose-editorial">
@@ -1135,7 +1135,7 @@ const AiDeepAnalysis: React.FC<{
     ) : (
       <div className="text-center py-16 bg-jung-surface rounded-2xl border border-jung-border">
         <Brain className="w-14 h-14 text-jung-muted/30 mx-auto mb-4" />
-        <p className="text-body text-jung-muted">AI analysis will be generated shortly...</p>
+        <p className="text-body text-jung-muted font-serif">AI analysis will be generated shortly...</p>
       </div>
     )}
   </section>
@@ -1157,7 +1157,7 @@ const AssessmentHistory: React.FC<{
       className="flex items-center justify-center gap-3 w-full py-4 text-jung-muted hover:text-jung-accent transition-colors"
     >
       <History className="w-5 h-5" />
-      <span className="text-ui font-medium">Your Assessment History</span>
+      <span className="text-ui font-medium font-serif">Your Assessment History</span>
       {showHistory ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
     </button>
 
@@ -1173,7 +1173,7 @@ const AssessmentHistory: React.FC<{
             <div className="w-16 h-16 rounded-full bg-jung-surface flex items-center justify-center mx-auto mb-4">
               <History className="w-8 h-8 text-jung-muted/30" />
             </div>
-            <p className="text-body font-medium text-jung-dark mb-1">No saved assessments yet.</p>
+            <p className="text-body font-medium text-jung-dark mb-1 font-serif">No saved assessments yet.</p>
             <p className="text-sm text-jung-muted">Your results will appear here after you complete an assessment.</p>
           </div>
         ) : (
@@ -1201,7 +1201,7 @@ const AssessmentHistory: React.FC<{
                 >
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-ui font-medium text-jung-dark">{funcTitle}</span>
+                      <span className="text-ui font-medium text-jung-dark font-serif">{funcTitle}</span>
                       <span className="text-xs px-2 py-0.5 bg-jung-surface rounded text-jung-muted">{dominantFunc}</span>
                       {isViewing && (
                         <span className="text-xs px-2 py-0.5 bg-jung-accent text-white rounded">Viewing</span>
@@ -1250,7 +1250,7 @@ const InstagramPreviewModal: React.FC<{
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
     <div className="relative max-h-[90vh] overflow-auto bg-jung-dark rounded-2xl shadow-2xl">
       <div className="sticky top-0 z-10 flex items-center justify-between p-5 bg-jung-dark border-b border-white/10">
-        <h3 className="text-lg font-medium text-white">Story Image Preview</h3>
+        <h3 className="text-lg font-medium text-white font-serif">Story Image Preview</h3>
         <button
           onClick={onClose}
           className="p-2 text-white/60 hover:text-white transition-colors rounded-full hover:bg-white/10"
@@ -1263,7 +1263,7 @@ const InstagramPreviewModal: React.FC<{
         <div className="mx-auto" style={{ width: '270px', height: '480px', overflow: 'hidden' }}>
           <div style={{ transform: 'scale(0.25)', transformOrigin: 'top left' }}>
             <div ref={instagramCardRef}>
-              <Suspense fallback={<div className="w-[1080px] h-[1920px] bg-jung-surface animate-pulse" />}>
+              <Suspense fallback={<div className="w-[1080px] h-[1920px] bg-jung-surface" />}>
                 <InstagramStoryCard
                   dominantFunction={results.stack.dominant.function}
                   scores={results.scores}
@@ -1285,10 +1285,7 @@ const InstagramPreviewModal: React.FC<{
         <button
           onClick={onShare}
           disabled={isGenerating}
-          className="flex-1 flex items-center justify-center gap-2 px-5 py-3.5 text-white rounded-lg font-medium transition-opacity hover:opacity-90 disabled:opacity-50"
-          style={{
-            background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)'
-          }}
+          className="flex-1 flex items-center justify-center gap-2 px-5 py-3.5 bg-jung-accent text-white rounded-lg font-medium transition-all hover:bg-jung-accent-hover hover:-translate-y-px disabled:opacity-50"
         >
           {isGenerating ? (
             <>

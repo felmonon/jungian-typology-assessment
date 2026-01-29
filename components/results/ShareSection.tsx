@@ -9,10 +9,10 @@ interface ShareSectionProps {
   onInstagramClick: () => void;
 }
 
-export const ShareSection: React.FC<ShareSectionProps> = ({ 
-  results, 
-  shareSlug, 
-  onInstagramClick 
+export const ShareSection: React.FC<ShareSectionProps> = ({
+  results,
+  shareSlug,
+  onInstagramClick
 }) => {
   const [linkCopied, setLinkCopied] = useState(false);
 
@@ -68,12 +68,12 @@ export const ShareSection: React.FC<ShareSectionProps> = ({
     <div className="mt-8">
       <div className="flex items-center justify-center gap-2 mb-5">
         <Share2 className="w-5 h-5 text-jung-accent" />
-        <span className="text-ui text-sm font-medium text-jung-muted">Share Your Results</span>
+        <span className="text-ui text-sm font-medium text-jung-muted font-serif">Share Your Results</span>
       </div>
       <div className="flex flex-wrap justify-center gap-3">
         <button
           onClick={shareOnTwitter}
-          className="flex items-center gap-2 px-5 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium min-h-[48px]"
+          className="flex items-center gap-2 px-5 py-3 bg-jung-dark text-white rounded-lg hover:-translate-y-px hover:shadow-md transition-all text-sm font-medium min-h-[48px]"
           aria-label="Share on Twitter"
         >
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -83,7 +83,7 @@ export const ShareSection: React.FC<ShareSectionProps> = ({
         </button>
         <button
           onClick={shareOnFacebook}
-          className="flex items-center gap-2 px-5 py-3 bg-[#1877F2] text-white rounded-lg hover:bg-[#166FE5] transition-colors text-sm font-medium min-h-[48px]"
+          className="flex items-center gap-2 px-5 py-3 bg-[#1877F2] text-white rounded-lg hover:-translate-y-px hover:shadow-md transition-all text-sm font-medium min-h-[48px]"
           aria-label="Share on Facebook"
         >
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -93,7 +93,7 @@ export const ShareSection: React.FC<ShareSectionProps> = ({
         </button>
         <button
           onClick={shareOnLinkedIn}
-          className="flex items-center gap-2 px-5 py-3 bg-[#0A66C2] text-white rounded-lg hover:bg-[#004182] transition-colors text-sm font-medium min-h-[48px]"
+          className="flex items-center gap-2 px-5 py-3 bg-[#0A66C2] text-white rounded-lg hover:-translate-y-px hover:shadow-md transition-all text-sm font-medium min-h-[48px]"
           aria-label="Share on LinkedIn"
         >
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -103,13 +103,13 @@ export const ShareSection: React.FC<ShareSectionProps> = ({
         </button>
         <button
           onClick={copyLink}
-          className="flex items-center gap-2 px-5 py-3 bg-jung-surface text-jung-dark rounded-lg hover:bg-jung-surface transition-colors text-sm font-medium border border-jung-border min-h-[48px]"
+          className="flex items-center gap-2 px-5 py-3 bg-jung-surface text-jung-dark rounded-lg hover:-translate-y-px hover:shadow-md transition-all text-sm font-medium border border-jung-border min-h-[48px]"
           aria-label={linkCopied ? 'Link copied' : 'Copy link'}
         >
           {linkCopied ? (
             <>
-              <Check className="w-4 h-4 text-green-600" />
-              <span className="text-green-600">Copied!</span>
+              <Check className="w-4 h-4 text-jung-accent" />
+              <span className="text-jung-accent">Copied!</span>
             </>
           ) : (
             <>
@@ -120,10 +120,7 @@ export const ShareSection: React.FC<ShareSectionProps> = ({
         </button>
         <button
           onClick={onInstagramClick}
-          className="flex items-center gap-2 px-5 py-3 text-white rounded-lg hover:opacity-90 transition-opacity text-sm font-medium min-h-[48px]"
-          style={{
-            background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)'
-          }}
+          className="flex items-center gap-2 px-5 py-3 bg-jung-accent text-white rounded-lg hover:bg-jung-accent-hover hover:-translate-y-px hover:shadow-md transition-all text-sm font-medium min-h-[48px]"
           aria-label="Share to Instagram Story"
         >
           <Camera className="w-4 h-4" />

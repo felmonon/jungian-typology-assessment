@@ -64,14 +64,14 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast, onRemove }) => {
     success: 'border-emerald-200 bg-emerald-50/90',
     error: 'border-red-200 bg-red-50/90',
     info: 'border-blue-200 bg-blue-50/90',
-    loading: 'border-jung-accent/30 bg-jung-surface/95',
+    loading: 'border-jung-accent/30 bg-jung-surface',
   };
 
   return (
     <div
       className={`
         relative flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg
-        border backdrop-blur-sm min-w-[300px] max-w-[400px]
+        border min-w-[300px] max-w-[400px]
         transition-all duration-300 ease-out
         ${styles[toast.type]}
         ${isExiting ? 'opacity-0 translate-x-full scale-95' : 'opacity-100 translate-x-0 scale-100'}
@@ -80,7 +80,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast, onRemove }) => {
       aria-live="polite"
     >
       {icons[toast.type]}
-      <span className="flex-1 text-sm font-sans text-jung-dark">{toast.message}</span>
+      <span className="flex-1 text-sm font-serif text-jung-dark">{toast.message}</span>
       <button
         onClick={handleClose}
         className="p-1 rounded-full hover:bg-black/5 transition-colors"

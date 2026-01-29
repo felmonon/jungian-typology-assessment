@@ -32,7 +32,7 @@ export const FinalCTASection: React.FC<FinalCTASectionProps> = ({ onStartAssessm
             Start My Free Assessment Now
             <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
           </Button>
-          <p className="text-white/50 text-sm font-sans mt-6">
+          <p className="text-white/50 text-sm font-serif mt-6">
             Takes 15 minutes · Results are instant · 100% free
           </p>
         </div>

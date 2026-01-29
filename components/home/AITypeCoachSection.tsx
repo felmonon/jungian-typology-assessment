@@ -39,7 +39,7 @@ export const AITypeCoachSection: React.FC = () => {
           <div className="space-y-6">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-jung-accent-light rounded-full">
               <Sparkles className="w-4 h-4 text-jung-accent" />
-              <span className="text-sm font-sans font-medium text-jung-primary">Premium Feature</span>
+              <span className="text-sm font-serif font-medium text-jung-accent">Premium Feature</span>
             </div>
             <h2 className="text-display text-3xl sm:text-4xl text-jung-dark">
               AI Type Coach in Action
@@ -64,14 +64,14 @@ export const AITypeCoachSection: React.FC = () => {
           </div>
 
           {/* Right Column - Chat Demo */}
-          <div className="bg-jung-base rounded-2xl border border-jung-border overflow-hidden shadow-lg">
+          <div className="bg-jung-base rounded-xl border border-jung-border overflow-hidden shadow-md">
             {/* Chat Header */}
             <div className="bg-jung-dark text-white px-6 py-4 flex items-center gap-3">
               <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
                 <MessageCircle className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="font-sans font-semibold">AI Type Coach</h4>
+                <h4 className="font-serif font-semibold">AI Type Coach</h4>
                 <p className="text-sm text-white/60">Powered by your assessment results</p>
               </div>
             </div>
@@ -80,7 +80,7 @@ export const AITypeCoachSection: React.FC = () => {
             <div className="p-6 space-y-4 min-h-[350px] max-h-[400px] overflow-y-auto">
               {/* User Message */}
               <div className="flex justify-end">
-                <div className="bg-jung-dark text-white px-4 py-3 rounded-2xl rounded-br-md max-w-[85%]">
+                <div className="bg-jung-dark text-white px-4 py-3 rounded-xl rounded-br-sm max-w-[85%]">
                   <p className="text-sm">{AI_DEMO_CONVERSATION[0].message}</p>
                 </div>
               </div>
@@ -88,7 +88,7 @@ export const AITypeCoachSection: React.FC = () => {
               {/* AI Response */}
               {showResponse && (
                 <div className="flex justify-start">
-                  <div className="bg-jung-surface border border-jung-border px-4 py-3 rounded-2xl rounded-bl-md max-w-[85%]">
+                  <div className="bg-jung-surface border border-jung-border px-4 py-3 rounded-xl rounded-bl-sm max-w-[85%]">
                     <div className="prose-editorial text-sm">
                       {displayedMessage.split('\n\n').map((paragraph, idx) => {
                         if (paragraph.startsWith('**')) {
@@ -115,7 +115,7 @@ export const AITypeCoachSection: React.FC = () => {
                 <input
                   type="text"
                   placeholder="Ask about your type, relationships, career..."
-                  className="flex-1 px-4 py-2.5 bg-jung-base rounded-lg text-sm text-jung-muted cursor-not-allowed border border-jung-border"
+                  className="flex-1 px-4 py-2.5 bg-jung-base rounded-lg text-sm text-jung-muted cursor-not-allowed border border-jung-border font-serif"
                   disabled
                 />
                 <button className="w-10 h-10 bg-jung-border rounded-lg flex items-center justify-center cursor-not-allowed">

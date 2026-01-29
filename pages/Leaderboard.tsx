@@ -99,7 +99,7 @@ export const Leaderboard: React.FC = () => {
           <Users className="w-6 h-6 sm:w-8 sm:h-8 text-jung-accent" />
           <div>
             <p className="text-2xl sm:text-3xl font-bold text-jung-dark font-serif">{data?.total || 0}</p>
-            <p className="text-xs sm:text-sm text-jung-muted font-sans">Total Assessments Completed</p>
+            <p className="text-xs sm:text-sm text-jung-muted font-data">Total Assessments Completed</p>
           </div>
         </div>
       </div>
@@ -117,7 +117,7 @@ export const Leaderboard: React.FC = () => {
                 className="flex items-center gap-2 bg-jung-surface rounded-full px-4 py-2 shadow-sm border border-jung-border"
               >
                 <span className="text-lg font-bold text-jung-accent font-serif">#{index + 1}</span>
-                <span className={`px-2 py-1 rounded-lg text-sm font-bold font-sans ${FUNCTION_BG_COLORS[entry.function] || 'bg-jung-surface text-jung-muted'}`}>
+                <span className={`px-2 py-1 rounded-lg text-sm font-bold font-data ${FUNCTION_BG_COLORS[entry.function] || 'bg-jung-surface text-jung-muted'}`}>
                   {entry.function}
                 </span>
                 <span className="text-jung-secondary text-sm font-body">{entry.title}</span>
@@ -144,7 +144,7 @@ export const Leaderboard: React.FC = () => {
             </p>
             <a
               href="/assessment"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-jung-accent text-white font-medium rounded-xl hover:bg-jung-accent/90 transition-colors font-sans"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-jung-accent text-white font-medium rounded-xl hover:bg-jung-accent/90 transition-colors font-serif"
             >
               Take the Assessment
             </a>
@@ -158,11 +158,11 @@ export const Leaderboard: React.FC = () => {
               return (
                 <div key={entry.function} className="px-6 py-4 hover:bg-jung-surface transition-colors">
                   <div className="flex items-center gap-4">
-                    <div className="w-8 h-8 rounded-full bg-jung-surface flex items-center justify-center font-bold text-jung-muted font-sans">
+                    <div className="w-8 h-8 rounded-full bg-jung-surface flex items-center justify-center font-bold text-jung-muted font-data">
                       {index + 1}
                     </div>
 
-                    <div className={`px-3 py-1.5 rounded-lg font-bold text-sm font-sans ${FUNCTION_BG_COLORS[entry.function] || 'bg-jung-surface text-jung-muted'}`}>
+                    <div className={`px-3 py-1.5 rounded-lg font-bold text-sm font-data ${FUNCTION_BG_COLORS[entry.function] || 'bg-jung-surface text-jung-muted'}`}>
                       {entry.function}
                     </div>
 
@@ -178,7 +178,7 @@ export const Leaderboard: React.FC = () => {
 
                     <div className="text-right">
                       <p className="font-bold text-jung-dark font-serif">{entry.count}</p>
-                      <p className="text-xs text-jung-muted font-sans">{percentage.toFixed(1)}%</p>
+                      <p className="text-xs text-jung-muted font-data">{percentage.toFixed(1)}%</p>
                     </div>
                   </div>
                 </div>

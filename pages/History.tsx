@@ -152,7 +152,7 @@ export const History: React.FC = () => {
     <div className="editorial-container py-12">
       {/* Header */}
       <div className="text-center mb-10">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-jung-accent/10 mb-5">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-lg bg-jung-accent/10 mb-5">
           <HistoryIcon className="w-8 h-8 text-jung-accent" />
         </div>
         <h1 className="text-display text-3xl sm:text-4xl mb-4">
@@ -241,7 +241,7 @@ export const History: React.FC = () => {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-serif font-bold text-jung-dark">{funcTitle}</span>
-                      <span className="text-xs font-sans font-medium bg-jung-accent/10 text-jung-accent px-2 py-0.5 rounded">
+                      <span className="text-xs font-serif font-medium bg-jung-accent/10 text-jung-accent px-2 py-0.5 rounded">
                         {dominantFunc}
                       </span>
                     </div>
@@ -255,7 +255,7 @@ export const History: React.FC = () => {
                     {result.scores.slice(0, 4).map(score => (
                       <span
                         key={score.function}
-                        className="bg-jung-surface text-jung-secondary px-2 py-1 rounded font-sans"
+                        className="bg-jung-surface text-jung-secondary px-2 py-1 rounded font-serif"
                       >
                         {score.function}: {score.score}
                       </span>
@@ -369,7 +369,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ results, onClear, forma
         {/* Result cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div className="bg-jung-accent/5 rounded-xl p-4 border-l-4 border-jung-accent">
-            <p className="text-xs text-jung-muted uppercase tracking-widest mb-1 font-sans">Earlier Result</p>
+            <p className="text-xs text-jung-muted uppercase tracking-widest mb-1 font-serif">Earlier Result</p>
             <p className="font-serif font-bold text-jung-dark">
               {FUNCTION_DESCRIPTIONS[dominant1]?.title || dominant1}
             </p>
@@ -379,7 +379,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ results, onClear, forma
             </p>
           </div>
           <div className="bg-jung-dark/5 rounded-xl p-4 border-l-4 border-jung-dark">
-            <p className="text-xs text-jung-muted uppercase tracking-widest mb-1 font-sans">Later Result</p>
+            <p className="text-xs text-jung-muted uppercase tracking-widest mb-1 font-serif">Later Result</p>
             <p className="font-serif font-bold text-jung-dark">
               {FUNCTION_DESCRIPTIONS[dominant2]?.title || dominant2}
             </p>
@@ -392,8 +392,8 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ results, onClear, forma
 
         {/* Dominant change alert */}
         {dominantChanged && (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-center gap-3">
-            <div className="text-amber-700 font-bold text-sm flex items-center gap-2 flex-wrap">
+          <div className="bg-jung-accent-light border border-jung-border rounded-xl p-4 mb-6 flex items-center gap-3">
+            <div className="text-jung-accent font-bold text-sm flex items-center gap-2 flex-wrap">
               Dominant Function Changed:
               <span className="bg-jung-accent/20 text-jung-accent px-2 py-0.5 rounded">{dominant1}</span>
               <ArrowRight className="w-4 h-4" />
@@ -405,7 +405,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ results, onClear, forma
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Radar chart */}
           <div className="bg-jung-surface rounded-xl p-4">
-            <h3 className="text-center font-sans font-bold text-jung-secondary mb-4 text-sm uppercase tracking-widest">
+            <h3 className="text-center font-serif font-bold text-jung-secondary mb-4 text-sm uppercase tracking-widest">
               Overlaid Radar Comparison
             </h3>
             <div className="h-[300px] sm:h-[350px]">
@@ -441,7 +441,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ results, onClear, forma
 
           {/* Score changes table */}
           <div>
-            <h3 className="font-sans font-bold text-jung-secondary mb-4 text-sm uppercase tracking-widest">
+            <h3 className="font-serif font-bold text-jung-secondary mb-4 text-sm uppercase tracking-widest">
               Score Changes
             </h3>
             <div className="overflow-x-auto">

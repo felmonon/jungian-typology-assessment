@@ -24,8 +24,8 @@ export const TestimonialsSection: React.FC = () => {
                   <span className="text-display text-jung-accent">{testimonial.name[0]}</span>
                 </div>
                 <div>
-                  <p className="font-sans font-medium text-jung-dark">{testimonial.name}</p>
-                  <p className="text-sm font-sans text-jung-muted">{testimonial.role}</p>
+                  <p className="font-serif font-medium text-jung-dark">{testimonial.name}</p>
+                  <p className="text-sm font-serif text-jung-muted">{testimonial.role}</p>
                 </div>
               </div>
             </div>

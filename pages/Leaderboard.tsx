@@ -120,7 +120,7 @@ export const Leaderboard: React.FC = () => {
                 <span className={`px-2 py-1 rounded-lg text-sm font-bold font-data ${FUNCTION_BG_COLORS[entry.function] || 'bg-jung-surface text-jung-muted'}`}>
                   {entry.function}
                 </span>
-                <span className="text-jung-secondary text-sm font-body">{entry.title}</span>
+                <span className="text-jung-secondary text-sm font-body hidden sm:inline">{entry.title}</span>
               </div>
             ))}
           </div>
@@ -128,7 +128,7 @@ export const Leaderboard: React.FC = () => {
       )}
 
       <div className="card-elevated rounded-2xl overflow-hidden">
-        <div className="px-6 py-4 border-b border-jung-border flex items-center gap-2">
+        <div className="px-4 sm:px-6 py-4 border-b border-jung-border flex items-center gap-2">
           <BarChart3 className="w-5 h-5 text-jung-accent" />
           <h2 className="text-lg font-serif font-bold text-jung-dark">Function Distribution</h2>
         </div>
@@ -156,19 +156,19 @@ export const Leaderboard: React.FC = () => {
               const barWidth = (entry.count / maxCount) * 100;
 
               return (
-                <div key={entry.function} className="px-6 py-4 hover:bg-jung-surface transition-colors">
-                  <div className="flex items-center gap-4">
-                    <div className="w-8 h-8 rounded-full bg-jung-surface flex items-center justify-center font-bold text-jung-muted font-data">
+                <div key={entry.function} className="px-4 sm:px-6 py-4 hover:bg-jung-surface transition-colors">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-jung-surface flex items-center justify-center font-bold text-jung-muted font-data text-sm sm:text-base flex-shrink-0">
                       {index + 1}
                     </div>
 
-                    <div className={`px-3 py-1.5 rounded-lg font-bold text-sm font-data ${FUNCTION_BG_COLORS[entry.function] || 'bg-jung-surface text-jung-muted'}`}>
+                    <div className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg font-bold text-xs sm:text-sm font-data flex-shrink-0 ${FUNCTION_BG_COLORS[entry.function] || 'bg-jung-surface text-jung-muted'}`}>
                       {entry.function}
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-jung-dark truncate font-body">{entry.title}</p>
-                      <div className="mt-2 h-2 bg-jung-surface rounded-full overflow-hidden">
+                      <p className="font-medium text-jung-dark truncate font-body text-sm sm:text-base">{entry.title}</p>
+                      <div className="mt-1.5 sm:mt-2 h-1.5 sm:h-2 bg-jung-surface rounded-full overflow-hidden">
                         <div
                           className={`h-full rounded-full transition-all duration-500 ${FUNCTION_COLORS[entry.function] || 'bg-jung-muted'}`}
                           style={{ width: `${barWidth}%` }}
@@ -176,8 +176,8 @@ export const Leaderboard: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="text-right">
-                      <p className="font-bold text-jung-dark font-serif">{entry.count}</p>
+                    <div className="text-right flex-shrink-0">
+                      <p className="font-bold text-jung-dark font-serif text-sm sm:text-base">{entry.count}</p>
                       <p className="text-xs text-jung-muted font-data">{percentage.toFixed(1)}%</p>
                     </div>
                   </div>

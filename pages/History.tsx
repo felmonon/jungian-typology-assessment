@@ -149,7 +149,7 @@ export const History: React.FC = () => {
   const showComparison = compareMode && selectedResultObjects.length === 2;
 
   return (
-    <div className="editorial-container py-12">
+    <div className="editorial-container py-8 sm:py-12">
       {/* Header */}
       <div className="text-center mb-10">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-lg bg-jung-accent/10 mb-5">
@@ -174,7 +174,7 @@ export const History: React.FC = () => {
 
       {/* Results table */}
       <div className="card-elevated rounded-2xl overflow-hidden">
-        <div className="p-5 border-b border-jung-border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="px-3 sm:px-5 py-4 border-b border-jung-border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
           <h2 className="text-lg font-serif font-bold text-jung-dark">Your Results</h2>
           <div className="flex gap-3 flex-wrap">
             {selectedResults.length > 0 && (
@@ -205,9 +205,14 @@ export const History: React.FC = () => {
             <p className="text-jung-muted mt-3">Loading your history...</p>
           </div>
         ) : historyResults.length === 0 ? (
-          <div className="p-12 text-center">
-            <HistoryIcon className="w-12 h-12 text-jung-border mx-auto mb-4" />
-            <p className="text-jung-muted mb-4">No assessment results yet.</p>
+          <div className="p-8 sm:p-12 text-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-jung-accent/10 flex items-center justify-center">
+              <HistoryIcon className="w-8 h-8 text-jung-accent/50" />
+            </div>
+            <h3 className="text-lg font-semibold text-jung-dark mb-2 font-serif">No Results Yet</h3>
+            <p className="text-jung-muted mb-6 max-w-md mx-auto font-body">
+              Complete your first assessment to start tracking your cognitive function profile over time.
+            </p>
             <Button onClick={() => navigate('/assessment')}>
               Take Your First Assessment
             </Button>
@@ -222,7 +227,7 @@ export const History: React.FC = () => {
               return (
                 <div
                   key={result.id}
-                  className={`p-5 flex items-center gap-4 transition-colors ${
+                  className={`px-3 sm:px-5 py-4 flex items-center gap-3 sm:gap-4 transition-colors ${
                     isSelected ? 'bg-jung-accent/5' : 'hover:bg-jung-surface'
                   }`}
                 >
@@ -232,26 +237,26 @@ export const History: React.FC = () => {
                     title={isSelected ? 'Deselect' : 'Select for comparison'}
                   >
                     {isSelected ? (
-                      <CheckSquare className="w-6 h-6" />
+                      <CheckSquare className="w-5 h-5 sm:w-6 sm:h-6" />
                     ) : (
-                      <Square className="w-6 h-6" />
+                      <Square className="w-5 h-5 sm:w-6 sm:h-6" />
                     )}
                   </button>
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-serif font-bold text-jung-dark">{funcTitle}</span>
-                      <span className="text-xs font-serif font-medium bg-jung-accent/10 text-jung-accent px-2 py-0.5 rounded">
+                      <span className="font-serif font-bold text-jung-dark text-sm sm:text-base truncate">{funcTitle}</span>
+                      <span className="text-xs font-serif font-medium bg-jung-accent/10 text-jung-accent px-2 py-0.5 rounded flex-shrink-0">
                         {dominantFunc}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-jung-muted">
-                      <Calendar className="w-4 h-4" />
-                      {formatDate(result.createdAt)}
+                    <div className="flex items-center gap-2 text-xs sm:text-sm text-jung-muted">
+                      <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+                      <span className="truncate">{formatDate(result.createdAt)}</span>
                     </div>
                   </div>
 
-                  <div className="hidden sm:flex gap-2 text-xs">
+                  <div className="hidden lg:flex gap-2 text-xs">
                     {result.scores.slice(0, 4).map(score => (
                       <span
                         key={score.function}
@@ -262,26 +267,28 @@ export const History: React.FC = () => {
                     ))}
                   </div>
 
-                  <button
-                    onClick={() => viewResult(result)}
-                    className="flex-shrink-0 text-jung-accent hover:text-jung-dark transition-colors"
-                    title="View full result"
-                  >
-                    <Eye className="w-5 h-5" />
-                  </button>
+                  <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                    <button
+                      onClick={() => viewResult(result)}
+                      className="p-1.5 text-jung-accent hover:text-jung-dark transition-colors"
+                      title="View full result"
+                    >
+                      <Eye className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
+                    </button>
 
-                  <button
-                    onClick={() => deleteResult(result.id)}
-                    disabled={deletingId === result.id}
-                    className="flex-shrink-0 text-jung-muted hover:text-red-500 transition-colors disabled:opacity-50"
-                    title="Delete result"
-                  >
-                    {deletingId === result.id ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                      <Trash2 className="w-5 h-5" />
-                    )}
-                  </button>
+                    <button
+                      onClick={() => deleteResult(result.id)}
+                      disabled={deletingId === result.id}
+                      className="p-1.5 text-jung-muted hover:text-red-500 transition-colors disabled:opacity-50"
+                      title="Delete result"
+                    >
+                      {deletingId === result.id ? (
+                        <Loader2 className="w-4.5 h-4.5 sm:w-5 sm:h-5 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
+                      )}
+                    </button>
+                  </div>
                 </div>
               );
             })}
@@ -365,7 +372,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ results, onClear, forma
         </Button>
       </div>
 
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         {/* Result cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div className="bg-jung-accent/5 rounded-xl p-4 border-l-4 border-jung-accent">

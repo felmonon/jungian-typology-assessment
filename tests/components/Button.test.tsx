@@ -11,23 +11,22 @@ describe('Button Component', () => {
   it('renders with primary variant by default', () => {
     render(<Button>Primary</Button>);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('from-amber-600');
-    expect(button).toHaveClass('to-amber-700');
+    expect(button).toHaveClass('bg-jung-dark');
     expect(button).toHaveClass('text-white');
   });
 
   it('renders with outline variant', () => {
     render(<Button variant="outline">Outline</Button>);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('border-2');
+    expect(button).toHaveClass('border');
     expect(button).toHaveClass('bg-transparent');
   });
 
   it('renders with secondary variant', () => {
     render(<Button variant="secondary">Secondary</Button>);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('bg-jung-dark');
-    expect(button).toHaveClass('text-white');
+    expect(button).toHaveClass('bg-jung-surface-alt');
+    expect(button).toHaveClass('text-jung-dark');
   });
 
   it('renders with ghost variant', () => {

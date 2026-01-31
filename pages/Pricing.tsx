@@ -147,24 +147,23 @@ export const Pricing: React.FC = () => {
         window.location.href = data.url;
       }
     } catch (err: any) {
-      console.error('Checkout error:', err);
       setError(err.message || 'Something went wrong. Please try again.');
       setLoadingTier(null);
     }
   };
 
   return (
-    <div className="min-h-screen bg-jung-surface">
+    <div className="min-h-screen bg-jung-base">
       {/* Hero Section */}
       <section className="relative py-20 md:py-28 overflow-hidden">
         <div className="absolute inset-0 bg-jung-base" />
         <div className="editorial-container relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <p className="text-ui text-jung-accent uppercase tracking-widest mb-4">Pricing</p>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-jung-dark mb-6 leading-tight">
+            <h1 className="text-display-lg text-4xl sm:text-5xl md:text-6xl text-jung-dark mb-6">
               Choose Your Path to<br />Self-Understanding
             </h1>
-            <p className="text-xl text-jung-secondary max-w-2xl mx-auto leading-relaxed font-serif">
+            <p className="text-body-lg text-jung-secondary max-w-2xl mx-auto">
               Start free, go deeper when you're ready. No subscriptions, no hidden fees—just genuine insight into your cognitive patterns.
             </p>
           </div>
@@ -173,17 +172,17 @@ export const Pricing: React.FC = () => {
 
       {/* Pricing Cards */}
       <section className="editorial-container pb-20 -mt-8 pt-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto items-stretch">
           {TIERS.map((tier) => (
             <div
               key={tier.name}
               className={`
-                relative bg-jung-surface rounded-2xl p-6 sm:p-8 transition-all duration-300
+                relative flex flex-col p-6 sm:p-8
                 ${tier.highlighted
-                  ? 'border-2 border-jung-accent shadow-xl shadow-jung-accent/10 md:-translate-y-4 md:scale-105'
+                  ? 'card-premium border-2 !border-jung-accent shadow-xl md:-translate-y-4 md:scale-105'
                   : tier.bestValue
-                    ? 'border-2 border-jung-dark shadow-lg'
-                    : 'border border-jung-border shadow-sm hover:shadow-md hover:-translate-y-px'
+                    ? 'card-premium border-2 !border-jung-dark shadow-lg'
+                    : 'card-elevated'
                 }
               `}
             >
@@ -206,35 +205,35 @@ export const Pricing: React.FC = () => {
 
               {/* Header */}
               <div className="text-center mb-6 pt-2">
-                <h3 className="text-lg font-serif font-bold text-jung-dark mb-2">
+                <h3 className="text-heading text-lg text-jung-dark mb-2">
                   {tier.name}
                 </h3>
                 <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-5xl font-serif font-bold text-jung-dark">{tier.price}</span>
-                  {tier.price !== '$0' && <span className="text-jung-muted font-serif">one-time</span>}
+                  <span className="text-display text-5xl text-jung-dark">{tier.price}</span>
+                  {tier.price !== '$0' && <span className="text-jung-muted text-sm">one-time</span>}
                 </div>
-                <p className="text-jung-secondary mt-2 font-serif">{tier.tagline}</p>
+                <p className="text-body text-jung-secondary mt-2">{tier.tagline}</p>
               </div>
 
               {/* Includes prefix */}
               {tier.includesPrefix && (
-                <p className="text-sm text-jung-accent font-medium mb-4 border-t border-jung-border pt-4 font-serif">
+                <p className="text-sm text-jung-accent font-medium mb-4 border-t border-jung-border pt-4">
                   {tier.includesPrefix}
                 </p>
               )}
 
               {/* Features */}
-              <ul className="space-y-3 mb-8">
+              <ul className="space-y-3 mb-8 flex-1">
                 {tier.features.map((feature, idx) => {
                   const text = typeof feature === 'string' ? feature : feature.text;
                   const subtext = typeof feature === 'object' ? feature.subtext : null;
                   return (
                     <li key={idx} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                      <Check className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
                       <div>
-                        <span className="text-jung-dark text-sm font-serif">{text}</span>
+                        <span className="text-jung-dark text-sm">{text}</span>
                         {subtext && (
-                          <span className="block text-xs text-jung-muted mt-0.5 font-serif">
+                          <span className="block text-xs text-jung-muted mt-0.5">
                             {subtext}
                           </span>
                         )}
@@ -271,7 +270,7 @@ export const Pricing: React.FC = () => {
 
               {/* Note */}
               {tier.note && (
-                <p className="text-center text-xs text-jung-muted mt-4 font-serif">
+                <p className="text-center text-xs text-jung-muted mt-4">
                   {tier.note}
                 </p>
               )}
@@ -280,7 +279,7 @@ export const Pricing: React.FC = () => {
         </div>
 
         {error && (
-          <p className="text-center text-red-600 mt-6 bg-red-50 p-4 rounded-lg max-w-md mx-auto font-serif">
+          <p className="text-center text-error mt-6 bg-error-light p-4 rounded-lg max-w-md mx-auto">
             {error}
           </p>
         )}
@@ -296,11 +295,11 @@ export const Pricing: React.FC = () => {
               { icon: <Zap className="w-6 h-6" />, title: 'Instant Delivery', desc: 'Access immediately after purchase' },
             ].map((item, idx) => (
               <div key={idx} className="flex flex-col items-center">
-                <div className="w-12 h-12 rounded-full bg-jung-accent/10 flex items-center justify-center text-jung-accent mb-3">
+                <div className="w-12 h-12 rounded-full bg-jung-accent-light flex items-center justify-center text-jung-accent mb-3">
                   {item.icon}
                 </div>
-                <h4 className="font-serif font-semibold text-jung-dark mb-1">{item.title}</h4>
-                <p className="text-sm text-jung-muted font-serif">{item.desc}</p>
+                <h4 className="text-heading text-base text-jung-dark mb-1">{item.title}</h4>
+                <p className="text-sm text-jung-muted">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -311,10 +310,10 @@ export const Pricing: React.FC = () => {
       <section className="editorial-container py-20">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-display text-jung-dark mb-4 font-serif">
+            <h2 className="text-display text-3xl text-jung-dark mb-4">
               Feature Comparison
             </h2>
-            <p className="text-body text-jung-secondary font-serif">
+            <p className="text-body text-jung-secondary">
               See exactly what's included in each tier
             </p>
           </div>
@@ -323,17 +322,17 @@ export const Pricing: React.FC = () => {
             <table className="w-full bg-jung-surface">
               <thead>
                 <tr className="bg-jung-dark text-white">
-                  <th className="px-6 py-4 text-left font-serif font-medium">Feature</th>
-                  <th className="px-4 py-4 text-center font-serif font-medium">Free</th>
-                  <th className="px-4 py-4 text-center font-serif font-medium bg-jung-accent">
+                  <th className="px-6 py-4 text-left text-ui font-medium">Feature</th>
+                  <th className="px-4 py-4 text-center text-ui font-medium">Free</th>
+                  <th className="px-4 py-4 text-center text-ui font-medium bg-jung-accent">
                     Insight
                   </th>
-                  <th className="px-4 py-4 text-center font-serif font-medium">
+                  <th className="px-4 py-4 text-center text-ui font-medium">
                     Mastery
                   </th>
                 </tr>
               </thead>
-              <tbody className="text-sm font-serif">
+              <tbody className="text-sm">
                 {COMPARISON_FEATURES.map((feature, idx) => (
                   <tr
                     key={idx}
@@ -344,21 +343,21 @@ export const Pricing: React.FC = () => {
                     </td>
                     <td className="px-4 py-3 text-center">
                       {feature.free ? (
-                        <Check className="w-5 h-5 text-emerald-500 mx-auto" />
+                        <Check className="w-5 h-5 text-success mx-auto" />
                       ) : (
                         <X className="w-5 h-5 text-jung-border mx-auto" />
                       )}
                     </td>
                     <td className="px-4 py-3 text-center bg-jung-accent-light">
                       {feature.insight ? (
-                        <Check className="w-5 h-5 text-emerald-500 mx-auto" />
+                        <Check className="w-5 h-5 text-success mx-auto" />
                       ) : (
                         <X className="w-5 h-5 text-jung-border mx-auto" />
                       )}
                     </td>
                     <td className="px-4 py-3 text-center">
                       {feature.mastery ? (
-                        <Check className="w-5 h-5 text-emerald-500 mx-auto" />
+                        <Check className="w-5 h-5 text-success mx-auto" />
                       ) : (
                         <X className="w-5 h-5 text-jung-border mx-auto" />
                       )}
@@ -376,10 +375,10 @@ export const Pricing: React.FC = () => {
         <div className="editorial-container">
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-display text-jung-dark mb-4 font-serif">
+              <h2 className="text-display text-3xl text-jung-dark mb-4">
                 Frequently Asked Questions
               </h2>
-              <p className="text-body text-jung-secondary font-serif">
+              <p className="text-body text-jung-secondary">
                 Everything you need to know
               </p>
             </div>
@@ -394,7 +393,7 @@ export const Pricing: React.FC = () => {
                     onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
                     className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-jung-surface-alt transition-colors"
                   >
-                    <span className="font-serif font-medium text-jung-dark pr-4">
+                    <span className="text-ui text-jung-dark pr-4">
                       {item.question}
                     </span>
                     {openFaq === idx ? (
@@ -405,7 +404,7 @@ export const Pricing: React.FC = () => {
                   </button>
                   <div className={`overflow-hidden transition-all duration-300 ${openFaq === idx ? 'max-h-96' : 'max-h-0'}`}>
                     <div className="px-6 pb-5 border-t border-jung-border">
-                      <p className="text-jung-secondary leading-relaxed pt-4 font-serif">{item.answer}</p>
+                      <p className="text-body text-jung-secondary pt-4">{item.answer}</p>
                     </div>
                   </div>
                 </div>
@@ -421,10 +420,10 @@ export const Pricing: React.FC = () => {
         <div className="editorial-container relative z-10">
           <div className="max-w-3xl mx-auto text-center text-white">
             <Sparkles className="w-10 h-10 mx-auto mb-6 opacity-80" />
-            <h2 className="text-3xl sm:text-4xl font-serif font-bold mb-4">
+            <h2 className="text-display text-3xl sm:text-4xl mb-4">
               Ready to discover who you really are?
             </h2>
-            <p className="text-white/80 text-lg mb-8 max-w-xl mx-auto font-serif">
+            <p className="text-white/80 text-lg mb-8 max-w-xl mx-auto">
               Start with the free assessment. Upgrade anytime to unlock deeper insights.
             </p>
             <Button

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, useNavigate, Link, useLocation } from 'react-router-dom';
 import { LogIn, LogOut, User, Menu, X, Trophy, BookOpen, Shield, History, ChevronRight } from 'lucide-react';
 import { useAuth } from '../../hooks/use-auth';
@@ -10,18 +10,29 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   const { user, isLoading, isAuthenticated, logout, isLoggingOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   usePageTracking();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileMenuOpen]);
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
@@ -37,10 +48,10 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     <div className="min-h-screen flex flex-col font-serif text-jung-dark bg-jung-base">
       {/* Header - solid bg on scroll, no blur */}
       <header
-        className={`sticky top-0 z-50 transition-all duration-200 ${
+        className={`sticky top-0 z-50 bg-jung-base transition-[border-color,box-shadow] duration-200 ${
           scrolled
-            ? 'bg-jung-base border-b border-jung-border shadow-sm'
-            : 'bg-transparent'
+            ? 'border-b border-jung-border shadow-sm'
+            : 'border-b border-transparent'
         }`}
       >
         <div className="editorial-container">
@@ -162,44 +173,54 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           </div>
         </div>
 
+        {/* Mobile Menu Overlay */}
+        {mobileMenuOpen && (
+          <div
+            className="lg:hidden fixed inset-0 top-16 bg-jung-dark/20 z-40"
+            onClick={closeMobileMenu}
+            aria-hidden="true"
+          />
+        )}
+
         {/* Mobile Menu */}
         <div
-          className={`lg:hidden overflow-hidden transition-all duration-300 ${
-            mobileMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
+          ref={mobileMenuRef}
+          className={`lg:hidden overflow-hidden z-50 transition-[max-height,opacity] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            mobileMenuOpen ? 'max-h-[80vh] opacity-100 duration-400' : 'max-h-0 opacity-0 duration-200'
           }`}
         >
-          <div className="bg-jung-base border-t border-jung-border">
+          <div className="bg-jung-base border-t border-jung-border overflow-y-auto max-h-[80vh]">
             <div className="editorial-container py-6 space-y-1">
               <NavLink to="/" onClick={closeMobileMenu}
-                className={({ isActive }) => `flex items-center justify-between py-3 px-4 text-base font-serif font-medium rounded-lg transition-all ${isActive ? 'bg-jung-accent-light text-jung-accent' : 'text-jung-secondary hover:bg-jung-surface-alt'}`}>
+                className={({ isActive }) => `flex items-center justify-between min-h-[44px] py-3 px-4 text-base font-serif font-medium rounded-lg transition-all ${isActive ? 'bg-jung-accent-light text-jung-accent' : 'text-jung-secondary hover:bg-jung-surface-alt active:bg-jung-surface-alt'}`}>
                 Assessment
                 <ChevronRight className="w-5 h-5 opacity-50" />
               </NavLink>
               <NavLink to="/learn" onClick={closeMobileMenu}
-                className={({ isActive }) => `flex items-center justify-between py-3 px-4 text-base font-serif font-medium rounded-lg transition-all ${isActive ? 'bg-jung-accent-light text-jung-accent' : 'text-jung-secondary hover:bg-jung-surface-alt'}`}>
+                className={({ isActive }) => `flex items-center justify-between min-h-[44px] py-3 px-4 text-base font-serif font-medium rounded-lg transition-all ${isActive ? 'bg-jung-accent-light text-jung-accent' : 'text-jung-secondary hover:bg-jung-surface-alt active:bg-jung-surface-alt'}`}>
                 <span className="flex items-center gap-2"><BookOpen className="w-5 h-5" />Learn the Theory</span>
                 <ChevronRight className="w-5 h-5 opacity-50" />
               </NavLink>
               <NavLink to="/about" onClick={closeMobileMenu}
-                className={({ isActive }) => `flex items-center justify-between py-3 px-4 text-base font-serif font-medium rounded-lg transition-all ${isActive ? 'bg-jung-accent-light text-jung-accent' : 'text-jung-secondary hover:bg-jung-surface-alt'}`}>
+                className={({ isActive }) => `flex items-center justify-between min-h-[44px] py-3 px-4 text-base font-serif font-medium rounded-lg transition-all ${isActive ? 'bg-jung-accent-light text-jung-accent' : 'text-jung-secondary hover:bg-jung-surface-alt active:bg-jung-surface-alt'}`}>
                 About
                 <ChevronRight className="w-5 h-5 opacity-50" />
               </NavLink>
               <NavLink to="/leaderboard" onClick={closeMobileMenu}
-                className={({ isActive }) => `flex items-center justify-between py-3 px-4 text-base font-serif font-medium rounded-lg transition-all ${isActive ? 'bg-jung-accent-light text-jung-accent' : 'text-jung-secondary hover:bg-jung-surface-alt'}`}>
+                className={({ isActive }) => `flex items-center justify-between min-h-[44px] py-3 px-4 text-base font-serif font-medium rounded-lg transition-all ${isActive ? 'bg-jung-accent-light text-jung-accent' : 'text-jung-secondary hover:bg-jung-surface-alt active:bg-jung-surface-alt'}`}>
                 <span className="flex items-center gap-2"><Trophy className="w-5 h-5" />Leaderboard</span>
                 <ChevronRight className="w-5 h-5 opacity-50" />
               </NavLink>
               {user?.isAdmin && (
                 <NavLink to="/admin" onClick={closeMobileMenu}
-                  className={({ isActive }) => `flex items-center justify-between py-3 px-4 text-base font-serif font-medium rounded-lg transition-all ${isActive ? 'bg-jung-accent-light text-jung-accent' : 'text-jung-secondary hover:bg-jung-surface-alt'}`}>
+                  className={({ isActive }) => `flex items-center justify-between min-h-[44px] py-3 px-4 text-base font-serif font-medium rounded-lg transition-all ${isActive ? 'bg-jung-accent-light text-jung-accent' : 'text-jung-secondary hover:bg-jung-surface-alt active:bg-jung-surface-alt'}`}>
                   <span className="flex items-center gap-2"><Shield className="w-5 h-5" />Admin</span>
                   <ChevronRight className="w-5 h-5 opacity-50" />
                 </NavLink>
               )}
               {isAuthenticated && (
                 <NavLink to="/history" onClick={closeMobileMenu}
-                  className={({ isActive }) => `flex items-center justify-between py-3 px-4 text-base font-serif font-medium rounded-lg transition-all ${isActive ? 'bg-jung-accent-light text-jung-accent' : 'text-jung-secondary hover:bg-jung-surface-alt'}`}>
+                  className={({ isActive }) => `flex items-center justify-between min-h-[44px] py-3 px-4 text-base font-serif font-medium rounded-lg transition-all ${isActive ? 'bg-jung-accent-light text-jung-accent' : 'text-jung-secondary hover:bg-jung-surface-alt active:bg-jung-surface-alt'}`}>
                   <span className="flex items-center gap-2"><History className="w-5 h-5" />History</span>
                   <ChevronRight className="w-5 h-5 opacity-50" />
                 </NavLink>
@@ -228,7 +249,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                     <button
                       onClick={() => { logout(); closeMobileMenu(); }}
                       disabled={isLoggingOut}
-                      className="w-full flex items-center justify-center gap-2 py-3.5 px-4 text-base font-serif font-medium bg-jung-surface-alt hover:bg-jung-border text-jung-secondary rounded-lg transition-colors disabled:opacity-50"
+                      className="w-full flex items-center justify-center gap-2 min-h-[44px] py-3.5 px-4 text-base font-serif font-medium bg-jung-surface-alt hover:bg-jung-border active:bg-jung-border text-jung-secondary rounded-lg transition-colors disabled:opacity-50"
                     >
                       <LogOut className="w-5 h-5" />
                       {isLoggingOut ? 'Logging out...' : 'Logout'}
@@ -236,7 +257,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                   </div>
                 ) : (
                   <NavLink to="/auth" onClick={closeMobileMenu}
-                    className="flex items-center justify-center gap-2 w-full py-4 px-4 text-base font-serif font-semibold bg-jung-accent text-white rounded-lg shadow-sm">
+                    className="flex items-center justify-center gap-2 w-full min-h-[44px] py-4 px-4 text-base font-serif font-semibold bg-jung-accent text-white rounded-lg shadow-sm active:bg-jung-accent-hover">
                     <LogIn className="w-5 h-5" />
                     Sign In / Create Account
                   </NavLink>

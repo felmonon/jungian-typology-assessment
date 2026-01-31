@@ -31,3 +31,6 @@ coverage/
 .firebaserc
 firebase.json
 model.pt
+
+# Auto Claude data directory
+.auto-claude/

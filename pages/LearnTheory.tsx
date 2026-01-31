@@ -49,7 +49,7 @@ const SectionHeader: React.FC<{ icon: React.ReactNode; title: string; subtitle?:
       {icon}
     </div>
     <div>
-      <h2 className="text-display text-jung-dark font-serif">{title}</h2>
+      <h2 className="text-display text-2xl md:text-3xl text-jung-dark font-serif">{title}</h2>
       {subtitle && <p className="text-body text-jung-muted mt-1 font-serif">{subtitle}</p>}
     </div>
   </div>
@@ -75,7 +75,7 @@ export const LearnTheory: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-jung-surface">
+    <div className="min-h-screen bg-jung-base">
       {/* Hero Header */}
       <header className="relative py-20 md:py-28 overflow-hidden">
         <div className="absolute inset-0 bg-jung-base" />

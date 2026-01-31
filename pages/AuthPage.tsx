@@ -5,6 +5,15 @@ import { useAuth } from '../hooks/use-auth';
 
 type AuthTab = 'login' | 'signup';
 
+const inputStyles = `
+  w-full pl-12 pr-4 py-3.5 text-body text-jung-dark
+  bg-jung-base border border-jung-border rounded-lg
+  focus-visible:ring-2 focus-visible:ring-jung-accent focus-visible:border-jung-accent
+  outline-none transition-all duration-200
+  placeholder:text-jung-muted/60
+  min-h-[48px]
+`;
+
 export const AuthPage: React.FC = () => {
   const navigate = useNavigate();
   const {
@@ -92,7 +101,7 @@ export const AuthPage: React.FC = () => {
     (activeTab === 'signup' && signupError?.message);
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 md:py-16 bg-jung-surface">
+    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 md:py-16 bg-jung-base">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
@@ -116,11 +125,11 @@ export const AuthPage: React.FC = () => {
             <button
               onClick={() => { setActiveTab('login'); setFormError(null); }}
               className={`
-                flex-1 py-4 px-6 text-ui font-medium transition-all duration-200 min-h-[56px]
+                flex-1 py-4 px-4 sm:px-6 text-ui font-medium transition-all duration-200 min-h-[52px]
                 flex items-center justify-center gap-2
                 ${activeTab === 'login'
-                  ? 'bg-jung-accent text-white'
-                  : 'text-jung-muted hover:bg-jung-surface hover:text-jung-dark'}
+                  ? 'text-jung-accent border-b-2 border-jung-accent bg-jung-accent/5'
+                  : 'text-jung-muted hover:bg-jung-surface-alt hover:text-jung-dark'}
               `}
             >
               <LogIn className="w-4 h-4" />
@@ -129,11 +138,11 @@ export const AuthPage: React.FC = () => {
             <button
               onClick={() => { setActiveTab('signup'); setFormError(null); }}
               className={`
-                flex-1 py-4 px-6 text-ui font-medium transition-all duration-200 min-h-[56px]
+                flex-1 py-4 px-4 sm:px-6 text-ui font-medium transition-all duration-200 min-h-[52px]
                 flex items-center justify-center gap-2
                 ${activeTab === 'signup'
-                  ? 'bg-jung-accent text-white'
-                  : 'text-jung-muted hover:bg-jung-surface hover:text-jung-dark'}
+                  ? 'text-jung-accent border-b-2 border-jung-accent bg-jung-accent/5'
+                  : 'text-jung-muted hover:bg-jung-surface-alt hover:text-jung-dark'}
               `}
             >
               <UserPlus className="w-4 h-4" />
@@ -142,11 +151,12 @@ export const AuthPage: React.FC = () => {
           </div>
 
           {/* Form Content */}
-          <div className="p-6 md:p-8">
+          <div className="p-5 sm:p-6 md:p-8">
             {/* Error Message */}
             {displayError && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-                {displayError}
+              <div className="mb-6 p-4 bg-error-light border border-error/20 rounded-lg text-error text-sm flex items-start gap-2">
+                <span className="shrink-0 mt-0.5">⚠</span>
+                <span>{displayError}</span>
               </div>
             )}
 
@@ -157,18 +167,12 @@ export const AuthPage: React.FC = () => {
                     Email Address
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-jung-muted" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-jung-muted pointer-events-none" />
                     <input
                       type="email"
                       value={loginForm.email}
                       onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
-                      className="
-                        w-full pl-12 pr-4 py-3.5 text-body text-jung-dark
-                        bg-jung-surface border border-jung-border rounded-lg
-                        focus:ring-2 focus:ring-jung-accent focus:border-transparent
-                        outline-none transition-all duration-200
-                        placeholder:text-jung-muted/60
-                      "
+                      className={inputStyles}
                       placeholder="you@example.com"
                     />
                   </div>
@@ -179,18 +183,12 @@ export const AuthPage: React.FC = () => {
                     Password
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-jung-muted" />
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-jung-muted pointer-events-none" />
                     <input
                       type="password"
                       value={loginForm.password}
                       onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
-                      className="
-                        w-full pl-12 pr-4 py-3.5 text-body text-jung-dark
-                        bg-jung-surface border border-jung-border rounded-lg
-                        focus:ring-2 focus:ring-jung-accent focus:border-transparent
-                        outline-none transition-all duration-200
-                        placeholder:text-jung-muted/60
-                      "
+                      className={inputStyles}
                       placeholder="••••••••"
                     />
                   </div>
@@ -200,13 +198,15 @@ export const AuthPage: React.FC = () => {
                   type="submit"
                   disabled={isLoggingIn}
                   className="
-                    w-full py-4 min-h-[56px]
+                    w-full py-4 min-h-[48px]
                     bg-jung-accent text-white text-ui font-semibold
-                    rounded-lg shadow-md shadow-jung-accent/20
-                    hover:bg-jung-accent-hover hover:-translate-y-0.5
+                    rounded-lg shadow-sm
+                    hover:bg-jung-accent-hover hover:-translate-y-0.5 hover:shadow-accent
                     active:translate-y-0
                     transition-all duration-200
                     disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+                    focus-visible:ring-2 focus-visible:ring-jung-accent focus-visible:ring-offset-2
+                    outline-none
                   "
                 >
                   {isLoggingIn ? 'Signing in...' : 'Sign In'}
@@ -220,18 +220,12 @@ export const AuthPage: React.FC = () => {
                       First Name
                     </label>
                     <div className="relative">
-                      <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-jung-muted" />
+                      <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-jung-muted pointer-events-none" />
                       <input
                         type="text"
                         value={signupForm.firstName}
                         onChange={(e) => setSignupForm({ ...signupForm, firstName: e.target.value })}
-                        className="
-                          w-full pl-12 pr-4 py-3.5 text-body text-jung-dark
-                          bg-jung-surface border border-jung-border rounded-lg
-                          focus:ring-2 focus:ring-jung-accent focus:border-transparent
-                          outline-none transition-all duration-200
-                          placeholder:text-jung-muted/60
-                        "
+                        className={inputStyles}
                         placeholder="John"
                       />
                     </div>
@@ -240,19 +234,16 @@ export const AuthPage: React.FC = () => {
                     <label className="block text-ui text-sm font-medium text-jung-dark mb-2">
                       Last Name
                     </label>
-                    <input
-                      type="text"
-                      value={signupForm.lastName}
-                      onChange={(e) => setSignupForm({ ...signupForm, lastName: e.target.value })}
-                      className="
-                        w-full px-4 py-3.5 text-body text-jung-dark
-                        bg-jung-surface border border-jung-border rounded-lg
-                        focus:ring-2 focus:ring-jung-accent focus:border-transparent
-                        outline-none transition-all duration-200
-                        placeholder:text-jung-muted/60
-                      "
-                      placeholder="Doe"
-                    />
+                    <div className="relative">
+                      <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-jung-muted pointer-events-none" />
+                      <input
+                        type="text"
+                        value={signupForm.lastName}
+                        onChange={(e) => setSignupForm({ ...signupForm, lastName: e.target.value })}
+                        className={inputStyles}
+                        placeholder="Doe"
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -261,18 +252,12 @@ export const AuthPage: React.FC = () => {
                     Email Address
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-jung-muted" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-jung-muted pointer-events-none" />
                     <input
                       type="email"
                       value={signupForm.email}
                       onChange={(e) => setSignupForm({ ...signupForm, email: e.target.value })}
-                      className="
-                        w-full pl-12 pr-4 py-3.5 text-body text-jung-dark
-                        bg-jung-surface border border-jung-border rounded-lg
-                        focus:ring-2 focus:ring-jung-accent focus:border-transparent
-                        outline-none transition-all duration-200
-                        placeholder:text-jung-muted/60
-                      "
+                      className={inputStyles}
                       placeholder="you@example.com"
                     />
                   </div>
@@ -283,18 +268,12 @@ export const AuthPage: React.FC = () => {
                     Password
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-jung-muted" />
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-jung-muted pointer-events-none" />
                     <input
                       type="password"
                       value={signupForm.password}
                       onChange={(e) => setSignupForm({ ...signupForm, password: e.target.value })}
-                      className="
-                        w-full pl-12 pr-4 py-3.5 text-body text-jung-dark
-                        bg-jung-surface border border-jung-border rounded-lg
-                        focus:ring-2 focus:ring-jung-accent focus:border-transparent
-                        outline-none transition-all duration-200
-                        placeholder:text-jung-muted/60
-                      "
+                      className={inputStyles}
                       placeholder="••••••••"
                     />
                   </div>
@@ -306,18 +285,12 @@ export const AuthPage: React.FC = () => {
                     Confirm Password
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-jung-muted" />
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-jung-muted pointer-events-none" />
                     <input
                       type="password"
                       value={signupForm.confirmPassword}
                       onChange={(e) => setSignupForm({ ...signupForm, confirmPassword: e.target.value })}
-                      className="
-                        w-full pl-12 pr-4 py-3.5 text-body text-jung-dark
-                        bg-jung-surface border border-jung-border rounded-lg
-                        focus:ring-2 focus:ring-jung-accent focus:border-transparent
-                        outline-none transition-all duration-200
-                        placeholder:text-jung-muted/60
-                      "
+                      className={inputStyles}
                       placeholder="••••••••"
                     />
                   </div>
@@ -327,13 +300,15 @@ export const AuthPage: React.FC = () => {
                   type="submit"
                   disabled={isSigningUp}
                   className="
-                    w-full py-4 min-h-[56px]
+                    w-full py-4 min-h-[48px]
                     bg-jung-accent text-white text-ui font-semibold
-                    rounded-lg shadow-md shadow-jung-accent/20
-                    hover:bg-jung-accent-hover hover:-translate-y-0.5
+                    rounded-lg shadow-sm
+                    hover:bg-jung-accent-hover hover:-translate-y-0.5 hover:shadow-accent
                     active:translate-y-0
                     transition-all duration-200
                     disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+                    focus-visible:ring-2 focus-visible:ring-jung-accent focus-visible:ring-offset-2
+                    outline-none
                   "
                 >
                   {isSigningUp ? 'Creating account...' : 'Create Account'}
@@ -356,14 +331,17 @@ export const AuthPage: React.FC = () => {
               onClick={handleGoogleAuth}
               className="
                 w-full flex items-center justify-center gap-3
-                py-3.5 min-h-[56px]
+                py-3.5 min-h-[48px]
                 bg-jung-surface border border-jung-border rounded-lg
                 text-jung-dark text-ui font-medium
-                hover:bg-jung-surface hover:border-jung-accent/30
+                hover:border-jung-accent hover:text-jung-accent hover:-translate-y-0.5
+                active:translate-y-0
                 transition-all duration-200
+                focus-visible:ring-2 focus-visible:ring-jung-accent focus-visible:ring-offset-2
+                outline-none
               "
             >
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>

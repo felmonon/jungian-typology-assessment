@@ -15,7 +15,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) =>
   };
 
   return (
-    <section className="py-20 lg:py-28">
+    <section className="section-padding">
       <div className="editorial-container">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-jung-accent-light rounded-full mb-4">
@@ -30,7 +30,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) =>
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto items-start">
           {PRICING_TIERS.map((tier, index) => {
             const Icon = tier.icon;
             return (

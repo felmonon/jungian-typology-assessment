@@ -123,19 +123,19 @@ export const SharePage: React.FC = () => {
           <div className="w-full h-[280px] md:h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart cx="50%" cy="50%" outerRadius="75%" data={chartData}>
-                <PolarGrid stroke="#E8E4DE" />
+                <PolarGrid stroke="#D8D5CE" />
                 <PolarAngleAxis
                   dataKey="subject"
-                  tick={{ fill: '#3D2914', fontSize: 11, fontWeight: 'bold' }}
+                  tick={{ fill: '#1B1B3A', fontSize: 11, fontWeight: 'bold' }}
                 />
                 <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
                 <Radar
                   name="Score"
                   dataKey="A"
-                  stroke="#B87333"
+                  stroke="#1F7A67"
                   strokeWidth={2}
-                  fill="#B87333"
-                  fillOpacity={0.4}
+                  fill="#1F7A67"
+                  fillOpacity={0.3}
                 />
               </RadarChart>
             </ResponsiveContainer>

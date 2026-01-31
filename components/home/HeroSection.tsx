@@ -48,7 +48,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
   return (
     <section
       ref={heroRef}
-      className="relative min-h-screen flex items-center overflow-hidden bg-jung-base"
+      className="relative min-h-screen flex items-center overflow-hidden bg-jung-base section-padding"
     >
       {/* Decorative Mandala SVG Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -114,7 +114,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
 
             {/* Main Headline */}
             <h1
-              className={`text-display text-5xl sm:text-6xl lg:text-7xl xl:text-8xl text-jung-dark leading-[0.95] transition-all duration-1000 delay-100 ${
+              className={`text-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-jung-dark leading-[0.95] transition-all duration-1000 delay-100 ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
             >
@@ -152,7 +152,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
 
             {/* CTA Buttons */}
             <div
-              className={`flex flex-col sm:flex-row gap-4 pt-4 transition-all duration-1000 delay-300 ${
+              className={`flex flex-col sm:flex-row gap-4 pt-6 transition-all duration-1000 delay-300 ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
             >

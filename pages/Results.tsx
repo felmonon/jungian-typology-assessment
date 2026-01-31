@@ -413,15 +413,15 @@ export const Results: React.FC = () => {
   const typePhenomenology = TYPE_PHENOMENOLOGY[dominantFunc];
 
   return (
-    <div className="editorial-container py-12 md:py-16">
-      <div ref={contentRef} className="bg-jung-surface p-6 md:p-8 rounded-2xl">
+    <div className="editorial-container py-8 sm:py-12 md:py-16">
+      <div ref={contentRef} className="bg-jung-surface p-4 sm:p-6 md:p-8 rounded-2xl space-y-10 md:space-y-12">
         <ResultsHeader results={results} />
         <FunctionChart results={results} />
         <ScoreBreakdown results={results} />
         <QuickInsights results={results} />
 
         {/* Stack Explanation Note */}
-        <div className="mb-12 p-5 bg-jung-surface rounded-xl border border-jung-border">
+        <div className="p-5 bg-jung-surface rounded-xl border border-jung-border">
           <p className="text-body text-sm text-jung-secondary font-serif">
             <strong>Note:</strong> Your stack is <em>theoretical</em>—based on Jung's principle of opposites and compensation.
             Your empirical scores may vary. Discrepancies aren't errors—they're opportunities for reflection:
@@ -430,7 +430,7 @@ export const Results: React.FC = () => {
         </div>
 
         {/* AI-Powered Personalized Analysis (Free) */}
-        <section className="mb-12 bg-jung-surface-alt rounded-2xl border border-jung-border p-6 md:p-8">
+        <section className="bg-jung-surface-alt rounded-2xl border border-jung-border p-4 sm:p-6 md:p-8">
           <div className="flex items-center gap-4 mb-6">
             <div className="p-3 bg-jung-accent-light rounded-xl">
               <Brain className="w-6 h-6 text-jung-accent" />
@@ -464,7 +464,7 @@ export const Results: React.FC = () => {
 
         {/* Conversion Trigger for Free Users */}
         {tier === 'free' && (
-          <div className="mb-12 bg-jung-accent-light rounded-2xl p-6 md:p-8 border border-jung-accent/20">
+          <div className="bg-jung-accent-light rounded-2xl p-4 sm:p-6 md:p-8 border border-jung-accent/20">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-jung-accent/20 rounded-full">
@@ -490,7 +490,7 @@ export const Results: React.FC = () => {
 
         {/* Conversion Trigger for Insight Users */}
         {tier === 'insight' && (
-          <div className="mb-12 bg-jung-surface-alt rounded-2xl p-6 md:p-8 border border-jung-border">
+          <div className="bg-jung-surface-alt rounded-2xl p-4 sm:p-6 md:p-8 border border-jung-border">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-jung-secondary/10 rounded-full">
@@ -576,7 +576,7 @@ export const Results: React.FC = () => {
         </TierGate>
 
         {/* Footer */}
-        <div className="text-center text-xs text-jung-muted pt-8 border-t border-jung-border">
+        <div className="text-center text-xs text-jung-muted pt-6 md:pt-8 border-t border-jung-border">
           <p className="font-serif">Based on the typological work of Carl Gustav Jung (Psychological Types, CW Vol. 6)</p>
           <p className="mt-2 italic font-serif">"The meeting of two personalities is like the contact of two chemical substances: if there is any reaction, both are transformed."</p>
         </div>

@@ -62,8 +62,8 @@ export const ProfilePage: React.FC = () => {
         const data = await response.json();
         setHistoryResults(data);
       }
-    } catch (error) {
-      console.error('Failed to fetch history:', error);
+    } catch (_err) {
+      // Silently handle fetch failure - user will see empty history
     } finally {
       setIsLoadingHistory(false);
     }
@@ -194,8 +194,8 @@ export const ProfilePage: React.FC = () => {
         setHistoryResults(prev => prev.filter(r => r.id !== id));
         setShowDeleteResultConfirm(null);
       }
-    } catch (error) {
-      console.error('Failed to delete result:', error);
+    } catch (_err) {
+      // Silently handle delete failure
     } finally {
       setDeletingResultId(null);
     }
@@ -203,7 +203,7 @@ export const ProfilePage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center bg-jung-surface">
+      <div className="min-h-[60vh] flex items-center justify-center bg-jung-base">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-10 h-10 animate-spin text-jung-accent" />
           <p className="text-body text-jung-muted">Loading your profile...</p>
@@ -221,25 +221,26 @@ export const ProfilePage: React.FC = () => {
   const accountCreatedDate = user?.createdAt ? formatDate(user.createdAt) : null;
 
   return (
-    <div className="min-h-[60vh] py-12 md:py-16 px-4 bg-jung-surface">
-      <div className="max-w-2xl mx-auto space-y-8">
+    <div className="min-h-[60vh] py-10 md:py-16 px-4 bg-jung-base">
+      <div className="max-w-2xl mx-auto space-y-6 md:space-y-8">
         {/* Page Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-display text-3xl md:text-4xl mb-2">Profile Settings</h1>
-          <p className="text-body text-jung-muted">Manage your account and view your assessment history</p>
+        <div className="text-center mb-6 md:mb-8">
+          <h1 className="text-display text-2xl sm:text-3xl md:text-4xl mb-2">Profile Settings</h1>
+          <p className="text-body text-jung-muted text-sm sm:text-base">Manage your account and view your assessment history</p>
         </div>
 
         {/* Profile Card */}
-        <div className="card-elevated rounded-2xl p-6 md:p-8">
+        <div className="card-elevated p-5 sm:p-6 md:p-8">
           {/* Messages */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-              {error}
+            <div className="mb-6 p-4 bg-error-light border border-error/20 rounded-lg text-error text-sm flex items-start gap-2">
+              <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+              <span>{error}</span>
             </div>
           )}
 
           {success && (
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
+            <div className="mb-6 p-4 bg-success-light border border-success/20 rounded-lg text-success text-sm">
               {success}
             </div>
           )}
@@ -251,22 +252,15 @@ export const ProfilePage: React.FC = () => {
                 <img
                   src={profileImageUrl}
                   alt="Profile"
-                  className="w-28 h-28 rounded-full object-cover border-4 border-jung-accent/20 shadow-lg"
+                  className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-jung-accent/20 shadow-lg"
                 />
               ) : (
-                <div className="w-28 h-28 rounded-full bg-jung-surface flex items-center justify-center border-4 border-jung-accent/20 shadow-lg">
-                  <User className="w-12 h-12 text-jung-muted" />
+                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-jung-surface-alt flex items-center justify-center border-4 border-jung-accent/20 shadow-lg">
+                  <User className="w-10 h-10 sm:w-12 sm:h-12 text-jung-muted" />
                 </div>
               )}
-              <label className="
-                absolute bottom-0 right-0
-                w-10 h-10 bg-jung-accent rounded-full
-                flex items-center justify-center
-                cursor-pointer shadow-md
-                hover:bg-jung-accent-hover hover:scale-105
-                transition-all duration-200
-              ">
-                <Camera className="w-5 h-5 text-white" />
+              <label className="absolute bottom-0 right-0 w-9 h-9 sm:w-10 sm:h-10 bg-jung-accent rounded-full flex items-center justify-center cursor-pointer shadow-md hover:bg-jung-accent-hover hover:scale-105 transition-all duration-200">
+                <Camera className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 <input
                   type="file"
                   accept="image/*"
@@ -288,11 +282,7 @@ export const ProfilePage: React.FC = () => {
                 type="email"
                 value={user?.email || ''}
                 disabled
-                className="
-                  w-full px-4 py-3.5 text-body
-                  bg-jung-surface border border-jung-border rounded-lg
-                  text-jung-muted cursor-not-allowed
-                "
+                className="w-full px-4 py-3 text-body bg-jung-surface-alt border border-jung-border rounded-lg text-jung-muted cursor-not-allowed"
               />
               <p className="mt-1.5 text-xs text-jung-muted">Email cannot be changed</p>
             </div>
@@ -306,13 +296,7 @@ export const ProfilePage: React.FC = () => {
                   type="text"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  className="
-                    w-full px-4 py-3.5 text-body text-jung-dark
-                    bg-jung-surface border border-jung-border rounded-lg
-                    focus:ring-2 focus:ring-jung-accent focus:border-transparent
-                    outline-none transition-all duration-200
-                    placeholder:text-jung-muted/60
-                  "
+                  className="w-full px-4 py-3 text-body text-jung-dark bg-jung-surface border border-jung-border rounded-lg focus:ring-2 focus:ring-jung-accent focus:border-transparent outline-none transition-all duration-200 placeholder:text-jung-muted/60"
                   placeholder="Enter first name"
                 />
               </div>
@@ -324,13 +308,7 @@ export const ProfilePage: React.FC = () => {
                   type="text"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  className="
-                    w-full px-4 py-3.5 text-body text-jung-dark
-                    bg-jung-surface border border-jung-border rounded-lg
-                    focus:ring-2 focus:ring-jung-accent focus:border-transparent
-                    outline-none transition-all duration-200
-                    placeholder:text-jung-muted/60
-                  "
+                  className="w-full px-4 py-3 text-body text-jung-dark bg-jung-surface border border-jung-border rounded-lg focus:ring-2 focus:ring-jung-accent focus:border-transparent outline-none transition-all duration-200 placeholder:text-jung-muted/60"
                   placeholder="Enter last name"
                 />
               </div>
@@ -339,16 +317,7 @@ export const ProfilePage: React.FC = () => {
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="
-                w-full py-4 min-h-[56px]
-                bg-jung-accent text-white text-ui font-semibold
-                rounded-lg shadow-md shadow-jung-accent/20
-                hover:bg-jung-accent-hover hover:-translate-y-0.5
-                active:translate-y-0
-                transition-all duration-200
-                disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
-                flex items-center justify-center gap-2
-              "
+              className="w-full py-3.5 min-h-[48px] bg-jung-accent text-white text-ui font-semibold rounded-lg shadow-md shadow-jung-accent/20 hover:bg-jung-accent-hover hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
             >
               <Save className="w-5 h-5" />
               {isSaving ? 'Saving...' : 'Save Changes'}
@@ -356,9 +325,9 @@ export const ProfilePage: React.FC = () => {
           </div>
 
           {/* Danger Zone */}
-          <div className="mt-12 pt-8 border-t border-jung-border">
-            <h2 className="text-lg font-semibold text-red-600 mb-4 flex items-center gap-2">
-              <AlertTriangle className="w-5 h-5" />
+          <div className="mt-10 pt-6 border-t border-jung-border">
+            <h2 className="text-heading text-base font-semibold text-error mb-3 flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4" />
               Danger Zone
             </h2>
             <p className="text-body text-sm text-jung-muted mb-4">
@@ -368,45 +337,29 @@ export const ProfilePage: React.FC = () => {
             {!showDeleteConfirm ? (
               <button
                 onClick={() => setShowDeleteConfirm(true)}
-                className="
-                  w-full sm:w-auto px-5 py-3 min-h-[48px]
-                  border border-red-300 text-red-600 rounded-lg
-                  hover:bg-red-50 transition-colors
-                  flex items-center justify-center sm:justify-start gap-2
-                "
+                className="w-full sm:w-auto px-5 py-2.5 min-h-[44px] border border-error/30 text-error rounded-lg hover:bg-error-light transition-colors flex items-center justify-center sm:justify-start gap-2"
               >
-                <Trash2 className="w-5 h-5" />
+                <Trash2 className="w-4 h-4" />
                 Delete Account
               </button>
             ) : (
-              <div className="p-5 bg-red-50 border border-red-200 rounded-xl">
-                <p className="text-sm text-red-700 mb-4 font-medium">
+              <div className="p-4 bg-error-light border border-error/20 rounded-lg">
+                <p className="text-sm text-error mb-4 font-medium">
                   Are you sure you want to delete your account? This action cannot be undone.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <button
                     onClick={handleDelete}
                     disabled={isDeleting}
-                    className="
-                      w-full sm:w-auto px-5 py-3 min-h-[48px]
-                      bg-red-600 text-white rounded-lg
-                      hover:bg-red-700 transition-colors
-                      disabled:opacity-50
-                      flex items-center justify-center gap-2
-                    "
+                    className="w-full sm:w-auto px-5 py-2.5 min-h-[44px] bg-error text-white rounded-lg hover:bg-error/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                   >
-                    <Trash2 className="w-5 h-5" />
+                    <Trash2 className="w-4 h-4" />
                     {isDeleting ? 'Deleting...' : 'Yes, Delete My Account'}
                   </button>
                   <button
                     onClick={() => setShowDeleteConfirm(false)}
                     disabled={isDeleting}
-                    className="
-                      w-full sm:w-auto px-5 py-3 min-h-[48px]
-                      bg-jung-surface text-jung-dark rounded-lg
-                      hover:bg-jung-surface transition-colors
-                      disabled:opacity-50
-                    "
+                    className="w-full sm:w-auto px-5 py-2.5 min-h-[44px] bg-jung-surface text-jung-dark rounded-lg border border-jung-border hover:bg-jung-surface-alt transition-colors disabled:opacity-50"
                   >
                     Cancel
                   </button>
@@ -417,30 +370,30 @@ export const ProfilePage: React.FC = () => {
         </div>
 
         {/* Assessment History Card */}
-        <div className="card-elevated rounded-2xl p-6 md:p-8">
-          <h2 className="text-heading text-xl md:text-2xl mb-6 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-jung-accent/10 flex items-center justify-center">
-              <History className="w-5 h-5 text-jung-accent" />
+        <div className="card-elevated p-5 sm:p-6 md:p-8">
+          <h2 className="text-heading text-lg sm:text-xl md:text-2xl mb-5 md:mb-6 flex items-center gap-3">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-jung-accent/10 flex items-center justify-center shrink-0">
+              <History className="w-4 h-4 sm:w-5 sm:h-5 text-jung-accent" />
             </div>
             Assessment History
           </h2>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-            <div className="bg-jung-surface rounded-xl p-5 border border-jung-border">
-              <div className="flex items-center gap-2 text-jung-muted mb-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 md:mb-8">
+            <div className="bg-jung-surface-alt rounded-lg p-4 border border-jung-border-light">
+              <div className="flex items-center gap-2 text-jung-muted mb-1.5">
                 <BarChart3 className="w-4 h-4" />
                 <span className="text-xs font-medium uppercase tracking-wide">Total Assessments</span>
               </div>
-              <p className="text-3xl font-serif font-bold text-jung-accent">{totalAssessments}</p>
+              <p className="text-2xl sm:text-3xl font-serif font-bold text-jung-accent">{totalAssessments}</p>
             </div>
 
-            <div className="bg-jung-surface rounded-xl p-5 border border-jung-border">
-              <div className="flex items-center gap-2 text-jung-muted mb-2">
+            <div className="bg-jung-surface-alt rounded-lg p-4 border border-jung-border-light">
+              <div className="flex items-center gap-2 text-jung-muted mb-1.5">
                 <Eye className="w-4 h-4" />
                 <span className="text-xs font-medium uppercase tracking-wide">Recent Dominant</span>
               </div>
-              <p className="text-xl font-serif font-bold text-jung-accent truncate">
+              <p className="text-lg sm:text-xl font-serif font-bold text-jung-accent truncate">
                 {mostRecentResult ? mostRecentResult.stack.dominant.function : '—'}
               </p>
               {mostRecentResult && (
@@ -450,12 +403,12 @@ export const ProfilePage: React.FC = () => {
               )}
             </div>
 
-            <div className="bg-jung-surface rounded-xl p-5 border border-jung-border">
-              <div className="flex items-center gap-2 text-jung-muted mb-2">
+            <div className="bg-jung-surface-alt rounded-lg p-4 border border-jung-border-light">
+              <div className="flex items-center gap-2 text-jung-muted mb-1.5">
                 <Clock className="w-4 h-4" />
                 <span className="text-xs font-medium uppercase tracking-wide">Member Since</span>
               </div>
-              <p className="text-xl font-serif font-bold text-jung-accent">
+              <p className="text-lg sm:text-xl font-serif font-bold text-jung-accent">
                 {accountCreatedDate || '—'}
               </p>
             </div>
@@ -463,28 +416,22 @@ export const ProfilePage: React.FC = () => {
 
           {/* Results List */}
           {isLoadingHistory ? (
-            <div className="flex items-center justify-center py-16">
+            <div className="flex items-center justify-center py-12 sm:py-16">
               <div className="flex flex-col items-center gap-4">
                 <Loader2 className="w-8 h-8 animate-spin text-jung-accent" />
                 <p className="text-body text-jung-muted">Loading history...</p>
               </div>
             </div>
           ) : historyResults.length === 0 ? (
-            <div className="text-center py-16">
-              <div className="w-16 h-16 rounded-full bg-jung-surface flex items-center justify-center mx-auto mb-4">
-                <History className="w-8 h-8 text-jung-muted/50" />
+            <div className="text-center py-12 sm:py-16">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-jung-surface-alt flex items-center justify-center mx-auto mb-4">
+                <History className="w-7 h-7 sm:w-8 sm:h-8 text-jung-muted/50" />
               </div>
               <p className="text-body font-medium text-jung-dark mb-2">No assessments yet</p>
               <p className="text-sm text-jung-muted mb-6">Take your first assessment to see your results here.</p>
               <button
                 onClick={() => navigate('/assessment')}
-                className="
-                  px-6 py-3 min-h-[48px]
-                  bg-jung-accent text-white text-ui font-semibold
-                  rounded-lg shadow-md shadow-jung-accent/20
-                  hover:bg-jung-accent-hover hover:-translate-y-0.5
-                  transition-all duration-200
-                "
+                className="px-6 py-3 min-h-[44px] bg-jung-accent text-white text-ui font-semibold rounded-lg shadow-md shadow-jung-accent/20 hover:bg-jung-accent-hover hover:-translate-y-0.5 transition-all duration-200"
               >
                 Start Assessment
               </button>
@@ -494,19 +441,14 @@ export const ProfilePage: React.FC = () => {
               {historyResults.map((result) => (
                 <div
                   key={result.id}
-                  className="
-                    border border-jung-border rounded-xl p-5
-                    bg-jung-surface/50
-                    hover:border-jung-accent/30 hover:shadow-md
-                    transition-all duration-200
-                  "
+                  className="border border-jung-border rounded-lg p-4 bg-jung-surface hover:border-jung-accent/30 hover:shadow-md transition-all duration-200"
                 >
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                     <div className="flex-1 min-w-0">
-                      <p className="text-ui font-semibold text-jung-dark truncate">
+                      <p className="text-ui font-semibold text-jung-dark truncate text-sm sm:text-base">
                         {getDominantFunctionDisplay(result)}
                       </p>
-                      <p className="text-sm text-jung-muted mt-1">
+                      <p className="text-xs sm:text-sm text-jung-muted mt-1">
                         {formatDate(result.createdAt)}
                       </p>
                     </div>
@@ -517,13 +459,7 @@ export const ProfilePage: React.FC = () => {
                           <button
                             onClick={() => handleDeleteResult(result.id)}
                             disabled={deletingResultId === result.id}
-                            className="
-                              px-4 py-2 min-h-[44px]
-                              bg-red-600 text-white text-sm font-medium rounded-lg
-                              hover:bg-red-700 transition-colors
-                              disabled:opacity-50
-                              flex items-center gap-1.5
-                            "
+                            className="px-3 sm:px-4 py-2 min-h-[40px] bg-error text-white text-sm font-medium rounded-lg hover:bg-error/90 transition-colors disabled:opacity-50 flex items-center gap-1.5"
                           >
                             {deletingResultId === result.id ? (
                               <Loader2 className="w-4 h-4 animate-spin" />
@@ -537,12 +473,7 @@ export const ProfilePage: React.FC = () => {
                           <button
                             onClick={() => setShowDeleteResultConfirm(null)}
                             disabled={deletingResultId === result.id}
-                            className="
-                              px-4 py-2 min-h-[44px]
-                              bg-jung-surface text-jung-dark text-sm font-medium rounded-lg
-                              hover:bg-jung-surface transition-colors
-                              disabled:opacity-50
-                            "
+                            className="px-3 sm:px-4 py-2 min-h-[40px] bg-jung-surface text-jung-dark text-sm font-medium rounded-lg border border-jung-border hover:bg-jung-surface-alt transition-colors disabled:opacity-50"
                           >
                             Cancel
                           </button>
@@ -551,28 +482,18 @@ export const ProfilePage: React.FC = () => {
                         <>
                           <button
                             onClick={() => handleViewResult(result)}
-                            className="
-                              px-4 py-2.5 min-h-[44px]
-                              bg-jung-accent text-white text-sm font-medium rounded-lg
-                              hover:bg-jung-accent-hover hover:-translate-y-0.5
-                              transition-all duration-200
-                              flex items-center gap-1.5
-                            "
+                            className="px-3 sm:px-4 py-2 min-h-[40px] bg-jung-accent text-white text-sm font-medium rounded-lg hover:bg-jung-accent-hover hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-1.5"
                           >
                             <Eye className="w-4 h-4" />
-                            View Results
+                            <span className="hidden sm:inline">View Results</span>
+                            <span className="sm:hidden">View</span>
                           </button>
                           <button
                             onClick={() => setShowDeleteResultConfirm(result.id)}
-                            className="
-                              p-2.5 min-w-[44px] min-h-[44px]
-                              text-jung-muted hover:text-red-600 hover:bg-red-50
-                              rounded-lg transition-colors
-                              flex items-center justify-center
-                            "
+                            className="p-2 min-w-[40px] min-h-[40px] text-jung-muted hover:text-error hover:bg-error-light rounded-lg transition-colors flex items-center justify-center"
                             title="Delete result"
                           >
-                            <Trash2 className="w-5 h-5" />
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         </>
                       )}

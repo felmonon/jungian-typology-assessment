@@ -128,8 +128,8 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 mb-16">
-      <div className="card-elevated p-6 md:p-8 flex flex-col items-center">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12">
+      <div className="card-elevated p-4 sm:p-6 md:p-8 flex flex-col items-center overflow-hidden">
         <div className="flex items-center gap-2 mb-6">
           <h3 className="text-ui text-sm font-semibold text-jung-muted uppercase tracking-wider font-serif">
             Function-Attitude Energy
@@ -145,12 +145,12 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
           </div>
         </div>
 
-        <div className="w-full h-[280px] sm:h-[400px]">
+        <div className="w-full h-[260px] sm:h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <RadarChart
               cx="50%"
               cy="50%"
-              outerRadius="70%"
+              outerRadius="65%"
               data={chartData}
               onMouseMove={(e: any) => {
                 if (e && e.activeLabel) {
@@ -181,7 +181,7 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
                       textAnchor="middle"
                       dominantBaseline="central"
                       fill={colors[position || 'null']}
-                      fontSize={isHovered ? 13 : 11}
+                      fontSize={isHovered ? 12 : 10}
                       fontWeight={position === 'dominant' ? 'bold' : 'normal'}
                       className={reducedMotion ? '' : 'transition-all duration-200'}
                     >
@@ -235,9 +235,9 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
         </div>
       </div>
 
-      <div className="flex flex-col justify-center space-y-6">
+      <div className="flex flex-col justify-center space-y-4 sm:space-y-6">
         {/* Attitude Card */}
-        <div className="bg-jung-surface p-6 rounded-xl border-l-4 border-jung-accent">
+        <div className="card-elevated p-4 sm:p-6 rounded-xl border-l-4 border-jung-accent">
           <div className="flex items-center gap-2 mb-2">
             <TrendingUp className="w-5 h-5 text-jung-accent" />
             <h3 className="text-heading text-xl font-serif">
@@ -265,7 +265,7 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
         )}
 
         {/* Function Stack */}
-        <div className="card-elevated p-6">
+        <div className="card-elevated p-4 sm:p-6">
           <h3 className="text-heading text-lg mb-4 font-serif">Your Function Stack</h3>
           <div className="space-y-2 text-sm">
             {[

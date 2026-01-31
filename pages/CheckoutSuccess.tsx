@@ -43,8 +43,6 @@ export const CheckoutSuccess: React.FC = () => {
       sessionId = urlParams.get('session_id');
     }
 
-    console.log('Session ID found:', sessionId);
-
     const savedResults = localStorage.getItem('jungian_assessment_results');
     if (savedResults) {
       try {
@@ -52,8 +50,8 @@ export const CheckoutSuccess: React.FC = () => {
         if (results.stack?.dominant?.function) {
           setDominantFunction(results.stack.dominant.function);
         }
-      } catch (e) {
-        console.error('Failed to parse saved results:', e);
+      } catch {
+        // Failed to parse saved results
       }
     }
 
@@ -89,8 +87,7 @@ export const CheckoutSuccess: React.FC = () => {
           setStatus('error');
           setError('Payment not completed');
         }
-      } catch (err: any) {
-        console.error('Verification error:', err);
+      } catch {
         localStorage.setItem('jungian_assessment_tier', 'insight');
         localStorage.setItem('jungian_assessment_unlocked', 'true');
         localStorage.setItem('jungian_assessment_unlock_date', new Date().toISOString());
@@ -107,27 +104,27 @@ export const CheckoutSuccess: React.FC = () => {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center bg-jung-surface">
-        <Loader2 className="w-16 h-16 text-jung-accent animate-spin mb-4" />
-        <h1 className="text-2xl font-serif font-bold text-jung-dark mb-2">
+      <div className="min-h-[60vh] flex flex-col items-center justify-center bg-jung-surface px-4">
+        <Loader2 className="w-12 h-12 md:w-16 md:h-16 text-jung-accent animate-spin mb-4" />
+        <h1 className="text-xl md:text-2xl font-serif font-bold text-jung-dark mb-2 text-center">
           Verifying your payment...
         </h1>
-        <p className="text-jung-secondary">Please wait a moment.</p>
+        <p className="text-jung-secondary text-sm md:text-base">Please wait a moment.</p>
       </div>
     );
   }
 
   if (status === 'error') {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center bg-jung-surface">
-        <div className="bg-red-100 rounded-full p-4 mb-6">
-          <XCircle className="w-16 h-16 text-red-500" />
+      <div className="min-h-[60vh] flex flex-col items-center justify-center bg-jung-surface px-4">
+        <div className="bg-error-light rounded-full p-4 mb-6">
+          <XCircle className="w-12 h-12 md:w-16 md:h-16 text-error" />
         </div>
-        <h1 className="text-2xl font-serif font-bold text-jung-dark mb-2">
+        <h1 className="text-xl md:text-2xl font-serif font-bold text-jung-dark mb-2 text-center">
           Something went wrong
         </h1>
-        <p className="text-jung-secondary mb-6">{error || 'Unable to verify payment'}</p>
-        <div className="flex gap-4">
+        <p className="text-jung-secondary mb-6 text-sm md:text-base text-center">{error || 'Unable to verify payment'}</p>
+        <div className="flex flex-col sm:flex-row gap-4">
           <Button onClick={() => navigate('/results')} variant="primary">
             Back to Results
           </Button>
@@ -142,8 +139,8 @@ export const CheckoutSuccess: React.FC = () => {
   const funcTitle = dominantFunction ? FUNCTION_DESCRIPTIONS[dominantFunction]?.title : null;
 
   return (
-    <div className="min-h-[60vh] py-12 px-4 bg-jung-surface">
-      <div className="max-w-2xl mx-auto">
+    <div className="min-h-[60vh] py-12 bg-jung-surface">
+      <div className="editorial-container max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-emerald-100 rounded-full mb-6 shadow-lg">

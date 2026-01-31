@@ -119,8 +119,8 @@ export const Assessment: React.FC = () => {
 
   // Derived state
   const isPageComplete = currentQuestions.every(q => answers[q.id] !== undefined);
-  const progressPercent = ((currentIdx) / totalPages) * 100;
   const answeredCount = Object.keys(answers).length;
+  const progressPercent = (answeredCount / questions.length) * 100;
   const scaleLabels = ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'];
 
   // Handlers using refs to avoid circular dependencies in keyboard handler
@@ -277,7 +277,7 @@ export const Assessment: React.FC = () => {
 
       <div className="min-h-screen bg-jung-base">
         {/* Progress line - thin 2px at top */}
-        <div className="sticky top-0 z-50 h-0.5 w-full bg-jung-surface-alt">
+        <div className="sticky top-0 z-50 h-1 w-full bg-jung-surface-alt">
           <div
             className="bg-jung-accent h-full transition-all duration-500 ease-out"
             style={{ width: `${progressPercent}%` }}
@@ -285,8 +285,8 @@ export const Assessment: React.FC = () => {
         </div>
 
         {/* Progress Header */}
-        <div className="sticky top-0.5 z-40 bg-jung-surface border-b border-jung-border">
-          <div className="max-w-2xl mx-auto px-6 py-4">
+        <div className="sticky top-1 z-40 bg-jung-surface border-b border-jung-border">
+          <div className="max-w-2xl mx-auto px-4 sm:px-6 py-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <p className="text-ui text-jung-muted uppercase tracking-widest font-serif">
@@ -317,7 +317,7 @@ export const Assessment: React.FC = () => {
                       strokeDasharray={`${(answeredCount / questions.length) * 100}, 100`}
                       className="transition-all duration-500 ease-out"
                       style={{
-                        filter: showCompletionPulse ? 'drop-shadow(0 0 8px rgba(31, 122, 103, 0.5))' : 'none'
+                        filter: showCompletionPulse ? 'drop-shadow(0 0 8px var(--color-jung-accent))' : 'none'
                       }}
                     />
                   </svg>
@@ -332,7 +332,7 @@ export const Assessment: React.FC = () => {
 
         {/* Questions */}
         <div className="py-12">
-          <div className="max-w-2xl mx-auto px-6">
+          <div className="max-w-2xl mx-auto px-4 sm:px-6">
             {/* Section Progress Dots */}
             <div className="flex justify-center gap-2 mb-12">
               {Array.from({ length: totalPages }).map((_, idx) => (
@@ -368,12 +368,12 @@ export const Assessment: React.FC = () => {
                     onBlur={() => setFocusedQuestion(null)}
                     className={`
                       card-elevated p-6 sm:p-8
-                      ${reducedMotion ? '' : 'animate-in fade-in slide-in-from-bottom-4'}
+                      ${reducedMotion ? '' : 'animate-fade-in-up'}
                       transition-all duration-300
                       ${isAnswered ? 'ring-2 ring-jung-accent/20' : ''}
                       ${focusedQuestion === qIndex ? 'ring-2 ring-jung-accent/40' : ''}
                     `}
-                    style={{ animationDelay: reducedMotion ? '0ms' : `${qIndex * 100}ms` }}
+                    style={{ animationDelay: reducedMotion ? '0ms' : `${qIndex * 100}ms`, animationFillMode: 'both' }}
                   >
                     <div className="flex items-start gap-4 mb-6">
                       <span className={`
@@ -491,7 +491,7 @@ export const Assessment: React.FC = () => {
 
         {/* Tips Footer */}
         <div className="border-t border-jung-border bg-jung-surface-alt">
-          <div className="max-w-2xl mx-auto px-6 py-8">
+          <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
             <h4 className="text-ui text-jung-muted uppercase tracking-widest mb-4 font-serif">Assessment Tips</h4>
             <div className="grid sm:grid-cols-3 gap-6 text-sm text-jung-muted">
               <div>

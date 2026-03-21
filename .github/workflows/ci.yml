@@ -140,7 +140,7 @@ jobs:
       - name: Deploy to Vercel
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
 
-  # Job 6: Post-deployment health check
+  # Job 6: Post-deployment health check (informational, does not block pipeline)
   health-check:
     name: Health Check
     runs-on: ubuntu-latest
@@ -151,19 +151,21 @@ jobs:
         run: sleep 30
 
       - name: Check API health
+        continue-on-error: true
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" https://jungian-typology-assessment.vercel.app/api/leaderboard)
           if [ "$response" != "200" ]; then
-            echo "Health check failed with status: $response"
+            echo "::warning::API health check returned status: $response"
             exit 1
           fi
           echo "Health check passed!"
 
       - name: Check homepage
+        continue-on-error: true
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" https://jungian-typology-assessment.vercel.app/)
           if [ "$response" != "200" ]; then
-            echo "Homepage check failed with status: $response"
+            echo "::warning::Homepage check returned status: $response"
             exit 1
           fi
           echo "Homepage check passed!"

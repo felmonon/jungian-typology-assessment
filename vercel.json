@@ -1,5 +1,5 @@
 {
-  "buildCommand": "echo 'Using prebuilt files from dist/public'",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist/public",
   "rewrites": [
     {
@@ -7,7 +7,7 @@
       "destination": "/api/:path*"
     },
     {
-      "source": "/((?!api/|assets/|.*\\.html$|.*\\.txt$|.*\\.xml$|.*\\.png$|.*\\.svg$|.*\\.ico$|.*\\.webmanifest$|.*\\.css$|.*\\.js$|.*\\.woff2?$|.*\\.ttf$|.*\\.eot$).*)",
+      "source": "/((?!api/|assets/|.*\.html$|.*\.txt$|.*\.xml$|.*\.png$|.*\.svg$|.*\.ico$|.*\.webmanifest$|.*\.css$|.*\.js$|.*\.woff2?$|.*\.ttf$|.*\.eot$).*)",
       "destination": "/index.html"
     }
   ],

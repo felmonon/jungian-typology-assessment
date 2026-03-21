@@ -1,32 +1,66 @@
-# Jungian Typology Assessment
+# Cognitive Function Analysis for Engineering Teams
 
 [![CI/CD Pipeline](https://github.com/FelmonFekadu/jungian-typology-assessment/actions/workflows/ci.yml/badge.svg)](https://github.com/FelmonFekadu/jungian-typology-assessment/actions/workflows/ci.yml)
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://jungian-typology-assessment.vercel.app)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-A comprehensive personality assessment tool based on Carl Jung's cognitive functions theory. Discover your psychological type through an in-depth analysis of your cognitive function stack, stress patterns, and individuation path.
+A production full-stack SaaS that applies Jungian cognitive function theory to understand how engineers think, debug, review code, and collaborate. Three-tier Stripe monetization ($0 / $19 / $39), Supabase real-time, React 19, and AI-powered analysis — deployed with live users.
 
 **[Try the Live Demo](https://jungian-typology-assessment.vercel.app)**
 
+---
+
+## Why This Exists
+
+Consumer personality quizzes like 16personalities sort you into a four-letter label and stop there. That is fine for entertainment — but useless when you need to understand why two senior engineers keep clashing in code review, or why your best architect freezes under on-call pressure.
+
+This project goes deeper. It measures all **8 Jungian cognitive functions** (Ti, Te, Fi, Fe, Ni, Ne, Si, Se), maps your full function stack, and surfaces patterns that actually matter in engineering contexts:
+
+- **How you debug** — Do you follow a deductive model (Ti-dominant) or scan for pattern anomalies (Ne-dominant)?
+- **How you review code** — Do you optimize for correctness (Te) or maintainability and team norms (Fe/Fi)?
+- **How you handle production incidents** — The Grip analysis reveals what happens to your decision-making under stress, based on your inferior function.
+- **How you collaborate** — Archetypal stack analysis (Hero, Parent, Child, Anima/Animus) explains mentoring dynamics, blind spots, and team friction.
+
+The underlying model is Carl Jung's original typology — not the simplified MBTI dichotomies. Every assessment result includes function scores, not just a type label.
+
+---
+
 ## Features
 
-- **Free Assessment** - 40-question assessment measuring all 8 cognitive functions
-- **Cognitive Function Analysis** - Detailed breakdown of your dominant, auxiliary, tertiary, and inferior functions
-- **The Grip Analysis** - Understanding your stress responses and shadow functions
-- **Archetypal Insights** - Explore the Hero, Parent, Child, and Anima/Animus archetypes in your stack
-- **AI-Powered Analysis** - Premium tiers offer deeper insights powered by Google Gemini
-- **Shareable Results** - Generate and share your personality profile
-- **Leaderboard** - See type distribution across all users
+- **Free Assessment** — 40-question assessment measuring all 8 cognitive functions
+- **Cognitive Function Stack** — Detailed breakdown of your dominant, auxiliary, tertiary, and inferior functions
+- **The Grip Analysis** — Understanding your stress responses and shadow functions under pressure
+- **Archetypal Insights** — Explore the Hero, Parent, Child, and Anima/Animus archetypes in your stack
+- **AI-Powered Deep Analysis** — Premium tiers offer deeper insights powered by Google Gemini
+- **Shareable Results** — Generate and share your personality profile
+- **Leaderboard** — See type distribution across all users
 
-## Tech Stack
+---
 
-- **Frontend**: React 19, TypeScript, TailwindCSS, Recharts
-- **Backend**: Express.js, Vercel Serverless Functions
-- **Database**: Supabase (PostgreSQL)
-- **Authentication**: Google OAuth 2.0, Email/Password
-- **Payments**: Stripe
-- **AI**: Google Gemini API
-- **CI/CD**: GitHub Actions, Vercel
+## Built With
+
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | React 19, TypeScript, TailwindCSS, Recharts |
+| **Backend** | Express.js, Vercel Serverless Functions |
+| **Database** | Supabase (PostgreSQL, real-time subscriptions) |
+| **Auth** | Google OAuth 2.0, Email/Password |
+| **Payments** | Stripe (3-tier: Free / Insight $19 / Mastery $39) |
+| **AI** | Google Gemini API |
+| **CI/CD** | GitHub Actions, Vercel |
+| **Testing** | Vitest, E2E suite |
+
+---
+
+## Pricing Tiers
+
+| Tier | Price | What You Get |
+|------|-------|-------------|
+| **Free** | $0 | 40-question assessment, function scores, type result |
+| **Insight** | $19 | + AI analysis, archetype breakdown, The Grip stress patterns |
+| **Mastery** | $39 | + Individuation guidance, shadow work, career path insights |
+
+---
 
 ## Getting Started
 
@@ -88,6 +122,8 @@ npm run test:e2e
 npm run test:coverage
 ```
 
+---
+
 ## Project Structure
 
 ```
@@ -106,13 +142,7 @@ npm run test:coverage
 └── server.ts            # Express development server
 ```
 
-## Pricing Tiers
-
-| Tier | Price | Features |
-|------|-------|----------|
-| Free | $0 | Basic assessment, function scores, type result |
-| Insight | $19 | + AI analysis, archetype breakdown, The Grip patterns |
-| Mastery | $39 | + Individuation guidance, shadow work, career insights |
+---
 
 ## Contributing
 

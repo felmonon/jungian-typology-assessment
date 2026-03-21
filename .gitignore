@@ -34,3 +34,9 @@ model.pt
 
 # Auto Claude data directory
 .auto-claude/
+
+# Build artifacts
+dist/
+
+# Attached assets (clipboard paste dumps)
+attached_assets/

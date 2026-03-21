@@ -1,6 +1,6 @@
 # Jungian Typology Assessment
 
-[![CI/CD Pipeline](https://github.com/FELMONON/jungian-typology-assessment/actions/workflows/ci.yml/badge.svg)](https://github.com/FELMONON/jungian-typology-assessment/actions/workflows/ci.yml)
+[![CI/CD Pipeline](https://github.com/FelmonFekadu/jungian-typology-assessment/actions/workflows/ci.yml/badge.svg)](https://github.com/FelmonFekadu/jungian-typology-assessment/actions/workflows/ci.yml)
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://jungian-typology-assessment.vercel.app)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -42,7 +42,7 @@ A comprehensive personality assessment tool based on Carl Jung's cognitive funct
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/FELMONON/jungian-typology-assessment.git
+   git clone https://github.com/FelmonFekadu/jungian-typology-assessment.git
    cd jungian-typology-assessment
    ```
 

@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
+import { buildRequestUrl, shouldUseSecureCookie } from '../utils';
 
 // Generate a random session ID
 function generateSessionId(): string {
@@ -47,10 +48,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    // Determine the callback URL
-    const protocol = req.headers['x-forwarded-proto'] || 'https';
-    const host = req.headers['x-forwarded-host'] || req.headers.host;
-    const callbackUrl = `${protocol}://${host}/api/auth/google/callback`;
+    const callbackUrl = buildRequestUrl(req, '/api/auth/google/callback');
 
     // Exchange code for tokens
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
@@ -185,8 +183,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       'SameSite=Lax',
     ];
 
-    // Add Secure flag in production
-    if (protocol === 'https') {
+    // Add Secure flag only when the request itself is HTTPS.
+    if (shouldUseSecureCookie(req)) {
       cookieOptions.push('Secure');
     }
 

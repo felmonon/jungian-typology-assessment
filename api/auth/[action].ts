@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
+import { parseCookies, shouldUseSecureCookie } from './utils';
 
 // Generate a random session ID
 function generateSessionId(): string {
@@ -22,18 +23,6 @@ function hashPassword(password: string): string {
   return crypto.createHash('sha256').update(password).digest('hex');
 }
 
-// Simple cookie parser
-function parseCookies(cookieHeader: string): Record<string, string> {
-  const cookies: Record<string, string> = {};
-  cookieHeader.split(';').forEach(cookie => {
-    const [name, ...rest] = cookie.split('=');
-    if (name && rest.length > 0) {
-      cookies[name.trim()] = rest.join('=').trim();
-    }
-  });
-  return cookies;
-}
-
 function getSupabase() {
   return createClient(
     process.env.SUPABASE_URL!,
@@ -41,7 +30,7 @@ function getSupabase() {
   );
 }
 
-async function createSession(userId: string, res: VercelResponse) {
+async function createSession(userId: string, req: VercelRequest, res: VercelResponse) {
   const sessionSecret = process.env.SESSION_SECRET!;
   const supabase = getSupabase();
 
@@ -73,8 +62,9 @@ async function createSession(userId: string, res: VercelResponse) {
     'HttpOnly',
     `Expires=${expireDate.toUTCString()}`,
     'SameSite=Lax',
-    'Secure',
-  ].join('; '));
+    // Only set Secure on HTTPS requests so local auth sessions persist.
+    shouldUseSecureCookie(req) ? 'Secure' : '',
+  ].filter(Boolean).join('; '));
 }
 
 // GET /api/auth/user
@@ -149,7 +139,7 @@ async function handleLogin(req: VercelRequest, res: VercelResponse) {
     return res.status(401).json({ message: 'Invalid email or password' });
   }
 
-  await createSession(user.id, res);
+  await createSession(user.id, req, res);
 
   return res.status(200).json({
     id: user.id,
@@ -194,7 +184,7 @@ async function handleSignup(req: VercelRequest, res: VercelResponse) {
     return res.status(500).json({ message: 'Failed to create account' });
   }
 
-  await createSession(newUser.id, res);
+  await createSession(newUser.id, req, res);
 
   return res.status(200).json({
     id: newUser.id,

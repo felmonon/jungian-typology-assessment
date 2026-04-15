@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { buildRequestUrl } from '../utils';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET') {
@@ -16,10 +17,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   }
 
-  // Determine the callback URL based on the request
-  const protocol = req.headers['x-forwarded-proto'] || 'https';
-  const host = req.headers['x-forwarded-host'] || req.headers.host;
-  const callbackUrl = `${protocol}://${host}/api/auth/google/callback`;
+  const callbackUrl = buildRequestUrl(req, '/api/auth/google/callback');
 
   // Build Google OAuth URL
   const googleAuthUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');

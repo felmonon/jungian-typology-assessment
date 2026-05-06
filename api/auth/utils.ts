@@ -60,12 +60,21 @@ export async function getSessionUserFromCookie(
 
     const { data: users, error: userError } = await supabase
       .from('users')
-      .select('id, email, firstName, lastName, profileImageUrl, createdAt')
+      .select('id, email, first_name, last_name, profile_image_url, is_admin, created_at')
       .eq('id', userId);
 
     if (userError || !users || users.length === 0) return null;
 
-    return users[0] as User;
+    const user = users[0];
+    return {
+      id: user.id,
+      email: user.email,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      profileImageUrl: user.profile_image_url,
+      isAdmin: user.is_admin,
+      createdAt: user.created_at,
+    } as User;
   } catch {
     return null;
   }

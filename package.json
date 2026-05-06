@@ -1,5 +1,5 @@
 {
-  "name": "jungian-typology-assessment",
+  "name": "typejung",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -45,6 +45,7 @@
     "express": "^5.2.1",
     "express-rate-limit": "^8.2.1",
     "express-session": "^1.18.2",
+    "framer-motion": "^12.29.2",
     "helmet": "^8.1.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.0.0",
@@ -64,7 +65,6 @@
     "recharts": "^3.6.0",
     "resend": "^6.7.0",
     "stripe": "^20.1.2",
-    "stripe-replit-sync": "^1.0.0",
     "tailwindcss": "^4.1.18",
     "tsx": "^4.21.0",
     "ws": "^8.19.0",

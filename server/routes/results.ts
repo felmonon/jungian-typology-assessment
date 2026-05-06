@@ -144,7 +144,7 @@ export function registerResultsRoutes(app: Express): void {
       return res.status(200).json({ leaderboard, total });
     } catch (error) {
       console.error("Error fetching leaderboard:", error);
-      return res.status(500).json({ message: "Failed to fetch leaderboard" });
+      return res.status(200).json({ leaderboard: [], total: 0 });
     }
   });
 

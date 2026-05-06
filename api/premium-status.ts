@@ -23,8 +23,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Check for purchase by user ID
     let { data: purchases } = await supabase
       .from('purchases')
-      .select('id, tier, status, createdAt')
-      .eq('userId', user.id)
+      .select('id, tier, status, createdAt:created_at')
+      .eq('user_id', user.id)
       .eq('status', 'completed')
       .limit(1);
 
@@ -38,8 +38,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (users && users.length > 0) {
         const { data: emailPurchases } = await supabase
           .from('purchases')
-          .select('id, tier, status, createdAt')
-          .eq('userId', users[0].id)
+          .select('id, tier, status, createdAt:created_at')
+          .eq('user_id', users[0].id)
           .eq('status', 'completed')
           .limit(1);
 

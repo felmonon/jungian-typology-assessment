@@ -35,16 +35,6 @@ const entries: SitemapEntry[] = [
   { loc: '/blog/', lastmod: TODAY, changefreq: 'weekly', priority: 0.8 },
   { loc: '/blog/singer-loomis-vs-mbti', lastmod: '2026-01-15', changefreq: 'monthly', priority: 0.7 },
   { loc: '/blog/understanding-the-grip', lastmod: '2026-01-10', changefreq: 'monthly', priority: 0.7 },
-  { loc: '/blog/individuation-guide', lastmod: '2025-12-20', changefreq: 'monthly', priority: 0.7 },
-  { loc: '/blog/ni-vs-ne', lastmod: '2025-12-15', changefreq: 'monthly', priority: 0.7 },
-  { loc: '/blog/shadow-work', lastmod: '2025-11-28', changefreq: 'monthly', priority: 0.7 },
-  { loc: '/blog/cognitive-functions-relationships', lastmod: '2025-11-15', changefreq: 'monthly', priority: 0.7 },
-  { loc: '/blog/ti-vs-te', lastmod: '2025-10-20', changefreq: 'monthly', priority: 0.6 },
-  { loc: '/blog/fi-vs-fe', lastmod: '2025-09-25', changefreq: 'monthly', priority: 0.6 },
-  { loc: '/blog/si-vs-se', lastmod: '2025-09-10', changefreq: 'monthly', priority: 0.6 },
-  { loc: '/blog/dominant-auxiliary', lastmod: '2025-08-15', changefreq: 'monthly', priority: 0.6 },
-  { loc: '/blog/tertiary-function', lastmod: '2025-07-20', changefreq: 'monthly', priority: 0.6 },
-  { loc: '/blog/careers-by-type', lastmod: '2025-06-15', changefreq: 'monthly', priority: 0.6 },
 ];
 
 // Add function pages
@@ -104,7 +94,7 @@ console.log(`📄 Location: ${outputPath}`);
 console.log(`🔗 Total URLs: ${entries.length}`);
 console.log('\nBreakdown:');
 console.log(`  • Main pages: 7`);
-console.log(`  • Blog articles: 12`);
+console.log(`  • Blog articles: 2`);
 console.log(`  • Function pages: ${functions.length}`);
 console.log(`  • Type pages: ${types.length}`);
 console.log('\nNext steps:');

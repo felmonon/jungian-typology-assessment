@@ -243,8 +243,8 @@ async function startServer() {
             quantity: 1,
           },
         ],
-        success_url: `${baseUrl}/#/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${baseUrl}/#/results`,
+        success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${baseUrl}/results`,
         metadata: {
           product: 'jungian_assessment_premium',
           tier: resolvedTier,

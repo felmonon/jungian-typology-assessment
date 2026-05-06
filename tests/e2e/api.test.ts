@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-const BASE_URL = process.env.TEST_BASE_URL || 'https://jungian-typology-assessment.vercel.app';
+const BASE_URL = process.env.TEST_BASE_URL || 'https://typejung.com';
 
 describe('E2E API Tests', () => {
   describe('Health Checks', () => {

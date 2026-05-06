@@ -34,6 +34,16 @@ model.pt
 
 # Auto Claude data directory
 .auto-claude/
+.agent/
+.agents/
+.claude/
+.codex/
+.cursor/
+.gemini/
+.github/skills/
+.opencode/
+.windsurf/
+skills/
 
 # Build artifacts
 dist/

@@ -1,12 +1,44 @@
-# Cognitive Function Analysis for Engineering Teams
+# TypeJung - Cognitive Function Analysis for Engineering Teams
 
-[![CI/CD Pipeline](https://github.com/FelmonFekadu/jungian-typology-assessment/actions/workflows/ci.yml/badge.svg)](https://github.com/FelmonFekadu/jungian-typology-assessment/actions/workflows/ci.yml)
-[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://jungian-typology-assessment.vercel.app)
+[![CI/CD Pipeline](https://github.com/felmonon/jungian-typology-assessment/actions/workflows/ci.yml/badge.svg)](https://github.com/felmonon/jungian-typology-assessment/actions/workflows/ci.yml)
+[![Live App](https://img.shields.io/badge/live-typejung.com-brightgreen)](https://typejung.com)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-A production full-stack SaaS that applies Jungian cognitive function theory to understand how engineers think, debug, review code, and collaborate. Three-tier Stripe monetization ($0 / $19 / $39), Supabase real-time, React 19, and AI-powered analysis — deployed with live users.
+A production full-stack SaaS that applies Jungian cognitive-function theory to how people think, debug, review work, handle stress, and collaborate. It combines a free assessment, saved profiles, share links, Stripe-backed paid reports, Supabase persistence, and AI-generated analysis.
 
-**[Try the Live Demo](https://jungian-typology-assessment.vercel.app)**
+**[Try the Live App](https://typejung.com)**
+
+![TypeJung social preview](public/og-image.png)
+
+## What Is Live Today
+
+- 40-question assessment flow for all 8 cognitive functions
+- saved result history and shareable result links via [`api/results.ts`](api/results.ts) and [`api/share`](api/share)
+- free AI analysis via [`api/ai/free-analysis.ts`](api/ai/free-analysis.ts)
+- paid checkout tiers and webhook handling via [`api/create-checkout-session.ts`](api/create-checkout-session.ts) and [`api/webhook.ts`](api/webhook.ts)
+- Google auth, session verification, and premium status checks via [`api/auth`](api/auth), [`api/verify-session.ts`](api/verify-session.ts), and [`api/premium-status.ts`](api/premium-status.ts)
+- leaderboard and public ranking data via [`api/leaderboard.ts`](api/leaderboard.ts)
+- tested and deployed through [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
+
+## Product Flow
+
+1. A user completes the assessment in the React app.
+2. Scores and stack data are saved through Vercel API routes backed by Supabase.
+3. The app can generate a free AI explanation or unlock paid tiers through Stripe checkout.
+4. Completed results can be revisited, shared, and ranked on the leaderboard.
+
+## Architecture
+
+```mermaid
+flowchart LR
+  A[React 19 app] --> B[Vercel API routes]
+  B --> C[(Supabase / Postgres)]
+  B --> D[Google auth]
+  B --> E[Stripe checkout + webhook]
+  B --> F[Gemini analysis]
+  G[GitHub Actions CI/CD] --> A
+  G --> B
+```
 
 ---
 
@@ -27,13 +59,15 @@ The underlying model is Carl Jung's original typology — not the simplified MBT
 
 ## Features
 
-- **Free Assessment** — 40-question assessment measuring all 8 cognitive functions
-- **Cognitive Function Stack** — Detailed breakdown of your dominant, auxiliary, tertiary, and inferior functions
-- **The Grip Analysis** — Understanding your stress responses and shadow functions under pressure
-- **Archetypal Insights** — Explore the Hero, Parent, Child, and Anima/Animus archetypes in your stack
-- **AI-Powered Deep Analysis** — Premium tiers offer deeper insights powered by Google Gemini
-- **Shareable Results** — Generate and share your personality profile
-- **Leaderboard** — See type distribution across all users
+- **Free Assessment** - 40-question assessment measuring all 8 cognitive functions
+- **Cognitive Function Stack** - Dominant, auxiliary, tertiary, inferior, and shadow-function breakdowns
+- **Saved Results** - Persisted assessment history for signed-in users
+- **Shareable Profiles** - Public result sharing through generated slugs
+- **Stress And Grip Analysis** - Patterns for how decision-making changes under pressure
+- **Free AI Analysis** - Short AI-generated analysis based on assessment output
+- **Premium Tiers** - Stripe-backed paid tiers for deeper analysis
+- **Leaderboard** - Type distribution and public ranking view
+- **Results Breakdown** - Charts, score views, and results components in [`components/results`](components/results)
 
 ---
 
@@ -62,6 +96,16 @@ The underlying model is Carl Jung's original typology — not the simplified MBT
 
 ---
 
+## Testing And CI
+
+The repo includes:
+
+- unit tests in [`tests`](tests)
+- API tests such as [`tests/api/auth.test.ts`](tests/api/auth.test.ts)
+- component tests such as [`tests/components/Button.test.tsx`](tests/components/Button.test.tsx)
+- scoring utility coverage in [`tests/utils/scoring.test.ts`](tests/utils/scoring.test.ts)
+- CI, build, deploy, and health-check jobs in [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
+
 ## Getting Started
 
 ### Prerequisites
@@ -76,7 +120,7 @@ The underlying model is Carl Jung's original typology — not the simplified MBT
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/FelmonFekadu/jungian-typology-assessment.git
+   git clone https://github.com/felmonon/jungian-typology-assessment.git
    cd jungian-typology-assessment
    ```
 
@@ -109,16 +153,9 @@ The underlying model is Carl Jung's original typology — not the simplified MBT
 ### Running Tests
 
 ```bash
-# Run unit tests
 npm test
-
-# Run tests in watch mode
 npm run test:watch
-
-# Run E2E tests
 npm run test:e2e
-
-# Run tests with coverage
 npm run test:coverage
 ```
 
@@ -143,6 +180,12 @@ npm run test:coverage
 ```
 
 ---
+
+## Notes
+
+- This repo uses external services for auth, payments, storage, and AI generation, so a local run needs valid environment variables.
+- The README only claims flows that are visible in the codebase today.
+- The next improvement for hiring signal is adding more screenshots of the assessment, results, and pricing flows.
 
 ## Contributing
 

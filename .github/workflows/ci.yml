@@ -110,7 +110,7 @@ jobs:
         run: npm run test:e2e
         continue-on-error: true
         env:
-          TEST_BASE_URL: https://jungian-typology-assessment.vercel.app
+          TEST_BASE_URL: https://typejung.com
 
   # Job 5: Deploy to Vercel (only on main branch push)
   deploy:
@@ -153,7 +153,7 @@ jobs:
       - name: Check API health
         continue-on-error: true
         run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" https://jungian-typology-assessment.vercel.app/api/leaderboard)
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://typejung.com/api/leaderboard)
           if [ "$response" != "200" ]; then
             echo "::warning::API health check returned status: $response"
             exit 1
@@ -163,7 +163,7 @@ jobs:
       - name: Check homepage
         continue-on-error: true
         run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" https://jungian-typology-assessment.vercel.app/)
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://typejung.com/)
           if [ "$response" != "200" ]; then
             echo "::warning::Homepage check returned status: $response"
             exit 1

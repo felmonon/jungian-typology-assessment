@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, CheckCircle, ArrowRight, MessageCircle } from 'lucide-react';
+import { motion, AnimatePresence, type Variants } from 'framer-motion';
+import { Sparkles, CheckCircle, ArrowRight, MessageCircle, Bot, User } from 'lucide-react';
 import { AI_DEMO_CONVERSATION } from './data';
 
 export const AITypeCoachSection: React.FC = () => {
@@ -31,100 +32,172 @@ export const AITypeCoachSection: React.FC = () => {
     return () => clearInterval(typeInterval);
   }, [showResponse, isTyping]);
 
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15 },
+    },
+  };
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.6, ease: "easeOut" },
+    },
+  };
+
   return (
-    <section className="py-20 lg:py-28 bg-jung-surface border-y border-jung-border">
-      <div className="editorial-container">
-        <div className="editorial-grid items-center">
+    <section className="py-24 lg:py-32 bg-jung-dark relative overflow-hidden">
+      {/* Decorative Orbs */}
+      <div className="absolute top-1/4 left-0 w-96 h-96 bg-jung-accent/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-0 w-64 h-64 bg-jung-gold/5 rounded-full blur-[100px] pointer-events-none" />
+
+      <div className="editorial-container relative z-10">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={containerVariants}
+          className="grid lg:grid-cols-2 gap-16 items-center"
+        >
           {/* Left Column - Text */}
-          <div className="space-y-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-jung-accent-light rounded-full">
-              <Sparkles className="w-4 h-4 text-jung-accent" />
-              <span className="text-sm font-serif font-medium text-jung-accent">Premium Feature</span>
+          <div className="space-y-10">
+            <motion.div variants={itemVariants} className="inline-flex">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 backdrop-blur-md rounded-full shadow-2xl">
+                <Sparkles className="w-4 h-4 text-jung-accent-muted" />
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Advanced AI Protocol</span>
+              </div>
+            </motion.div>
+
+            <div className="space-y-6">
+              <motion.h2 variants={itemVariants} className="text-display text-4xl sm:text-5xl lg:text-6xl text-white leading-tight">
+                An Analyst in your <br />
+                <span className="italic text-jung-accent-muted">Pocket.</span>
+              </motion.h2>
+              <motion.p variants={itemVariants} className="text-body-lg text-jung-subtle leading-relaxed max-w-lg">
+                The Master Insight upgrade includes our AI Type Coach—an LLM fine-tuned on thousands of pages of Jungian literature and your specific assessment results.
+              </motion.p>
             </div>
-            <h2 className="text-display text-3xl sm:text-4xl text-jung-dark">
-              AI Type Coach in Action
-            </h2>
-            <p className="text-body text-lg text-jung-secondary">
-              Ask deep questions about your psychology. Get personalized, Jungian-informed insights—not generic advice.
-            </p>
-            <ul className="space-y-3">
-              <li className="flex items-start gap-3 text-jung-secondary">
-                <CheckCircle className="w-5 h-5 text-jung-accent flex-shrink-0 mt-0.5" />
-                <span>Unlimited conversations about your type</span>
-              </li>
-              <li className="flex items-start gap-3 text-jung-secondary">
-                <CheckCircle className="w-5 h-5 text-jung-accent flex-shrink-0 mt-0.5" />
-                <span>Shadow work guidance specific to your profile</span>
-              </li>
-              <li className="flex items-start gap-3 text-jung-secondary">
-                <CheckCircle className="w-5 h-5 text-jung-accent flex-shrink-0 mt-0.5" />
-                <span>Relationship and career insights</span>
-              </li>
-            </ul>
+
+            <motion.div variants={itemVariants} className="grid sm:grid-cols-2 gap-6">
+              {[
+                "Personalized Shadow Work",
+                "Career Path Synergy",
+                "Interpersonal Strategy",
+                "Archetypal Mapping"
+              ].map((feature, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="w-6 h-6 rounded-full bg-jung-accent/20 border border-jung-accent/30 flex items-center justify-center">
+                    <CheckCircle className="w-3.5 h-3.5 text-jung-accent-muted" />
+                  </div>
+                  <span className="text-sm font-serif font-medium text-jung-subtle">{feature}</span>
+                </div>
+              ))}
+            </motion.div>
           </div>
 
-          {/* Right Column - Chat Demo */}
-          <div className="bg-jung-base rounded-xl border border-jung-border overflow-hidden shadow-md">
-            {/* Chat Header */}
-            <div className="bg-jung-dark text-white px-6 py-4 flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
-                <MessageCircle className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="font-serif font-semibold">AI Type Coach</h4>
-                <p className="text-sm text-white/60">Powered by your assessment results</p>
-              </div>
-            </div>
-
-            {/* Chat Messages */}
-            <div className="p-6 space-y-4 min-h-[350px] max-h-[400px] overflow-y-auto">
-              {/* User Message */}
-              <div className="flex justify-end">
-                <div className="bg-jung-dark text-white px-4 py-3 rounded-xl rounded-br-sm max-w-[85%]">
-                  <p className="text-sm">{AI_DEMO_CONVERSATION[0].message}</p>
-                </div>
-              </div>
-
-              {/* AI Response */}
-              {showResponse && (
-                <div className="flex justify-start">
-                  <div className="bg-jung-surface border border-jung-border px-4 py-3 rounded-xl rounded-bl-sm max-w-[85%]">
-                    <div className="prose-editorial text-sm">
-                      {displayedMessage.split('\n\n').map((paragraph, idx) => {
-                        if (paragraph.startsWith('**')) {
-                          return (
-                            <p key={idx} className="font-semibold text-jung-dark mt-3 first:mt-0">
-                              {paragraph.replace(/\*\*/g, '')}
-                            </p>
-                          );
-                        }
-                        return <p key={idx} className="text-jung-secondary mt-2 first:mt-0">{paragraph}</p>;
-                      })}
-                      {isTyping && (
-                        <span className="inline-block w-2 h-4 bg-jung-accent animate-pulse ml-1" />
-                      )}
-                    </div>
+          {/* Right Column - Chat Demo Interface */}
+          <motion.div
+            variants={itemVariants}
+            className="relative"
+          >
+            {/* Glossy Interface Card */}
+            <div className="relative glass-morphism dark border-white/10 rounded-2xl overflow-hidden shadow-[0_32px_96px_-12px_rgba(0,0,0,0.6)]">
+              {/* Header */}
+              <div className="bg-white/5 border-b border-white/10 px-6 py-5 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-jung-accent to-jung-accent-hover flex items-center justify-center shadow-lg shadow-jung-accent/30">
+                    <Bot className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="text-display text-lg text-white">AI Analyst</h4>
+                    <span className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-jung-accent-muted animate-pulse" />
+                      <span className="text-[10px] uppercase tracking-widest text-jung-subtle font-bold">Neural Engine Ready</span>
+                    </span>
                   </div>
                 </div>
-              )}
-            </div>
+                <div className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold text-jung-subtle uppercase">
+                  GPT-4o Optimized
+                </div>
+              </div>
 
-            {/* Chat Input (decorative) */}
-            <div className="border-t border-jung-border px-4 py-3 bg-jung-surface">
-              <div className="flex items-center gap-3">
-                <input
-                  type="text"
-                  placeholder="Ask about your type, relationships, career..."
-                  className="flex-1 px-4 py-2.5 bg-jung-base rounded-lg text-sm text-jung-muted cursor-not-allowed border border-jung-border font-serif"
-                  disabled
-                />
-                <button className="w-10 h-10 bg-jung-border rounded-lg flex items-center justify-center cursor-not-allowed">
-                  <ArrowRight className="w-5 h-5 text-jung-muted" />
-                </button>
+              {/* Chat Viewport */}
+              <div className="p-8 space-y-8 min-h-[440px] max-h-[500px] overflow-y-auto bg-black/40">
+                {/* User Message */}
+                <div className="flex flex-col items-end space-y-2">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[10px] uppercase tracking-widest text-jung-subtle font-bold">You</span>
+                    <div className="w-5 h-5 rounded bg-white/10 flex items-center justify-center">
+                      <User className="w-3 h-3 text-jung-subtle" />
+                    </div>
+                  </div>
+                  <div className="bg-white/5 border border-white/10 text-white/90 px-5 py-3.5 rounded-2xl rounded-tr-none max-w-[90%] text-sm leading-relaxed shadow-xl">
+                    {AI_DEMO_CONVERSATION[0].message}
+                  </div>
+                </div>
+
+                {/* AI Message */}
+                <AnimatePresence>
+                  {showResponse && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex flex-col items-start space-y-2"
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className="w-5 h-5 rounded bg-jung-accent/20 flex items-center justify-center">
+                          <Bot className="w-3 h-3 text-jung-accent-muted" />
+                        </div>
+                        <span className="text-[10px] uppercase tracking-widest text-jung-accent-muted font-bold">Analyst</span>
+                      </div>
+                      <div className="bg-jung-accent/10 border border-jung-accent/20 text-white px-5 py-4 rounded-2xl rounded-tl-none max-w-[95%] shadow-2xl relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-1 h-full bg-jung-accent" />
+                        <div className="text-sm leading-relaxed font-serif text-white/90">
+                          {displayedMessage.split('\n\n').map((paragraph, idx) => {
+                            if (paragraph.startsWith('**')) {
+                              return (
+                                <p key={idx} className="font-bold text-jung-accent-muted mt-3 first:mt-0 underline underline-offset-4 decoration-jung-accent/30">
+                                  {paragraph.replace(/\*\*/g, '')}
+                                </p>
+                              );
+                            }
+                            return <p key={idx} className="mb-3 last:mb-0">{paragraph}</p>;
+                          })}
+                          {isTyping && (
+                            <motion.span
+                              animate={{ opacity: [0, 1, 0] }}
+                              transition={{ duration: 1, repeat: Infinity }}
+                              className="inline-block w-2.5 h-4 bg-jung-accent-muted ml-1 align-middle"
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Input Bar Overlay */}
+              <div className="p-6 bg-white/5 border-t border-white/10 backdrop-blur-xl">
+                <div className="flex gap-4 p-2 bg-black/40 rounded-xl border border-white/5">
+                  <div className="flex-1 px-4 py-3 text-sm text-jung-subtle font-serif truncate">
+                    Ask about your Si-Ne axis development...
+                  </div>
+                  <div className="w-10 h-10 rounded-lg bg-jung-accent/20 flex items-center justify-center border border-jung-accent/30">
+                    <ArrowRight className="w-5 h-5 text-jung-accent-muted" />
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+
+            {/* Background Light Effect */}
+            <div className="absolute -inset-10 bg-jung-accent/10 blur-[80px] -z-10 rounded-full" />
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

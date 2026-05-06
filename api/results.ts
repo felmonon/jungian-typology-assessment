@@ -32,14 +32,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const { data: result, error } = await supabase
         .from('assessment_results')
         .insert({
-          userId: user.id,
-          scores: scores,
-          stack: stack,
-          attitudeScore: String(attitudeScore),
-          isUndifferentiated: String(isUndifferentiated),
-          shareSlug: shareSlug
+          user_id: user.id,
+          scores,
+          stack,
+          attitude_score: String(attitudeScore),
+          is_undifferentiated: String(isUndifferentiated),
+          share_slug: shareSlug
         })
-        .select()
+        .select(`
+          id,
+          userId:user_id,
+          scores,
+          stack,
+          attitudeScore:attitude_score,
+          isUndifferentiated:is_undifferentiated,
+          shareSlug:share_slug,
+          createdAt:created_at
+        `)
         .single();
 
       if (error) {
@@ -57,9 +66,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       const { data: results, error } = await supabase
         .from('assessment_results')
-        .select('*')
-        .eq('userId', user.id)
-        .order('createdAt', { ascending: false });
+        .select(`
+          id,
+          userId:user_id,
+          scores,
+          stack,
+          attitudeScore:attitude_score,
+          isUndifferentiated:is_undifferentiated,
+          shareSlug:share_slug,
+          createdAt:created_at
+        `)
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
 
       if (error) {
         console.error('Fetch error:', error);

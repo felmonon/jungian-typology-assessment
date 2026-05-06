@@ -1,5 +1,6 @@
 import React from 'react';
-import { Zap, Star, Crown, Check, Sparkles, ArrowUpRight, ShieldCheck } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Zap, Hexagon, Crown, Check, ArrowUpRight, ShieldCheck, Terminal } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { PRICING_TIERS, AnalyticsEvents } from './data';
 
@@ -15,116 +16,105 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) =>
   };
 
   return (
-    <section className="section-padding">
-      <div className="editorial-container">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-jung-accent-light rounded-full mb-4">
-            <Zap className="w-4 h-4 text-jung-accent" />
-            <span className="text-sm font-serif font-medium text-jung-primary">Launch pricing — Save 40% this week</span>
+    <section className="py-32 bg-jung-base relative overflow-hidden">
+      {/* Background Grid */}
+      <div className="absolute inset-0 z-0 opacity-10 pointer-events-none bg-[size:30px_30px] [background-image:linear-gradient(to_right,#333_1px,transparent_1px),linear-gradient(to_bottom,#333_1px,transparent_1px)]" />
+
+      <div className="lab-container relative z-10">
+        <div className="text-center mb-24 max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-2 mb-6 text-jung-accent/80 font-mono text-[10px] uppercase tracking-[0.3em]">
+            <Terminal className="w-3 h-3" />
+            <span>Clearance Levels</span>
           </div>
-          <h2 className="text-display text-3xl sm:text-4xl text-jung-dark mb-4">
-            Choose Your Path
+
+          <h2 className="text-display text-5xl md:text-6xl text-jung-dark mb-6">
+            Access the <span className="text-jung-accent">Dossier.</span>
           </h2>
-          <p className="text-body text-lg text-jung-secondary max-w-2xl mx-auto">
-            Start free, go deeper when you're ready. One-time payment, lifetime access.
+          <p className="text-jung-secondary font-light text-lg">
+            Select your required depth of analysis. All data is encrypted and permanently archived for your personal access.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto items-start">
+        <div className="grid md:grid-cols-3 gap-6 max-w-7xl mx-auto items-stretch">
           {PRICING_TIERS.map((tier, index) => {
+            const isPopular = tier.popular;
+            const isMastery = tier.name === 'MASTERY';
             const Icon = tier.icon;
+
             return (
-              <div 
-                key={index} 
-                className={`relative ${tier.popular ? 'md:-translate-y-4' : ''} ${
-                  tier.name === 'MASTERY' ? 'bg-jung-accent-light' : ''
-                }`}
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="h-full"
               >
-                {tier.popular && (
-                  <div className="absolute -inset-px bg-jung-accent rounded-2xl" />
-                )}
-                <div className={`relative ${tier.popular ? 'bg-jung-surface' : 'card-elevated'} rounded-2xl p-6 sm:p-8 h-full`}>
-                  {/* Badge */}
-                  {tier.popular && (
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                      <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-jung-accent text-white text-sm font-serif font-medium rounded-full">
-                        <Star className="w-4 h-4" /> Most Popular
-                      </span>
-                    </div>
-                  )}
-                  {tier.name === 'MASTERY' && (
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                      <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-jung-dark text-white text-sm font-serif font-medium rounded-full">
-                        <Crown className="w-4 h-4" /> Best Value
-                      </span>
-                    </div>
-                  )}
-                  
-                  <div className={`text-center mb-6 ${tier.popular ? 'pt-4' : ''}`}>
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 ${
-                      tier.name === 'FREE' ? 'bg-jung-border' : 
-                      tier.name === 'INSIGHT' ? 'bg-jung-accent-light' : 'bg-jung-accent/20'
-                    }`}>
-                      <Icon className={`w-6 h-6 ${
-                        tier.name === 'FREE' ? 'text-jung-muted' : 'text-jung-accent'
-                      }`} />
-                    </div>
-                    <h3 className="text-heading text-xl text-jung-dark mb-1">{tier.name}</h3>
-                    <div className={`text-display text-4xl ${tier.name === 'INSIGHT' ? 'text-jung-accent' : 'text-jung-dark'} mb-2`}>
-                      {tier.price}
-                    </div>
-                    <p className="text-sm font-serif text-jung-muted">{tier.description}</p>
-                  </div>
-                  
-                  <ul className="space-y-3 mb-6">
-                    {tier.features.map((feature, fidx) => (
-                      <li key={fidx} className="flex items-start gap-3">
-                        {tier.name === 'MASTERY' ? (
-                          <Sparkles className="w-5 h-5 text-jung-accent flex-shrink-0 mt-0.5" />
-                        ) : (
-                          <Check className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
-                            tier.name === 'FREE' ? 'text-success' : 'text-jung-accent'
-                          }`} />
+                <div
+                  className={`
+                    relative h-full flex flex-col p-1
+                    ${isPopular ? 'bg-gradient-to-b from-jung-accent to-jung-accent/10' : 'bg-jung-border/30'}
+                    ${isMastery ? 'bg-gradient-to-b from-jung-dark to-jung-base border-jung-border' : ''}
+                  `}
+                  style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%)' }}
+                >
+                  <div className="bg-jung-surface h-full w-full p-8 relative overflow-hidden flex flex-col" style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 19px), calc(100% - 19px) 100%, 0 100%)' }}>
+
+                    {/* Header */}
+                    <div className="border-b border-jung-border/50 pb-8 mb-8">
+                      <div className="flex justify-between items-start mb-4">
+                        <div className={`p-3 border border-jung-border/50 ${isPopular ? 'text-jung-accent' : 'text-jung-muted'}`}>
+                          <Icon className="w-6 h-6" />
+                        </div>
+                        {isPopular && (
+                          <div className="bg-jung-accent text-black px-2 py-1 text-[10px] font-bold uppercase tracking-widest">
+                            Standard
+                          </div>
                         )}
-                        <span className={`${tier.name === 'FREE' ? 'text-jung-secondary' : 'text-jung-dark font-medium'} text-sm`}>
-                          {feature}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                  
-                  <Button 
-                    variant={tier.variant} 
-                    className="w-full"
-                    onClick={() => handlePricingClick(tier.name, tier.price)}
-                  >
-                    {tier.cta}
-                  </Button>
-                  <p className="text-center text-xs text-jung-muted mt-3">
-                    {tier.name === 'FREE' ? '' : 'One-time payment'}
-                  </p>
+                        {isMastery && (
+                          <div className="bg-jung-dark text-white border border-white/20 px-2 py-1 text-[10px] font-bold uppercase tracking-widest">
+                            Complete
+                          </div>
+                        )}
+                      </div>
+
+                      <h3 className="text-display text-2xl text-jung-dark mb-2">{tier.name}</h3>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-4xl font-mono font-bold text-jung-dark">{tier.price}</span>
+                        <span className="text-[10px] uppercase text-jung-muted tracking-widest">/ One-time</span>
+                      </div>
+                    </div>
+
+                    {/* Features */}
+                    <ul className="space-y-4 mb-10 flex-grow">
+                      {tier.features.map((feature, idx) => (
+                        <li key={idx} className="flex gap-4 items-start text-sm text-jung-secondary">
+                          <div className="w-1 h-1 bg-jung-accent mt-2 flex-shrink-0" />
+                          <span className={isMastery ? 'text-white' : ''}>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <Button
+                      onClick={() => handlePricingClick(tier.name, tier.price)}
+                      className={`w-full py-6 text-xs uppercase tracking-[0.2em] font-bold border ${isPopular
+                          ? 'bg-jung-accent text-black hover:bg-jung-accent-hover border-transparent'
+                          : 'bg-transparent text-jung-accent border-jung-accent/50 hover:bg-jung-accent/10'
+                        }`}
+                    >
+                      {tier.cta}
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
 
-        <div className="text-center mt-10">
-          <button
-            onClick={() => onNavigate('/pricing')}
-            className="text-jung-accent hover:text-jung-primary font-serif font-medium inline-flex items-center gap-1 transition-colors"
-          >
-            See full feature comparison <ArrowUpRight className="w-4 h-4" />
-          </button>
-        </div>
-
-        {/* Money-Back Guarantee */}
-        <div className="mt-12 pt-8 border-t border-jung-border">
-          <div className="flex items-center justify-center gap-3 text-jung-secondary">
-            <ShieldCheck className="w-6 h-6 text-success" />
-            <p className="text-sm font-serif">
-              <strong className="text-jung-dark">30-day money-back guarantee.</strong> Not satisfied? Get a full refund, no questions asked.
-            </p>
+        {/* Security Footer */}
+        <div className="mt-20 flex justify-center">
+          <div className="inline-flex items-center gap-3 px-6 py-3 border border-success/30 bg-success/5 rounded text-success text-xs font-mono uppercase tracking-widest">
+            <ShieldCheck className="w-4 h-4" />
+            <span>Encrypted Vault Storage</span>
           </div>
         </div>
       </div>

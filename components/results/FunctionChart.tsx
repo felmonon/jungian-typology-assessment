@@ -2,101 +2,37 @@ import React, { useMemo, useState } from 'react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import { ValidatedAssessmentResults } from '../../lib/validation';
 import { FUNCTION_DESCRIPTIONS, ATTITUDE_DESCRIPTIONS } from '../../data/questions';
-import { AlertCircle, Info, TrendingUp } from 'lucide-react';
-import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { AlertCircle, Info, TrendingUp, Sparkles, Activity, Layers } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface FunctionChartProps {
   results: ValidatedAssessmentResults;
 }
 
-// Custom tooltip for the radar chart
 const CustomTooltip: React.FC<any> = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     const score = payload[0].value;
     const funcData = FUNCTION_DESCRIPTIONS[label as keyof typeof FUNCTION_DESCRIPTIONS];
-    const intensity = score >= 70 ? 'Strong' : score >= 50 ? 'Moderate' : score >= 30 ? 'Developing' : 'Emerging';
+    const intensity = score >= 70 ? 'Refined' : score >= 50 ? 'Strong' : score >= 30 ? 'Developing' : 'Emergent';
 
     return (
-      <div className="bg-jung-surface border border-jung-border rounded-xl p-4 shadow-lg max-w-[280px]">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-2xl font-bold text-jung-accent">{label}</span>
-          <span className="text-xs px-2 py-0.5 bg-jung-accent-light text-jung-accent rounded-full">
+      <div className="glass-morphism dark p-4 border border-white/10 rounded-2xl shadow-2xl max-w-[280px]">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-2xl font-display font-bold text-jung-accent-muted">{label}</span>
+          <span className="text-[10px] font-bold px-2 py-0.5 bg-jung-accent/20 text-jung-accent-muted rounded-full uppercase tracking-widest">
             {intensity}
           </span>
         </div>
-        <p className="text-lg font-bold text-jung-dark mb-1 font-mono">{score}%</p>
-        <p className="text-sm text-jung-muted mb-2 font-serif">{funcData?.title}</p>
-        <p className="text-xs text-jung-secondary leading-relaxed">{funcData?.desc}</p>
+        <div className="text-3xl font-display font-bold text-white mb-2">{score}%</div>
+        <p className="text-xs text-jung-subtle font-serif italic mb-3">"{funcData?.title}"</p>
+        <p className="text-[11px] text-white/70 leading-relaxed font-sans">{funcData?.desc}</p>
       </div>
     );
   }
   return null;
 };
 
-// Function detail tooltip component
-const FunctionDetailTooltip: React.FC<{
-  func: string;
-  score: number;
-  position: 'dominant' | 'auxiliary' | 'tertiary' | 'inferior' | null;
-}> = ({ func, score, position }) => {
-  const funcData = FUNCTION_DESCRIPTIONS[func as keyof typeof FUNCTION_DESCRIPTIONS];
-  const [isVisible, setIsVisible] = useState(false);
-
-  return (
-    <div
-      className="relative inline-block"
-      onMouseEnter={() => setIsVisible(true)}
-      onMouseLeave={() => setIsVisible(false)}
-      onFocus={() => setIsVisible(true)}
-      onBlur={() => setIsVisible(false)}
-    >
-      <button
-        className="p-1 rounded-full hover:bg-jung-border/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-jung-accent"
-        aria-label={`More info about ${func}`}
-      >
-        <Info className="w-4 h-4 text-jung-muted" />
-      </button>
-
-      {isVisible && (
-        <div className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-4 bg-jung-surface border border-jung-border rounded-xl shadow-xl animate-scale-in">
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 rotate-45 w-3 h-3 bg-jung-surface border-r border-b border-jung-border" />
-
-          <div className="relative">
-            <h4 className="font-bold text-jung-dark mb-1 font-serif">{funcData?.title}</h4>
-            <p className="text-xs text-jung-accent mb-2">{func}</p>
-            <p className="text-xs text-jung-secondary leading-relaxed mb-3">{funcData?.desc}</p>
-
-            <div className="space-y-2">
-              <div className="text-xs">
-                <span className="font-medium text-emerald-700">+ Positive:</span>{' '}
-                <span className="text-jung-secondary">{funcData?.positive}</span>
-              </div>
-              <div className="text-xs">
-                <span className="font-medium text-red-700">− Shadow:</span>{' '}
-                <span className="text-jung-secondary">{funcData?.negative}</span>
-              </div>
-            </div>
-
-            {position && (
-              <div className="mt-3 pt-3 border-t border-jung-border">
-                <p className="text-xs text-jung-muted">
-                  <strong>Position:</strong>{' '}
-                  {position === 'dominant' && 'Your most conscious, developed function'}
-                  {position === 'auxiliary' && 'Supports your dominant function'}
-                  {position === 'tertiary' && 'Your creative, playful function'}
-                  {position === 'inferior' && 'Your growth edge and doorway to the unconscious'}
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
 export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
-  const reducedMotion = useReducedMotion();
   const [hoveredFunction, setHoveredFunction] = useState<string | null>(null);
 
   const chartData = useMemo(() =>
@@ -104,75 +40,54 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
       subject: s.function,
       A: s.score,
       fullMark: 100,
-      functionData: FUNCTION_DESCRIPTIONS[s.function as keyof typeof FUNCTION_DESCRIPTIONS],
     })),
     [results.scores]
   );
 
-  const attitude = results.attitudeScore > 0 ? ATTITUDE_DESCRIPTIONS.E : ATTITUDE_DESCRIPTIONS.I;
   const attitudeType = results.attitudeScore > 0 ? 'Extraversion' : 'Introversion';
 
-  // Calculate average score for comparison
-  const averageScore = useMemo(() =>
-    Math.round(results.scores.reduce((sum, s) => sum + s.score, 0) / results.scores.length),
-    [results.scores]
-  );
-
-  // Get function position in stack
-  const getFunctionPosition = (func: string): 'dominant' | 'auxiliary' | 'tertiary' | 'inferior' | null => {
-    if (results.stack.dominant.function === func) return 'dominant';
-    if (results.stack.auxiliary.function === func) return 'auxiliary';
-    if (results.stack.tertiary.function === func) return 'tertiary';
-    if (results.stack.inferior.function === func) return 'inferior';
-    return null;
-  };
-
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12">
-      <div className="card-elevated p-4 sm:p-6 md:p-8 flex flex-col items-center overflow-hidden">
-        <div className="flex items-center gap-2 mb-6">
-          <h3 className="text-ui text-sm font-semibold text-jung-muted uppercase tracking-wider font-serif">
-            Function-Attitude Energy
-          </h3>
-          <div className="group relative">
-            <Info className="w-4 h-4 text-jung-muted cursor-help" />
-            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-jung-surface border border-jung-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
-              <p className="text-xs text-jung-secondary">
-                This radar chart shows your relative strength across all 8 cognitive functions.
-                Hover over any point to see details. The shape reveals your unique psychological fingerprint.
-              </p>
-            </div>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 mb-20">
+      {/* Radar Chart Card */}
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true }}
+        className="card-premium p-8 lg:p-12 bg-white dark:bg-dark-surface border-jung-border dark:border-dark-border"
+      >
+        <div className="flex items-center justify-between mb-10">
+          <div>
+            <h3 className="text-display text-2xl text-jung-dark dark:text-white">Psychological Map</h3>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-jung-muted">Functional Spectrum Analysis</p>
+          </div>
+          <div className="w-12 h-12 bg-jung-accent/10 rounded-2xl flex items-center justify-center">
+            <Activity className="w-6 h-6 text-jung-accent" />
           </div>
         </div>
 
-        <div className="w-full h-[260px] sm:h-[400px]">
+        <div className="w-full aspect-square relative">
           <ResponsiveContainer width="100%" height="100%">
             <RadarChart
               cx="50%"
               cy="50%"
-              outerRadius="65%"
+              outerRadius="80%"
               data={chartData}
-              onMouseMove={(e: any) => {
-                if (e && e.activeLabel) {
-                  setHoveredFunction(e.activeLabel);
-                }
-              }}
+              onMouseMove={(e: any) => e && e.activeLabel && setHoveredFunction(e.activeLabel)}
               onMouseLeave={() => setHoveredFunction(null)}
             >
-              <PolarGrid stroke="#D8D5CE" />
+              <defs>
+                <linearGradient id="chartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="var(--color-jung-accent)" stopOpacity="0.6" />
+                  <stop offset="100%" stopColor="var(--color-jung-accent)" stopOpacity="0.2" />
+                </linearGradient>
+              </defs>
+              <PolarGrid stroke="var(--color-jung-border)" strokeWidth={0.5} opacity={0.5} />
               <PolarAngleAxis
                 dataKey="subject"
                 tick={(props: any) => {
                   const { x, y, payload } = props;
                   const isHovered = hoveredFunction === payload.value;
-                  const position = getFunctionPosition(payload.value);
-                  const colors = {
-                    dominant: '#1F7A67',
-                    auxiliary: '#2E2E52',
-                    tertiary: '#6B6B8D',
-                    inferior: '#9090AD',
-                    null: '#1B1B3A'
-                  };
+                  const isDominant = results.stack.dominant.function === payload.value;
 
                   return (
                     <text
@@ -180,10 +95,8 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
                       y={y}
                       textAnchor="middle"
                       dominantBaseline="central"
-                      fill={colors[position || 'null']}
-                      fontSize={isHovered ? 12 : 10}
-                      fontWeight={position === 'dominant' ? 'bold' : 'normal'}
-                      className={reducedMotion ? '' : 'transition-all duration-200'}
+                      className={`text-[11px] font-display transition-all duration-300 ${isHovered ? 'fill-jung-accent scale-110 font-bold' : isDominant ? 'fill-jung-dark dark:fill-white font-bold' : 'fill-jung-muted'
+                        }`}
                     >
                       {payload.value}
                     </text>
@@ -192,125 +105,97 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
               />
               <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
               <Radar
-                name="Your Score"
+                name="Score"
                 dataKey="A"
-                stroke="#1F7A67"
-                strokeWidth={hoveredFunction ? 4 : 3}
-                fill="#1F7A67"
-                fillOpacity={hoveredFunction ? 0.5 : 0.4}
-                className={reducedMotion ? '' : 'transition-all duration-300'}
-              />
-              {/* Average reference line */}
-              <Radar
-                name="Average"
-                dataKey="fullMark"
-                stroke="#D8D5CE"
-                strokeWidth={1}
-                strokeDasharray="4 4"
-                fill="none"
+                stroke="var(--color-jung-accent)"
+                strokeWidth={3}
+                fill="url(#chartGradient)"
+                fillOpacity={0.6}
               />
               <Tooltip content={<CustomTooltip />} />
             </RadarChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Legend */}
-        <div className="flex flex-wrap justify-center gap-4 mt-4 text-xs text-jung-muted">
-          <div className="flex items-center gap-1.5">
+        {/* Chart Legend */}
+        <div className="flex justify-center gap-8 mt-10">
+          <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-jung-accent" />
-            <span>Dominant</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-jung-muted">Conscious Reach</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded-full bg-jung-secondary" />
-            <span>Auxiliary</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded-full bg-jung-muted" />
-            <span>Tertiary</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded-full bg-jung-subtle" />
-            <span>Inferior</span>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-jung-border" />
+            <span className="text-[10px] font-bold uppercase tracking-widest text-jung-muted">Potential</span>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="flex flex-col justify-center space-y-4 sm:space-y-6">
-        {/* Attitude Card */}
-        <div className="card-elevated p-4 sm:p-6 rounded-xl border-l-4 border-jung-accent">
-          <div className="flex items-center gap-2 mb-2">
-            <TrendingUp className="w-5 h-5 text-jung-accent" />
-            <h3 className="text-heading text-xl font-serif">
-              General Attitude: {attitudeType}
-            </h3>
-          </div>
-          <p className="text-body text-jung-muted text-sm">
-            Your energy naturally flows {results.attitudeScore > 0 ? 'outward toward the external world' : 'inward toward your inner experience'}.
-          </p>
-          <div className="mt-3 flex items-center gap-2 text-xs text-jung-muted">
-            <span className="font-mono">Score: {Math.abs(results.attitudeScore).toFixed(1)}</span>
-            <span className="text-jung-border">|</span>
-            <span>{Math.abs(results.attitudeScore) > 10 ? 'Clear preference' : 'Moderate preference'}</span>
-          </div>
-        </div>
-
-        {/* Differentiation Warning */}
-        {results.isUndifferentiated && (
-          <div className="flex items-start gap-3 p-4 bg-jung-accent-light border border-jung-accent/20 text-jung-dark rounded-xl">
-            <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-jung-accent" />
-            <div className="text-sm">
-              <strong>Differentiation Note:</strong> Your profile is relatively balanced. The analysis below shows your theoretical function hierarchy.
+      {/* Stats & Stack Card */}
+      <div className="space-y-8">
+        {/* Preference Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="bg-jung-dark text-white p-8 rounded-3xl relative overflow-hidden shadow-xl"
+        >
+          <div className="absolute top-0 right-0 w-32 h-32 bg-jung-accent/10 rounded-full blur-3xl -mr-16 -mt-16" />
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
+              <TrendingUp className="w-5 h-5 text-jung-accent-muted" />
+            </div>
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-jung-subtle">Primary Attitude</p>
+              <h3 className="text-display text-2xl">{attitudeType}</h3>
             </div>
           </div>
-        )}
+          <p className="text-sm text-jung-subtle leading-relaxed font-serif italic mb-6">
+            "Your energy naturally flows {results.attitudeScore > 0 ? 'outward toward shared reality' : 'inward toward the landscape of the soul'}."
+          </p>
+          <div className="flex items-end gap-2">
+            <div className="text-4xl font-display font-bold text-jung-accent-muted">{Math.abs(results.attitudeScore).toFixed(1)}</div>
+            <div className="text-[10px] font-bold uppercase tracking-widest text-jung-subtle mb-2">Intensity Vector</div>
+          </div>
+        </motion.div>
 
-        {/* Function Stack */}
-        <div className="card-elevated p-4 sm:p-6">
-          <h3 className="text-heading text-lg mb-4 font-serif">Your Function Stack</h3>
-          <div className="space-y-2 text-sm">
+        {/* Function Stack Summary */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.1 }}
+          className="card-premium p-8 bg-white dark:bg-dark-surface border-jung-border dark:border-dark-border"
+        >
+          <div className="flex items-center gap-3 mb-8">
+            <Layers className="w-5 h-5 text-jung-accent" />
+            <h3 className="text-display text-xl">The Hierarchy</h3>
+          </div>
+          <div className="space-y-4">
             {[
-              { key: 'dominant', label: 'Dominant', color: 'text-jung-accent' },
-              { key: 'auxiliary', label: 'Auxiliary', color: 'text-jung-secondary' },
-              { key: 'tertiary', label: 'Tertiary', color: 'text-jung-muted' },
-              { key: 'inferior', label: 'Inferior', color: 'text-jung-muted/70' },
-            ].map(({ key, label, color }, index) => {
+              { key: 'dominant', label: 'Conscious Core', color: 'bg-jung-accent' },
+              { key: 'auxiliary', label: 'Balance Point', color: 'bg-jung-secondary' },
+              { key: 'tertiary', label: 'Relational Key', color: 'bg-jung-muted font-serif' },
+              { key: 'inferior', label: 'The Shadow Door', color: 'bg-jung-dark' },
+            ].map(({ key, label, color }, i) => {
               const func = results.stack[key as keyof typeof results.stack];
               return (
-                <div
-                  key={key}
-                  className="flex justify-between items-center py-3 border-b border-jung-border last:border-0 group"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className={`font-medium ${color}`}>{index + 1}. {label}</span>
-                    <FunctionDetailTooltip
-                      func={func.function}
-                      score={func.score}
-                      position={key as any}
-                    />
+                <div key={key} className="flex items-center justify-between p-4 rounded-2xl bg-jung-base dark:bg-dark-surface-elevated group hover:scale-[1.02] transition-transform">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-2 h-10 rounded-full ${color}`} />
+                    <div>
+                      <p className="text-[9px] font-bold uppercase tracking-widest text-jung-muted mb-0.5">{label}</p>
+                      <p className="text-lg font-display text-jung-dark dark:text-white leading-none">{func.function}</p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className="font-bold font-serif">{func.function}</span>
-                    <span className="text-xs text-jung-muted font-mono">{func.score}%</span>
+                  <div className="text-right">
+                    <p className="text-xl font-display font-bold text-jung-accent">{func.score}%</p>
+                    <p className="text-[8px] font-bold uppercase tracking-tighter text-jung-muted">Active Potency</p>
                   </div>
                 </div>
               );
             })}
           </div>
-        </div>
-
-        {/* Score Stats */}
-        <div className="bg-jung-surface-alt rounded-xl p-4 text-sm">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-jung-muted">Average Function Score</span>
-            <span className="font-bold text-jung-dark font-mono">{averageScore}%</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-jung-muted">Differentiation</span>
-            <span className="font-bold text-jung-dark">
-              {results.differentiation > 30 ? 'High' : results.differentiation > 15 ? 'Moderate' : 'Low'}
-            </span>
-          </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

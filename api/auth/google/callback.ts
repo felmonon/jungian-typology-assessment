@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
-import { buildRequestUrl, shouldUseSecureCookie } from '../utils';
+import { buildRequestUrl, shouldUseSecureCookie } from '../utils.js';
 
 // Generate a random session ID
 function generateSessionId(): string {

@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
-import { getSessionUser } from './_lib/auth';
+import { getSessionUser } from './_lib/auth.js';
 
 function generateShareSlug(): string {
   return crypto.randomBytes(8).toString('base64url');

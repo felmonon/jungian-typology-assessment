@@ -5,6 +5,7 @@ import { FunctionScore, Stack } from '../types';
 import { FUNCTION_DESCRIPTIONS } from '../data/questions';
 import { Button } from '../components/ui/Button';
 import { useAuth } from '../hooks/use-auth';
+import { extractDepthResult } from '../utils/depthCompatibility';
 import {
   History as HistoryIcon,
   Loader2,
@@ -107,13 +108,20 @@ export const History: React.FC = () => {
   };
 
   const viewResult = (result: SavedResult) => {
+    const depthResult = extractDepthResult(result);
+    if (depthResult) {
+      localStorage.setItem('jungian_assessment_results', JSON.stringify(depthResult));
+      navigate('/results');
+      return;
+    }
+
     const resultsData = {
       scores: result.scores,
       stack: result.stack,
       attitudeScore: result.attitudeScore,
       isUndifferentiated: result.isUndifferentiated
     };
-    localStorage.setItem('jungian_assessment_result', JSON.stringify(resultsData));
+    localStorage.setItem('jungian_assessment_results', JSON.stringify(resultsData));
     navigate('/results');
   };
 

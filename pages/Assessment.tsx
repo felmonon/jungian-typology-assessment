@@ -1,314 +1,343 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowLeft, ArrowRight, CheckCircle2, Circle, Info, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { questions } from '../data/questions';
-import { calculateResults } from '../utils/scoring';
 import { Button } from '../components/ui/Button';
-import { ArrowLeft, ArrowRight, CheckCircle2, Keyboard, Sparkles, Brain, Info } from 'lucide-react';
-import { useSEO, PAGE_SEO } from '../hooks/useSEO';
+import { DepthLayer, depthLayerMeta, depthQuestions } from '../data/depthAssessment';
+import { PAGE_SEO, useSEO } from '../hooks/useSEO';
 import { useAssessmentTracking } from '../hooks/useAnalytics';
-import { useAssessmentProgress } from '../hooks/useAssessmentStorage';
-import { assessmentResultsSchema } from '../lib/validation';
-import { useToast } from '../components/ui/Toast';
+import { calculateDepthResults } from '../utils/depthScoring';
 
-const QUESTIONS_PER_PAGE = 4;
+const QUESTIONS_PER_PAGE = 3;
+const PROGRESS_KEY = 'jungian_depth_assessment_progress';
+const HISTORY_KEY = 'jungian_depth_results_history';
+const RESULTS_KEY = 'jungian_assessment_results';
+
+type SavedProgress = {
+  answers: Record<string, string>;
+  currentPage: number;
+};
+
+const layerOrder: DepthLayer[] = ['behavioral', 'inferior', 'somatic', 'attitude'];
+
+const layerProgress = (answers: Record<string, string>) => layerOrder.map((layer) => {
+  const layerQuestions = depthQuestions.filter((question) => question.layer === layer);
+  const answered = layerQuestions.filter((question) => answers[question.id]).length;
+  return {
+    layer,
+    answered,
+    total: layerQuestions.length,
+    complete: answered === layerQuestions.length,
+  };
+});
+
+const readProgress = (): SavedProgress | null => {
+  try {
+    const raw = localStorage.getItem(PROGRESS_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object') return null;
+    return {
+      answers: parsed.answers && typeof parsed.answers === 'object' ? parsed.answers : {},
+      currentPage: Number.isFinite(parsed.currentPage) ? parsed.currentPage : 0,
+    };
+  } catch {
+    return null;
+  }
+};
+
+const writeProgress = (answers: Record<string, string>, currentPage: number) => {
+  localStorage.setItem(PROGRESS_KEY, JSON.stringify({ answers, currentPage }));
+};
 
 export const Assessment: React.FC = () => {
   const navigate = useNavigate();
-  const [currentIdx, setCurrentIdx] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, number>>({});
-  const [showCelebration, setShowCelebration] = useState(false);
-  const [focusedQuestion, setFocusedQuestion] = useState<number | null>(null);
-  const assessmentTracking = useAssessmentTracking();
-  const { progress, saveProgress, isLoaded } = useAssessmentProgress();
-  const { success, info, ToastContainer } = useToast();
-  const lastSavedRef = useRef<number>(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [showCompletion, setShowCompletion] = useState(false);
+  const hasLoadedProgressRef = useRef(false);
+  const hasTrackedStartRef = useRef(false);
+  const { trackStart, trackProgress, trackComplete } = useAssessmentTracking();
 
   useSEO(PAGE_SEO.assessment);
 
-  const totalPages = Math.ceil(questions.length / QUESTIONS_PER_PAGE);
-  const currentQuestions = questions.slice(currentIdx * QUESTIONS_PER_PAGE, (currentIdx + 1) * QUESTIONS_PER_PAGE);
+  const totalPages = Math.ceil(depthQuestions.length / QUESTIONS_PER_PAGE);
+  const currentQuestions = depthQuestions.slice(
+    currentPage * QUESTIONS_PER_PAGE,
+    (currentPage + 1) * QUESTIONS_PER_PAGE,
+  );
+
+  const totalAnswered = Object.keys(answers).filter((key) => answers[key]).length;
+  const overallProgress = Math.round((totalAnswered / depthQuestions.length) * 100);
+  const isPageComplete = currentQuestions.every((question) => answers[question.id]);
+  const currentLayer = currentQuestions[0]?.layer ?? 'behavioral';
+  const currentLayerMeta = depthLayerMeta[currentLayer];
+  const currentLayerProgress = useMemo(() => layerProgress(answers), [answers]);
+
+  const pageRange = useMemo(() => {
+    const start = currentPage * QUESTIONS_PER_PAGE + 1;
+    const end = Math.min((currentPage + 1) * QUESTIONS_PER_PAGE, depthQuestions.length);
+    return `${start}-${end}`;
+  }, [currentPage]);
 
   useEffect(() => {
-    if (isLoaded && progress) {
-      setAnswers(progress.answers);
-      setCurrentIdx(progress.currentStep);
+    if (hasLoadedProgressRef.current) return;
+    const saved = readProgress();
+    if (saved) {
+      setAnswers(saved.answers);
+      setCurrentPage(Math.max(0, Math.min(saved.currentPage, totalPages - 1)));
     }
-  }, [isLoaded, progress]);
+    hasLoadedProgressRef.current = true;
+  }, [totalPages]);
 
-  const isPageComplete = currentQuestions.every(q => answers[q.id] !== undefined);
-  const progressPercent = ((currentIdx) / totalPages) * 100;
-  const totalAnswered = Object.keys(answers).length;
-  const totalQuestions = questions.length;
-  const overallProgress = (totalAnswered / totalQuestions) * 100;
+  useEffect(() => {
+    if (!hasTrackedStartRef.current) {
+      trackStart();
+      hasTrackedStartRef.current = true;
+    }
+  }, [trackStart]);
 
-  const handleAnswer = useCallback((qid: string, value: number) => {
-    setAnswers(prev => {
-      const newAnswers = { ...prev, [qid]: value };
-      const now = Date.now();
-      if (now - lastSavedRef.current > 5000) {
-        lastSavedRef.current = now;
-      }
-      saveProgress(newAnswers, currentIdx);
-      return newAnswers;
+  const persist = useCallback((nextAnswers: Record<string, string>, nextPage = currentPage) => {
+    writeProgress(nextAnswers, nextPage);
+  }, [currentPage]);
+
+  const handleAnswer = useCallback((questionId: string, answerId: string, questionNumber: number) => {
+    setAnswers((prev) => {
+      const nextAnswers = { ...prev, [questionId]: answerId };
+      persist(nextAnswers);
+      return nextAnswers;
     });
-  }, [currentIdx, saveProgress]);
+    trackProgress(questionNumber, depthQuestions.length);
+  }, [persist, trackProgress]);
+
+  const completeAssessment = useCallback(() => {
+    setShowCompletion(true);
+    trackComplete();
+
+    window.setTimeout(() => {
+      const results = calculateDepthResults(answers);
+      localStorage.setItem(RESULTS_KEY, JSON.stringify(results));
+      localStorage.removeItem(PROGRESS_KEY);
+
+      try {
+        const historyRaw = localStorage.getItem(HISTORY_KEY);
+        const history = historyRaw ? JSON.parse(historyRaw) : [];
+        const nextHistory = Array.isArray(history) ? [results, ...history].slice(0, 12) : [results];
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(nextHistory));
+      } catch {
+        localStorage.setItem(HISTORY_KEY, JSON.stringify([results]));
+      }
+
+      navigate('/results');
+    }, 900);
+  }, [answers, navigate, trackComplete]);
 
   const handleNext = useCallback(() => {
-    if (currentIdx < totalPages - 1) {
-      setCurrentIdx(p => p + 1);
+    if (currentPage < totalPages - 1) {
+      const nextPage = currentPage + 1;
+      setCurrentPage(nextPage);
+      persist(answers, nextPage);
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      setShowCelebration(true);
-      setTimeout(() => {
-        const results = calculateResults(answers);
-        const validatedResults = assessmentResultsSchema.safeParse(results);
-        localStorage.setItem(
-          'jungian_assessment_results',
-          JSON.stringify(validatedResults.success ? validatedResults.data : results)
-        );
-        localStorage.removeItem('jungian_assessment_progress');
-        navigate('/results');
-      }, 2500);
+      return;
     }
-  }, [currentIdx, totalPages, answers, navigate]);
+
+    completeAssessment();
+  }, [answers, completeAssessment, currentPage, persist, totalPages]);
 
   const handleBack = useCallback(() => {
-    if (currentIdx > 0) {
-      setCurrentIdx(p => p - 1);
+    if (currentPage > 0) {
+      const nextPage = currentPage - 1;
+      setCurrentPage(nextPage);
+      persist(answers, nextPage);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [currentIdx]);
+  }, [answers, currentPage, persist]);
 
   return (
-    <div className="min-h-screen bg-jung-base dark:bg-dark-base transition-colors duration-500">
-      <ToastContainer />
-
-      {/* Completion Overlay */}
+    <div className="min-h-screen bg-jung-base">
       <AnimatePresence>
-        {showCelebration && (
+        {showCompletion && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-jung-dark/95 backdrop-blur-xl"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-jung-base/95 px-6 backdrop-blur"
           >
-            <div className="text-center text-white px-6">
-              <motion.div
-                animate={{
-                  scale: [1, 1.2, 1],
-                  rotate: [0, 10, -10, 0]
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="w-24 h-24 bg-jung-accent rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-jung-accent/40"
-              >
-                <Brain className="w-12 h-12" />
-              </motion.div>
-              <motion.h2
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.3 }}
-                className="text-display text-4xl mb-4"
-              >
-                Assessment Complete
-              </motion.h2>
-              <motion.p
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="text-jung-subtle text-xl font-serif italic"
-              >
-                Synthesizing your cognitive architecture...
-              </motion.p>
-              <div className="mt-12 flex justify-center gap-3">
-                {[0, 1, 2].map(i => (
-                  <motion.div
-                    key={i}
-                    animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }}
-                    transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
-                    className="w-3 h-3 bg-jung-accent rounded-full"
-                  />
-                ))}
+            <div className="max-w-sm rounded-lg border border-jung-border bg-jung-surface p-8 text-center shadow-xl">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
+                <Loader2 className="h-6 w-6 animate-spin" />
               </div>
+              <h2 className="mt-6 text-heading text-3xl text-jung-dark">Mapping your energy</h2>
+              <p className="mt-3 text-sm leading-6 text-jung-secondary">
+                Behavioral, inferior, somatic, and attitude signals are being combined now.
+              </p>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Sticky Progress Header */}
-      <header className="sticky top-0 z-50 glass-morphism border-b border-jung-border/30 dark:border-dark-border py-4">
-        <div className="max-w-3xl mx-auto px-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-jung-accent/10 dark:bg-jung-accent/20 flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-jung-accent" />
-              </div>
-              <div>
-                <h1 className="text-display text-xl text-jung-dark dark:text-white leading-tight">Depth Diagnostic</h1>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-jung-muted">Section {currentIdx + 1} of {totalPages}</p>
-              </div>
+      <header className="sticky top-[73px] z-40 border-b border-jung-border bg-jung-base/92 py-4 backdrop-blur lg:top-[81px]">
+        <div className="mx-auto w-full max-w-5xl px-4 sm:px-6">
+          <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
+            <div>
+              <p className="text-sm font-semibold text-jung-accent">Questions {pageRange} of {depthQuestions.length}</p>
+              <h1 className="mt-1 text-heading text-2xl text-jung-dark sm:text-3xl">{currentLayerMeta.label}</h1>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-jung-secondary">{currentLayerMeta.description}</p>
             </div>
-            <div className="text-right">
-              <div className="text-xl font-display font-bold text-jung-accent">{Math.round(overallProgress)}%</div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-jung-muted">{totalAnswered} / {totalQuestions} answered</p>
+            <div className="min-w-[10rem] text-left lg:text-right">
+              <p className="text-3xl font-semibold text-jung-dark">{overallProgress}%</p>
+              <p className="text-sm text-jung-muted">{totalAnswered} of {depthQuestions.length} answered</p>
             </div>
           </div>
-          <div className="h-1.5 bg-jung-border/30 dark:bg-white/5 rounded-full overflow-hidden">
+
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-jung-border-light">
             <motion.div
-              className="h-full bg-jung-accent"
+              className="h-full rounded-full bg-jung-accent"
               initial={{ width: 0 }}
               animate={{ width: `${overallProgress}%` }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             />
+          </div>
+
+          <div className="mt-4 grid gap-2 sm:grid-cols-4">
+            {currentLayerProgress.map((item) => {
+              const meta = depthLayerMeta[item.layer];
+              const active = item.layer === currentLayer;
+
+              return (
+                <div
+                  key={item.layer}
+                  className={`rounded-lg border px-3 py-2 text-xs ${
+                    active
+                      ? 'border-jung-accent-muted bg-jung-accent-light text-jung-accent'
+                      : item.complete
+                        ? 'border-jung-border bg-jung-surface text-jung-dark'
+                        : 'border-jung-border bg-jung-surface/60 text-jung-muted'
+                  }`}
+                >
+                  <span className="font-semibold">{meta.shortLabel}</span>
+                  <span className="ml-2">{item.answered}/{item.total}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </header>
 
-      <main className="py-12 lg:py-20">
-        <div className="max-w-3xl mx-auto px-6">
-          {/* Section Indicator */}
-          <div className="flex justify-center gap-2 mb-16">
-            {Array.from({ length: totalPages }).map((_, idx) => (
-              <div
-                key={idx}
-                className={`h-1.5 rounded-full transition-all duration-500 ${idx === currentIdx
-                    ? 'w-12 bg-jung-accent'
-                    : idx < currentIdx
-                      ? 'w-4 bg-jung-accent/40'
-                      : 'w-4 bg-jung-border dark:bg-white/10'
-                  }`}
-              />
-            ))}
+      <main className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 lg:py-14">
+        <div className="mb-8 rounded-lg border border-jung-border bg-jung-surface p-4">
+          <div className="flex items-start gap-3 text-sm text-jung-secondary">
+            <Info className="mt-0.5 h-4 w-4 flex-none text-jung-accent" />
+            <p>
+              Answer from the first pattern that actually happens, not the version you think you should have. The "none" option is valid when the question misses you.
+            </p>
           </div>
+        </div>
 
-          {/* Questions Grid */}
-          <div className="space-y-10">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentIdx}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="space-y-8"
-              >
-                {currentQuestions.map((q, qIndex) => {
-                  const isAnswered = answers[q.id] !== undefined;
-                  const qNum = currentIdx * QUESTIONS_PER_PAGE + qIndex + 1;
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentPage}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.22 }}
+            className="grid gap-5"
+          >
+            {currentQuestions.map((question, qIndex) => {
+              const questionNumber = currentPage * QUESTIONS_PER_PAGE + qIndex + 1;
+              const selectedAnswer = answers[question.id];
 
-                  return (
-                    <div
-                      key={q.id}
-                      className={`card-premium p-8 lg:p-10 bg-white dark:bg-dark-surface border-2 transition-all duration-300 ${isAnswered
-                          ? 'border-jung-accent/20 dark:border-jung-accent/10 shadow-lg'
-                          : 'border-transparent shadow-sm'
-                        }`}
+              return (
+                <section key={question.id} className="card-premium p-5 sm:p-6">
+                  <div className="grid gap-5 lg:grid-cols-[3.25rem_1fr]">
+                    <span
+                      className={`flex h-11 w-11 items-center justify-center rounded-lg text-sm font-semibold ${
+                        selectedAnswer
+                          ? 'bg-jung-accent text-white'
+                          : 'bg-jung-accent-light text-jung-accent'
+                      }`}
                     >
-                      <div className="flex gap-6 items-start mb-8">
-                        <span className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center font-display text-lg font-bold transition-colors ${isAnswered ? 'bg-jung-accent text-white' : 'bg-jung-base dark:bg-dark-base text-jung-muted'
-                          }`}>
-                          {isAnswered ? <CheckCircle2 className="w-6 h-6" /> : qNum}
+                      {selectedAnswer ? <CheckCircle2 className="h-5 w-5" /> : questionNumber}
+                    </span>
+
+                    <div className="min-w-0">
+                      <div className="mb-4 flex flex-wrap items-center gap-2">
+                        <span className="rounded-lg border border-jung-border bg-jung-surface-alt px-2.5 py-1 text-xs font-semibold text-jung-secondary">
+                          {depthLayerMeta[question.layer].shortLabel}
                         </span>
-                        <h3 className="text-xl lg:text-2xl text-jung-dark dark:text-white leading-relaxed font-serif">
-                          {q.text}
-                        </h3>
+                        <span className="text-xs font-medium text-jung-muted">{question.domain}</span>
                       </div>
 
-                      <div className="grid grid-cols-5 gap-3 lg:gap-6">
-                        {[1, 2, 3, 4, 5].map((val) => {
-                          const isActive = answers[q.id] === val;
-                          const labels = ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'];
+                      <h2 className="text-xl font-semibold leading-7 text-jung-dark sm:text-2xl">
+                        {question.prompt}
+                      </h2>
+                      {question.context && (
+                        <p className="mt-2 text-sm leading-6 text-jung-secondary">{question.context}</p>
+                      )}
+
+                      <div className="mt-6 grid gap-2">
+                        {question.options.map((option) => {
+                          const isActive = selectedAnswer === option.id;
 
                           return (
                             <button
-                              key={val}
-                              onClick={() => handleAnswer(q.id, val)}
-                              className={`group relative flex flex-col items-center gap-3 py-4 rounded-2xl transition-all duration-300 ${isActive
-                                  ? 'bg-jung-accent text-white shadow-xl shadow-jung-accent/20 scale-105'
-                                  : 'bg-jung-base dark:bg-dark-base text-jung-muted hover:bg-jung-accent/5'
-                                }`}
+                              key={option.id}
+                              type="button"
+                              onClick={() => handleAnswer(question.id, option.id, questionNumber)}
+                              className={`group flex min-h-14 w-full items-start gap-3 rounded-lg border px-4 py-3 text-left transition-all ${
+                                isActive
+                                  ? 'border-jung-accent bg-jung-accent text-white shadow-md'
+                                  : 'border-jung-border bg-jung-surface hover:border-jung-accent-muted hover:bg-jung-accent-light'
+                              }`}
                             >
-                              <span className="text-xl font-display font-bold">{val}</span>
-                              <span className={`text-[8px] uppercase tracking-tighter font-bold text-center px-1 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block ${isActive ? 'opacity-100 text-white' : 'text-jung-muted'
-                                }`}>
-                                {labels[val - 1]}
+                              <span className={`mt-0.5 flex h-5 w-5 flex-none items-center justify-center rounded-full ${
+                                isActive ? 'text-white' : 'text-jung-muted group-hover:text-jung-accent'
+                              }`}>
+                                {isActive ? <CheckCircle2 className="h-5 w-5" /> : <Circle className="h-4 w-4" />}
                               </span>
-                              {isActive && (
-                                <motion.div
-                                  layoutId={`active-${q.id}`}
-                                  className="absolute -inset-1 rounded-2xl border-2 border-jung-accent -z-10"
-                                />
-                              )}
+                              <span className={`text-sm leading-6 sm:text-base ${isActive ? 'text-white' : 'text-jung-dark'}`}>
+                                {option.label}
+                              </span>
                             </button>
                           );
                         })}
                       </div>
                     </div>
-                  );
-                })}
-              </motion.div>
-            </AnimatePresence>
+                  </div>
+                </section>
+              );
+            })}
+          </motion.div>
+        </AnimatePresence>
+
+        <div className="mt-10 grid gap-4 border-t border-jung-border pt-6 sm:grid-cols-[auto_1fr_auto] sm:items-center">
+          <Button
+            variant="outline"
+            size="lg"
+            onClick={handleBack}
+            disabled={currentPage === 0}
+            leftIcon={<ArrowLeft className="h-5 w-5" />}
+            className="w-full sm:w-auto"
+          >
+            Back
+          </Button>
+
+          <div className="text-center text-sm text-jung-muted">
+            {!isPageComplete ? 'Answer these three questions to continue.' : `Section ${currentPage + 1} of ${totalPages} complete.`}
           </div>
 
-          {/* Navigation Controls */}
-          <div className="mt-20 flex flex-col sm:flex-row items-center justify-between gap-6">
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={handleBack}
-              disabled={currentIdx === 0}
-              className="w-full sm:w-auto px-8 gap-3"
-            >
-              <ArrowLeft className="w-5 h-5" /> Previous Section
-            </Button>
-
-            <div className="flex-1 flex justify-center">
-              {!isPageComplete && (
-                <div className="flex items-center gap-2 text-jung-accent font-bold text-sm uppercase tracking-widest animate-pulse">
-                  <Info className="w-4 h-4" />
-                  Answer all to continue
-                </div>
-              )}
-            </div>
-
-            <Button
-              variant={isPageComplete ? 'accent' : 'primary'}
-              size="lg"
-              onClick={handleNext}
-              disabled={!isPageComplete}
-              className="w-full sm:w-auto px-10 gap-3 shadow-xl shadow-jung-accent/20"
-            >
-              {currentIdx === totalPages - 1 ? 'Complete Assessment' : 'Next Section'}
-              <ArrowRight className="w-5 h-5" />
-            </Button>
-          </div>
+          <Button
+            variant={isPageComplete ? 'accent' : 'secondary'}
+            size="lg"
+            onClick={handleNext}
+            disabled={!isPageComplete}
+            rightIcon={<ArrowRight className="h-5 w-5" />}
+            className="w-full sm:w-auto"
+          >
+            {currentPage === totalPages - 1 ? 'See energy map' : 'Continue'}
+          </Button>
         </div>
       </main>
-
-      {/* Instructional Footer */}
-      <footer className="py-12 border-t border-jung-border/30 dark:border-dark-border bg-jung-surface-alt dark:bg-dark-surface-elevated/50 transition-colors">
-        <div className="max-w-3xl mx-auto px-6">
-          <div className="grid sm:grid-cols-2 gap-10">
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-widest text-jung-dark dark:text-white">Pro Tip</h4>
-              <p className="text-sm text-jung-secondary dark:text-jung-muted leading-relaxed italic font-serif">
-                "Don't over-analyze the questions. Your first instinctive reaction usually reflects your primary cognitive mode more accurately than a reasoned response."
-              </p>
-            </div>
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-widest text-jung-dark dark:text-white">Keyboard Navigation</h4>
-              <div className="flex flex-wrap gap-3">
-                <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-black/20 border border-jung-border/30 dark:border-dark-border rounded text-[10px] font-bold">
-                  <kbd className="opacity-60">1-5</kbd> RATE
-                </span>
-                <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-black/20 border border-jung-border/30 dark:border-dark-border rounded text-[10px] font-bold">
-                  <kbd className="opacity-60">ESC</kbd> BACK
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };

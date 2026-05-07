@@ -19,7 +19,7 @@ const TIER_INFO = {
     gradient: 'from-jung-accent to-jung-accent/80',
     bgLight: 'bg-jung-accent/10',
     textColor: 'text-jung-accent',
-    features: ['PDF report', 'Full 8-function analysis', 'Archetypal stack', 'Grip/stress analysis', 'Relationships', 'Career', 'Shadow analysis']
+    features: ['Depth report', 'Energy hierarchy', 'Developmental edge', 'Stress patterns', 'Relationships', 'Career', 'Somatic practices']
   },
   mastery: {
     name: 'Mastery',
@@ -29,7 +29,7 @@ const TIER_INFO = {
     gradient: 'from-jung-dark to-jung-secondary',
     bgLight: 'bg-jung-dark/10',
     textColor: 'text-jung-dark',
-    features: ['AI Type Coach chatbot', 'Individuation roadmap', 'Active imagination prompts', 'Dream journaling guide', 'Shadow work exercises']
+    features: ['AI Type Coach', 'Individuation roadmap', 'Reassessment tracking', 'Practice library', 'Shadow work exercises']
   }
 };
 

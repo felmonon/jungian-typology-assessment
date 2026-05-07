@@ -62,9 +62,13 @@ export const schemas = {
         rawInferior: z.number(),
         normalized: z.number(),
       }),
+      resultVersion: z.string().optional(),
+      depthResult: z.unknown().optional(),
     }),
     attitudeScore: z.number(),
     isUndifferentiated: z.boolean(),
+    resultVersion: z.string().optional(),
+    depthResult: z.unknown().optional(),
   }),
 
   // AI Analysis request
@@ -84,6 +88,8 @@ export const schemas = {
     }),
     attitudeScore: z.number().optional(),
     isUndifferentiated: z.boolean().optional(),
+    resultVersion: z.string().optional(),
+    depthResult: z.unknown().optional(),
   }),
 
   // Chat message

@@ -31,22 +31,37 @@ const analysisInputSchema = z.object({
     auxiliary: z.object({ function: z.string(), score: z.number(), rawPreference: z.number(), rawInferior: z.number(), normalized: z.number() }),
     tertiary: z.object({ function: z.string(), score: z.number(), rawPreference: z.number(), rawInferior: z.number(), normalized: z.number() }),
     inferior: z.object({ function: z.string(), score: z.number(), rawPreference: z.number(), rawInferior: z.number(), normalized: z.number() }),
+    resultVersion: z.string().optional(),
+    depthResult: z.unknown().optional(),
   }),
   attitudeScore: z.number().optional(),
   isUndifferentiated: z.boolean().optional(),
+  resultVersion: z.string().optional(),
+  depthResult: z.unknown().optional(),
 });
 
 const app = express();
+const isProduction = process.env.NODE_ENV === 'production';
 
 // Security headers
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://www.googletagmanager.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "data:", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", "https://api.stripe.com", "https://*.googleapis.com"],
+      connectSrc: [
+        "'self'",
+        "https://api.stripe.com",
+        "https://*.googleapis.com",
+        "https://www.google-analytics.com",
+        "https://*.google-analytics.com",
+        "https://analytics.google.com",
+        "https://www.google.com",
+        ...(isProduction ? [] : ["ws://localhost:*", "ws://127.0.0.1:*"]),
+      ],
     },
   },
   crossOriginEmbedderPolicy: false, // Allow embedding
@@ -372,13 +387,15 @@ async function startServer() {
         return res.status(400).json({ error: 'Invalid assessment data format' });
       }
 
-      const { scores, stack, attitudeScore, isUndifferentiated } = parseResult.data;
+      const { scores, stack, attitudeScore, isUndifferentiated, resultVersion, depthResult } = parseResult.data;
 
       const analysis = await generateFreeAnalysis({
         scores,
         stack,
         attitudeScore: attitudeScore || 0,
         isUndifferentiated: isUndifferentiated || false,
+        resultVersion,
+        depthResult,
       });
 
       return res.status(200).json({ analysis });
@@ -440,13 +457,15 @@ async function startServer() {
         return res.status(400).json({ error: 'Invalid assessment data format' });
       }
 
-      const { scores, stack, attitudeScore, isUndifferentiated } = parseResult.data;
+      const { scores, stack, attitudeScore, isUndifferentiated, resultVersion, depthResult } = parseResult.data;
 
       const analysis = await generatePremiumAnalysis({
         scores,
         stack,
         attitudeScore: attitudeScore || 0,
         isUndifferentiated: isUndifferentiated || false,
+        resultVersion,
+        depthResult,
       });
 
       return res.status(200).json({ analysis });

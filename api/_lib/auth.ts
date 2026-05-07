@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { getSessionUserFromCookie } from '../auth/utils.js';
+import { getSessionUserFromCookie } from './auth-utils.js';
 
 export async function getSessionUser(cookieHeader: string | undefined): Promise<any | null> {
   const supabase = createClient(

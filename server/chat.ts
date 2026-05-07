@@ -5,19 +5,27 @@ let aiClient: GoogleGenAI | null = null;
 
 function getAiClient(): GoogleGenAI {
   if (!aiClient) {
-    const apiKey = process.env.AI_INTEGRATIONS_GEMINI_API_KEY;
+    const integrationApiKey = process.env.AI_INTEGRATIONS_GEMINI_API_KEY;
     const baseUrl = process.env.AI_INTEGRATIONS_GEMINI_BASE_URL;
+    const apiKey = integrationApiKey || process.env.GEMINI_API_KEY;
     
-    if (!apiKey || !baseUrl) {
-      throw new Error("AI Integrations not configured");
+    if (!apiKey) {
+      throw new Error("AI service not configured");
+    }
+
+    if (integrationApiKey && baseUrl) {
+      aiClient = new GoogleGenAI({
+        apiKey: integrationApiKey,
+        httpOptions: {
+          apiVersion: "",
+          baseUrl,
+        },
+      });
+      return aiClient;
     }
     
     aiClient = new GoogleGenAI({
       apiKey,
-      httpOptions: {
-        apiVersion: "",
-        baseUrl,
-      },
     });
   }
   return aiClient;

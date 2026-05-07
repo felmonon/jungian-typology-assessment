@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 import { FUNCTION_DESCRIPTIONS } from '../data/questions';
+import { ATTITUDE_LABELS, FUNCTION_LABELS } from '../data/depthAssessment';
 import { Button } from '../components/ui/Button';
 import { ArrowRight, Loader2 } from 'lucide-react';
+import { extractDepthResult } from '../utils/depthCompatibility';
 
 interface SharedResult {
   id: string;
@@ -13,6 +15,7 @@ interface SharedResult {
     auxiliary: { function: string; score: number };
     tertiary: { function: string; score: number };
     inferior: { function: string; score: number };
+    depthResult?: unknown;
   };
   attitudeScore: string;
   isUndifferentiated: string;
@@ -73,6 +76,79 @@ export const SharePage: React.FC = () => {
           <p className="text-jung-secondary mb-6 text-sm md:text-base">{error || 'This shared result could not be found.'}</p>
           <Link to="/">
             <Button className="w-full sm:w-auto min-h-[48px]">Take Your Own Assessment</Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const depthResult = extractDepthResult(result);
+  if (depthResult) {
+    return (
+      <div className="editorial-container py-8 md:py-12">
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <img src="/logo.svg" alt="TypeJung" className="w-10 h-10" />
+            <span className="text-xs md:text-sm font-data font-bold tracking-widest uppercase text-jung-secondary">
+              TypeJung Energy Map
+            </span>
+          </div>
+          <p className="text-jung-muted text-sm md:text-base">Someone shared their Jungian energy map with you</p>
+        </div>
+
+        <div className="rounded-lg border border-jung-border bg-jung-dark p-7 text-white shadow-xl sm:p-10">
+          <p className="text-sm font-semibold text-white/60">Dominant energy channel</p>
+          <h1 className="mt-4 text-display text-5xl text-white sm:text-6xl">
+            {ATTITUDE_LABELS[depthResult.attitude.dominant]} {FUNCTION_LABELS[depthResult.dominant]}
+          </h1>
+          <p className="mt-5 max-w-3xl text-lg leading-8 text-white/75">
+            {depthResult.narrative.energyMap}
+          </p>
+        </div>
+
+        <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_0.75fr]">
+          <div className="card-elevated rounded-lg p-6">
+            <p className="text-label">Energy distribution</p>
+            <div className="mt-6 space-y-5">
+              {depthResult.energy.map((item) => (
+                <div key={item.channel}>
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="font-semibold text-jung-dark">{item.label}</span>
+                    <span className="font-mono text-sm text-jung-muted">{item.score}%</span>
+                  </div>
+                  <div className="h-3 overflow-hidden rounded-full bg-jung-border-light">
+                    <div className="h-full rounded-full bg-jung-accent" style={{ width: `${item.score}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="card-elevated rounded-lg p-6">
+            <p className="text-label">Developmental edge</p>
+            <h2 className="mt-3 text-2xl font-semibold text-jung-dark">
+              {FUNCTION_LABELS[depthResult.inferior]} asks for development
+            </h2>
+            <p className="mt-4 text-sm leading-7 text-jung-secondary">
+              {depthResult.narrative.developmentalEdge}
+            </p>
+            <div className="mt-6 rounded-lg bg-jung-accent-light px-4 py-3 text-sm font-semibold text-jung-accent">
+              {depthResult.reliability.score}% reliability
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 rounded-lg border border-jung-border bg-jung-surface p-6 md:p-10 text-center">
+          <h2 className="text-xl md:text-2xl font-serif font-bold text-jung-dark mb-3">
+            Build your own energy map
+          </h2>
+          <p className="text-jung-secondary mb-6 max-w-xl mx-auto text-sm md:text-base">
+            Take the 42-question depth assessment to map where your energy flows and where it gets stuck.
+          </p>
+          <Link to="/assessment">
+            <Button variant="accent" size="lg" className="w-full sm:w-auto min-h-[48px]">
+              Take your own assessment <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
           </Link>
         </div>
       </div>

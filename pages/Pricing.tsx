@@ -11,10 +11,10 @@ const TIERS = [
     price: '$0',
     tagline: 'Initial Diagnostic',
     features: [
-      'Full 132-question assessment',
-      'Functional Radar Mapping',
-      'Basic Archetypal Insight',
-      'Shareable Private Link',
+      'Full 42-question depth assessment',
+      'Energy distribution map',
+      'Dominant-inferior axis',
+      'Reliability score',
     ],
     buttonText: 'Begin Assessment',
     buttonLink: '/assessment',
@@ -27,12 +27,12 @@ const TIERS = [
     badge: 'Standard Protocol',
     includesPrefix: 'Everything in Free, plus:',
     features: [
-      '25-Page Analytical Dossier (PDF)',
-      'Complete 8-Function Synthesis',
-      'Archetypal Stack Dynamics',
-      'Stress & Shadow Profiles',
-      'Interpersonal Vocation Map',
-      'Lifetime Diagnostic Archive',
+      'Developmental edge analysis',
+      'Complex vulnerability map',
+      'Somatic signal interpretation',
+      'Stress and relationship triggers',
+      'Personalized practice guidance',
+      'Lifetime result archive',
     ],
     buttonText: 'Unlock Insight — $19',
     note: 'One-time payment. Eternal access.',
@@ -46,11 +46,11 @@ const TIERS = [
     badge: 'Peak Individualisation',
     includesPrefix: 'Everything in Insight, plus:',
     features: [
-      { text: 'AI Type Coach (Unlimited)', subtext: 'Direct dialectic with your results' },
-      'Personalized Individuation Path',
-      'Active Imagination Protocols',
-      'Dream Journaling Framework',
-      'Shadow Work Repository',
+      { text: 'AI Type Coach', subtext: 'Ask questions against your saved result' },
+      'Individuation roadmap',
+      'Development tracking over time',
+      'Practice library',
+      'Priority feature access',
       'Priority Priority Support',
     ],
     buttonText: 'Unlock Mastery — $39',
@@ -61,21 +61,21 @@ const TIERS = [
 ];
 
 const COMPARISON_FEATURES = [
-  { name: '132-Question Diagnostic', free: true, insight: true, mastery: true },
-  { name: 'Radar Spectrum Mapping', free: true, insight: true, mastery: true },
-  { name: 'Shareable Profile', free: true, insight: true, mastery: true },
-  { name: '25-Page Analytical Dossier', free: false, insight: true, mastery: true },
-  { name: 'Full 8-Function Dynamics', free: false, insight: true, mastery: true },
-  { name: 'Career Vocation Engine', free: false, insight: true, mastery: true },
-  { name: 'AI Type Coach Dialectic', free: false, insight: false, mastery: true },
-  { name: 'Individuation Roadmap', free: false, insight: false, mastery: true },
-  { name: 'Shadow Work Repository', free: false, insight: false, mastery: true },
+  { name: '42-question depth assessment', free: true, insight: true, mastery: true },
+  { name: 'Energy map and hierarchy', free: true, insight: true, mastery: true },
+  { name: 'Shareable profile', free: true, insight: true, mastery: true },
+  { name: 'Developmental edge report', free: false, insight: true, mastery: true },
+  { name: 'Complex vulnerability map', free: false, insight: true, mastery: true },
+  { name: 'Somatic practice guidance', free: false, insight: true, mastery: true },
+  { name: 'AI Type Coach', free: false, insight: false, mastery: true },
+  { name: 'Individuation roadmap', free: false, insight: false, mastery: true },
+  { name: 'Reassessment tracking', free: false, insight: false, mastery: true },
 ];
 
 const FAQ_ITEMS = [
   {
     question: "How is this different from standard typology?",
-    answer: "We employ the Singer-Loomis methodology, which avoids the forced-choice dichotomy of standard MBTI. This allows for a more accurate measurable profile of all 8 functions independently.",
+    answer: "TypeJung does not ask you to choose a personality label. It maps how energy moves across thinking, feeling, sensation, and intuition using behavior, stress triggers, body signals, and attitude direction.",
   },
   {
     question: "Is this a recurring subscription?",
@@ -83,7 +83,7 @@ const FAQ_ITEMS = [
   },
   {
     question: "Can I upgrade my tier later?",
-    answer: "Absolutely. You can migrate from Insight to Mastery at any time for the remaining differential.",
+    answer: "Yes. You can start with the free map, unlock the deeper report when it is useful, and use Mastery when you want the coach and ongoing tracking.",
   },
 ];
 
@@ -311,9 +311,9 @@ export const Pricing: React.FC = () => {
         <div className="editorial-container relative z-10 text-center">
           <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
             <Sparkles className="w-12 h-12 text-jung-accent mx-auto mb-10" />
-            <h2 className="text-display text-5xl text-white mb-8">Ready for the Deep Scan?</h2>
+            <h2 className="text-display text-5xl text-white mb-8">Ready for the energy map?</h2>
             <p className="max-w-xl mx-auto text-jung-subtle font-serif italic mb-12">
-              The journey of a thousand miles begins with a single diagnostic. Choose your depth and begin.
+              Start with the free depth assessment, then unlock more only when the result is worth keeping.
             </p>
             <Button
               onClick={() => navigate('/assessment')}

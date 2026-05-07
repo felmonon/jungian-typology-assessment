@@ -1,23 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { NavLink, useNavigate, Link, useLocation } from 'react-router-dom';
-import { LogIn, LogOut, User, Menu, X, Trophy, BookOpen, Clock, Activity, Sun, Moon, Sparkles, Hexagon } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { BookOpen, Clock, LogIn, LogOut, Menu, Sparkles, Trophy, User, X } from 'lucide-react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/use-auth';
 import { usePageTracking } from '../../hooks/useAnalytics';
-import { useDarkMode } from '../../hooks/useDarkMode';
+
+const navigation = [
+  { to: '/', label: 'Home' },
+  { to: '/learn', label: 'Learn' },
+  { to: '/leaderboard', label: 'Data' },
+  { to: '/pricing', label: 'Pricing' },
+];
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const navigate = useNavigate();
   const location = useLocation();
   const { user, isLoading, isAuthenticated, logout, isLoggingOut } = useAuth();
-  const { isDark, toggle: toggleDarkMode } = useDarkMode();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   usePageTracking();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => setScrolled(window.scrollY > 8);
+    handleScroll();
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -27,163 +32,156 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   }, [location.pathname]);
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `relative text-xs uppercase tracking-[0.1em] font-mono transition-all duration-300 py-2 px-1 ${isActive ? 'text-jung-accent' : 'text-jung-secondary hover:text-jung-dark'
+    `rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+      isActive
+        ? 'bg-jung-accent-light text-jung-accent'
+        : 'text-jung-secondary hover:bg-jung-surface-alt hover:text-jung-dark'
     }`;
 
-  return (
-    <div className="min-h-screen flex flex-col font-sans text-jung-dark bg-jung-base relative overflow-x-hidden selection:bg-jung-accent selection:text-black">
-      {/* Global Effects */}
-      <div className="animate-scanline" />
-      <div className="fixed inset-0 pointer-events-none bg-jung-dark opacity-[0.015] z-[9998]" />
-
-      {/* Header - Control Deck */}
-      <header
-        className={`sticky top-0 z-[100] transition-all duration-500 border-b ${scrolled
-            ? 'glass border-jung-border/50 py-3'
-            : 'bg-transparent border-transparent py-6'
-          }`}
+  const accountAction = isAuthenticated ? (
+    <div className="hidden lg:flex items-center gap-2">
+      <Link
+        to="/profile"
+        className="inline-flex h-10 items-center gap-2 rounded-lg border border-jung-border bg-jung-surface px-3 text-sm font-medium text-jung-dark transition-colors hover:border-jung-accent-muted hover:bg-jung-accent-light"
       >
-        <div className="lab-container">
-          <div className="flex justify-between items-center">
-            {/* Logo Section */}
-            <Link to="/" className="flex items-center gap-4 group">
-              <div className="relative w-10 h-10 flex items-center justify-center">
-                <div className="absolute inset-0 bg-jung-accent opacity-10 blur-md rounded-full group-hover:opacity-30 transition-opacity" />
-                <Hexagon className="w-10 h-10 text-jung-accent stroke-1" />
-                <span className="absolute text-jung-accent font-display text-lg italic">&psi;</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-display text-xl leading-none text-jung-dark tracking-wide">
-                  Type<span className="text-jung-accent">Jung</span>
-                </span>
-                <span className="text-[8px] font-mono uppercase tracking-[0.3em] text-jung-muted group-hover:text-jung-accent transition-colors">
-                  Psyche /// Protocol
-                </span>
-              </div>
+        {user?.profileImageUrl ? (
+          <img src={user.profileImageUrl} alt="" className="h-6 w-6 rounded-full object-cover" />
+        ) : (
+          <User className="h-4 w-4" />
+        )}
+        <span className="max-w-24 truncate">{user?.firstName || 'Profile'}</span>
+      </Link>
+      <button
+        type="button"
+        onClick={() => logout()}
+        disabled={isLoggingOut}
+        className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-jung-muted transition-colors hover:bg-jung-surface-alt hover:text-jung-dark disabled:opacity-50"
+        aria-label="Sign out"
+      >
+        <LogOut className="h-4 w-4" />
+      </button>
+    </div>
+  ) : (
+    <Link
+      to="/auth"
+      className="hidden h-10 items-center gap-2 rounded-lg border border-jung-border bg-jung-surface px-4 text-sm font-semibold text-jung-dark transition-colors hover:border-jung-accent-muted hover:bg-jung-accent-light lg:inline-flex"
+    >
+      <LogIn className="h-4 w-4" />
+      Sign in
+    </Link>
+  );
+
+  return (
+    <div className="min-h-screen bg-jung-base text-jung-dark">
+      <header
+        className={`sticky top-0 z-50 border-b transition-all duration-300 ${
+          scrolled
+            ? 'glass border-jung-border py-3 shadow-sm'
+            : 'border-transparent bg-jung-base/90 py-5'
+        }`}
+      >
+        <div className="lab-container flex items-center justify-between gap-4">
+          <Link to="/" className="flex items-center gap-3" aria-label="TypeJung home">
+            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-jung-accent text-white shadow-sm">
+              <Sparkles className="h-5 w-5" />
+            </span>
+            <span className="flex flex-col">
+              <span className="font-display text-2xl leading-none text-jung-dark">TypeJung</span>
+              <span className="text-xs font-medium text-jung-muted">Energy map assessment</span>
+            </span>
+          </Link>
+
+          <nav className="hidden items-center gap-1 rounded-lg border border-jung-border bg-jung-surface/80 p-1 lg:flex">
+            {navigation.map((item) => (
+              <NavLink key={item.to} to={item.to} end={item.to === '/'} className={navLinkClass}>
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2">
+            {isLoading ? (
+              <div className="hidden h-10 w-24 animate-pulse rounded-lg bg-jung-surface-alt lg:block" />
+            ) : (
+              accountAction
+            )}
+            <Link
+              to="/assessment"
+              className="hidden h-10 items-center justify-center rounded-lg bg-jung-accent px-4 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-px hover:bg-jung-accent-hover hover:shadow-md sm:inline-flex"
+            >
+              Start free
             </Link>
-
-            {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-12 bg-jung-surface-elevated/50 px-8 py-2 rounded-full border border-jung-border/50 backdrop-blur-md">
-              <NavLink to="/" className={navLinkClass}>
-                {({ isActive }) => (
-                  <span className="flex items-center gap-2">
-                    <Activity className={`w-3 h-3 ${isActive ? 'animate-pulse' : ''}`} />
-                    Diagnostic
-                  </span>
-                )}
-              </NavLink>
-              <div className="w-px h-3 bg-jung-border/50" />
-              <NavLink to="/learn" className={navLinkClass}>
-                <span className="flex items-center gap-2">
-                  <BookOpen className="w-3 h-3" /> Theory
-                </span>
-              </NavLink>
-              <div className="w-px h-3 bg-jung-border/50" />
-              <NavLink to="/leaderboard" className={navLinkClass}>
-                <span className="flex items-center gap-2">
-                  <Trophy className="w-3 h-3" /> Data
-                </span>
-              </NavLink>
-            </nav>
-
-            {/* Right Deck */}
-            <div className="flex items-center gap-6">
-              <button
-                onClick={toggleDarkMode}
-                className="hidden lg:flex items-center justify-center w-8 h-8 rounded-full border border-jung-border/50 text-jung-muted hover:text-jung-accent hover:border-jung-accent transition-all"
-              >
-                {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-              </button>
-
-              {isLoading ? (
-                <div className="w-24 h-8 bg-jung-surface-elevated animate-pulse rounded" />
-              ) : isAuthenticated ? (
-                <div className="flex items-center gap-4 pl-6 border-l border-jung-border/50">
-                  <Link
-                    to="/profile"
-                    className="flex items-center gap-3 p-1 pr-3 rounded-full hover:bg-jung-surface-elevated border border-transparent hover:border-jung-border transition-all group"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-jung-accent-light flex items-center justify-center border border-jung-accent/30 group-hover:border-jung-accent transition-colors">
-                      {user?.profileImageUrl ? (
-                        <img src={user.profileImageUrl} alt="" className="w-full h-full rounded-full object-cover" />
-                      ) : (
-                        <User className="w-4 h-4 text-jung-accent" />
-                      )}
-                    </div>
-                    <span className="text-xs font-mono text-jung-secondary group-hover:text-jung-dark">
-                      {user?.firstName || 'Dossier'}
-                    </span>
-                  </Link>
-                </div>
-              ) : (
-                <Link
-                  to="/auth"
-                  className="hidden lg:flex btn-premium py-2.5 px-6 text-xs"
-                >
-                  <LogIn className="w-3 h-3" /> Initiate
-                </Link>
-              )}
-
-              {/* Mobile Menu Button */}
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 text-jung-dark hover:text-jung-accent transition-colors"
-              >
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen((open) => !open)}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-jung-border bg-jung-surface text-jung-dark transition-colors hover:bg-jung-surface-alt lg:hidden"
+              aria-expanded={mobileMenuOpen}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: '100vh' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden fixed inset-0 top-[80px] bg-jung-base/95 backdrop-blur-xl z-50 overflow-y-auto"
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.18 }}
+              className="lg:hidden"
             >
-              <div className="lab-container py-8 space-y-6">
-                {[
-                  { to: '/', label: 'Diagnostic', icon: Activity },
-                  { to: '/learn', label: 'Theory', icon: BookOpen },
-                  { to: '/leaderboard', label: 'Global Data', icon: Trophy },
-                  { to: '/history', label: 'Archive', icon: Clock, auth: true },
-                ].map((item) => (
-                  (!item.auth || isAuthenticated) && (
-                    <NavLink
-                      key={item.to}
-                      to={item.to}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={({ isActive }) => `
-                        flex items-center gap-4 p-4 rounded bg-jung-surface-elevated border border-jung-border/50
-                        ${isActive ? 'border-jung-accent/50 text-jung-accent' : 'text-jung-secondary'}
-                      `}
-                    >
-                      <item.icon className="w-5 h-5" />
-                      <span className="font-mono text-sm uppercase tracking-widest">{item.label}</span>
+              <div className="lab-container pb-4 pt-3">
+                <div className="rounded-lg border border-jung-border bg-jung-surface p-2 shadow-lg">
+                  {navigation.map((item) => (
+                    <NavLink key={item.to} to={item.to} end={item.to === '/'} className={navLinkClass}>
+                      {item.label}
                     </NavLink>
-                  )
-                ))}
-
-                <div className="pt-8 border-t border-jung-border/30">
-                  {isAuthenticated ? (
-                    <button
-                      onClick={() => { logout(); setMobileMenuOpen(false); }}
-                      className="w-full py-4 border border-error/30 text-error font-mono text-xs uppercase tracking-widest hover:bg-error/10 transition-colors"
-                    >
-                      Terminate Session
-                    </button>
-                  ) : (
-                    <Link
-                      to="/auth"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="btn-premium w-full py-4 text-center justify-center"
-                    >
-                      Initiate Protocol
-                    </Link>
+                  ))}
+                  {isAuthenticated && (
+                    <>
+                      <NavLink to="/history" className={navLinkClass}>
+                        <span className="inline-flex items-center gap-2">
+                          <Clock className="h-4 w-4" />
+                          History
+                        </span>
+                      </NavLink>
+                      <NavLink to="/leaderboard" className={navLinkClass}>
+                        <span className="inline-flex items-center gap-2">
+                          <Trophy className="h-4 w-4" />
+                          Results data
+                        </span>
+                      </NavLink>
+                    </>
                   )}
+                  <div className="mt-2 grid gap-2 border-t border-jung-border pt-2">
+                    <Link
+                      to="/assessment"
+                      className="inline-flex min-h-11 items-center justify-center rounded-lg bg-jung-accent px-4 text-sm font-semibold text-white"
+                    >
+                      Start free assessment
+                    </Link>
+                    {isAuthenticated ? (
+                      <button
+                        type="button"
+                        onClick={() => logout()}
+                        disabled={isLoggingOut}
+                        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-jung-border px-4 text-sm font-semibold text-jung-dark disabled:opacity-50"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        Sign out
+                      </button>
+                    ) : (
+                      <Link
+                        to="/auth"
+                        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-jung-border px-4 text-sm font-semibold text-jung-dark"
+                      >
+                        <LogIn className="h-4 w-4" />
+                        Sign in
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -191,65 +189,48 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         </AnimatePresence>
       </header>
 
-      {/* Main Content */}
-      <main className="flex-grow relative z-10">{children}</main>
+      <main>{children}</main>
 
-      {/* Footer - Lab Data */}
-      <footer className="relative bg-jung-base border-t border-jung-border py-20 mt-20">
-        <div className="lab-container">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 lg:gap-20">
-            {/* Column 1: Identity */}
-            <div className="space-y-6 col-span-1 md:col-span-2">
-              <div className="flex items-center gap-3">
-                <Hexagon className="w-8 h-8 text-jung-accent stroke-1" />
-                <span className="text-display text-2xl text-jung-dark">
-                  Type<span className="text-jung-accent">Jung</span>
-                </span>
-              </div>
-              <p className="text-body text-sm text-jung-secondary max-w-sm">
-                A digitally-aided exploration of the Carl Jung's Cognitive Functions.
-                Move beyond the 4-letter dichotomy into a full-spectrum analysis of your psychic architecture.
-              </p>
-              <div className="flex gap-4 pt-4">
-                <div className="h-px flex-grow bg-jung-border/50 self-center" />
-                <span className="text-[10px] font-mono text-jung-accent uppercase tracking-widest">v2.0.4 [Stable]</span>
-              </div>
-            </div>
-
-            {/* Column 2: Protocol */}
-            <div className="space-y-6">
-              <h4 className="text-label">Protocol</h4>
-              <ul className="space-y-4">
-                {['Diagnostic', 'Theory', 'Methodology', 'Pricing'].map((item) => (
-                  <li key={item}>
-                    <Link to="/" className="text-sm font-sans text-jung-secondary hover:text-jung-accent transition-colors flex items-center gap-2 group">
-                      <span className="w-1 h-1 bg-jung-accent opacity-0 group-hover:opacity-100 transition-opacity" />
-                      {item}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Column 3: Legal */}
-            <div className="space-y-6">
-              <h4 className="text-label">Legal parameters</h4>
-              <ul className="space-y-4">
-                <li><Link to="/privacy" className="text-sm font-sans text-jung-secondary hover:text-jung-dark transition-colors">Privacy Policy</Link></li>
-                <li><Link to="/terms" className="text-sm font-sans text-jung-secondary hover:text-jung-dark transition-colors">Terms of Use</Link></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-20 pt-8 border-t border-jung-border/30 flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className="text-[10px] font-mono text-jung-muted uppercase tracking-widest">
-              &copy; {new Date().getFullYear()} TypeJung Analysis. All Rights Reserved.
+      <footer className="border-t border-jung-border bg-jung-surface/70 py-12">
+        <div className="lab-container grid gap-10 md:grid-cols-[1.3fr_1fr_1fr]">
+          <div>
+            <Link to="/" className="mb-4 inline-flex items-center gap-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
+                <Sparkles className="h-4 w-4" />
+              </span>
+              <span className="font-display text-2xl text-jung-dark">TypeJung</span>
+            </Link>
+            <p className="max-w-sm text-sm leading-6 text-jung-secondary">
+              A depth-based Jungian assessment for mapping where psychic energy flows and where it gets stuck.
             </p>
-            <div className="flex gap-2">
-              <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-              <span className="text-[10px] font-mono text-jung-accent uppercase tracking-widest">System Online</span>
+          </div>
+
+          <div>
+            <h4 className="mb-4 text-sm font-semibold text-jung-dark">Explore</h4>
+            <div className="grid gap-3 text-sm text-jung-secondary">
+              <Link to="/assessment" className="hover:text-jung-accent">Assessment</Link>
+              <Link to="/learn" className="hover:text-jung-accent">Learn the theory</Link>
+              <Link to="/pricing" className="hover:text-jung-accent">Pricing</Link>
+              <Link to="/about" className="hover:text-jung-accent">About</Link>
             </div>
           </div>
+
+          <div>
+            <h4 className="mb-4 text-sm font-semibold text-jung-dark">Account</h4>
+            <div className="grid gap-3 text-sm text-jung-secondary">
+              <Link to="/auth" className="hover:text-jung-accent">Sign in</Link>
+              <Link to="/history" className="hover:text-jung-accent">History</Link>
+              <Link to="/privacy" className="hover:text-jung-accent">Privacy</Link>
+              <Link to="/terms" className="hover:text-jung-accent">Terms</Link>
+            </div>
+          </div>
+        </div>
+        <div className="lab-container mt-10 flex flex-col gap-3 border-t border-jung-border pt-6 text-xs text-jung-muted sm:flex-row sm:items-center sm:justify-between">
+          <span>&copy; {new Date().getFullYear()} TypeJung</span>
+          <span className="inline-flex items-center gap-2">
+            <BookOpen className="h-3.5 w-3.5" />
+            Not a four-letter label
+          </span>
         </div>
       </footer>
     </div>

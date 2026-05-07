@@ -8,15 +8,15 @@ interface PaywallGateProps {
 
 const PREMIUM_FEATURES = [
   { icon: MessageCircle, text: 'AI Type Coach: Ask anything about your type and growth', highlight: true },
-  { icon: FileText, text: '25+ page personalized PDF report' },
-  { icon: Layers, text: 'Complete 8-function in-depth analysis' },
-  { icon: Sparkles, text: 'Archetypal stack dynamics (Hero, Parent, Child, Anima/Animus)' },
-  { icon: AlertTriangle, text: 'The Grip: Detailed stress patterns' },
-  { icon: Heart, text: 'Relationships & compatibility insights' },
-  { icon: Briefcase, text: 'Career alignment guidance' },
-  { icon: Compass, text: 'Your Individuation Path with exercises' },
-  { icon: PenTool, text: 'Active imagination prompts' },
-  { icon: BookOpen, text: 'Dream journaling templates' },
+  { icon: FileText, text: 'Detailed TypeJung depth report' },
+  { icon: Layers, text: 'Energy hierarchy and dominant-inferior axis' },
+  { icon: Sparkles, text: 'Developmental edge analysis' },
+  { icon: AlertTriangle, text: 'Stress and complex vulnerability patterns' },
+  { icon: Heart, text: 'Relationship trigger interpretation' },
+  { icon: Briefcase, text: 'Work and decision-making guidance' },
+  { icon: Compass, text: 'Your individuation path with exercises' },
+  { icon: PenTool, text: 'Somatic grounding practices' },
+  { icon: BookOpen, text: 'Reassessment tracking over time' },
   { icon: RefreshCcw, text: 'Lifetime access (retake anytime)' },
 ];
 
@@ -73,8 +73,8 @@ export const PaywallGate: React.FC<PaywallGateProps> = ({ onUnlock }) => {
           </h2>
 
           <p className="text-jung-secondary max-w-xl mx-auto leading-relaxed">
-            You've seen the basics. Dive deeper into your psychological type with a comprehensive
-            analysis that reveals your archetypal patterns, stress responses, and path to individuation.
+            You've seen the map. Go deeper into the developmental edge, stress patterns,
+            somatic signals, and practical work suggested by your result.
           </p>
         </div>
 

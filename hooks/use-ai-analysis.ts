@@ -33,6 +33,8 @@ export interface AnalysisInput {
   stack: Stack;
   attitudeScore: number;
   isUndifferentiated: boolean;
+  resultVersion?: string;
+  depthResult?: unknown;
 }
 
 export function useAiAnalysis() {

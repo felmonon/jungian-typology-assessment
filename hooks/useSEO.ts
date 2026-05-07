@@ -16,16 +16,16 @@ const SITE_NAME = 'Jungian Typology Assessment';
 // SEO configurations for each page
 export const PAGE_SEO: Record<string, SEOConfig> = {
   home: {
-    title: 'Jungian Typology Assessment - Discover Your True Psychological Type',
-    description: 'Take the most accurate cognitive functions assessment based on Carl Jung\'s original theory. Understand your dominant function, inferior function, and path to individuation. Free, in-depth, and backed by depth psychology.',
+    title: 'TypeJung - Jungian Energy Map Assessment',
+    description: 'Take a depth-based Jungian assessment that maps where your energy flows and where it gets stuck through behavioral evidence, inferior-function triggers, somatic indicators, and attitude direction.',
   },
   assessment: {
-    title: 'Take the Assessment | Jungian Typology',
-    description: 'Answer 40 carefully crafted questions to discover your psychological type. Based on Jung\'s theory of cognitive functions, not simplified dichotomies.',
+    title: 'Take the Assessment | TypeJung',
+    description: 'Answer 42 scenario-based questions to build your Jungian energy map. No forced binary labels, no MBTI clone.',
   },
   results: {
-    title: 'Your Results | Jungian Typology Assessment',
-    description: 'View your personalized cognitive function profile, including your dominant, auxiliary, tertiary, and inferior functions.',
+    title: 'Your Energy Map | TypeJung',
+    description: 'View your Jungian energy map, dominant-inferior axis, developmental edge, somatic signal, and reliability score.',
     noIndex: true, // Results are personal
   },
   learn: {

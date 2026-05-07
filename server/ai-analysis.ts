@@ -4,19 +4,27 @@ let aiClient: GoogleGenAI | null = null;
 
 function getAiClient(): GoogleGenAI {
   if (!aiClient) {
-    const apiKey = process.env.AI_INTEGRATIONS_GEMINI_API_KEY;
+    const integrationApiKey = process.env.AI_INTEGRATIONS_GEMINI_API_KEY;
     const baseUrl = process.env.AI_INTEGRATIONS_GEMINI_BASE_URL;
+    const apiKey = integrationApiKey || process.env.GEMINI_API_KEY;
     
-    if (!apiKey || !baseUrl) {
-      throw new Error("AI Integrations not configured. Please ensure AI_INTEGRATIONS_GEMINI_API_KEY and AI_INTEGRATIONS_GEMINI_BASE_URL are set.");
+    if (!apiKey) {
+      throw new Error("AI service not configured. Please ensure GEMINI_API_KEY or AI_INTEGRATIONS_GEMINI_API_KEY is set.");
+    }
+
+    if (integrationApiKey && baseUrl) {
+      aiClient = new GoogleGenAI({
+        apiKey: integrationApiKey,
+        httpOptions: {
+          apiVersion: "",
+          baseUrl,
+        },
+      });
+      return aiClient;
     }
     
     aiClient = new GoogleGenAI({
       apiKey,
-      httpOptions: {
-        apiVersion: "",
-        baseUrl,
-      },
     });
   }
   return aiClient;
@@ -35,6 +43,8 @@ export interface Stack {
   auxiliary: FunctionScore;
   tertiary: FunctionScore;
   inferior: FunctionScore;
+  resultVersion?: string;
+  depthResult?: unknown;
 }
 
 export interface AnalysisInput {
@@ -42,6 +52,8 @@ export interface AnalysisInput {
   stack: Stack;
   attitudeScore: number;
   isUndifferentiated: boolean;
+  resultVersion?: string;
+  depthResult?: any;
 }
 
 const FUNCTION_NAMES: Record<string, string> = {
@@ -54,6 +66,24 @@ const FUNCTION_NAMES: Record<string, string> = {
   Ne: "Extraverted Intuition",
   Ni: "Introverted Intuition",
 };
+
+const CHANNEL_NAMES: Record<string, string> = {
+  thinking: "Thinking",
+  feeling: "Feeling",
+  sensation: "Sensation",
+  intuition: "Intuition",
+};
+
+function fallbackFreeAnalysis(input: AnalysisInput): string {
+  const depth = input.depthResult || (input.stack as any).depthResult;
+  const dominant = depth?.dominant ? CHANNEL_NAMES[depth.dominant] || depth.dominant : FUNCTION_NAMES[input.stack.dominant.function] || input.stack.dominant.function;
+  const auxiliary = depth?.auxiliary ? CHANNEL_NAMES[depth.auxiliary] || depth.auxiliary : FUNCTION_NAMES[input.stack.auxiliary.function] || input.stack.auxiliary.function;
+  const inferior = depth?.inferior ? CHANNEL_NAMES[depth.inferior] || depth.inferior : FUNCTION_NAMES[input.stack.inferior.function] || input.stack.inferior.function;
+  const edge = depth?.narrative?.developmentalEdge || `Your developmental work sits around ${inferior}, the channel with the least conscious energy in this result.`;
+  const vulnerability = depth?.narrative?.complexVulnerability || "Stress is most likely to pull attention into the inferior channel before you can respond from your stronger functions.";
+
+  return `Your energy map is led by ${dominant}, supported by ${auxiliary}. This means your strongest movement is not a fixed personality label but a repeated channel of attention, judgment, and effort. The important tension is the opposite pole: ${inferior}. ${edge} ${vulnerability} Use the result as a practice map. When stress rises, notice whether you are trying to solve the situation only through the dominant channel. The useful move is to give the inferior function a small, concrete role before it takes over in a primitive form.`;
+}
 
 function formatScoresForPrompt(input: AnalysisInput): string {
   const sortedScores = [...input.scores].sort((a, b) => b.score - a.score);
@@ -69,6 +99,16 @@ Cognitive Stack:
 - Inferior: ${FUNCTION_NAMES[input.stack.inferior.function]} (${input.stack.inferior.function}) - ${input.stack.inferior.score.toFixed(1)}%`;
 
   const attitude = input.attitudeScore > 0 ? "Extraverted" : "Introverted";
+  const depth = input.depthResult || (input.stack as any).depthResult;
+  const depthBlock = depth ? `
+Depth Energy Map:
+- Dominant channel: ${depth.dominant}
+- Auxiliary channel: ${depth.auxiliary}
+- Inferior channel: ${depth.inferior}
+- Reliability: ${depth.reliability?.score}% (${depth.reliability?.label})
+- Developmental edge: ${depth.narrative?.developmentalEdge}
+- Complex vulnerability: ${depth.narrative?.complexVulnerability}
+` : "";
 
   return `
 Assessment Results:
@@ -78,20 +118,21 @@ ${stackInfo}
 
 Overall Attitude: ${attitude} (score: ${input.attitudeScore.toFixed(1)})
 Differentiation Status: ${input.isUndifferentiated ? "Undifferentiated (scores are relatively even)" : "Differentiated"}
+${depthBlock}
 `;
 }
 
 export async function generateFreeAnalysis(input: AnalysisInput): Promise<string> {
-  const prompt = `You are an expert in Jungian psychology and cognitive function typology. Based on the following Singer-Loomis assessment results, provide a brief but insightful personalized analysis.
+  const prompt = `You are an expert in Jungian psychology, depth typology, and cognitive function development. Based on the following TypeJung depth assessment results, provide a brief but insightful personalized analysis.
 
 ${formatScoresForPrompt(input)}
 
 Write a personalized analysis in 150-200 words that:
-1. Identifies their dominant cognitive function and what it means for them
-2. Provides one key insight about their psychological type
-3. Offers one practical observation about how they likely experience the world
+1. Identifies where their psychic energy flows most strongly
+2. Names the inferior-function developmental edge without reducing them to a four-letter label
+3. Offers one practical observation about how they likely experience stress, the body, or value
 
-Keep the tone warm, encouraging, and psychologically grounded. Use second person ("you"). Do not mention that this is a free or limited analysis. Do not use bullet points, headers, or any markdown formatting like asterisks. Write in plain flowing paragraphs only.`;
+Keep the tone direct, psychologically grounded, and useful. Use second person ("you"). Do not mention that this is a free or limited analysis. Do not use bullet points, headers, or any markdown formatting like asterisks. Write in plain flowing paragraphs only.`;
 
   try {
     const ai = getAiClient();
@@ -103,7 +144,7 @@ Keep the tone warm, encouraging, and psychologically grounded. Use second person
     return response.text || "Unable to generate analysis at this time.";
   } catch (error) {
     console.error("Error generating free analysis:", error);
-    throw new Error("Failed to generate analysis");
+    return fallbackFreeAnalysis(input);
   }
 }
 
@@ -158,7 +199,7 @@ async function generateSection(
   secondary: string
 ): Promise<string> {
   const prompts: Record<string, string> = {
-    overview: `You are an expert in Jungian analytical psychology. Based on these Singer-Loomis assessment results, write a comprehensive psychological profile overview (300-400 words).
+    overview: `You are an expert in Jungian analytical psychology. Based on these TypeJung depth assessment results, write a comprehensive psychological profile overview (300-400 words).
 
 ${basePrompt}
 

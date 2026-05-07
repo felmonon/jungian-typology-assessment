@@ -3,17 +3,19 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CheckCircle, Loader2, XCircle, Sparkles, FileText, Layers, AlertTriangle, Heart, Briefcase, Compass, RefreshCcw, Download, Shield } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { FUNCTION_DESCRIPTIONS } from '../data/questions';
+import { FUNCTION_LABELS } from '../data/depthAssessment';
+import { extractDepthResult } from '../utils/depthCompatibility';
 import { useAuth } from '../hooks/use-auth';
 
 const UNLOCKED_FEATURES = [
-  { icon: FileText, text: 'Complete 8-function in-depth analysis' },
-  { icon: Layers, text: 'Archetypal stack dynamics (Hero, Parent, Child, Anima/Animus)' },
-  { icon: AlertTriangle, text: 'The Grip: Your stress response patterns' },
-  { icon: Heart, text: 'Relationships & compatibility insights' },
-  { icon: Briefcase, text: 'Career alignment guidance' },
-  { icon: Compass, text: 'Individuation roadmap with exercises' },
-  { icon: Download, text: 'Downloadable PDF report (25+ pages)' },
-  { icon: RefreshCcw, text: 'Lifetime access to all future updates' },
+  { icon: FileText, text: 'Detailed TypeJung depth report' },
+  { icon: Layers, text: 'Energy hierarchy and dominant-inferior axis' },
+  { icon: AlertTriangle, text: 'Stress and complex vulnerability patterns' },
+  { icon: Heart, text: 'Relationship trigger interpretation' },
+  { icon: Briefcase, text: 'Work and decision-making guidance' },
+  { icon: Compass, text: 'Individuation roadmap with practices' },
+  { icon: Download, text: 'Downloadable result archive' },
+  { icon: RefreshCcw, text: 'Lifetime access to future updates' },
 ];
 
 export const CheckoutSuccess: React.FC = () => {
@@ -47,7 +49,10 @@ export const CheckoutSuccess: React.FC = () => {
     if (savedResults) {
       try {
         const results = JSON.parse(savedResults);
-        if (results.stack?.dominant?.function) {
+        const depthResult = extractDepthResult(results);
+        if (depthResult) {
+          setDominantFunction(FUNCTION_LABELS[depthResult.dominant]);
+        } else if (results.stack?.dominant?.function) {
           setDominantFunction(results.stack.dominant.function);
         }
       } catch {
@@ -136,7 +141,7 @@ export const CheckoutSuccess: React.FC = () => {
     );
   }
 
-  const funcTitle = dominantFunction ? FUNCTION_DESCRIPTIONS[dominantFunction]?.title : null;
+  const funcTitle = dominantFunction ? FUNCTION_DESCRIPTIONS[dominantFunction]?.title || dominantFunction : null;
 
   return (
     <div className="min-h-[60vh] py-12 bg-jung-surface">
@@ -164,7 +169,7 @@ export const CheckoutSuccess: React.FC = () => {
           </div>
 
           <p className="text-sm text-jung-muted italic">
-            Equivalent to a 2-hour Jungian consultation ($150+ value)
+            Your premium TypeJung report is connected to your live account.
           </p>
         </div>
 

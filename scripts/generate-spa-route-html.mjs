@@ -192,7 +192,7 @@ const makeRouteHtml = (template, page) => {
   html = setMetaName(html, 'twitter:description', page.description);
   html = html.replace(
     /(<body[^>]*>\s*)(?:<!--[\s\S]*?-->\s*)?<noscript>[\s\S]*?<\/noscript>/i,
-    `$1<!-- Page-specific Noscript for SEO -->\n${buildNoscript(page)}`,
+    (_, bodyOpen) => `${bodyOpen}<!-- Page-specific Noscript for SEO -->\n${buildNoscript(page)}`,
   );
   html = injectRouteJsonLd(html, page);
 

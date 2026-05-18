@@ -1,9 +1,9 @@
 import React, { FormEvent, useEffect, useMemo, useState } from 'react';
-import { ArrowRight, Check, Copy, Mail, ShieldCheck, Tag } from 'lucide-react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { ArrowRight, Check, Mail, ShieldCheck, Tag } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../ui/Button';
-import { EMAIL_CAPTURE_DISCOUNT } from '../../data/discount';
-import { PRICING, type PaidTierId } from '../../data/pricing';
+import { EMAIL_CAPTURE_OFFER } from '../../data/discount';
+import type { PaidTierId } from '../../data/pricing';
 import { useAuth } from '../../hooks/use-auth';
 import { AnalyticsEvents, trackEvent } from '../../lib/analytics';
 
@@ -40,41 +40,25 @@ export const DiscountCaptureCard: React.FC<DiscountCaptureCardProps> = ({
   className = '',
 }) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { user } = useAuth();
   const savedEmail = useMemo(readCapturedEmail, []);
-  const hasUrlDiscount = useMemo(() => {
-    const params = new URLSearchParams(location.search);
-    return params.get('discount')?.toUpperCase() === EMAIL_CAPTURE_DISCOUNT.code;
-  }, [location.search]);
   const [email, setEmail] = useState(savedEmail || user?.email || '');
   const [website, setWebsite] = useState('');
-  const [status, setStatus] = useState<SubmitState>(savedEmail || hasUrlDiscount ? 'sent' : 'idle');
+  const [status, setStatus] = useState<SubmitState>(savedEmail ? 'sent' : 'idle');
   const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!email && user?.email) setEmail(user.email);
   }, [email, user?.email]);
 
-  const checkoutCopy = `${EMAIL_CAPTURE_DISCOUNT.percentOff}% off ${EMAIL_CAPTURE_DISCOUNT.appliesTo}`;
+  const checkoutCopy = `Email-only offer: ${EMAIL_CAPTURE_OFFER.percentOff}% off ${EMAIL_CAPTURE_OFFER.appliesTo}`;
 
   const goToCheckout = (tier: PaidTierId) => {
-    AnalyticsEvents.ctaClicked(`use_discount_${tier}`, source, {
-      buttonText: `Use ${EMAIL_CAPTURE_DISCOUNT.code}`,
+    AnalyticsEvents.ctaClicked(`open_${tier}_checkout_after_discount_email`, source, {
+      buttonText: `Open ${tier} checkout`,
       destination: `/checkout/${tier}`,
     });
-    navigate(`/checkout/${tier}?discount=${EMAIL_CAPTURE_DISCOUNT.code}`);
-  };
-
-  const copyCode = async () => {
-    try {
-      await navigator.clipboard.writeText(EMAIL_CAPTURE_DISCOUNT.code);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1800);
-    } catch {
-      setCopied(false);
-    }
+    navigate(`/checkout/${tier}`);
   };
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
@@ -105,7 +89,6 @@ export const DiscountCaptureCard: React.FC<DiscountCaptureCardProps> = ({
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
           email,
-          code: EMAIL_CAPTURE_DISCOUNT.code,
           capturedAt: new Date().toISOString(),
           source,
         }));
@@ -115,7 +98,7 @@ export const DiscountCaptureCard: React.FC<DiscountCaptureCardProps> = ({
 
       trackEvent('discount_lead_captured', {
         source,
-        percent_off: EMAIL_CAPTURE_DISCOUNT.percentOff,
+        percent_off: EMAIL_CAPTURE_OFFER.percentOff,
       });
       setStatus('sent');
     } catch (err: any) {
@@ -134,10 +117,10 @@ export const DiscountCaptureCard: React.FC<DiscountCaptureCardProps> = ({
             {checkoutCopy}
           </div>
           <h3 className={`${compact ? 'mt-3 text-xl' : 'mt-4 text-2xl'} font-semibold text-jung-dark`}>
-            Send yourself the launch code before you decide.
+            Get the private upgrade offer by email.
           </h3>
           <p className={`${compact ? 'mt-2 text-xs leading-5' : 'mt-3 text-sm leading-6'} text-jung-secondary`}>
-            Use it on the Stripe step for Insight or Mastery. One-time CAD purchase, no subscription.
+            If your free map earned a deeper read, use the email code on Stripe before payment. The code is not shown on this page.
           </p>
         </div>
         <ShieldCheck className="hidden h-5 w-5 flex-none text-jung-accent sm:block" />
@@ -146,25 +129,17 @@ export const DiscountCaptureCard: React.FC<DiscountCaptureCardProps> = ({
       {status === 'sent' ? (
         <div className="mt-5 grid gap-4">
           <div className="rounded-lg border border-jung-border bg-jung-surface p-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-start gap-3">
+              <span className="mt-0.5 inline-flex h-8 w-8 flex-none items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
+                <Check className="h-4 w-4" />
+              </span>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted">Your code</p>
-                <p className="mt-1 font-mono text-2xl font-bold tracking-[0.08em] text-jung-dark">
-                  {EMAIL_CAPTURE_DISCOUNT.code}
+                <p className="text-sm font-semibold text-jung-dark">Check your inbox for the code.</p>
+                <p className="mt-2 text-xs leading-5 text-jung-secondary">
+                  {email ? `Sent to ${email}. ` : ''}Keep that email open when you continue to Stripe.
                 </p>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={copyCode}
-                leftIcon={copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-              >
-                {copied ? 'Copied' : 'Copy'}
-              </Button>
             </div>
-            <p className="mt-3 text-xs leading-5 text-jung-secondary">
-              {email ? `Sent to ${email}. ` : ''}Enter this code on Stripe before confirming payment.
-            </p>
           </div>
           {showCheckoutButtons && (
             <div className="grid gap-3 sm:grid-cols-2">
@@ -174,7 +149,7 @@ export const DiscountCaptureCard: React.FC<DiscountCaptureCardProps> = ({
                 onClick={() => goToCheckout('insight')}
                 rightIcon={<ArrowRight className="h-4 w-4" />}
               >
-                Insight {PRICING.insight.price}
+                Open Insight checkout
               </Button>
               <Button
                 variant="outline"
@@ -182,7 +157,7 @@ export const DiscountCaptureCard: React.FC<DiscountCaptureCardProps> = ({
                 onClick={() => goToCheckout('mastery')}
                 rightIcon={<ArrowRight className="h-4 w-4" />}
               >
-                Mastery {PRICING.mastery.price}
+                Open Mastery checkout
               </Button>
             </div>
           )}
@@ -206,7 +181,7 @@ export const DiscountCaptureCard: React.FC<DiscountCaptureCardProps> = ({
               />
             </div>
             <Button type="submit" variant="accent" disabled={status === 'submitting'} isLoading={status === 'submitting'}>
-              Send code
+              Email my offer
             </Button>
           </div>
           <input
@@ -220,7 +195,7 @@ export const DiscountCaptureCard: React.FC<DiscountCaptureCardProps> = ({
           />
           {error && <p className="text-xs leading-5 text-error">{error}</p>}
           <p className="text-xs leading-5 text-jung-muted">
-            By requesting the code, you agree to receive this discount email and TypeJung result follow-up. No spam.
+            We will send the discount code by email, plus result follow-up when it is relevant. No spam.
           </p>
         </form>
       )}

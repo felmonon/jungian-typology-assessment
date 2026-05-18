@@ -95,7 +95,7 @@ export const Checkout: React.FC = () => {
 
     return [
       ['Subtotal', tierPrice.price],
-      ['Promotion code', 'Add on Stripe'],
+      ['Email offer', 'Enter on Stripe'],
       ['Total due today', tierPrice.price],
     ];
   }, [checkoutDetails, tierPrice]);

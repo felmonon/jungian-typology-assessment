@@ -167,24 +167,24 @@ function buildLifecycleEmail(input: LifecycleEmailInput): LifecycleEmailTemplate
     const progressCopy = Number.isFinite(input.progressPercent)
       ? ` You were about ${Math.max(0, Math.min(100, Math.round(input.progressPercent || 0)))}% through.`
       : '';
-    const preview = 'Your TypeJung assessment progress is waiting on this device.';
+    const preview = 'You are close to seeing the map behind your type.';
     const body = `
-      <h1 style="margin: 0 0 16px; color: #2f2a25; font-size: 28px; line-height: 1.2;">Finish your TypeJung assessment</h1>
+      <h1 style="margin: 0 0 16px; color: #2f2a25; font-size: 28px; line-height: 1.2;">Finish the map behind your type</h1>
       <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
-        You started the TypeJung depth assessment but did not finish it.${progressCopy}
-        If you are on the same device, your progress should still be saved.
+        You started the TypeJung assessment and stopped before the pattern could resolve.${progressCopy}
+        If you return on the same device, your progress should still be saved.
       </p>
       <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
-        Come back when you have a quiet moment and complete the remaining questions. The assessment is free, and you can review the core map before deciding whether to unlock anything paid.
+        Come back when you have a clear few minutes. The free result gives you the core energy map first, so you can decide from the result itself whether a deeper report is worth it.
       </p>
-      ${buildActionLink(assessmentUrl, 'Continue assessment')}
+      ${buildActionLink(assessmentUrl, 'Finish the assessment')}
     `;
 
     return {
-      subject: 'Finish your TypeJung assessment',
+      subject: 'Your TypeJung map is unfinished',
       preview,
       html: buildBaseHtml(preview, body),
-      text: `You started the TypeJung depth assessment but did not finish it.${progressCopy} Continue here: ${assessmentUrl}`,
+      text: `You started the TypeJung assessment and stopped before the pattern could resolve.${progressCopy} Finish it here: ${assessmentUrl}`,
     };
   }
 
@@ -192,23 +192,23 @@ function buildLifecycleEmail(input: LifecycleEmailInput): LifecycleEmailTemplate
     const axisCopy = dominantLabel && inferiorLabel
       ? ` Your current map centers on ${dominantLabel} with ${inferiorLabel} as the developmental edge.`
       : '';
-    const preview = 'A deeper TypeJung report is available for your saved result.';
+    const preview = 'Turn your free map into a deeper read when it feels worth keeping.';
     const body = `
-      <h1 style="margin: 0 0 16px; color: #2f2a25; font-size: 28px; line-height: 1.2;">Go deeper into your TypeJung result</h1>
+      <h1 style="margin: 0 0 16px; color: #2f2a25; font-size: 28px; line-height: 1.2;">Keep the result only if it earned it</h1>
       <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
-        You have your free TypeJung synthesis.${axisCopy}
+        Your free TypeJung map is the test. If it felt accurate enough to keep, the paid report turns that map into a practical read.${axisCopy}
       </p>
       <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
-        Insight adds the deeper developmental report for CA$19. Mastery adds the AI Type Coach, tailored exercises, and practice roadmap for CA$39. Both are one-time CAD payments with no subscription.
+        Insight gives you the developmental edge, stress pattern, relationship triggers, and practice guidance. Mastery adds the AI Type Coach and a practice roadmap. Both are one-time CAD purchases with no subscription.
       </p>
       ${buildActionLink(upgradeUrl, 'Compare report options')}
     `;
 
     return {
-      subject: 'Go deeper into your TypeJung result',
+      subject: 'Your TypeJung map can go deeper',
       preview,
       html: buildBaseHtml(preview, body),
-      text: `A deeper TypeJung report is available for your saved result.${axisCopy} Insight is CA$19 and Mastery is CA$39, both one-time CAD payments. Compare report options: ${upgradeUrl}`,
+      text: `If your free TypeJung map felt accurate enough to keep, the paid report turns it into a practical read.${axisCopy} Insight and Mastery are one-time CAD purchases with no subscription. Compare options: ${upgradeUrl}`,
     };
   }
 
@@ -216,23 +216,23 @@ function buildLifecycleEmail(input: LifecycleEmailInput): LifecycleEmailTemplate
   const axisCopy = dominantLabel && inferiorLabel
     ? ` Your dominant-inferior axis is ${dominantLabel} to ${inferiorLabel}.`
     : '';
-  const preview = 'Your TypeJung energy map is ready.';
+  const preview = 'Your TypeJung map is ready to review.';
   const body = `
-    <h1 style="margin: 0 0 16px; color: #2f2a25; font-size: 28px; line-height: 1.2;">Your TypeJung result is ready</h1>
+    <h1 style="margin: 0 0 16px; color: #2f2a25; font-size: 28px; line-height: 1.2;">Your energy map is ready</h1>
     <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
-      Your TypeJung energy map was completed ${escapeHtml(completedCopy)}.${axisCopy}
+      Your TypeJung assessment was completed ${escapeHtml(completedCopy)}.${axisCopy}
     </p>
     <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
-      You can return to the result page to review the free synthesis, save the result to your account, or compare one-time paid report options after you have seen the map.
+      Open the result while the answers are still fresh. Start with the free map, then decide whether you want the deeper report after you have read the pattern.
     </p>
-    ${buildActionLink(resultUrl, 'Open result')}
+    ${buildActionLink(resultUrl, 'Read your map')}
   `;
 
   return {
-    subject: 'Your TypeJung result is ready',
+    subject: 'Your TypeJung map is ready',
     preview,
     html: buildBaseHtml(preview, body),
-    text: `Your TypeJung energy map was completed ${completedCopy}.${axisCopy} Open it here: ${resultUrl}`,
+    text: `Your TypeJung assessment was completed ${completedCopy}.${axisCopy} Read your map here: ${resultUrl}`,
   };
 }
 
@@ -280,18 +280,18 @@ export async function sendDiscountLeadEmail(input: DiscountLeadEmailInput): Prom
   const axisCopy = input.dominantLabel && input.inferiorLabel
     ? ` Your map centers on ${escapeHtml(input.dominantLabel)} with ${escapeHtml(input.inferiorLabel)} as the developmental edge.`
     : '';
-  const preview = `${input.percentOff}% off TypeJung Insight or Mastery.`;
+  const preview = `Your private ${input.percentOff}% TypeJung upgrade code is inside.`;
   const body = `
-    <h1 style="margin: 0 0 16px; color: #2f2a25; font-size: 28px; line-height: 1.2;">Your TypeJung discount code</h1>
+    <h1 style="margin: 0 0 16px; color: #2f2a25; font-size: 28px; line-height: 1.2;">Your private TypeJung upgrade code</h1>
     <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
-      Here is ${input.percentOff}% off a one-time TypeJung Insight or Mastery upgrade.${axisCopy}
+      If your free map felt accurate enough to keep, this gives you ${input.percentOff}% off a one-time Insight or Mastery upgrade.${axisCopy}
     </p>
     <div style="margin: 24px 0; border: 1px solid #d6ccc2; border-radius: 10px; background: #fbfaf8; padding: 18px;">
       <p style="margin: 0 0 8px; color: #8a8177; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">Promotion code</p>
       <p style="margin: 0; color: #2f2a25; font-family: 'SFMono-Regular', Consolas, monospace; font-size: 26px; font-weight: 800; letter-spacing: 0.08em;">${safeCode}</p>
     </div>
     <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
-      Use the code on the secure Stripe checkout step before you pay. Paid access is a one-time CAD purchase, not a subscription.
+      Copy the code from this email and enter it on the secure Stripe checkout step before payment. Paid access is a one-time CAD purchase, not a subscription.
     </p>
     ${buildActionLink(pricingUrl, 'Choose your report')}
   `;
@@ -300,9 +300,9 @@ export async function sendDiscountLeadEmail(input: DiscountLeadEmailInput): Prom
   const result = await client.emails.send({
     from: credentials.fromEmail,
     to: input.toEmail,
-    subject: `Your ${input.percentOff}% TypeJung code: ${input.discountCode}`,
+    subject: `Your private ${input.percentOff}% TypeJung upgrade code`,
     html: buildBaseHtml(preview, body, 'You received this TypeJung email because you requested a discount code.'),
-    text: `Your TypeJung discount code is ${input.discountCode}. Use it for ${input.percentOff}% off Insight or Mastery on the secure Stripe checkout step: ${pricingUrl}`,
+    text: `Your private TypeJung upgrade code is ${input.discountCode}. Use it for ${input.percentOff}% off Insight or Mastery on the secure Stripe checkout step. Choose your report: ${pricingUrl}`,
   }, input.idempotencyKey ? { idempotencyKey: input.idempotencyKey } : undefined);
 
   if (result.error) {

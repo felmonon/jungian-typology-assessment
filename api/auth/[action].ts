@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import { getSessionUserFromCookie, getVerifiedSessionId, shouldUseSecureCookie } from '../_lib/auth-utils.js';
 import { enforceRateLimit } from '../_lib/rate-limit.js';
-import { EMAIL_CAPTURE_DISCOUNT } from '../../data/discount.js';
+import { EMAIL_CAPTURE_OFFER } from '../../data/discount.js';
 import { resolveCheckoutBaseUrl } from '../../server/checkout.js';
 import { sendDiscountLeadEmail, sendLifecycleEmail, type LifecycleEmailKind } from '../../server/resend.js';
 
@@ -25,6 +25,7 @@ function signSessionId(sessionId: string, secret: string): string {
 
 const SALT_ROUNDS = 10;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_CAPTURE_DISCOUNT_CODE = process.env.EMAIL_CAPTURE_DISCOUNT_CODE || 'TYPEJUNG30';
 const lifecycleKinds = new Set<LifecycleEmailKind>([
   'abandoned-assessment',
   'result-ready',
@@ -423,11 +424,11 @@ async function handleDiscountLead(req: VercelRequest, res: VercelResponse) {
   const source = cleanSource(req.body?.source);
   const capture = await captureDiscountEmail(email);
   const baseUrl = resolveCheckoutBaseUrl(req.headers.origin, req.headers.host);
-  const pricingUrl = `${baseUrl}/pricing?discount=${encodeURIComponent(EMAIL_CAPTURE_DISCOUNT.code)}&source=${encodeURIComponent(source)}`;
+  const pricingUrl = `${baseUrl}/pricing?source=${encodeURIComponent(source)}`;
   const sendResult = await sendDiscountLeadEmail({
     toEmail: email,
-    discountCode: EMAIL_CAPTURE_DISCOUNT.code,
-    percentOff: EMAIL_CAPTURE_DISCOUNT.percentOff,
+    discountCode: EMAIL_CAPTURE_DISCOUNT_CODE,
+    percentOff: EMAIL_CAPTURE_OFFER.percentOff,
     pricingUrl,
     dominantLabel: cleanString(req.body?.dominantLabel, 120),
     inferiorLabel: cleanString(req.body?.inferiorLabel, 120),
@@ -437,8 +438,7 @@ async function handleDiscountLead(req: VercelRequest, res: VercelResponse) {
   return res.status(200).json({
     ...sendResult,
     captured: capture.captured,
-    discountCode: EMAIL_CAPTURE_DISCOUNT.code,
-    percentOff: EMAIL_CAPTURE_DISCOUNT.percentOff,
+    percentOff: EMAIL_CAPTURE_OFFER.percentOff,
   });
 }
 

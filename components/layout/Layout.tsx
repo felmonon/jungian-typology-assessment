@@ -238,8 +238,10 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               <a href="/mbti-alternative" className="inline-flex min-h-10 items-center hover:text-jung-accent">MBTI alternative</a>
               <a href="/inferior-function-test" className="inline-flex min-h-10 items-center hover:text-jung-accent">Inferior function test</a>
               <a href="/cognitive-function-test" className="inline-flex min-h-10 items-center hover:text-jung-accent">Cognitive function test</a>
+              <a href="/jungian-cognitive-functions-test" className="inline-flex min-h-10 items-center hover:text-jung-accent">Jungian functions test</a>
               <a href="/infj-vs-infp-test" className="inline-flex min-h-10 items-center hover:text-jung-accent">INFJ vs INFP test</a>
               <a href="/intj-vs-intp-test" className="inline-flex min-h-10 items-center hover:text-jung-accent">INTJ vs INTP test</a>
+              <a href="/mbti-keeps-changing" className="inline-flex min-h-10 items-center hover:text-jung-accent">Why MBTI changes</a>
               <a href="/shadow-work-test" className="inline-flex min-h-10 items-center hover:text-jung-accent">Shadow work test</a>
             </div>
           </div>

@@ -20,8 +20,8 @@ export const PAGE_SEO: Record<string, SEOConfig> = {
     description: 'Take a depth-based Jungian assessment that maps where your energy flows and where it gets stuck through behavioral evidence, inferior-function triggers, somatic indicators, and attitude direction.',
   },
   assessment: {
-    title: 'Take the Assessment | TypeJung',
-    description: 'Answer 42 scenario-based questions to build your Jungian energy map. No forced binary labels, no MBTI clone.',
+    title: 'Take the Free Jungian Cognitive Function Assessment | TypeJung',
+    description: 'Answer 42 scenario-based questions to map all 8 Jungian cognitive functions, inferior-function pressure, somatic signals, and attitude direction.',
   },
   results: {
     title: 'Your Energy Map | TypeJung',

@@ -72,6 +72,20 @@
   .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 20px 0; }
   .related-card { background: var(--jung-surface); padding: 16px; border-radius: 8px; border: 1px solid var(--jung-border-light); box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
   .related-card a { color: var(--jung-dark); text-decoration: none; font-weight: 700; }
+  .intent-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 28px 0 32px; }
+  .intent-card { background: var(--jung-surface); border: 1px solid var(--jung-border-light); border-radius: 8px; padding: 18px; box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
+  .intent-card strong { display: block; margin-bottom: 7px; font-family: "Space Grotesk", Verdana, sans-serif; color: var(--jung-dark); font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .intent-card span { display: block; color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; line-height: 1.6; }
+  .cluster-nav { background: color-mix(in srgb, var(--jung-accent-light) 48%, white); border: 1px solid color-mix(in srgb, var(--jung-accent-muted) 55%, white); border-radius: 8px; padding: 18px; margin: 28px 0 36px; }
+  .cluster-nav h2 { border: 0; margin: 0 0 12px; padding: 0; font-size: 1.12rem; font-family: "Space Grotesk", Verdana, sans-serif; }
+  .cluster-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+  .cluster-link { display: block; min-height: 100%; padding: 14px; border-radius: 8px; background: rgba(255,255,255,0.72); border: 1px solid var(--jung-border-light); color: var(--jung-dark); text-decoration: none; }
+  .cluster-link strong { display: block; margin-bottom: 6px; font-family: "Space Grotesk", Verdana, sans-serif; }
+  .cluster-link span { display: block; color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; font-size: 0.95rem; line-height: 1.45; }
+  .context-links { margin: 18px 0 0; padding: 14px 16px; background: var(--jung-surface); border: 1px solid var(--jung-border-light); border-radius: 8px; }
+  .context-links strong { display: block; margin-bottom: 8px; font-family: "Space Grotesk", Verdana, sans-serif; font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--jung-muted); }
+  .context-links ul { margin: 0; padding-left: 20px; }
+  .context-links li { margin: 4px 0; }
   .faq-item { background: var(--jung-surface); padding: 18px; border-radius: 8px; margin-bottom: 14px; border: 1px solid var(--jung-border-light); }
   .faq-item h3 { margin: 0 0 8px; font-size: 1.05rem; }
   .comparison-table { width: 100%; border-collapse: collapse; margin: 22px 0; background: var(--jung-surface); border: 1px solid var(--jung-border); border-radius: 8px; overflow: hidden; }
@@ -88,6 +102,7 @@
     body { padding: 20px 16px 40px; }
     nav { display: flex; flex-wrap: wrap; gap: 10px 14px; }
     nav a { margin-right: 0; }
+    .intent-grid { grid-template-columns: 1fr; }
     .trait-list { columns: 1; }
     .text-link { display: inline-block; margin: 14px 0 0; }
   }
@@ -188,6 +203,31 @@
     <p class="subtitle">TypeJung is an MBTI alternative that scores all 8 Jungian cognitive functions independently. The result is a profile you can inspect, question, and use for development.</p>
   </header>
 
+  <section class="intent-grid" aria-label="Quick assessment fit">
+    <div class="intent-card">
+      <strong>Best for</strong>
+      <span>People who like type language but want a more inspectable MBTI alternative with cognitive-function evidence.</span>
+    </div>
+    <div class="intent-card">
+      <strong>Measures</strong>
+      <span>Independent function scores, likely type pattern, inferior-function pressure, and context for why MBTI results change.</span>
+    </div>
+    <div class="intent-card">
+      <strong>Privacy</strong>
+      <span>Start free without paying first. Upgrade only after the function profile feels useful.</span>
+    </div>
+  </section>
+
+  <section class="cluster-nav" aria-label="Jungian test topic cluster">
+    <h2>Related Jungian assessment guides</h2>
+    <div class="cluster-grid">
+      <a class="cluster-link" href="/jungian-test"><strong>Jungian test</strong><span>Start with the broad Jungian assessment page and compare type, function, and stress evidence.</span></a>
+      <a class="cluster-link" href="/cognitive-function-test"><strong>Cognitive function test</strong><span>See how TypeJung scores Ni, Ne, Si, Se, Ti, Te, Fi, and Fe independently.</span></a>
+      <a class="cluster-link" href="/inferior-function-test"><strong>Inferior function test</strong><span>Use the dominant-inferior axis to understand stress, grip patterns, and development.</span></a>
+      <a class="cluster-link" href="/jungian-cognitive-functions-test"><strong>Jungian cognitive functions test</strong><span>Map the full stack and the function-attitude pattern behind a likely type result.</span></a>
+    </div>
+  </section>
+
   <section>
   <h2>Why people look for an alternative</h2>
   <p>Four-letter personality tests can be useful shorthand, but they often hide the most important information: which functions are actually strong, weak, balanced, or under stress.</p>
@@ -196,14 +236,21 @@
     <li>No forced choice between intuition and sensing as if one removes the other</li>
     <li>No assumption that everyone inside a type has the same function development</li>
     <li>More visibility into stress patterns and inferior-function tension</li>
+    <li>A result that lets you inspect nearby type possibilities instead of hiding close scores</li>
   </ul>
-  
+  <div class="context-links">
+    <strong>Useful next reads</strong>
+    <ul>
+      <li><a href="/mbti-keeps-changing">Why your MBTI result keeps changing</a></li>
+      <li><a href="/infj-vs-infp-test">Compare INFJ vs INFP through function evidence</a></li>
+    </ul>
+  </div>
 </section>
 
   <section>
   <h2>TypeJung versus a typical MBTI-style quiz</h2>
   <p>TypeJung still speaks the language of Jungian type, but it treats type as an interpretation of a function profile. That makes the result more useful for people who already know the basics and want a clearer self-assessment.</p>
-  
+  <p>This matters for searchers who are deciding whether to take another personality test. If your main goal is a quick social label, a simple quiz may be enough. If your goal is to understand the pattern behind the label, function evidence is more useful.</p>
   <table class="comparison-table">
     <thead>
       <tr><th>Question</th><th>Typical MBTI-style quiz</th><th>TypeJung</th></tr>
@@ -213,15 +260,34 @@
       <tr><td>How are results shown?</td><td>A four-letter type label</td><td>Function scores plus likely type pattern</td></tr>
       <tr><td>What is the development angle?</td><td>General type advice</td><td>Dominant, auxiliary, inferior, stress, and development themes</td></tr>
       <tr><td>What is free?</td><td>Usually a basic type result</td><td>A free 42-question assessment and core profile</td></tr>
+      <tr><td>How are close results handled?</td><td>Often hidden behind a final label</td><td>Shown as a profile you can compare</td></tr>
     </tbody>
   </table>
 </section>
 
   <section>
+  <h2>When TypeJung is the better alternative</h2>
+  <p>TypeJung is strongest when the question is not simply &quot;what type am I?&quot; but &quot;why do I keep getting this result, and what pattern does it point toward?&quot;</p>
+  <p>Use it when you want to compare function pairs, see stress-edge evidence, or understand whether a result is stable enough to build self-reflection around.</p>
+  <ul>
+    <li>You keep testing between two nearby types</li>
+    <li>You want the cognitive functions behind a four-letter code</li>
+    <li>You care about growth, stress, and relationship triggers</li>
+    <li>You want a free first result before deciding whether a deeper report is worth it</li>
+  </ul>
+</section>
+
+  <section>
   <h2>What to do after your result</h2>
   <p>Start with the free assessment, then compare your strongest and weakest functions in the Learn section. If you want a deeper written interpretation, the Insight and Mastery reports are optional one-time CAD purchases.</p>
-  
-  
+  <div class="context-links">
+    <strong>Useful next reads</strong>
+    <ul>
+      <li><a href="/assessment">Take the free TypeJung assessment</a></li>
+      <li><a href="/cognitive-function-test">See the cognitive function test page</a></li>
+      <li><a href="/blog/best-mbti-alternative-tests">Read the MBTI alternatives guide</a></li>
+    </ul>
+  </div>
 </section>
 
   <div class="cta-box">

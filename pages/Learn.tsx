@@ -2,6 +2,29 @@ import React from 'react';
 import { BookOpen, Compass, Layers, ArrowRight } from 'lucide-react';
 
 export const Learn: React.FC = () => {
+  const guideLinks = [
+    {
+      href: '/jungian-test',
+      label: 'Jungian test',
+      description: 'A broad assessment page for people comparing Jungian tests.',
+    },
+    {
+      href: '/cognitive-function-test',
+      label: 'Cognitive function test',
+      description: 'A focused guide to scoring Ni, Ne, Si, Se, Ti, Te, Fi, and Fe.',
+    },
+    {
+      href: '/mbti-alternative',
+      label: 'MBTI alternative',
+      description: 'A comparison page for people frustrated by changing four-letter results.',
+    },
+    {
+      href: '/inferior-function-test',
+      label: 'Inferior function test',
+      description: 'A stress-pattern page for the dominant-inferior axis.',
+    },
+  ];
+
   return (
     <div className="editorial-container py-12 font-body text-lg leading-relaxed text-jung-dark">
 
@@ -126,13 +149,36 @@ export const Learn: React.FC = () => {
               { code: 'Ne', name: 'Extraverted Intuition', desc: 'Generating possibilities and connecting ideas.' },
               { code: 'Ni', name: 'Introverted Intuition', desc: 'Foreseeing implications and realizing visions.' },
             ].map(f => (
-              <div key={f.code} className="flex items-start gap-4 p-4 border border-jung-border rounded-2xl hover:bg-jung-surface transition-colors">
+              <a
+                key={f.code}
+                href={`/functions/${f.code.toLowerCase()}`}
+                className="flex items-start gap-4 rounded-lg border border-jung-border p-4 text-inherit no-underline transition-colors hover:bg-jung-surface hover:text-jung-dark"
+              >
                 <span className="font-mono font-bold text-lg text-jung-accent">{f.code}</span>
                 <div>
                   <strong className="block text-jung-dark font-serif">{f.name}</strong>
                   <span className="text-sm text-jung-secondary">{f.desc}</span>
                 </div>
-              </div>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <section className="mb-16 rounded-lg border border-jung-border bg-jung-accent-light/40 p-6">
+          <h2 className="mb-3 text-3xl font-serif font-bold text-jung-dark">Choose the right TypeJung guide</h2>
+          <p className="mb-6 text-jung-secondary">
+            If you came here from search, these pages answer the most common next questions before you take the assessment.
+          </p>
+          <div className="grid gap-4 md:grid-cols-2">
+            {guideLinks.map((guide) => (
+              <a
+                key={guide.href}
+                href={guide.href}
+                className="rounded-lg border border-jung-border-light bg-jung-surface p-4 text-inherit no-underline transition-colors hover:border-jung-accent-muted"
+              >
+                <strong className="block font-serif text-lg text-jung-dark">{guide.label}</strong>
+                <span className="mt-2 block text-sm leading-6 text-jung-secondary">{guide.description}</span>
+              </a>
             ))}
           </div>
         </section>

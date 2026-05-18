@@ -59,6 +59,39 @@ const resultModules = [
   },
 ];
 
+const seoGuideLinks = [
+  {
+    href: '/jungian-test',
+    label: 'Jungian test',
+    description: 'Start here if you want a broad Jungian assessment with function evidence and a free first result.',
+  },
+  {
+    href: '/cognitive-function-test',
+    label: 'Cognitive function test',
+    description: 'See how TypeJung scores Ni, Ne, Si, Se, Ti, Te, Fi, and Fe independently.',
+  },
+  {
+    href: '/mbti-alternative',
+    label: 'MBTI alternative',
+    description: 'Compare TypeJung with label-first MBTI-style quizzes and changing four-letter results.',
+  },
+  {
+    href: '/inferior-function-test',
+    label: 'Inferior function test',
+    description: 'Understand stress reactions, grip patterns, and the growth edge behind the result.',
+  },
+  {
+    href: '/jungian-cognitive-functions-test',
+    label: 'Jungian cognitive functions test',
+    description: 'Map the full function stack and the dominant-inferior axis behind a likely type.',
+  },
+  {
+    href: '/shadow-work-test',
+    label: 'Shadow work test',
+    description: 'Use Jungian self-observation prompts without turning the result into a diagnosis.',
+  },
+];
+
 const pricing = [
   {
     name: 'Free',
@@ -256,6 +289,36 @@ export const Home: React.FC = () => {
                   <h3 className="text-xl font-semibold text-jung-dark">{module.title}</h3>
                   <p className="mt-3 text-sm leading-6 text-jung-secondary">{module.description}</p>
                 </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="section-rule bg-jung-surface/70 py-20">
+          <div className="lab-container">
+            <div className="mb-10 max-w-3xl">
+              <p className="text-label">Popular guides</p>
+              <h2 className="mt-3 text-heading text-4xl text-jung-dark sm:text-5xl">
+                Compare the test before you take it.
+              </h2>
+              <p className="mt-4 text-body text-jung-secondary">
+                These crawlable guides answer the searches people usually make before choosing a Jungian or cognitive-function test. They also help Google understand TypeJung as a connected topic cluster, not a single isolated quiz page.
+              </p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {seoGuideLinks.map((guide) => (
+                <a
+                  key={guide.href}
+                  href={guide.href}
+                  className="card-premium group block p-6 no-underline"
+                >
+                  <span className="text-sm font-semibold text-jung-accent">{guide.label}</span>
+                  <p className="mt-3 text-sm leading-6 text-jung-secondary">{guide.description}</p>
+                  <span className="mt-5 inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-jung-dark transition-colors group-hover:text-jung-accent">
+                    Read guide <ArrowRight className="h-4 w-4" />
+                  </span>
+                </a>
               ))}
             </div>
           </div>

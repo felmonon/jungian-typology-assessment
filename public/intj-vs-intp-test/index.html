@@ -72,6 +72,20 @@
   .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 20px 0; }
   .related-card { background: var(--jung-surface); padding: 16px; border-radius: 8px; border: 1px solid var(--jung-border-light); box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
   .related-card a { color: var(--jung-dark); text-decoration: none; font-weight: 700; }
+  .intent-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 28px 0 32px; }
+  .intent-card { background: var(--jung-surface); border: 1px solid var(--jung-border-light); border-radius: 8px; padding: 18px; box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
+  .intent-card strong { display: block; margin-bottom: 7px; font-family: "Space Grotesk", Verdana, sans-serif; color: var(--jung-dark); font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .intent-card span { display: block; color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; line-height: 1.6; }
+  .cluster-nav { background: color-mix(in srgb, var(--jung-accent-light) 48%, white); border: 1px solid color-mix(in srgb, var(--jung-accent-muted) 55%, white); border-radius: 8px; padding: 18px; margin: 28px 0 36px; }
+  .cluster-nav h2 { border: 0; margin: 0 0 12px; padding: 0; font-size: 1.12rem; font-family: "Space Grotesk", Verdana, sans-serif; }
+  .cluster-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+  .cluster-link { display: block; min-height: 100%; padding: 14px; border-radius: 8px; background: rgba(255,255,255,0.72); border: 1px solid var(--jung-border-light); color: var(--jung-dark); text-decoration: none; }
+  .cluster-link strong { display: block; margin-bottom: 6px; font-family: "Space Grotesk", Verdana, sans-serif; }
+  .cluster-link span { display: block; color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; font-size: 0.95rem; line-height: 1.45; }
+  .context-links { margin: 18px 0 0; padding: 14px 16px; background: var(--jung-surface); border: 1px solid var(--jung-border-light); border-radius: 8px; }
+  .context-links strong { display: block; margin-bottom: 8px; font-family: "Space Grotesk", Verdana, sans-serif; font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--jung-muted); }
+  .context-links ul { margin: 0; padding-left: 20px; }
+  .context-links li { margin: 4px 0; }
   .faq-item { background: var(--jung-surface); padding: 18px; border-radius: 8px; margin-bottom: 14px; border: 1px solid var(--jung-border-light); }
   .faq-item h3 { margin: 0 0 8px; font-size: 1.05rem; }
   .comparison-table { width: 100%; border-collapse: collapse; margin: 22px 0; background: var(--jung-surface); border: 1px solid var(--jung-border); border-radius: 8px; overflow: hidden; }
@@ -88,6 +102,7 @@
     body { padding: 20px 16px 40px; }
     nav { display: flex; flex-wrap: wrap; gap: 10px 14px; }
     nav a { margin-right: 0; }
+    .intent-grid { grid-template-columns: 1fr; }
     .trait-list { columns: 1; }
     .text-link { display: inline-block; margin: 14px 0 0; }
   }
@@ -188,11 +203,23 @@
     <p class="subtitle">TypeJung makes the comparison more useful by looking at the function pattern: Ni-Te for INTJ-like convergence and execution, Ti-Ne for INTP-like precision and possibility testing.</p>
   </header>
 
+
+
+  <section class="cluster-nav" aria-label="Jungian test topic cluster">
+    <h2>Related Jungian assessment guides</h2>
+    <div class="cluster-grid">
+      <a class="cluster-link" href="/jungian-test"><strong>Jungian test</strong><span>Start with the broad Jungian assessment page and compare type, function, and stress evidence.</span></a>
+      <a class="cluster-link" href="/cognitive-function-test"><strong>Cognitive function test</strong><span>See how TypeJung scores Ni, Ne, Si, Se, Ti, Te, Fi, and Fe independently.</span></a>
+      <a class="cluster-link" href="/mbti-alternative"><strong>MBTI alternative</strong><span>Compare TypeJung against label-first MBTI-style quizzes and four-letter tests.</span></a>
+      <a class="cluster-link" href="/inferior-function-test"><strong>Inferior function test</strong><span>Use the dominant-inferior axis to understand stress, grip patterns, and development.</span></a>
+      <a class="cluster-link" href="/jungian-cognitive-functions-test"><strong>Jungian cognitive functions test</strong><span>Map the full stack and the function-attitude pattern behind a likely type result.</span></a>
+    </div>
+  </section>
+
   <section>
   <h2>The real comparison: Ni-Te versus Ti-Ne</h2>
   <p>An INTJ-like pattern often starts with a strategic read of where things are going, then organizes action around that direction. An INTP-like pattern often starts by refining the internal model, then tests alternate explanations.</p>
   <p>Both can be analytical and private. The difference is whether insight tends to converge toward a plan or logic tends to stay open while the model becomes cleaner.</p>
-  
   <table class="comparison-table">
     <thead>
       <tr><th>Question</th><th>INTJ-like Ni-Te</th><th>INTP-like Ti-Ne</th></tr>
@@ -209,15 +236,11 @@
   <h2>Why type descriptions are not enough</h2>
   <p>Many INTJ and INTP descriptions overlap around intelligence, independence, skepticism, and systems thinking. That overlap can make a type description feel accurate even when the function order is wrong.</p>
   <p>A useful INTJ vs INTP test should ask what your attention does first and what kind of uncertainty bothers you most.</p>
-  
-  
 </section>
 
   <section>
   <h2>Use the TypeJung result as a map</h2>
   <p>Take the free assessment, then compare your thinking and intuition scores, attitude direction, and inferior-function signal. The point is not to win a label. The point is to understand the operating pattern behind the label.</p>
-  
-  
 </section>
 
   <div class="cta-box">

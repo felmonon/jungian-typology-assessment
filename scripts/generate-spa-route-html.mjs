@@ -11,11 +11,16 @@ const baseUrl = 'https://typejung.com';
 const routePages = [
   {
     path: '/assessment',
-    title: 'Take the Jungian Assessment | TypeJung',
+    title: 'Take the Free Jungian Cognitive Function Assessment | TypeJung',
     description:
-      'Answer 42 scenario-based questions to build your Jungian energy map across cognitive functions, inferior-function pressure, somatic signals, and attitude direction.',
-    h1: 'Take the TypeJung assessment',
+      'Take a free 42-question Jungian cognitive function assessment that maps all 8 functions, inferior-function pressure, somatic signals, and attitude direction.',
+    h1: 'Take the free Jungian cognitive function assessment',
     cta: 'Start the free assessment',
+    body: [
+      'TypeJung measures all 8 Jungian cognitive functions through scenario-based questions instead of reducing you immediately to a four-letter label.',
+      'The free result shows the core energy map first. Paid Insight and Mastery reports are optional one-time CAD upgrades after you can see whether the result feels useful.',
+      'This page is the best starting point if you are comparing Jungian tests, MBTI alternatives, inferior-function tests, or cognitive-function tests.',
+    ],
   },
   {
     path: '/learn',
@@ -76,6 +81,8 @@ const guideLinks = [
   ['/mbti-alternative', 'MBTI Alternative'],
   ['/inferior-function-test', 'Inferior Function Test'],
   ['/cognitive-function-test', 'Cognitive Function Test'],
+  ['/jungian-cognitive-functions-test', 'Jungian Cognitive Functions Test'],
+  ['/mbti-keeps-changing', 'Why MBTI Keeps Changing'],
   ['/shadow-work-test', 'Shadow Work Test'],
 ];
 
@@ -163,6 +170,7 @@ const buildNoscript = (page) => `
         <nav style="margin-bottom: 24px;"><a href="/">Home</a> &gt; ${escapeHtml(routeLabel(page.path))}</nav>
         <h1 style="font-size: 2.35em; color: #451a03; margin-bottom: 12px;">${escapeHtml(page.h1)}</h1>
         <p style="font-size: 1.18em; color: #57534e; margin-bottom: 24px;">${escapeHtml(page.description)}</p>
+        ${(page.body || []).map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join('\n        ')}
         <p><a href="${page.path === '/pricing' ? '/pricing' : '/assessment'}" style="display: inline-block; padding: 14px 24px; background: #451a03; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">${escapeHtml(page.cta)}</a></p>
         <section style="margin-top: 36px;">
           <h2 style="color: #451a03; border-bottom: 1px solid #e7e5e4; padding-bottom: 8px;">Popular TypeJung guides</h2>

@@ -43,6 +43,34 @@ const breadcrumbSchema = (items: Array<{ name: string; path: string }>) => ({
   })),
 });
 
+const coreClusterLinks = [
+  {
+    href: '/jungian-test',
+    label: 'Jungian test',
+    description: 'Start with the broad Jungian assessment page and compare type, function, and stress evidence.',
+  },
+  {
+    href: '/cognitive-function-test',
+    label: 'Cognitive function test',
+    description: 'See how TypeJung scores Ni, Ne, Si, Se, Ti, Te, Fi, and Fe independently.',
+  },
+  {
+    href: '/mbti-alternative',
+    label: 'MBTI alternative',
+    description: 'Compare TypeJung against label-first MBTI-style quizzes and four-letter tests.',
+  },
+  {
+    href: '/inferior-function-test',
+    label: 'Inferior function test',
+    description: 'Use the dominant-inferior axis to understand stress, grip patterns, and development.',
+  },
+  {
+    href: '/jungian-cognitive-functions-test',
+    label: 'Jungian cognitive functions test',
+    description: 'Map the full stack and the function-attitude pattern behind a likely type result.',
+  },
+];
+
 // Common head template
 const getHead = (title: string, description: string, path: string, keywords?: string[]) => `
 <meta charset="UTF-8">
@@ -115,6 +143,20 @@ const getHead = (title: string, description: string, path: string, keywords?: st
   .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 20px 0; }
   .related-card { background: var(--jung-surface); padding: 16px; border-radius: 8px; border: 1px solid var(--jung-border-light); box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
   .related-card a { color: var(--jung-dark); text-decoration: none; font-weight: 700; }
+  .intent-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 28px 0 32px; }
+  .intent-card { background: var(--jung-surface); border: 1px solid var(--jung-border-light); border-radius: 8px; padding: 18px; box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
+  .intent-card strong { display: block; margin-bottom: 7px; font-family: "Space Grotesk", Verdana, sans-serif; color: var(--jung-dark); font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .intent-card span { display: block; color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; line-height: 1.6; }
+  .cluster-nav { background: color-mix(in srgb, var(--jung-accent-light) 48%, white); border: 1px solid color-mix(in srgb, var(--jung-accent-muted) 55%, white); border-radius: 8px; padding: 18px; margin: 28px 0 36px; }
+  .cluster-nav h2 { border: 0; margin: 0 0 12px; padding: 0; font-size: 1.12rem; font-family: "Space Grotesk", Verdana, sans-serif; }
+  .cluster-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+  .cluster-link { display: block; min-height: 100%; padding: 14px; border-radius: 8px; background: rgba(255,255,255,0.72); border: 1px solid var(--jung-border-light); color: var(--jung-dark); text-decoration: none; }
+  .cluster-link strong { display: block; margin-bottom: 6px; font-family: "Space Grotesk", Verdana, sans-serif; }
+  .cluster-link span { display: block; color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; font-size: 0.95rem; line-height: 1.45; }
+  .context-links { margin: 18px 0 0; padding: 14px 16px; background: var(--jung-surface); border: 1px solid var(--jung-border-light); border-radius: 8px; }
+  .context-links strong { display: block; margin-bottom: 8px; font-family: "Space Grotesk", Verdana, sans-serif; font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--jung-muted); }
+  .context-links ul { margin: 0; padding-left: 20px; }
+  .context-links li { margin: 4px 0; }
   .faq-item { background: var(--jung-surface); padding: 18px; border-radius: 8px; margin-bottom: 14px; border: 1px solid var(--jung-border-light); }
   .faq-item h3 { margin: 0 0 8px; font-size: 1.05rem; }
   .comparison-table { width: 100%; border-collapse: collapse; margin: 22px 0; background: var(--jung-surface); border: 1px solid var(--jung-border); border-radius: 8px; overflow: hidden; }
@@ -131,11 +173,42 @@ const getHead = (title: string, description: string, path: string, keywords?: st
     body { padding: 20px 16px 40px; }
     nav { display: flex; flex-wrap: wrap; gap: 10px 14px; }
     nav a { margin-right: 0; }
+    .intent-grid { grid-template-columns: 1fr; }
     .trait-list { columns: 1; }
     .text-link { display: inline-block; margin: 14px 0 0; }
   }
 </style>
 `;
+
+function renderIntentPanel(page: any) {
+  if (!page.intent) return '';
+
+  return `<section class="intent-grid" aria-label="Quick assessment fit">
+    <div class="intent-card">
+      <strong>Best for</strong>
+      <span>${escapeHtml(page.intent.bestFor)}</span>
+    </div>
+    <div class="intent-card">
+      <strong>Measures</strong>
+      <span>${escapeHtml(page.intent.measures)}</span>
+    </div>
+    <div class="intent-card">
+      <strong>Privacy</strong>
+      <span>${escapeHtml(page.intent.privacy)}</span>
+    </div>
+  </section>`;
+}
+
+function renderClusterNav(currentSlug: string) {
+  const links = coreClusterLinks.filter(link => link.href !== `/${currentSlug}`);
+
+  return `<section class="cluster-nav" aria-label="Jungian test topic cluster">
+    <h2>Related Jungian assessment guides</h2>
+    <div class="cluster-grid">
+      ${links.map((link) => `<a class="cluster-link" href="${escapeHtml(link.href)}"><strong>${escapeHtml(link.label)}</strong><span>${escapeHtml(link.description)}</span></a>`).join('\n      ')}
+    </div>
+  </section>`;
+}
 
 function renderLandingSection(section: any) {
   const paragraphs = section.body
@@ -154,12 +227,19 @@ function renderLandingSection(section: any) {
     </tbody>
   </table>`
     : '';
+  const links = section.links
+    ? `<div class="context-links">
+    <strong>Useful next reads</strong>
+    <ul>
+      ${section.links.map((link: any) => `<li><a href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a></li>`).join('\n      ')}
+    </ul>
+  </div>`
+    : '';
+  const sectionContent = [paragraphs, bullets, table, links].filter(Boolean).join('\n  ');
 
   return `<section>
   <h2>${escapeHtml(section.heading)}</h2>
-  ${paragraphs}
-  ${bullets}
-  ${table}
+  ${sectionContent}
 </section>`;
 }
 
@@ -235,6 +315,10 @@ ${renderJsonLd(faqSchema)}
     ${page.intro.map((paragraph: string) => `<p class="subtitle">${escapeHtml(paragraph)}</p>`).join('\n    ')}
   </header>
 
+  ${renderIntentPanel(page)}
+
+  ${renderClusterNav(page.slug)}
+
   ${page.sections.map(renderLandingSection).join('\n\n  ')}
 
   <div class="cta-box">
@@ -268,7 +352,7 @@ ${renderJsonLd(faqSchema)}
 </body>
 </html>`;
 
-  return html;
+  return html.replace(/^[ \t]+$/gm, '');
 }
 
 // Generate function page HTML

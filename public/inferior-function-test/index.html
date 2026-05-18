@@ -72,6 +72,20 @@
   .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 20px 0; }
   .related-card { background: var(--jung-surface); padding: 16px; border-radius: 8px; border: 1px solid var(--jung-border-light); box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
   .related-card a { color: var(--jung-dark); text-decoration: none; font-weight: 700; }
+  .intent-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 28px 0 32px; }
+  .intent-card { background: var(--jung-surface); border: 1px solid var(--jung-border-light); border-radius: 8px; padding: 18px; box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
+  .intent-card strong { display: block; margin-bottom: 7px; font-family: "Space Grotesk", Verdana, sans-serif; color: var(--jung-dark); font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .intent-card span { display: block; color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; line-height: 1.6; }
+  .cluster-nav { background: color-mix(in srgb, var(--jung-accent-light) 48%, white); border: 1px solid color-mix(in srgb, var(--jung-accent-muted) 55%, white); border-radius: 8px; padding: 18px; margin: 28px 0 36px; }
+  .cluster-nav h2 { border: 0; margin: 0 0 12px; padding: 0; font-size: 1.12rem; font-family: "Space Grotesk", Verdana, sans-serif; }
+  .cluster-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+  .cluster-link { display: block; min-height: 100%; padding: 14px; border-radius: 8px; background: rgba(255,255,255,0.72); border: 1px solid var(--jung-border-light); color: var(--jung-dark); text-decoration: none; }
+  .cluster-link strong { display: block; margin-bottom: 6px; font-family: "Space Grotesk", Verdana, sans-serif; }
+  .cluster-link span { display: block; color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; font-size: 0.95rem; line-height: 1.45; }
+  .context-links { margin: 18px 0 0; padding: 14px 16px; background: var(--jung-surface); border: 1px solid var(--jung-border-light); border-radius: 8px; }
+  .context-links strong { display: block; margin-bottom: 8px; font-family: "Space Grotesk", Verdana, sans-serif; font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--jung-muted); }
+  .context-links ul { margin: 0; padding-left: 20px; }
+  .context-links li { margin: 4px 0; }
   .faq-item { background: var(--jung-surface); padding: 18px; border-radius: 8px; margin-bottom: 14px; border: 1px solid var(--jung-border-light); }
   .faq-item h3 { margin: 0 0 8px; font-size: 1.05rem; }
   .comparison-table { width: 100%; border-collapse: collapse; margin: 22px 0; background: var(--jung-surface); border: 1px solid var(--jung-border); border-radius: 8px; overflow: hidden; }
@@ -88,6 +102,7 @@
     body { padding: 20px 16px 40px; }
     nav { display: flex; flex-wrap: wrap; gap: 10px 14px; }
     nav a { margin-right: 0; }
+    .intent-grid { grid-template-columns: 1fr; }
     .trait-list { columns: 1; }
     .text-link { display: inline-block; margin: 14px 0 0; }
   }
@@ -188,31 +203,87 @@
     <p class="subtitle">TypeJung estimates inferior-function patterns by measuring the whole cognitive profile first. That matters because the inferior function is not just the lowest number. It sits in relationship to the dominant function and the rest of the stack.</p>
   </header>
 
+  <section class="intent-grid" aria-label="Quick assessment fit">
+    <div class="intent-card">
+      <strong>Best for</strong>
+      <span>People who want to understand stress patterns, grip reactions, and the growth edge behind a Jungian type result.</span>
+    </div>
+    <div class="intent-card">
+      <strong>Measures</strong>
+      <span>Dominant-inferior tension, pressure responses, function imbalance, attraction and avoidance signals, and recovery themes.</span>
+    </div>
+    <div class="intent-card">
+      <strong>Privacy</strong>
+      <span>Educational self-reflection only. It is not a mental health diagnosis, and severe distress belongs with a qualified professional.</span>
+    </div>
+  </section>
+
+  <section class="cluster-nav" aria-label="Jungian test topic cluster">
+    <h2>Related Jungian assessment guides</h2>
+    <div class="cluster-grid">
+      <a class="cluster-link" href="/jungian-test"><strong>Jungian test</strong><span>Start with the broad Jungian assessment page and compare type, function, and stress evidence.</span></a>
+      <a class="cluster-link" href="/cognitive-function-test"><strong>Cognitive function test</strong><span>See how TypeJung scores Ni, Ne, Si, Se, Ti, Te, Fi, and Fe independently.</span></a>
+      <a class="cluster-link" href="/mbti-alternative"><strong>MBTI alternative</strong><span>Compare TypeJung against label-first MBTI-style quizzes and four-letter tests.</span></a>
+      <a class="cluster-link" href="/jungian-cognitive-functions-test"><strong>Jungian cognitive functions test</strong><span>Map the full stack and the function-attitude pattern behind a likely type result.</span></a>
+    </div>
+  </section>
+
   <section>
   <h2>Why the inferior function matters</h2>
   <p>In Jungian typology, the inferior function often marks a growth edge. It may show up as avoidance in everyday life and as overreaction during pressure. Learning the pattern gives you a way to notice stress before it takes over.</p>
+  <p>A good inferior function test should not simply ask what you are bad at. It should compare the whole function profile and look at the tension between what feels controlled and what becomes reactive.</p>
   <ul>
     <li>Ni-dominant patterns often struggle with inferior Se under stress</li>
     <li>Ne-dominant patterns often struggle with inferior Si under stress</li>
     <li>Ti-dominant patterns often struggle with inferior Fe under stress</li>
     <li>Fi-dominant patterns often struggle with inferior Te under stress</li>
+    <li>Fe-dominant patterns often struggle with inferior Ti under stress</li>
+    <li>Te-dominant patterns often struggle with inferior Fi under stress</li>
   </ul>
-  
+  <div class="context-links">
+    <strong>Useful next reads</strong>
+    <ul>
+      <li><a href="/blog/what-is-the-inferior-function">Read: what is the inferior function?</a></li>
+      <li><a href="/blog/what-does-it-mean-to-be-in-the-grip">Read: what it means to be in the grip</a></li>
+    </ul>
+  </div>
 </section>
 
   <section>
   <h2>What the test looks for</h2>
   <p>A useful inferior-function test needs more than a single question about weakness. TypeJung looks at how you attend, decide, respond to pressure, and distribute energy across the 8 functions.</p>
   <p>The result helps you compare likely dominant and inferior poles, then gives you a language for recovery and development.</p>
-  
-  
+  <table class="comparison-table">
+    <thead>
+      <tr><th>Signal</th><th>What it can reveal</th><th>Why it matters</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Stress reaction</td><td>What takes over when control weakens</td><td>Often points toward inferior-function material</td></tr>
+      <tr><td>Avoidance pattern</td><td>What you postpone, dismiss, or overcompensate for</td><td>Shows where development may be needed</td></tr>
+      <tr><td>Attraction or envy</td><td>What feels powerful in others but hard to own</td><td>Can mark a less conscious function</td></tr>
+      <tr><td>Recovery need</td><td>What helps you regain balance</td><td>Turns insight into practical self-observation</td></tr>
+    </tbody>
+  </table>
+</section>
+
+  <section>
+  <h2>Inferior function examples</h2>
+  <p>If the likely inferior function is Se, stress may involve sensory overwhelm, impulsive action, or difficulty staying grounded in the present. If the likely inferior function is Fe, stress may involve social over-reading, rejection sensitivity, or awkward attempts to repair harmony.</p>
+  <p>These examples are not diagnoses. They are prompts for observation: what appears repeatedly, under what conditions, and what helps you return to choice?</p>
+  <div class="context-links">
+    <strong>Useful next reads</strong>
+    <ul>
+      <li><a href="/functions/se">Learn Introverted Intuition vs Extraverted Sensing patterns</a></li>
+      <li><a href="/functions/fe">Learn Introverted Thinking vs Extraverted Feeling patterns</a></li>
+      <li><a href="/shadow-work-test">Explore the Jungian shadow work test</a></li>
+    </ul>
+  </div>
 </section>
 
   <section>
   <h2>Use your result carefully</h2>
   <p>Inferior-function language can be clarifying, but it should not become a self-criticism tool. Treat the result as a map for observation. If stress feels severe or persistent, work with a qualified professional.</p>
-  
-  
+  <p>The best next step is to take the free assessment, read the inferred dominant-inferior axis, then compare it against real situations for a few weeks before turning it into a fixed identity.</p>
 </section>
 
   <div class="cta-box">

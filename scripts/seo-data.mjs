@@ -436,8 +436,8 @@ export const pageData = {
     description: 'Take a free depth-based Jungian assessment that maps cognitive functions, energy flow, and inferior-function stress for educational self-reflection.',
   },
   '/assessment': {
-    title: 'Take the Assessment | TypeJung',
-    description: 'Start your free 42-question Jungian personality assessment. Measures all 8 cognitive functions independently. Takes 12-16 minutes.',
+    title: 'Take the Free Jungian Cognitive Function Assessment | TypeJung',
+    description: 'Start your free 42-question Jungian cognitive function assessment. Measures all 8 functions, inferior-function pressure, somatic signals, and attitude direction.',
   },
   '/results': {
     title: 'Your Results | TypeJung',
@@ -490,31 +490,72 @@ export const seoLandingPages = [
       'TypeJung is a Jungian self-assessment for people who want more than a quick type label. It measures how you use all 8 cognitive functions, then turns that profile into an educational map of attention, decision-making, and stress patterns.',
       'The free assessment takes about 12 to 16 minutes. Paid reports are optional one-time CAD upgrades: Insight for CA$19 and Mastery for CA$39.',
     ],
+    intent: {
+      bestFor: 'Searchers who want a Jungian test with visible cognitive-function evidence, not only a fast type label.',
+      measures: 'All 8 function-attitudes, dominant-inferior tension, behavioral scenarios, stress signals, somatic cues, and attitude direction.',
+      privacy: 'The free assessment can be started before paying. Account features are for saved history and paid report access.',
+    },
     sections: [
       {
         heading: 'What a Jungian test should show',
         body: [
           'Carl Jung described psychological type through patterns of perception and judgment. A useful Jungian test should therefore look at the function pattern behind the result, not only the final type code.',
-          'TypeJung scores the intuitive, sensing, thinking, and feeling functions in both introverted and extraverted attitudes. That creates a richer profile than a simple either-or quiz.',
+          'TypeJung scores the intuitive, sensing, thinking, and feeling functions in both introverted and extraverted attitudes. That creates a richer profile than a simple either-or quiz and helps explain why nearby type labels can both feel partly true.',
         ],
         bullets: [
           'Perceiving functions: Ni, Ne, Si, and Se',
           'Judging functions: Ti, Te, Fi, and Fe',
           'Likely dominant, auxiliary, tertiary, and inferior patterns',
           'Stress signals connected to the inferior function',
+          'A result you can inspect as a hypothesis rather than memorize as an identity',
+        ],
+        links: [
+          { href: '/cognitive-functions', label: 'Read the guide to all 8 cognitive functions' },
+          { href: '/jungian-cognitive-functions-test', label: 'Compare the full Jungian cognitive functions test' },
         ],
       },
       {
-        heading: 'How to read your result',
+        heading: 'How TypeJung is different from a quick personality quiz',
+        body: [
+          'Many personality quizzes ask direct identity questions such as whether you are organized, emotional, intuitive, or social. Those answers can change with role, mood, age, stress, and what you want to believe about yourself.',
+          'TypeJung uses scenario evidence instead. It asks how your attention behaves, how decisions get made, what happens when pressure rises, and where your body registers engagement or threat. That gives the result more texture than a label-only quiz.',
+        ],
+        table: {
+          headers: ['What searchers need', 'Quick label quiz', 'TypeJung approach'],
+          rows: [
+            ['Result format', 'A single type code', 'Function map plus likely type pattern'],
+            ['Jungian depth', 'Usually light or implied', 'Function-attitude and dominant-inferior interpretation'],
+            ['Stress insight', 'Generic advice', 'Inferior-function and grip pattern context'],
+            ['Payment path', 'Often pay before depth is clear', 'Free core map first, optional one-time upgrades later'],
+          ],
+        },
+      },
+      {
+        heading: 'How to read your Jungian test result',
         body: [
           'Your result is best read as a working hypothesis. The strongest scores show the functions you may rely on most. The lower or less stable scores can point toward the parts of the psyche that need patience, context, and development.',
           'Use the free result to orient yourself, then use the Learn section to compare your pattern with the 8 functions and 16 type profiles.',
+        ],
+        bullets: [
+          'Start with the top two functions, because they often explain what feels natural and trusted',
+          'Then study the likely inferior function, because that is where stress and growth usually become visible',
+          'Compare your likely type page with the function scores instead of forcing a result that does not fit',
+        ],
+        links: [
+          { href: '/types/infj', label: 'Example type guide: INFJ' },
+          { href: '/types/intp', label: 'Example type guide: INTP' },
+          { href: '/learn', label: 'Learn how to interpret the result' },
         ],
       },
       {
         heading: 'When a paid report helps',
         body: [
           'The free assessment gives you the core map. Insight adds developmental edge analysis, a stress pattern map, relationship triggers, personalized practice guidance, and lifetime unlocked result access for a one-time CA$19 payment. Mastery adds the AI Type Coach, an individuation roadmap, reassessment tracking, a practice library, and priority support for a one-time CA$39 payment.',
+          'The best path is to take the free test first. Upgrade only if the function map feels accurate enough to make deeper interpretation useful.',
+        ],
+        links: [
+          { href: '/pricing', label: 'Compare Free, Insight, and Mastery pricing' },
+          { href: '/assessment', label: 'Start the free Jungian assessment' },
         ],
       },
     ],
@@ -552,6 +593,11 @@ export const seoLandingPages = [
       'If MBTI-style tests keep giving you different four-letter results, the problem may be the format. Many tests force binary choices, then compress your answers into a label before you can see the underlying pattern.',
       'TypeJung is an MBTI alternative that scores all 8 Jungian cognitive functions independently. The result is a profile you can inspect, question, and use for development.',
     ],
+    intent: {
+      bestFor: 'People who like type language but want a more inspectable MBTI alternative with cognitive-function evidence.',
+      measures: 'Independent function scores, likely type pattern, inferior-function pressure, and context for why MBTI results change.',
+      privacy: 'Start free without paying first. Upgrade only after the function profile feels useful.',
+    },
     sections: [
       {
         heading: 'Why people look for an alternative',
@@ -563,12 +609,18 @@ export const seoLandingPages = [
           'No forced choice between intuition and sensing as if one removes the other',
           'No assumption that everyone inside a type has the same function development',
           'More visibility into stress patterns and inferior-function tension',
+          'A result that lets you inspect nearby type possibilities instead of hiding close scores',
+        ],
+        links: [
+          { href: '/mbti-keeps-changing', label: 'Why your MBTI result keeps changing' },
+          { href: '/infj-vs-infp-test', label: 'Compare INFJ vs INFP through function evidence' },
         ],
       },
       {
         heading: 'TypeJung versus a typical MBTI-style quiz',
         body: [
           'TypeJung still speaks the language of Jungian type, but it treats type as an interpretation of a function profile. That makes the result more useful for people who already know the basics and want a clearer self-assessment.',
+          'This matters for searchers who are deciding whether to take another personality test. If your main goal is a quick social label, a simple quiz may be enough. If your goal is to understand the pattern behind the label, function evidence is more useful.',
         ],
         table: {
           headers: ['Question', 'Typical MBTI-style quiz', 'TypeJung'],
@@ -577,13 +629,32 @@ export const seoLandingPages = [
             ['How are results shown?', 'A four-letter type label', 'Function scores plus likely type pattern'],
             ['What is the development angle?', 'General type advice', 'Dominant, auxiliary, inferior, stress, and development themes'],
             ['What is free?', 'Usually a basic type result', 'A free 42-question assessment and core profile'],
+            ['How are close results handled?', 'Often hidden behind a final label', 'Shown as a profile you can compare'],
           ],
         },
+      },
+      {
+        heading: 'When TypeJung is the better alternative',
+        body: [
+          'TypeJung is strongest when the question is not simply "what type am I?" but "why do I keep getting this result, and what pattern does it point toward?"',
+          'Use it when you want to compare function pairs, see stress-edge evidence, or understand whether a result is stable enough to build self-reflection around.',
+        ],
+        bullets: [
+          'You keep testing between two nearby types',
+          'You want the cognitive functions behind a four-letter code',
+          'You care about growth, stress, and relationship triggers',
+          'You want a free first result before deciding whether a deeper report is worth it',
+        ],
       },
       {
         heading: 'What to do after your result',
         body: [
           'Start with the free assessment, then compare your strongest and weakest functions in the Learn section. If you want a deeper written interpretation, the Insight and Mastery reports are optional one-time CAD purchases.',
+        ],
+        links: [
+          { href: '/assessment', label: 'Take the free TypeJung assessment' },
+          { href: '/cognitive-function-test', label: 'See the cognitive function test page' },
+          { href: '/blog/best-mbti-alternative-tests', label: 'Read the MBTI alternatives guide' },
         ],
       },
     ],
@@ -621,17 +692,29 @@ export const seoLandingPages = [
       'Your inferior function is often the least conscious part of your Jungian function stack. It can feel awkward, compelling, or strangely powerful under stress.',
       'TypeJung estimates inferior-function patterns by measuring the whole cognitive profile first. That matters because the inferior function is not just the lowest number. It sits in relationship to the dominant function and the rest of the stack.',
     ],
+    intent: {
+      bestFor: 'People who want to understand stress patterns, grip reactions, and the growth edge behind a Jungian type result.',
+      measures: 'Dominant-inferior tension, pressure responses, function imbalance, attraction and avoidance signals, and recovery themes.',
+      privacy: 'Educational self-reflection only. It is not a mental health diagnosis, and severe distress belongs with a qualified professional.',
+    },
     sections: [
       {
         heading: 'Why the inferior function matters',
         body: [
           'In Jungian typology, the inferior function often marks a growth edge. It may show up as avoidance in everyday life and as overreaction during pressure. Learning the pattern gives you a way to notice stress before it takes over.',
+          'A good inferior function test should not simply ask what you are bad at. It should compare the whole function profile and look at the tension between what feels controlled and what becomes reactive.',
         ],
         bullets: [
           'Ni-dominant patterns often struggle with inferior Se under stress',
           'Ne-dominant patterns often struggle with inferior Si under stress',
           'Ti-dominant patterns often struggle with inferior Fe under stress',
           'Fi-dominant patterns often struggle with inferior Te under stress',
+          'Fe-dominant patterns often struggle with inferior Ti under stress',
+          'Te-dominant patterns often struggle with inferior Fi under stress',
+        ],
+        links: [
+          { href: '/blog/what-is-the-inferior-function', label: 'Read: what is the inferior function?' },
+          { href: '/blog/what-does-it-mean-to-be-in-the-grip', label: 'Read: what it means to be in the grip' },
         ],
       },
       {
@@ -640,11 +723,33 @@ export const seoLandingPages = [
           'A useful inferior-function test needs more than a single question about weakness. TypeJung looks at how you attend, decide, respond to pressure, and distribute energy across the 8 functions.',
           'The result helps you compare likely dominant and inferior poles, then gives you a language for recovery and development.',
         ],
+        table: {
+          headers: ['Signal', 'What it can reveal', 'Why it matters'],
+          rows: [
+            ['Stress reaction', 'What takes over when control weakens', 'Often points toward inferior-function material'],
+            ['Avoidance pattern', 'What you postpone, dismiss, or overcompensate for', 'Shows where development may be needed'],
+            ['Attraction or envy', 'What feels powerful in others but hard to own', 'Can mark a less conscious function'],
+            ['Recovery need', 'What helps you regain balance', 'Turns insight into practical self-observation'],
+          ],
+        },
+      },
+      {
+        heading: 'Inferior function examples',
+        body: [
+          'If the likely inferior function is Se, stress may involve sensory overwhelm, impulsive action, or difficulty staying grounded in the present. If the likely inferior function is Fe, stress may involve social over-reading, rejection sensitivity, or awkward attempts to repair harmony.',
+          'These examples are not diagnoses. They are prompts for observation: what appears repeatedly, under what conditions, and what helps you return to choice?',
+        ],
+        links: [
+          { href: '/functions/se', label: 'Learn Introverted Intuition vs Extraverted Sensing patterns' },
+          { href: '/functions/fe', label: 'Learn Introverted Thinking vs Extraverted Feeling patterns' },
+          { href: '/shadow-work-test', label: 'Explore the Jungian shadow work test' },
+        ],
       },
       {
         heading: 'Use your result carefully',
         body: [
           'Inferior-function language can be clarifying, but it should not become a self-criticism tool. Treat the result as a map for observation. If stress feels severe or persistent, work with a qualified professional.',
+          'The best next step is to take the free assessment, read the inferred dominant-inferior axis, then compare it against real situations for a few weeks before turning it into a fixed identity.',
         ],
       },
     ],
@@ -681,11 +786,17 @@ export const seoLandingPages = [
       'TypeJung measures Ni, Ne, Si, Se, Ti, Te, Fi, and Fe independently so you can see the shape of your cognitive profile instead of guessing from a type description.',
       'The free assessment gives you a function map and likely type pattern. Optional paid reports add deeper analysis with one-time CAD pricing: CA$19 for Insight and CA$39 for Mastery.',
     ],
+    intent: {
+      bestFor: 'Searchers who want a cognitive function test that shows all 8 scores and explains the pattern behind them.',
+      measures: 'Ni, Ne, Si, Se, Ti, Te, Fi, Fe, likely type pattern, dominant-inferior axis, stress signals, and interpretation confidence.',
+      privacy: 'The core 42-question result is free. Paid reports are optional one-time upgrades after the result is visible.',
+    },
     sections: [
       {
         heading: 'The 8 functions TypeJung measures',
         body: [
           'The test separates perceiving functions, which describe how information comes into awareness, from judging functions, which describe how decisions and evaluations are made.',
+          'This is useful because people rarely fit cleanly into one simple trait pair. You may have strong intuition and still rely on sensing in specific contexts, or score close between two judging functions when work and relationships ask different things from you.',
         ],
         bullets: [
           'Ni: convergent pattern insight and future orientation',
@@ -697,11 +808,18 @@ export const seoLandingPages = [
           'Fi: personal values, authenticity, and inner alignment',
           'Fe: relational attunement, harmony, and shared values',
         ],
+        links: [
+          { href: '/functions/ni', label: 'Introverted Intuition guide' },
+          { href: '/functions/ne', label: 'Extraverted Intuition guide' },
+          { href: '/functions/ti', label: 'Introverted Thinking guide' },
+          { href: '/functions/fe', label: 'Extraverted Feeling guide' },
+        ],
       },
       {
         heading: 'What you receive after the assessment',
         body: [
           'Your result shows relative function strength and a likely type interpretation. That gives you a way to inspect the data instead of accepting a black-box label.',
+          'The result is designed for self-reflection, not clinical diagnosis. It gives you language for attention, judgment, stress, and development so you can test the pattern against real life.',
         ],
         bullets: [
           'A free cognitive function profile',
@@ -711,9 +829,30 @@ export const seoLandingPages = [
         ],
       },
       {
+        heading: 'Why all 8 scores matter',
+        body: [
+          'The most useful insight often comes from the relationships between scores. A high dominant score can show what feels natural. A close auxiliary score can show how that strength gets supported. A lower or reactive function can point toward stress and growth.',
+          'That is why TypeJung avoids reducing the result to only one function or one type code. The function map lets you compare competing hypotheses instead of hiding uncertainty.',
+        ],
+        table: {
+          headers: ['Pattern in the score', 'Possible meaning', 'What to inspect next'],
+          rows: [
+            ['Two high perceiving functions', 'You may switch between pattern insight, possibilities, memory, or direct experience by context', 'Compare Ni, Ne, Si, and Se descriptions'],
+            ['High thinking and feeling', 'Decision-making may combine logic and values rather than one simple preference', 'Compare Ti, Te, Fi, and Fe examples'],
+            ['One function feels reactive', 'It may be less conscious or stress-linked', 'Read the inferior function page'],
+            ['Nearby type possibilities', 'Your likely type may need interpretation, not force', 'Read the matching type pages'],
+          ],
+        },
+      },
+      {
         heading: 'Best next step',
         body: [
           'Take the assessment first, then use the Learn section to understand your top two functions and your possible inferior function. The pattern between those positions is usually more useful than any single score.',
+        ],
+        links: [
+          { href: '/assessment', label: 'Start the free cognitive function test' },
+          { href: '/jungian-typology', label: 'Read the Jungian typology guide' },
+          { href: '/inferior-function-test', label: 'Find your inferior-function pattern' },
         ],
       },
     ],
@@ -941,6 +1080,11 @@ export const seoLandingPages = [
       'A serious Jungian cognitive functions test should do more than hand you a four-letter label. It should show how the function pattern is built.',
       'TypeJung maps all 8 function-attitudes, then explains the dominant-inferior axis that often carries the clearest growth tension.',
     ],
+    intent: {
+      bestFor: 'People searching specifically for Jungian functions, function stacks, and a full Ni Ne Si Se Ti Te Fi Fe assessment.',
+      measures: 'Introverted and extraverted attitudes across thinking, feeling, sensation, and intuition, plus dominant-inferior interpretation.',
+      privacy: 'Use the free core map first. Paid interpretation is optional and should only be used if the map feels accurate.',
+    },
     sections: [
       {
         heading: 'What makes it Jungian',
@@ -954,6 +1098,10 @@ export const seoLandingPages = [
           'Sensation and intuition as perceiving functions',
           'Dominant, auxiliary, tertiary, and inferior pattern interpretation',
         ],
+        links: [
+          { href: '/jungian-typology', label: 'Read the Jungian typology guide' },
+          { href: '/cognitive-functions', label: 'Read the 8 cognitive functions guide' },
+        ],
       },
       {
         heading: 'What the free result includes',
@@ -961,11 +1109,37 @@ export const seoLandingPages = [
           'The free result gives you the main energy map and likely function pattern. It is enough to start comparing your type hypothesis against real self-observation.',
           'Paid reports are optional and add deeper interpretation only after you have seen the core map.',
         ],
+        bullets: [
+          'Relative scores for all 8 function-attitudes',
+          'A likely type pattern with room for close alternatives',
+          'A dominant-inferior axis for growth and stress reflection',
+          'Clear next links into function and type guides',
+        ],
+      },
+      {
+        heading: 'Function stack versus function profile',
+        body: [
+          'A function stack is a theory-based interpretation of how functions tend to organize in a type. A function profile is the measured pattern from your answers. The two should inform each other, but they are not the same thing.',
+          'TypeJung starts with the profile, then interprets likely stack patterns. That makes it easier to notice when a type code is plausible but not yet certain.',
+        ],
+        table: {
+          headers: ['Concept', 'What it means', 'How TypeJung uses it'],
+          rows: [
+            ['Function profile', 'The score shape across all 8 functions', 'Shows the direct answer pattern'],
+            ['Function stack', 'A model of dominant, auxiliary, tertiary, and inferior positions', 'Helps interpret the score shape'],
+            ['Dominant-inferior axis', 'The tension between the most trusted and least conscious poles', 'Frames stress and development'],
+          ],
+        },
       },
       {
         heading: 'How to use the output',
         body: [
           'Read the highest function as a hypothesis about what your ego trusts. Read the lowest or inferior signal as a place to observe stress, reaction, attraction, and developmental tension. Then retake later to see whether the map becomes more flexible.',
+        ],
+        links: [
+          { href: '/assessment', label: 'Take the free Jungian cognitive functions test' },
+          { href: '/inferior-function-test', label: 'Understand your inferior function' },
+          { href: '/mbti-alternative', label: 'Compare TypeJung as an MBTI alternative' },
         ],
       },
     ],

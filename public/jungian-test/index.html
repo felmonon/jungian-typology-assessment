@@ -72,6 +72,20 @@
   .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 20px 0; }
   .related-card { background: var(--jung-surface); padding: 16px; border-radius: 8px; border: 1px solid var(--jung-border-light); box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
   .related-card a { color: var(--jung-dark); text-decoration: none; font-weight: 700; }
+  .intent-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 28px 0 32px; }
+  .intent-card { background: var(--jung-surface); border: 1px solid var(--jung-border-light); border-radius: 8px; padding: 18px; box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
+  .intent-card strong { display: block; margin-bottom: 7px; font-family: "Space Grotesk", Verdana, sans-serif; color: var(--jung-dark); font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .intent-card span { display: block; color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; line-height: 1.6; }
+  .cluster-nav { background: color-mix(in srgb, var(--jung-accent-light) 48%, white); border: 1px solid color-mix(in srgb, var(--jung-accent-muted) 55%, white); border-radius: 8px; padding: 18px; margin: 28px 0 36px; }
+  .cluster-nav h2 { border: 0; margin: 0 0 12px; padding: 0; font-size: 1.12rem; font-family: "Space Grotesk", Verdana, sans-serif; }
+  .cluster-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+  .cluster-link { display: block; min-height: 100%; padding: 14px; border-radius: 8px; background: rgba(255,255,255,0.72); border: 1px solid var(--jung-border-light); color: var(--jung-dark); text-decoration: none; }
+  .cluster-link strong { display: block; margin-bottom: 6px; font-family: "Space Grotesk", Verdana, sans-serif; }
+  .cluster-link span { display: block; color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; font-size: 0.95rem; line-height: 1.45; }
+  .context-links { margin: 18px 0 0; padding: 14px 16px; background: var(--jung-surface); border: 1px solid var(--jung-border-light); border-radius: 8px; }
+  .context-links strong { display: block; margin-bottom: 8px; font-family: "Space Grotesk", Verdana, sans-serif; font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--jung-muted); }
+  .context-links ul { margin: 0; padding-left: 20px; }
+  .context-links li { margin: 4px 0; }
   .faq-item { background: var(--jung-surface); padding: 18px; border-radius: 8px; margin-bottom: 14px; border: 1px solid var(--jung-border-light); }
   .faq-item h3 { margin: 0 0 8px; font-size: 1.05rem; }
   .comparison-table { width: 100%; border-collapse: collapse; margin: 22px 0; background: var(--jung-surface); border: 1px solid var(--jung-border); border-radius: 8px; overflow: hidden; }
@@ -88,6 +102,7 @@
     body { padding: 20px 16px 40px; }
     nav { display: flex; flex-wrap: wrap; gap: 10px 14px; }
     nav a { margin-right: 0; }
+    .intent-grid { grid-template-columns: 1fr; }
     .trait-list { columns: 1; }
     .text-link { display: inline-block; margin: 14px 0 0; }
   }
@@ -188,32 +203,98 @@
     <p class="subtitle">The free assessment takes about 12 to 16 minutes. Paid reports are optional one-time CAD upgrades: Insight for CA$19 and Mastery for CA$39.</p>
   </header>
 
+  <section class="intent-grid" aria-label="Quick assessment fit">
+    <div class="intent-card">
+      <strong>Best for</strong>
+      <span>Searchers who want a Jungian test with visible cognitive-function evidence, not only a fast type label.</span>
+    </div>
+    <div class="intent-card">
+      <strong>Measures</strong>
+      <span>All 8 function-attitudes, dominant-inferior tension, behavioral scenarios, stress signals, somatic cues, and attitude direction.</span>
+    </div>
+    <div class="intent-card">
+      <strong>Privacy</strong>
+      <span>The free assessment can be started before paying. Account features are for saved history and paid report access.</span>
+    </div>
+  </section>
+
+  <section class="cluster-nav" aria-label="Jungian test topic cluster">
+    <h2>Related Jungian assessment guides</h2>
+    <div class="cluster-grid">
+      <a class="cluster-link" href="/cognitive-function-test"><strong>Cognitive function test</strong><span>See how TypeJung scores Ni, Ne, Si, Se, Ti, Te, Fi, and Fe independently.</span></a>
+      <a class="cluster-link" href="/mbti-alternative"><strong>MBTI alternative</strong><span>Compare TypeJung against label-first MBTI-style quizzes and four-letter tests.</span></a>
+      <a class="cluster-link" href="/inferior-function-test"><strong>Inferior function test</strong><span>Use the dominant-inferior axis to understand stress, grip patterns, and development.</span></a>
+      <a class="cluster-link" href="/jungian-cognitive-functions-test"><strong>Jungian cognitive functions test</strong><span>Map the full stack and the function-attitude pattern behind a likely type result.</span></a>
+    </div>
+  </section>
+
   <section>
   <h2>What a Jungian test should show</h2>
   <p>Carl Jung described psychological type through patterns of perception and judgment. A useful Jungian test should therefore look at the function pattern behind the result, not only the final type code.</p>
-  <p>TypeJung scores the intuitive, sensing, thinking, and feeling functions in both introverted and extraverted attitudes. That creates a richer profile than a simple either-or quiz.</p>
+  <p>TypeJung scores the intuitive, sensing, thinking, and feeling functions in both introverted and extraverted attitudes. That creates a richer profile than a simple either-or quiz and helps explain why nearby type labels can both feel partly true.</p>
   <ul>
     <li>Perceiving functions: Ni, Ne, Si, and Se</li>
     <li>Judging functions: Ti, Te, Fi, and Fe</li>
     <li>Likely dominant, auxiliary, tertiary, and inferior patterns</li>
     <li>Stress signals connected to the inferior function</li>
+    <li>A result you can inspect as a hypothesis rather than memorize as an identity</li>
   </ul>
-  
+  <div class="context-links">
+    <strong>Useful next reads</strong>
+    <ul>
+      <li><a href="/cognitive-functions">Read the guide to all 8 cognitive functions</a></li>
+      <li><a href="/jungian-cognitive-functions-test">Compare the full Jungian cognitive functions test</a></li>
+    </ul>
+  </div>
 </section>
 
   <section>
-  <h2>How to read your result</h2>
+  <h2>How TypeJung is different from a quick personality quiz</h2>
+  <p>Many personality quizzes ask direct identity questions such as whether you are organized, emotional, intuitive, or social. Those answers can change with role, mood, age, stress, and what you want to believe about yourself.</p>
+  <p>TypeJung uses scenario evidence instead. It asks how your attention behaves, how decisions get made, what happens when pressure rises, and where your body registers engagement or threat. That gives the result more texture than a label-only quiz.</p>
+  <table class="comparison-table">
+    <thead>
+      <tr><th>What searchers need</th><th>Quick label quiz</th><th>TypeJung approach</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Result format</td><td>A single type code</td><td>Function map plus likely type pattern</td></tr>
+      <tr><td>Jungian depth</td><td>Usually light or implied</td><td>Function-attitude and dominant-inferior interpretation</td></tr>
+      <tr><td>Stress insight</td><td>Generic advice</td><td>Inferior-function and grip pattern context</td></tr>
+      <tr><td>Payment path</td><td>Often pay before depth is clear</td><td>Free core map first, optional one-time upgrades later</td></tr>
+    </tbody>
+  </table>
+</section>
+
+  <section>
+  <h2>How to read your Jungian test result</h2>
   <p>Your result is best read as a working hypothesis. The strongest scores show the functions you may rely on most. The lower or less stable scores can point toward the parts of the psyche that need patience, context, and development.</p>
   <p>Use the free result to orient yourself, then use the Learn section to compare your pattern with the 8 functions and 16 type profiles.</p>
-  
-  
+  <ul>
+    <li>Start with the top two functions, because they often explain what feels natural and trusted</li>
+    <li>Then study the likely inferior function, because that is where stress and growth usually become visible</li>
+    <li>Compare your likely type page with the function scores instead of forcing a result that does not fit</li>
+  </ul>
+  <div class="context-links">
+    <strong>Useful next reads</strong>
+    <ul>
+      <li><a href="/types/infj">Example type guide: INFJ</a></li>
+      <li><a href="/types/intp">Example type guide: INTP</a></li>
+      <li><a href="/learn">Learn how to interpret the result</a></li>
+    </ul>
+  </div>
 </section>
 
   <section>
   <h2>When a paid report helps</h2>
   <p>The free assessment gives you the core map. Insight adds developmental edge analysis, a stress pattern map, relationship triggers, personalized practice guidance, and lifetime unlocked result access for a one-time CA$19 payment. Mastery adds the AI Type Coach, an individuation roadmap, reassessment tracking, a practice library, and priority support for a one-time CA$39 payment.</p>
-  
-  
+  <p>The best path is to take the free test first. Upgrade only if the function map feels accurate enough to make deeper interpretation useful.</p>
+  <div class="context-links">
+    <strong>Useful next reads</strong>
+    <ul>
+      <li><a href="/pricing">Compare Free, Insight, and Mastery pricing</a></li>
+      <li><a href="/assessment">Start the free Jungian assessment</a></li>
+    </ul>
+  </div>
 </section>
 
   <div class="cta-box">

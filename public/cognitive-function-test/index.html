@@ -72,6 +72,20 @@
   .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 20px 0; }
   .related-card { background: var(--jung-surface); padding: 16px; border-radius: 8px; border: 1px solid var(--jung-border-light); box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
   .related-card a { color: var(--jung-dark); text-decoration: none; font-weight: 700; }
+  .intent-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 28px 0 32px; }
+  .intent-card { background: var(--jung-surface); border: 1px solid var(--jung-border-light); border-radius: 8px; padding: 18px; box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
+  .intent-card strong { display: block; margin-bottom: 7px; font-family: "Space Grotesk", Verdana, sans-serif; color: var(--jung-dark); font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .intent-card span { display: block; color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; line-height: 1.6; }
+  .cluster-nav { background: color-mix(in srgb, var(--jung-accent-light) 48%, white); border: 1px solid color-mix(in srgb, var(--jung-accent-muted) 55%, white); border-radius: 8px; padding: 18px; margin: 28px 0 36px; }
+  .cluster-nav h2 { border: 0; margin: 0 0 12px; padding: 0; font-size: 1.12rem; font-family: "Space Grotesk", Verdana, sans-serif; }
+  .cluster-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+  .cluster-link { display: block; min-height: 100%; padding: 14px; border-radius: 8px; background: rgba(255,255,255,0.72); border: 1px solid var(--jung-border-light); color: var(--jung-dark); text-decoration: none; }
+  .cluster-link strong { display: block; margin-bottom: 6px; font-family: "Space Grotesk", Verdana, sans-serif; }
+  .cluster-link span { display: block; color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; font-size: 0.95rem; line-height: 1.45; }
+  .context-links { margin: 18px 0 0; padding: 14px 16px; background: var(--jung-surface); border: 1px solid var(--jung-border-light); border-radius: 8px; }
+  .context-links strong { display: block; margin-bottom: 8px; font-family: "Space Grotesk", Verdana, sans-serif; font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--jung-muted); }
+  .context-links ul { margin: 0; padding-left: 20px; }
+  .context-links li { margin: 4px 0; }
   .faq-item { background: var(--jung-surface); padding: 18px; border-radius: 8px; margin-bottom: 14px; border: 1px solid var(--jung-border-light); }
   .faq-item h3 { margin: 0 0 8px; font-size: 1.05rem; }
   .comparison-table { width: 100%; border-collapse: collapse; margin: 22px 0; background: var(--jung-surface); border: 1px solid var(--jung-border); border-radius: 8px; overflow: hidden; }
@@ -88,6 +102,7 @@
     body { padding: 20px 16px 40px; }
     nav { display: flex; flex-wrap: wrap; gap: 10px 14px; }
     nav a { margin-right: 0; }
+    .intent-grid { grid-template-columns: 1fr; }
     .trait-list { columns: 1; }
     .text-link { display: inline-block; margin: 14px 0 0; }
   }
@@ -188,9 +203,35 @@
     <p class="subtitle">The free assessment gives you a function map and likely type pattern. Optional paid reports add deeper analysis with one-time CAD pricing: CA$19 for Insight and CA$39 for Mastery.</p>
   </header>
 
+  <section class="intent-grid" aria-label="Quick assessment fit">
+    <div class="intent-card">
+      <strong>Best for</strong>
+      <span>Searchers who want a cognitive function test that shows all 8 scores and explains the pattern behind them.</span>
+    </div>
+    <div class="intent-card">
+      <strong>Measures</strong>
+      <span>Ni, Ne, Si, Se, Ti, Te, Fi, Fe, likely type pattern, dominant-inferior axis, stress signals, and interpretation confidence.</span>
+    </div>
+    <div class="intent-card">
+      <strong>Privacy</strong>
+      <span>The core 42-question result is free. Paid reports are optional one-time upgrades after the result is visible.</span>
+    </div>
+  </section>
+
+  <section class="cluster-nav" aria-label="Jungian test topic cluster">
+    <h2>Related Jungian assessment guides</h2>
+    <div class="cluster-grid">
+      <a class="cluster-link" href="/jungian-test"><strong>Jungian test</strong><span>Start with the broad Jungian assessment page and compare type, function, and stress evidence.</span></a>
+      <a class="cluster-link" href="/mbti-alternative"><strong>MBTI alternative</strong><span>Compare TypeJung against label-first MBTI-style quizzes and four-letter tests.</span></a>
+      <a class="cluster-link" href="/inferior-function-test"><strong>Inferior function test</strong><span>Use the dominant-inferior axis to understand stress, grip patterns, and development.</span></a>
+      <a class="cluster-link" href="/jungian-cognitive-functions-test"><strong>Jungian cognitive functions test</strong><span>Map the full stack and the function-attitude pattern behind a likely type result.</span></a>
+    </div>
+  </section>
+
   <section>
   <h2>The 8 functions TypeJung measures</h2>
   <p>The test separates perceiving functions, which describe how information comes into awareness, from judging functions, which describe how decisions and evaluations are made.</p>
+  <p>This is useful because people rarely fit cleanly into one simple trait pair. You may have strong intuition and still rely on sensing in specific contexts, or score close between two judging functions when work and relationships ask different things from you.</p>
   <ul>
     <li>Ni: convergent pattern insight and future orientation</li>
     <li>Ne: divergent possibility scanning and idea generation</li>
@@ -201,26 +242,57 @@
     <li>Fi: personal values, authenticity, and inner alignment</li>
     <li>Fe: relational attunement, harmony, and shared values</li>
   </ul>
-  
+  <div class="context-links">
+    <strong>Useful next reads</strong>
+    <ul>
+      <li><a href="/functions/ni">Introverted Intuition guide</a></li>
+      <li><a href="/functions/ne">Extraverted Intuition guide</a></li>
+      <li><a href="/functions/ti">Introverted Thinking guide</a></li>
+      <li><a href="/functions/fe">Extraverted Feeling guide</a></li>
+    </ul>
+  </div>
 </section>
 
   <section>
   <h2>What you receive after the assessment</h2>
   <p>Your result shows relative function strength and a likely type interpretation. That gives you a way to inspect the data instead of accepting a black-box label.</p>
+  <p>The result is designed for self-reflection, not clinical diagnosis. It gives you language for attention, judgment, stress, and development so you can test the pattern against real life.</p>
   <ul>
     <li>A free cognitive function profile</li>
     <li>A likely Jungian type pattern</li>
     <li>Educational links for each function</li>
     <li>Optional deeper reports for stress patterns, relationship triggers, and practice guidance</li>
   </ul>
-  
+</section>
+
+  <section>
+  <h2>Why all 8 scores matter</h2>
+  <p>The most useful insight often comes from the relationships between scores. A high dominant score can show what feels natural. A close auxiliary score can show how that strength gets supported. A lower or reactive function can point toward stress and growth.</p>
+  <p>That is why TypeJung avoids reducing the result to only one function or one type code. The function map lets you compare competing hypotheses instead of hiding uncertainty.</p>
+  <table class="comparison-table">
+    <thead>
+      <tr><th>Pattern in the score</th><th>Possible meaning</th><th>What to inspect next</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Two high perceiving functions</td><td>You may switch between pattern insight, possibilities, memory, or direct experience by context</td><td>Compare Ni, Ne, Si, and Se descriptions</td></tr>
+      <tr><td>High thinking and feeling</td><td>Decision-making may combine logic and values rather than one simple preference</td><td>Compare Ti, Te, Fi, and Fe examples</td></tr>
+      <tr><td>One function feels reactive</td><td>It may be less conscious or stress-linked</td><td>Read the inferior function page</td></tr>
+      <tr><td>Nearby type possibilities</td><td>Your likely type may need interpretation, not force</td><td>Read the matching type pages</td></tr>
+    </tbody>
+  </table>
 </section>
 
   <section>
   <h2>Best next step</h2>
   <p>Take the assessment first, then use the Learn section to understand your top two functions and your possible inferior function. The pattern between those positions is usually more useful than any single score.</p>
-  
-  
+  <div class="context-links">
+    <strong>Useful next reads</strong>
+    <ul>
+      <li><a href="/assessment">Start the free cognitive function test</a></li>
+      <li><a href="/jungian-typology">Read the Jungian typology guide</a></li>
+      <li><a href="/inferior-function-test">Find your inferior-function pattern</a></li>
+    </ul>
+  </div>
 </section>
 
   <div class="cta-box">

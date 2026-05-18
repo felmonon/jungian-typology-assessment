@@ -1,9 +1,27 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Camera, Save, Trash2, AlertTriangle, History, Eye, Clock, BarChart3, Loader2 } from 'lucide-react';
+import {
+  AlertTriangle,
+  BarChart3,
+  Camera,
+  Clock,
+  Download,
+  Eye,
+  History,
+  KeyRound,
+  Loader2,
+  LogOut,
+  Mail,
+  RotateCcw,
+  Save,
+  ShieldCheck,
+  Trash2,
+  User,
+} from 'lucide-react';
 import { useAuth } from '../hooks/use-auth';
 import { useQueryClient } from '@tanstack/react-query';
 import { FUNCTION_DESCRIPTIONS } from '../data/questions';
+import { clearAuthScopedClientState } from '../lib/auth-client-state';
 
 interface SavedResult {
   id: string;
@@ -23,7 +41,7 @@ interface SavedResult {
 export const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user, isLoading, isAuthenticated } = useAuth();
+  const { user, isLoading, isAuthenticated, logout, isLoggingOut } = useAuth();
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -33,6 +51,7 @@ export const ProfilePage: React.FC = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [providers, setProviders] = useState({ google: false, apple: false });
 
   const [historyResults, setHistoryResults] = useState<SavedResult[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
@@ -74,6 +93,28 @@ export const ProfilePage: React.FC = () => {
       fetchHistory();
     }
   }, [isAuthenticated, fetchHistory]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch('/api/auth/providers')
+      .then((response) => response.ok ? response.json() : null)
+      .then((data) => {
+        if (!cancelled && data) {
+          setProviders({
+            google: Boolean(data.google),
+            apple: Boolean(data.apple),
+          });
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setProviders({ google: false, apple: false });
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -143,8 +184,9 @@ export const ProfilePage: React.FC = () => {
         throw new Error(data.message);
       }
 
+      clearAuthScopedClientState();
       queryClient.setQueryData(['/api/auth/user'], null);
-      queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
+      queryClient.clear();
       navigate('/');
     } catch (err) {
       setError((err as Error).message);
@@ -168,6 +210,33 @@ export const ProfilePage: React.FC = () => {
     return funcInfo ? `${funcKey} - ${funcInfo.title}` : funcKey;
   };
 
+  const handleClearLocalData = () => {
+    clearAuthScopedClientState();
+    setSuccess('Local TypeJung data has been cleared from this browser. Your saved account history is still available.');
+    setError(null);
+  };
+
+  const handleDownloadProfileData = () => {
+    const exportData = {
+      exportedAt: new Date().toISOString(),
+      account: {
+        id: user?.id,
+        email: user?.email,
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        createdAt: user?.createdAt,
+      },
+      assessmentHistory: historyResults,
+    };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `typejung-account-data-${new Date().toISOString().slice(0, 10)}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   const handleViewResult = (result: SavedResult) => {
     localStorage.setItem('jungian_assessment_results', JSON.stringify({
       scores: result.scores,
@@ -185,7 +254,7 @@ export const ProfilePage: React.FC = () => {
   const handleDeleteResult = async (id: string) => {
     setDeletingResultId(id);
     try {
-      const response = await fetch(`/api/results/${id}`, {
+      const response = await fetch(`/api/results?id=${encodeURIComponent(id)}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -222,28 +291,165 @@ export const ProfilePage: React.FC = () => {
 
   return (
     <div className="min-h-[60vh] py-10 md:py-16 px-4 bg-jung-base">
-      <div className="max-w-2xl mx-auto space-y-6 md:space-y-8">
+      <div className="editorial-container space-y-6 md:space-y-8">
         {/* Page Header */}
-        <div className="text-center mb-6 md:mb-8">
+        <div className="mx-auto max-w-3xl text-center mb-6 md:mb-8">
           <h1 className="text-display text-2xl sm:text-3xl md:text-4xl mb-2">Profile Settings</h1>
-          <p className="text-body text-jung-muted text-sm sm:text-base">Manage your account and view your assessment history</p>
+          <p className="text-body text-jung-muted text-sm sm:text-base">
+            Manage sign-in, saved history, local device data, and account deletion from one place.
+          </p>
+        </div>
+
+        {error && (
+          <div className="rounded-lg border border-error/20 bg-error-light p-4 text-sm text-error flex items-start gap-2" role="alert">
+            <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        {success && (
+          <div className="rounded-lg border border-success/20 bg-success-light p-4 text-sm text-success" role="status">
+            {success}
+          </div>
+        )}
+
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="card-elevated p-5">
+            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
+              <Mail className="h-5 w-5" />
+            </div>
+            <p className="text-label">Signed in as</p>
+            <p className="mt-2 truncate text-sm font-semibold text-jung-dark">{user?.email}</p>
+          </div>
+          <div className="card-elevated p-5">
+            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
+              <BarChart3 className="h-5 w-5" />
+            </div>
+            <p className="text-label">Saved results</p>
+            <p className="mt-2 text-2xl font-semibold text-jung-dark">{totalAssessments}</p>
+          </div>
+          <div className="card-elevated p-5">
+            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
+              <Clock className="h-5 w-5" />
+            </div>
+            <p className="text-label">Member since</p>
+            <p className="mt-2 text-sm font-semibold text-jung-dark">{accountCreatedDate || '—'}</p>
+          </div>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-[0.85fr_1fr]">
+          <section className="card-elevated p-5 sm:p-6 md:p-8">
+            <div className="mb-6 flex items-start justify-between gap-4">
+              <div>
+                <p className="text-label">Authentication</p>
+                <h2 className="mt-2 text-heading text-2xl">Login and session</h2>
+              </div>
+              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
+                <ShieldCheck className="h-5 w-5" />
+              </div>
+            </div>
+
+            <div className="grid gap-3">
+              <div className="flex items-center justify-between gap-4 rounded-lg border border-jung-border bg-jung-base p-4">
+                <div className="flex items-center gap-3">
+                  <KeyRound className="h-4 w-4 text-jung-accent" />
+                  <div>
+                    <p className="text-sm font-semibold text-jung-dark">Email and password</p>
+                    <p className="text-xs text-jung-muted">Available for every account</p>
+                  </div>
+                </div>
+                <span className="rounded-full bg-jung-accent-light px-3 py-1 text-xs font-semibold text-jung-accent">Active</span>
+              </div>
+              <div className="flex items-center justify-between gap-4 rounded-lg border border-jung-border bg-jung-base p-4">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-4 w-4 items-center justify-center text-xs font-bold text-jung-accent">G</span>
+                  <div>
+                    <p className="text-sm font-semibold text-jung-dark">Google sign-in</p>
+                    <p className="text-xs text-jung-muted">Uses Google OAuth when configured</p>
+                  </div>
+                </div>
+                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${providers.google ? 'bg-jung-accent-light text-jung-accent' : 'bg-jung-surface-alt text-jung-secondary'}`}>
+                  {providers.google ? 'Enabled' : 'Unavailable'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between gap-4 rounded-lg border border-jung-border bg-jung-base p-4">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-4 w-4 items-center justify-center rounded-full border border-jung-accent text-[10px] font-bold text-jung-accent">A</span>
+                  <div>
+                    <p className="text-sm font-semibold text-jung-dark">Apple sign-in</p>
+                    <p className="text-xs text-jung-muted">Appears on login once enabled for production</p>
+                  </div>
+                </div>
+                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${providers.apple ? 'bg-jung-accent-light text-jung-accent' : 'bg-jung-surface-alt text-jung-secondary'}`}>
+                  {providers.apple ? 'Enabled' : 'Optional'}
+                </span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => logout()}
+              disabled={isLoggingOut}
+              className="mt-6 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-jung-border bg-jung-surface px-4 text-sm font-semibold text-jung-dark transition-colors hover:bg-jung-surface-alt disabled:opacity-50"
+            >
+              <LogOut className="h-4 w-4" />
+              {isLoggingOut ? 'Signing out' : 'Sign out and clear this browser'}
+            </button>
+          </section>
+
+          <section className="card-elevated p-5 sm:p-6 md:p-8">
+            <div className="mb-6 flex items-start justify-between gap-4">
+              <div>
+                <p className="text-label">Privacy</p>
+                <h2 className="mt-2 text-heading text-2xl">Data retention</h2>
+              </div>
+              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
+                <RotateCcw className="h-5 w-5" />
+              </div>
+            </div>
+
+            <div className="grid gap-3 text-sm">
+              <div className="rounded-lg border border-jung-border bg-jung-base p-4">
+                <p className="font-semibold text-jung-dark">Saved assessment history</p>
+                <p className="mt-1 leading-6 text-jung-muted">Kept in your account until you delete individual results or delete the account.</p>
+              </div>
+              <div className="rounded-lg border border-jung-border bg-jung-base p-4">
+                <p className="font-semibold text-jung-dark">Local browser data</p>
+                <p className="mt-1 leading-6 text-jung-muted">Current result, premium cache, lifecycle email markers, and progress are cleared on logout.</p>
+              </div>
+              <div className="rounded-lg border border-jung-border bg-jung-base p-4">
+                <p className="font-semibold text-jung-dark">Session retention</p>
+                <p className="mt-1 leading-6 text-jung-muted">Secure sessions expire after 30 days or immediately when you sign out.</p>
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              <button
+                type="button"
+                onClick={handleDownloadProfileData}
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-jung-accent px-4 text-sm font-semibold text-white transition-colors hover:bg-jung-accent-hover"
+              >
+                <Download className="h-4 w-4" />
+                Download data
+              </button>
+              <button
+                type="button"
+                onClick={handleClearLocalData}
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-jung-border px-4 text-sm font-semibold text-jung-dark transition-colors hover:bg-jung-surface-alt"
+              >
+                <RotateCcw className="h-4 w-4" />
+                Clear local data
+              </button>
+            </div>
+          </section>
         </div>
 
         {/* Profile Card */}
         <div className="card-elevated p-5 sm:p-6 md:p-8">
-          {/* Messages */}
-          {error && (
-            <div className="mb-6 p-4 bg-error-light border border-error/20 rounded-lg text-error text-sm flex items-start gap-2">
-              <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
-              <span>{error}</span>
-            </div>
-          )}
-
-          {success && (
-            <div className="mb-6 p-4 bg-success-light border border-success/20 rounded-lg text-success text-sm">
-              {success}
-            </div>
-          )}
+          <div className="mb-8">
+            <p className="text-label">Profile</p>
+            <h2 className="mt-2 text-heading text-2xl">Account details</h2>
+          </div>
 
           {/* Profile Image */}
           <div className="mb-8 flex flex-col items-center">

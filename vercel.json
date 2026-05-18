@@ -11,6 +11,10 @@
       "destination": "/api/auth/lifecycle-email"
     },
     {
+      "source": "/api/profile",
+      "destination": "/api/auth/profile"
+    },
+    {
       "source": "/assessment",
       "destination": "/assessment/index.html"
     },

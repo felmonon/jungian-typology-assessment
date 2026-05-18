@@ -7,6 +7,12 @@ function generateShareSlug(): string {
   return crypto.randomBytes(8).toString('base64url');
 }
 
+function cleanResultId(value: string | string[] | undefined): string | null {
+  const id = Array.isArray(value) ? value[0] : value;
+  if (!id || !/^[a-zA-Z0-9_-]+$/.test(id)) return null;
+  return id;
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const user = await getSessionUser(req.headers.cookie);
@@ -64,6 +70,31 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
 
+      const resultId = cleanResultId(req.query.id);
+      if (resultId) {
+        const { data: result, error } = await supabase
+          .from('assessment_results')
+          .select(`
+            id,
+            userId:user_id,
+            scores,
+            stack,
+            attitudeScore:attitude_score,
+            isUndifferentiated:is_undifferentiated,
+            shareSlug:share_slug,
+            createdAt:created_at
+          `)
+          .eq('id', resultId)
+          .eq('user_id', user.id)
+          .single();
+
+        if (error || !result) {
+          return res.status(404).json({ message: 'Result not found' });
+        }
+
+        return res.status(200).json(result);
+      }
+
       const { data: results, error } = await supabase
         .from('assessment_results')
         .select(`
@@ -87,7 +118,31 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json(results);
     }
 
-    res.setHeader('Allow', 'GET, POST');
+    if (req.method === 'DELETE') {
+      if (!user?.id) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+
+      const resultId = cleanResultId(req.query.id);
+      if (!resultId) {
+        return res.status(400).json({ message: 'Invalid result id' });
+      }
+
+      const { error } = await supabase
+        .from('assessment_results')
+        .delete()
+        .eq('id', resultId)
+        .eq('user_id', user.id);
+
+      if (error) {
+        console.error('Delete error:', error);
+        return res.status(500).json({ message: 'Failed to delete result' });
+      }
+
+      return res.status(200).json({ message: 'Result deleted successfully' });
+    }
+
+    res.setHeader('Allow', 'GET, POST, DELETE');
     return res.status(405).json({ error: 'Method not allowed' });
   } catch (error) {
     console.error('Error with results:', error);

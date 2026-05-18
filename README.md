@@ -138,6 +138,10 @@ The repo includes:
    SESSION_SECRET=your_session_secret
    GOOGLE_CLIENT_ID=your_google_client_id
    GOOGLE_CLIENT_SECRET=your_google_client_secret
+   APPLE_CLIENT_ID=your_apple_services_id
+   APPLE_TEAM_ID=your_apple_team_id
+   APPLE_KEY_ID=your_apple_key_id
+   APPLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"
    STRIPE_SECRET_KEY=your_stripe_secret_key
    STRIPE_INSIGHT_PRICE_ID=price_your_insight_price_id
    STRIPE_MASTERY_PRICE_ID=price_your_mastery_price_id

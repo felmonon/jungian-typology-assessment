@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { User } from "@shared/models/auth";
+import { clearAuthScopedClientState } from "../lib/auth-client-state";
 
 async function fetchUser(): Promise<User | null> {
   const response = await fetch("/api/auth/user", {
@@ -96,9 +97,12 @@ export function useAuth() {
 
   const logoutMutation = useMutation({
     mutationFn: logout,
-    onSuccess: () => {
+    onMutate: () => {
+      clearAuthScopedClientState();
       queryClient.setQueryData(["/api/auth/user"], null);
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+    },
+    onSuccess: () => {
+      queryClient.clear();
       window.location.href = "/";
     },
   });

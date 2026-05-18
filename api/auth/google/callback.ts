@@ -27,11 +27,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { code, error: oauthError } = req.query;
 
   if (oauthError) {
-    return res.redirect(302, `/login?error=${encodeURIComponent(oauthError as string)}`);
+    return res.redirect(302, `/auth?error=${encodeURIComponent(oauthError as string)}`);
   }
 
   if (!code || typeof code !== 'string') {
-    return res.redirect(302, '/login?error=missing_code');
+    return res.redirect(302, '/auth?error=missing_code');
   }
 
   const clientId = process.env.GOOGLE_CLIENT_ID;
@@ -39,12 +39,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const sessionSecret = process.env.SESSION_SECRET;
 
   if (!clientId || !clientSecret) {
-    return res.redirect(302, '/login?error=oauth_not_configured');
+    return res.redirect(302, '/auth?error=oauth_not_configured');
   }
 
   if (!sessionSecret) {
     console.error('SESSION_SECRET not configured');
-    return res.redirect(302, '/login?error=server_error');
+    return res.redirect(302, '/auth?error=server_error');
   }
 
   try {
@@ -68,7 +68,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (!tokenResponse.ok) {
       const errorText = await tokenResponse.text();
       console.error('Token exchange failed:', errorText);
-      return res.redirect(302, '/login?error=token_exchange_failed');
+      return res.redirect(302, '/auth?error=token_exchange_failed');
     }
 
     const tokens = await tokenResponse.json();
@@ -83,14 +83,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (!userInfoResponse.ok) {
       console.error('Failed to get user info');
-      return res.redirect(302, '/login?error=userinfo_failed');
+      return res.redirect(302, '/auth?error=userinfo_failed');
     }
 
     const googleUser = await userInfoResponse.json();
     const { email, given_name, family_name, picture } = googleUser;
 
     if (!email) {
-      return res.redirect(302, '/login?error=no_email');
+      return res.redirect(302, '/auth?error=no_email');
     }
 
     // Initialize Supabase client
@@ -133,7 +133,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       if (createError || !newUser) {
         console.error('Failed to create user:', createError);
-        return res.redirect(302, '/login?error=user_creation_failed');
+        return res.redirect(302, '/auth?error=user_creation_failed');
       }
 
       user = newUser;
@@ -171,7 +171,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (sessionError) {
       console.error('Failed to create session:', sessionError);
-      return res.redirect(302, '/login?error=session_failed');
+      return res.redirect(302, '/auth?error=session_failed');
     }
 
     // Set session cookie
@@ -191,9 +191,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     res.setHeader('Set-Cookie', cookieOptions.join('; '));
 
     // Redirect to home or intended destination
-    return res.redirect(302, '/');
+    return res.redirect(302, '/profile');
   } catch (error) {
     console.error('OAuth callback error:', error);
-    return res.redirect(302, '/login?error=callback_failed');
+    return res.redirect(302, '/auth?error=callback_failed');
   }
 }

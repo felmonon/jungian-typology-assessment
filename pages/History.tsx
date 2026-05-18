@@ -74,7 +74,7 @@ export const History: React.FC = () => {
 
     setDeletingId(id);
     try {
-      const response = await fetch(`/api/results/${id}`, {
+      const response = await fetch(`/api/results?id=${encodeURIComponent(id)}`, {
         method: 'DELETE',
         credentials: 'include',
       });

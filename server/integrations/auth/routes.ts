@@ -22,6 +22,19 @@ const signupLimiter = rateLimit({
 });
 
 export function registerAuthRoutes(app: Express): void {
+  app.get("/api/auth/providers", (_req, res) => {
+    res.status(200).json({
+      emailPassword: true,
+      google: Boolean(getEnvValue("GOOGLE_CLIENT_ID") && getEnvValue("GOOGLE_CLIENT_SECRET")),
+      apple: Boolean(
+        (getEnvValue("APPLE_CLIENT_ID") || getEnvValue("APPLE_SERVICE_ID")) &&
+        getEnvValue("APPLE_TEAM_ID") &&
+        getEnvValue("APPLE_KEY_ID") &&
+        getEnvValue("APPLE_PRIVATE_KEY")
+      ),
+    });
+  });
+
   app.post("/api/auth/signup", signupLimiter, async (req, res) => {
     try {
       const { email, password, firstName, lastName } = req.body;
@@ -87,7 +100,12 @@ export function registerAuthRoutes(app: Express): void {
         if (sessionErr) {
           console.error("Session destroy error:", sessionErr);
         }
-        res.clearCookie("connect.sid");
+        res.clearCookie("connect.sid", {
+          httpOnly: true,
+          sameSite: "lax",
+          secure: req.secure || req.headers["x-forwarded-proto"] === "https",
+          path: "/",
+        });
         return res.status(200).json({ message: "Logged out successfully" });
       });
     });
@@ -105,9 +123,17 @@ export function registerAuthRoutes(app: Express): void {
       return res.status(503).json({ message: "Google OAuth is not configured" });
     }
     passport.authenticate("google", {
-      successRedirect: "/",
-      failureRedirect: "/login?error=oauth_failed",
+      successRedirect: "/profile",
+      failureRedirect: "/auth?error=oauth_failed",
     })(req, res, next);
+  });
+
+  app.get("/api/auth/apple", (_req, res) => {
+    if (!(getEnvValue("APPLE_CLIENT_ID") || getEnvValue("APPLE_SERVICE_ID"))) {
+      return res.redirect(302, "/auth?error=apple_not_configured");
+    }
+
+    return res.redirect(302, "/auth?error=apple_local_unavailable");
   });
 
   app.get("/api/auth/user", async (req, res) => {
@@ -193,7 +219,12 @@ export function registerAuthRoutes(app: Express): void {
           if (sessionErr) {
             console.error("Session destroy error:", sessionErr);
           }
-          res.clearCookie("connect.sid");
+          res.clearCookie("connect.sid", {
+            httpOnly: true,
+            sameSite: "lax",
+            secure: req.secure || req.headers["x-forwarded-proto"] === "https",
+            path: "/",
+          });
           return res.status(200).json({ message: "Account deleted successfully" });
         });
       });

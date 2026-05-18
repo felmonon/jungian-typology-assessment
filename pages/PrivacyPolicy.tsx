@@ -42,7 +42,7 @@ export const PrivacyPolicy: React.FC = () => {
             <div className="card-elevated rounded-2xl p-5">
               <h3 className="font-semibold text-jung-dark mb-2 font-serif">Account Information</h3>
               <p className="text-jung-secondary text-sm m-0 font-body">
-                When you create an account, we collect your email address and basic profile information provided through Google OAuth authentication. This includes your name and profile picture if available.
+                When you create an account, we collect your email address and basic profile information provided through email sign-in, Google OAuth, or Apple sign-in when enabled. This can include your name and profile picture if available.
               </p>
             </div>
 
@@ -100,10 +100,10 @@ export const PrivacyPolicy: React.FC = () => {
             <div className="card-elevated rounded-2xl p-5">
               <h3 className="font-semibold text-jung-dark mb-2 flex items-center gap-2 font-serif">
                 <Shield className="w-4 h-4 text-jung-muted" />
-                Google (Authentication)
+                Google and Apple (Authentication)
               </h3>
               <p className="text-jung-secondary text-sm m-0 font-body">
-                We use Google OAuth for secure authentication. When you sign in with Google, we receive your email and basic profile information. Google's privacy policy applies to data collected during authentication.
+                We use OAuth providers for secure authentication. When you sign in with Google or Apple, we receive your verified email and basic profile information the provider makes available. The provider's privacy policy applies to data collected during authentication.
               </p>
             </div>
 
@@ -129,7 +129,7 @@ export const PrivacyPolicy: React.FC = () => {
 
           <div className="pl-14 text-jung-secondary font-body">
             <p>
-              We use essential session cookies to maintain your authentication state and provide a seamless experience. These cookies are necessary for the service to function and cannot be disabled.
+              We use essential session cookies to maintain your authentication state and provide a seamless experience. Account sessions expire after 30 days or when you sign out. These cookies are necessary for the service to function and cannot be disabled.
             </p>
             <p className="mt-3">
               We also use privacy-minded analytics to understand aggregate product usage. We do not use advertising cookies or ad personalization signals.
@@ -150,7 +150,7 @@ export const PrivacyPolicy: React.FC = () => {
               We retain your account information and assessment data for as long as your account is active. You may request deletion of your account and all associated data at any time through your profile settings or by contacting us.
             </p>
             <p className="mt-3">
-              Upon account deletion, we will remove your personal information and assessment data from our active databases. Some data may be retained in backup systems for a limited period and for legal compliance purposes.
+              Logging out clears TypeJung's local assessment result, premium cache, lifecycle email markers, and in-progress assessment data from that browser. Account deletion removes your personal information, saved assessment data, and purchase-access records from our active databases. Some data may be retained in backup systems for a limited period and for legal compliance purposes.
             </p>
           </div>
         </section>

@@ -149,6 +149,12 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                   ))}
                   {isAuthenticated && (
                     <>
+                      <NavLink to="/profile" className={mobileNavLinkClass}>
+                        <span className="inline-flex items-center gap-2">
+                          <User className="h-4 w-4" />
+                          Profile settings
+                        </span>
+                      </NavLink>
                       <NavLink to="/history" className={mobileNavLinkClass}>
                         <span className="inline-flex items-center gap-2">
                           <Clock className="h-4 w-4" />
@@ -242,6 +248,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             <h4 className="mb-4 text-sm font-semibold text-jung-dark">Account</h4>
             <div className="grid gap-3 text-sm text-jung-secondary">
               <Link to="/auth" className="inline-flex min-h-10 items-center hover:text-jung-accent">Sign in</Link>
+              <Link to="/profile" className="inline-flex min-h-10 items-center hover:text-jung-accent">Profile settings</Link>
               <Link to="/history" className="inline-flex min-h-10 items-center hover:text-jung-accent">History</Link>
               <Link to="/privacy" className="inline-flex min-h-10 items-center hover:text-jung-accent">Privacy</Link>
               <Link to="/terms" className="inline-flex min-h-10 items-center hover:text-jung-accent">Terms</Link>

@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
-import { getSessionUserFromCookie, getVerifiedSessionId, shouldUseSecureCookie } from '../_lib/auth-utils.js';
+import { buildRequestUrl, getSessionUserFromCookie, getVerifiedSessionId, parseCookies, shouldUseSecureCookie } from '../_lib/auth-utils.js';
 import { enforceRateLimit } from '../_lib/rate-limit.js';
 import { EMAIL_CAPTURE_OFFER } from '../../data/discount.js';
 import { resolveCheckoutBaseUrl } from '../../server/checkout.js';
@@ -31,6 +31,15 @@ const lifecycleKinds = new Set<LifecycleEmailKind>([
   'result-ready',
   'free-result-upgrade',
 ]);
+
+type AppleTokenPayload = {
+  aud?: string;
+  email?: string;
+  email_verified?: boolean | string;
+  exp?: number;
+  iss?: string;
+  sub?: string;
+};
 
 function legacySha256PasswordHash(password: string): string {
   return crypto.createHash('sha256').update(password).digest('hex');
@@ -161,7 +170,7 @@ async function captureDiscountEmail(email: string) {
   return { captured: true, reason: 'created_email_lead' };
 }
 
-async function createSession(userId: string, req: VercelRequest, res: VercelResponse) {
+async function createSession(userId: string, req: VercelRequest, res: VercelResponse, extraCookies: string[] = []) {
   const sessionSecret = process.env.SESSION_SECRET!;
   const supabase = getSupabase();
 
@@ -187,7 +196,7 @@ async function createSession(userId: string, req: VercelRequest, res: VercelResp
     expire: expireDate.toISOString(),
   });
 
-  res.setHeader('Set-Cookie', [
+  const sessionCookie = [
     `connect.sid=${signedSessionId}`,
     'Path=/',
     'HttpOnly',
@@ -195,7 +204,9 @@ async function createSession(userId: string, req: VercelRequest, res: VercelResp
     'SameSite=Lax',
     // Only set Secure on HTTPS requests so local auth sessions persist.
     shouldUseSecureCookie(req) ? 'Secure' : '',
-  ].filter(Boolean).join('; '));
+  ].filter(Boolean).join('; ');
+
+  res.setHeader('Set-Cookie', [...extraCookies, sessionCookie]);
 }
 
 // GET /api/auth/user
@@ -243,7 +254,8 @@ async function handleGetUser(req: VercelRequest, res: VercelResponse) {
 
 // POST /api/auth/login
 async function handleLogin(req: VercelRequest, res: VercelResponse) {
-  const { email, password } = req.body;
+  const email = cleanEmail(req.body?.email);
+  const { password } = req.body;
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required' });
   }
@@ -277,7 +289,8 @@ async function handleLogin(req: VercelRequest, res: VercelResponse) {
 
 // POST /api/auth/signup
 async function handleSignup(req: VercelRequest, res: VercelResponse) {
-  const { email, password, firstName, lastName } = req.body;
+  const email = cleanEmail(req.body?.email);
+  const { password, firstName, lastName } = req.body;
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required' });
   }
@@ -362,8 +375,116 @@ async function handleLogout(req: VercelRequest, res: VercelResponse) {
     await supabase.from('sessions').delete().eq('sid', sessionId);
   }
 
-  res.setHeader('Set-Cookie', 'connect.sid=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax');
+  res.setHeader('Set-Cookie', [
+    'connect.sid=',
+    'Path=/',
+    'Expires=Thu, 01 Jan 1970 00:00:00 GMT',
+    'Max-Age=0',
+    'HttpOnly',
+    'SameSite=Lax',
+    shouldUseSecureCookie(req) ? 'Secure' : '',
+  ].filter(Boolean).join('; '));
   return res.status(200).json({ success: true });
+}
+
+function cleanName(value: unknown): string {
+  return cleanString(value, 80) || '';
+}
+
+function cleanProfileImageUrl(value: unknown): string | null {
+  if (value === null || value === '') return null;
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  if (trimmed.length > 750_000) return null;
+  if (trimmed.startsWith('data:image/')) return trimmed;
+
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.protocol === 'https:' || parsed.protocol === 'http:') {
+      return parsed.toString();
+    }
+  } catch {
+    // Invalid image URL.
+  }
+
+  return null;
+}
+
+function serializeUser(user: any) {
+  return {
+    id: user.id,
+    email: user.email,
+    firstName: user.first_name,
+    lastName: user.last_name,
+    profileImageUrl: user.profile_image_url,
+    createdAt: user.created_at,
+  };
+}
+
+async function handleProfile(req: VercelRequest, res: VercelResponse) {
+  const supabase = getSupabase();
+  const user = await getSessionUserFromCookie(req.headers.cookie, supabase);
+
+  if (!user?.id) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
+  if (req.method === 'GET') {
+    return res.status(200).json(user);
+  }
+
+  if (req.method === 'PATCH') {
+    const { data: updatedUser, error } = await supabase
+      .from('users')
+      .update({
+        first_name: cleanName(req.body?.firstName),
+        last_name: cleanName(req.body?.lastName),
+        profile_image_url: cleanProfileImageUrl(req.body?.profileImageUrl),
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', user.id)
+      .select('id, email, first_name, last_name, profile_image_url, created_at')
+      .single();
+
+    if (error || !updatedUser) {
+      console.error('Profile update failed:', error);
+      return res.status(500).json({ message: 'Failed to update profile' });
+    }
+
+    return res.status(200).json(serializeUser(updatedUser));
+  }
+
+  if (req.method === 'DELETE') {
+    const sessionId = getVerifiedSessionId(req.headers.cookie);
+
+    if (sessionId) {
+      await supabase.from('sessions').delete().eq('sid', sessionId);
+    }
+
+    await supabase.from('sessions').delete().contains('sess', { passport: { user: user.id } });
+    await supabase.from('assessment_results').delete().eq('user_id', user.id);
+    await supabase.from('purchases').delete().eq('user_id', user.id);
+
+    const { error } = await supabase.from('users').delete().eq('id', user.id);
+    if (error) {
+      console.error('Account delete failed:', error);
+      return res.status(500).json({ message: 'Failed to delete account' });
+    }
+
+    res.setHeader('Set-Cookie', [
+      'connect.sid=',
+      'Path=/',
+      'Expires=Thu, 01 Jan 1970 00:00:00 GMT',
+      'Max-Age=0',
+      'HttpOnly',
+      'SameSite=Lax',
+      shouldUseSecureCookie(req) ? 'Secure' : '',
+    ].filter(Boolean).join('; '));
+    return res.status(200).json({ message: 'Account deleted successfully' });
+  }
+
+  res.setHeader('Allow', 'GET, PATCH, DELETE');
+  return res.status(405).json({ error: 'Method not allowed' });
 }
 
 async function handleLifecycleEmail(req: VercelRequest, res: VercelResponse) {
@@ -442,6 +563,324 @@ async function handleDiscountLead(req: VercelRequest, res: VercelResponse) {
   });
 }
 
+function handleProviders(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'GET') {
+    res.setHeader('Allow', 'GET');
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  return res.status(200).json({
+    emailPassword: true,
+    google: Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET),
+    apple: Boolean(
+      (process.env.APPLE_CLIENT_ID || process.env.APPLE_SERVICE_ID) &&
+      process.env.APPLE_TEAM_ID &&
+      process.env.APPLE_KEY_ID &&
+      process.env.APPLE_PRIVATE_KEY
+    ),
+  });
+}
+
+function getAppleClientId(): string {
+  return process.env.APPLE_CLIENT_ID || process.env.APPLE_SERVICE_ID || '';
+}
+
+function isAppleConfigured(): boolean {
+  return Boolean(
+    getAppleClientId() &&
+    process.env.APPLE_TEAM_ID &&
+    process.env.APPLE_KEY_ID &&
+    process.env.APPLE_PRIVATE_KEY
+  );
+}
+
+function appleStateCookie(value: string, req: VercelRequest): string {
+  return [
+    `typejung.apple_oauth_state=${encodeURIComponent(value)}`,
+    'Path=/',
+    'HttpOnly',
+    'SameSite=Lax',
+    'Max-Age=600',
+    shouldUseSecureCookie(req) ? 'Secure' : '',
+  ].filter(Boolean).join('; ');
+}
+
+function clearAppleStateCookie(req: VercelRequest): string {
+  return [
+    'typejung.apple_oauth_state=',
+    'Path=/',
+    'Expires=Thu, 01 Jan 1970 00:00:00 GMT',
+    'Max-Age=0',
+    'HttpOnly',
+    'SameSite=Lax',
+    shouldUseSecureCookie(req) ? 'Secure' : '',
+  ].filter(Boolean).join('; ');
+}
+
+function normalizeInteger(value: Buffer, keySize: number): Buffer {
+  let normalized = value;
+  while (normalized.length > keySize && normalized[0] === 0) {
+    normalized = normalized.subarray(1);
+  }
+
+  if (normalized.length === keySize) return normalized;
+  if (normalized.length > keySize) return normalized.subarray(normalized.length - keySize);
+  return Buffer.concat([Buffer.alloc(keySize - normalized.length), normalized]);
+}
+
+function derToJoseSignature(signature: Buffer, keySize: number): Buffer {
+  let offset = 0;
+  if (signature[offset++] !== 0x30) {
+    throw new Error('Invalid ECDSA signature');
+  }
+
+  const sequenceLength = signature[offset++];
+  if (sequenceLength === 0x81) {
+    offset += 1;
+  }
+
+  if (signature[offset++] !== 0x02) {
+    throw new Error('Invalid ECDSA signature');
+  }
+
+  const rLength = signature[offset++];
+  const r = signature.subarray(offset, offset + rLength);
+  offset += rLength;
+
+  if (signature[offset++] !== 0x02) {
+    throw new Error('Invalid ECDSA signature');
+  }
+
+  const sLength = signature[offset++];
+  const s = signature.subarray(offset, offset + sLength);
+
+  return Buffer.concat([normalizeInteger(r, keySize), normalizeInteger(s, keySize)]);
+}
+
+function buildAppleClientSecret(): string {
+  const teamId = process.env.APPLE_TEAM_ID!;
+  const keyId = process.env.APPLE_KEY_ID!;
+  const clientId = getAppleClientId();
+  const privateKey = process.env.APPLE_PRIVATE_KEY!.replace(/\\n/g, '\n');
+  const now = Math.floor(Date.now() / 1000);
+
+  const header = Buffer.from(JSON.stringify({ alg: 'ES256', kid: keyId, typ: 'JWT' })).toString('base64url');
+  const payload = Buffer.from(JSON.stringify({
+    iss: teamId,
+    iat: now,
+    exp: now + 60 * 60 * 24 * 30,
+    aud: 'https://appleid.apple.com',
+    sub: clientId,
+  })).toString('base64url');
+  const data = `${header}.${payload}`;
+  const derSignature = crypto.sign('sha256', Buffer.from(data), privateKey);
+  const signature = derToJoseSignature(derSignature, 32).toString('base64url');
+
+  return `${data}.${signature}`;
+}
+
+function decodeJsonSegment<T>(segment: string): T {
+  return JSON.parse(Buffer.from(segment, 'base64url').toString('utf8')) as T;
+}
+
+async function verifyAppleIdToken(idToken: string): Promise<AppleTokenPayload> {
+  const [encodedHeader, encodedPayload, encodedSignature] = idToken.split('.');
+  if (!encodedHeader || !encodedPayload || !encodedSignature) {
+    throw new Error('Invalid Apple identity token');
+  }
+
+  const header = decodeJsonSegment<{ alg?: string; kid?: string }>(encodedHeader);
+  if (header.alg !== 'RS256' || !header.kid) {
+    throw new Error('Unsupported Apple identity token');
+  }
+
+  const jwksResponse = await fetch('https://appleid.apple.com/auth/keys');
+  if (!jwksResponse.ok) {
+    throw new Error('Could not load Apple signing keys');
+  }
+
+  const jwks = await jwksResponse.json();
+  const jwk = jwks.keys?.find((key: any) => key.kid === header.kid);
+  if (!jwk) {
+    throw new Error('Apple signing key not found');
+  }
+
+  const publicKey = crypto.createPublicKey({ key: jwk, format: 'jwk' });
+  const verifier = crypto.createVerify('RSA-SHA256');
+  verifier.update(`${encodedHeader}.${encodedPayload}`);
+  verifier.end();
+
+  const isValid = verifier.verify(publicKey, Buffer.from(encodedSignature, 'base64url'));
+  if (!isValid) {
+    throw new Error('Invalid Apple identity signature');
+  }
+
+  const payload = decodeJsonSegment<AppleTokenPayload>(encodedPayload);
+  const now = Math.floor(Date.now() / 1000);
+
+  if (payload.iss !== 'https://appleid.apple.com') throw new Error('Invalid Apple token issuer');
+  if (payload.aud !== getAppleClientId()) throw new Error('Invalid Apple token audience');
+  if (!payload.exp || payload.exp < now) throw new Error('Expired Apple identity token');
+
+  return payload;
+}
+
+function getCallbackBody(req: VercelRequest): Record<string, any> {
+  if (!req.body) return {};
+  if (typeof req.body === 'string') return Object.fromEntries(new URLSearchParams(req.body));
+  return req.body;
+}
+
+function parseAppleName(value: unknown): { firstName: string; lastName: string } {
+  if (typeof value !== 'string') return { firstName: '', lastName: '' };
+
+  try {
+    const parsed = JSON.parse(value);
+    return {
+      firstName: typeof parsed?.name?.firstName === 'string' ? parsed.name.firstName.slice(0, 80) : '',
+      lastName: typeof parsed?.name?.lastName === 'string' ? parsed.name.lastName.slice(0, 80) : '',
+    };
+  } catch {
+    return { firstName: '', lastName: '' };
+  }
+}
+
+async function handleAppleStart(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'GET') {
+    res.setHeader('Allow', 'GET');
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  if (!isAppleConfigured()) {
+    return res.redirect(302, '/auth?error=apple_not_configured');
+  }
+
+  const callbackUrl = buildRequestUrl(req, '/api/auth/apple-callback');
+  const state = crypto.randomBytes(18).toString('base64url');
+  const appleAuthUrl = new URL('https://appleid.apple.com/auth/authorize');
+
+  appleAuthUrl.searchParams.set('client_id', getAppleClientId());
+  appleAuthUrl.searchParams.set('redirect_uri', callbackUrl);
+  appleAuthUrl.searchParams.set('response_type', 'code');
+  appleAuthUrl.searchParams.set('response_mode', 'form_post');
+  appleAuthUrl.searchParams.set('scope', 'name email');
+  appleAuthUrl.searchParams.set('state', state);
+
+  res.setHeader('Set-Cookie', appleStateCookie(state, req));
+  return res.redirect(302, appleAuthUrl.toString());
+}
+
+async function handleAppleCallback(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'POST' && req.method !== 'GET') {
+    res.setHeader('Allow', 'GET, POST');
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const clientId = getAppleClientId();
+  const sessionSecret = process.env.SESSION_SECRET;
+
+  if (!isAppleConfigured()) {
+    res.setHeader('Set-Cookie', clearAppleStateCookie(req));
+    return res.redirect(302, '/auth?error=apple_not_configured');
+  }
+
+  if (!sessionSecret) {
+    res.setHeader('Set-Cookie', clearAppleStateCookie(req));
+    return res.redirect(302, '/auth?error=server_error');
+  }
+
+  const body = getCallbackBody(req);
+  const code = typeof req.query.code === 'string' ? req.query.code : body.code;
+  const state = typeof req.query.state === 'string' ? req.query.state : body.state;
+  const storedState = parseCookies(req.headers.cookie)['typejung.apple_oauth_state'];
+
+  if (!code || !state || !storedState || state !== storedState) {
+    res.setHeader('Set-Cookie', clearAppleStateCookie(req));
+    return res.redirect(302, '/auth?error=invalid_oauth_state');
+  }
+
+  try {
+    const callbackUrl = buildRequestUrl(req, '/api/auth/apple-callback');
+    const tokenResponse = await fetch('https://appleid.apple.com/auth/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        client_id: clientId,
+        client_secret: buildAppleClientSecret(),
+        code,
+        grant_type: 'authorization_code',
+        redirect_uri: callbackUrl,
+      }),
+    });
+
+    if (!tokenResponse.ok) {
+      const errorText = await tokenResponse.text();
+      console.error('Apple token exchange failed:', errorText);
+      res.setHeader('Set-Cookie', clearAppleStateCookie(req));
+      return res.redirect(302, '/auth?error=token_exchange_failed');
+    }
+
+    const tokens = await tokenResponse.json();
+    const payload = await verifyAppleIdToken(tokens.id_token);
+    const emailVerified = payload.email_verified === true || payload.email_verified === 'true';
+    const email = payload.email?.toLowerCase();
+
+    if (!email || !emailVerified) {
+      res.setHeader('Set-Cookie', clearAppleStateCookie(req));
+      return res.redirect(302, '/auth?error=no_verified_email');
+    }
+
+    const name = parseAppleName(body.user);
+    const supabase = getSupabase();
+    const { data: existingUsers } = await supabase
+      .from('users')
+      .select('*')
+      .eq('email', email)
+      .limit(1);
+
+    let user = existingUsers?.[0];
+
+    if (user) {
+      const { data: updatedUser } = await supabase
+        .from('users')
+        .update({
+          first_name: user.first_name || name.firstName,
+          last_name: user.last_name || name.lastName,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', user.id)
+        .select()
+        .single();
+      user = updatedUser || user;
+    } else {
+      const { data: newUser, error: createError } = await supabase
+        .from('users')
+        .insert({
+          email,
+          first_name: name.firstName,
+          last_name: name.lastName,
+        })
+        .select()
+        .single();
+
+      if (createError || !newUser) {
+        console.error('Apple user creation failed:', createError);
+        res.setHeader('Set-Cookie', clearAppleStateCookie(req));
+        return res.redirect(302, '/auth?error=user_creation_failed');
+      }
+
+      user = newUser;
+    }
+
+    await createSession(user.id, req, res, [clearAppleStateCookie(req)]);
+    return res.redirect(302, '/profile');
+  } catch (error) {
+    console.error('Apple OAuth callback error:', error);
+    res.setHeader('Set-Cookie', clearAppleStateCookie(req));
+    return res.redirect(302, '/auth?error=callback_failed');
+  }
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { action } = req.query;
 
@@ -457,6 +896,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           return res.status(405).json({ error: 'Method not allowed' });
         }
         return handleGetUser(req, res);
+
+      case 'providers':
+        return handleProviders(req, res);
+
+      case 'profile':
+        return handleProfile(req, res);
+
+      case 'apple':
+        return handleAppleStart(req, res);
+
+      case 'apple-callback':
+        return handleAppleCallback(req, res);
 
       case 'login':
         if (req.method !== 'POST') {

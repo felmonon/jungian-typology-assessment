@@ -3,6 +3,7 @@ import passport from "passport";
 import { rateLimit } from "express-rate-limit";
 import { authStorage } from "./storage";
 import { isAuthenticated, hashPassword } from "./passport";
+import { getEnvValue } from "../../env";
 
 const authLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
@@ -93,14 +94,14 @@ export function registerAuthRoutes(app: Express): void {
   });
 
   app.get("/api/auth/google", (req, res, next) => {
-    if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+    if (!getEnvValue("GOOGLE_CLIENT_ID") || !getEnvValue("GOOGLE_CLIENT_SECRET")) {
       return res.status(503).json({ message: "Google OAuth is not configured" });
     }
     passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
   });
 
   app.get("/api/auth/google/callback", (req, res, next) => {
-    if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+    if (!getEnvValue("GOOGLE_CLIENT_ID") || !getEnvValue("GOOGLE_CLIENT_SECRET")) {
       return res.status(503).json({ message: "Google OAuth is not configured" });
     }
     passport.authenticate("google", {

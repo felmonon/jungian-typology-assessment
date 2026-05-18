@@ -55,6 +55,22 @@
       "destination": "/cognitive-function-test/index.html"
     },
     {
+      "source": "/infj-vs-infp-test",
+      "destination": "/infj-vs-infp-test/index.html"
+    },
+    {
+      "source": "/intj-vs-intp-test",
+      "destination": "/intj-vs-intp-test/index.html"
+    },
+    {
+      "source": "/mbti-keeps-changing",
+      "destination": "/mbti-keeps-changing/index.html"
+    },
+    {
+      "source": "/jungian-cognitive-functions-test",
+      "destination": "/jungian-cognitive-functions-test/index.html"
+    },
+    {
       "source": "/jungian-typology",
       "destination": "/jungian-typology/index.html"
     },

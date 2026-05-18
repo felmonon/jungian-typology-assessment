@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { getEnvValue } from './env.js';
 
 let connectionSettings: any;
 
@@ -34,8 +35,8 @@ type LifecycleEmailSendResult =
   | { sent: false; skipped: true; reason: string };
 
 function getEnvCredentials(): ResendCredentials | null {
-  const apiKey = process.env.RESEND_API_KEY;
-  const fromEmail = process.env.RESEND_FROM_EMAIL || process.env.FROM_EMAIL;
+  const apiKey = getEnvValue('RESEND_API_KEY');
+  const fromEmail = getEnvValue('RESEND_FROM_EMAIL') || getEnvValue('FROM_EMAIL');
 
   if (!apiKey || !fromEmail) {
     return null;
@@ -160,7 +161,7 @@ function buildLifecycleEmail(input: LifecycleEmailInput): LifecycleEmailTemplate
         If you are on the same device, your progress should still be saved.
       </p>
       <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
-        Come back when you have a quiet moment and complete the remaining questions.
+        Come back when you have a quiet moment and complete the remaining questions. The assessment is free, and you can review the core map before deciding whether to unlock anything paid.
       </p>
       ${buildActionLink(assessmentUrl, 'Continue assessment')}
     `;
@@ -184,16 +185,16 @@ function buildLifecycleEmail(input: LifecycleEmailInput): LifecycleEmailTemplate
         You have your free TypeJung synthesis.${axisCopy}
       </p>
       <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
-        The paid report adds the developmental read: stress patterns, relationship triggers, work guidance, and practices for the dominant-inferior axis.
+        Insight adds the deeper developmental report for CA$19. Mastery adds the AI Type Coach, tailored exercises, and practice roadmap for CA$39. Both are one-time CAD payments with no subscription.
       </p>
-      ${buildActionLink(upgradeUrl, 'View report options')}
+      ${buildActionLink(upgradeUrl, 'Compare report options')}
     `;
 
     return {
       subject: 'Go deeper into your TypeJung result',
       preview,
       html: buildBaseHtml(preview, body),
-      text: `A deeper TypeJung report is available for your saved result.${axisCopy} View report options: ${upgradeUrl}`,
+      text: `A deeper TypeJung report is available for your saved result.${axisCopy} Insight is CA$19 and Mastery is CA$39, both one-time CAD payments. Compare report options: ${upgradeUrl}`,
     };
   }
 
@@ -208,7 +209,7 @@ function buildLifecycleEmail(input: LifecycleEmailInput): LifecycleEmailTemplate
       Your TypeJung energy map was completed ${escapeHtml(completedCopy)}.${axisCopy}
     </p>
     <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
-      You can return to the result page to review the free synthesis, save the result to your account, or unlock the deeper report.
+      You can return to the result page to review the free synthesis, save the result to your account, or compare one-time paid report options after you have seen the map.
     </p>
     ${buildActionLink(resultUrl, 'Open result')}
   `;

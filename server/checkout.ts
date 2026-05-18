@@ -1,5 +1,6 @@
 import { isPaidTierId } from '../data/pricing.js';
 import type { PaidTierId } from '../data/pricing.js';
+import { cleanEnvValue } from './env.js';
 
 const DEFAULT_CHECKOUT_BASE_URL = 'https://typejung.com';
 
@@ -26,8 +27,7 @@ export function parsePaidTier(tier: unknown): PaidTierId | null {
 }
 
 export function cleanStripeEnvValue(value: string | undefined): string | undefined {
-  const cleaned = value?.trim().replace(/\\n+$/g, '').trim();
-  return cleaned || undefined;
+  return cleanEnvValue(value);
 }
 
 export function getStripeSecretKey(): string | undefined {

@@ -663,6 +663,21 @@ export const Results: React.FC = () => {
                 <p className="mt-4 text-sm leading-7 text-jung-secondary">
                   Unlock only after the free map earns it. Paid access is a one-time CAD purchase handled by Stripe, with no hidden subscription.
                 </p>
+                <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                  {[
+                    ['Pay after value', 'Read your free map first. Upgrade only if it feels worth keeping.'],
+                    ['One-time CAD', 'Insight is CA$19 and Mastery is CA$39. No renewal or hidden subscription.'],
+                    ['30-day refund', 'If the paid report is not useful, contact support with your Stripe receipt.'],
+                  ].map(([label, copy]) => (
+                    <div key={label} className="rounded-lg border border-jung-border bg-jung-base p-3">
+                      <div className="flex items-center gap-2 text-xs font-semibold text-jung-dark">
+                        <Check className="h-3.5 w-3.5 text-jung-accent" />
+                        {label}
+                      </div>
+                      <p className="mt-2 text-xs leading-5 text-jung-muted">{copy}</p>
+                    </div>
+                  ))}
+                </div>
                 <div className="mt-5 divide-y divide-jung-border rounded-lg border border-jung-border bg-jung-base">
                   {upgradeOptions.map((option) => (
                     <div key={option.tier} className="p-4">

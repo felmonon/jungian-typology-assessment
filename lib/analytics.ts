@@ -52,6 +52,17 @@ const SignupEventSchema = z.object({
   source: z.string().min(1).max(100).optional(),
 });
 
+const EcommerceItemSchema = z.object({
+  item_id: z.string().min(1).max(100),
+  item_name: z.string().min(1).max(150),
+  item_brand: z.string().min(1).max(100).optional(),
+  item_category: z.string().min(1).max(100).optional(),
+  item_category2: z.string().min(1).max(100).optional(),
+  item_variant: z.string().min(1).max(100).optional(),
+  price: z.number().min(0).max(10000),
+  quantity: z.number().int().min(1).max(99),
+});
+
 const PurchaseEventSchema = z.object({
   plan: z.string().min(1).max(50),
   tier: z.string().min(1).max(50).optional(),
@@ -59,6 +70,7 @@ const PurchaseEventSchema = z.object({
   price: z.number().min(0).max(10000).optional(),
   currency: z.string().length(3).default('CAD'),
   transaction_id: z.string().min(1).max(100).optional(),
+  items: z.array(EcommerceItemSchema).min(1).max(10).optional(),
 });
 
 const UpgradeEventSchema = z.object({
@@ -187,6 +199,33 @@ export function trackEvent(
   return safeTrackEvent(sanitizedName, params);
 }
 
+function buildEcommerceItems(plan: string, price: number) {
+  const normalizedPlan = String(plan || 'premium')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9_]/g, '_')
+    .substring(0, 50) || 'premium';
+  const planLabel = normalizedPlan === 'mastery'
+    ? 'Mastery'
+    : normalizedPlan === 'insight'
+      ? 'Insight'
+      : String(plan || 'Premium').substring(0, 50);
+  const safePrice = Math.max(0, Number(price));
+
+  return [
+    {
+      item_id: `typejung_${normalizedPlan}`,
+      item_name: `TypeJung ${planLabel} Package`,
+      item_brand: 'TypeJung',
+      item_category: 'Digital assessment',
+      item_category2: 'Jungian typology report',
+      item_variant: planLabel,
+      price: safePrice,
+      quantity: 1,
+    },
+  ];
+}
+
 // Predefined events for the assessment with validation
 export const AnalyticsEvents = {
   // Assessment funnel
@@ -297,6 +336,7 @@ export const AnalyticsEvents = {
       value: Math.max(0, Number(price)),
       price: Math.max(0, Number(price)),
       currency: 'CAD',
+      items: buildEcommerceItems(plan, price),
     };
     const recommendedEventTracked = safeTrackEvent('begin_checkout', params, PurchaseEventSchema);
     const customEventTracked = safeTrackEvent('checkout_started', params, PurchaseEventSchema);
@@ -314,6 +354,7 @@ export const AnalyticsEvents = {
       price: Math.max(0, Number(price)),
       currency: 'CAD',
       ...(cleanedTransactionId ? { transaction_id: cleanedTransactionId } : {}),
+      items: buildEcommerceItems(plan, price),
     };
     const recommendedEventTracked = safeTrackEvent('purchase', params, PurchaseEventSchema);
     const customEventTracked = safeTrackEvent('purchase_completed', params, PurchaseEventSchema);

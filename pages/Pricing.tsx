@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Check, ChevronDown, Clock, ShieldCheck, Sparkles, X } from 'lucide-react';
+import { ArrowRight, Check, ChevronDown, Clock, RefreshCcw, ShieldCheck, Sparkles, X } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { PRICING } from '../data/pricing';
 import type { PaidTierId, PricingTierId } from '../data/pricing';
@@ -95,12 +95,17 @@ const FAQ_ITEMS = [
     question: 'Can I start with Free and upgrade later?',
     answer: 'Yes. Take the assessment first, review the free map, then unlock the paid report only if the result feels worth keeping.',
   },
+  {
+    question: 'What if the paid report is not useful?',
+    answer: 'Contact support within 30 days of purchase. If the paid report does not feel helpful, you can request a refund.',
+  },
 ];
 
 const TRUST_ITEMS = [
   { icon: ShieldCheck, label: 'CAD pricing', body: 'clear Canadian-dollar prices' },
   { icon: Clock, label: 'One-time payment', body: 'no renewal or subscription' },
   { icon: Sparkles, label: 'Secure checkout', body: 'payment handled by Stripe' },
+  { icon: RefreshCcw, label: '30-day refund', body: 'request a refund if the paid report is not useful' },
 ];
 
 const IncludedIcon: React.FC<{ included: boolean }> = ({ included }) => (
@@ -169,7 +174,7 @@ export const Pricing: React.FC = () => {
             <p className="text-body-lg text-jung-secondary">
               The free assessment gives you the core map. Insight and Mastery are optional one-time upgrades for deeper interpretation, practice guidance, and coaching support.
             </p>
-            <div className="mt-6 grid gap-3 sm:grid-cols-3">
+            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {TRUST_ITEMS.map(({ icon: Icon, label, body }) => (
                 <div key={label} className="rounded-lg border border-jung-border bg-jung-surface p-4 shadow-sm">
                   <Icon className="mb-3 h-4 w-4 text-jung-accent" />

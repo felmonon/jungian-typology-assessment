@@ -2,8 +2,8 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <!--
   TypeJung Sitemap
-  Generated: 2026-05-18T07:10:02.306Z
-  Total URLs: 48
+  Generated: 2026-05-18T07:52:17.870Z
+  Total URLs: 52
 -->
   <url>
     <loc>https://typejung.com/</loc>
@@ -127,6 +127,30 @@
   </url>
   <url>
     <loc>https://typejung.com/cognitive-function-test</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://typejung.com/infj-vs-infp-test</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://typejung.com/intj-vs-intp-test</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://typejung.com/mbti-keeps-changing</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://typejung.com/jungian-cognitive-functions-test</loc>
     <lastmod>2026-05-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

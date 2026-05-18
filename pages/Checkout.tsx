@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Check, CreditCard, Loader2, Lock, Mail, ShieldCheck, Sparkles, Tag } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, CreditCard, Loader2, Lock, Mail, RefreshCcw, ShieldCheck, Sparkles, Tag } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { useAuth } from '../hooks/use-auth';
 import { useSEO } from '../hooks/useSEO';
@@ -161,11 +161,12 @@ export const Checkout: React.FC = () => {
               {checkoutDetails.description}
             </p>
 
-            <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {[
                 { icon: CreditCard, label: 'One-time CAD', body: 'No subscription or renewal.' },
                 { icon: ShieldCheck, label: 'Secure Stripe step', body: 'You confirm payment on Stripe next.' },
                 { icon: Lock, label: 'Private by default', body: 'Your result stays tied to your TypeJung access.' },
+                { icon: RefreshCcw, label: '30-day refund', body: 'Contact support if the paid report is not useful.' },
               ].map(({ icon: Icon, label, body }) => (
                 <div key={label} className="rounded-lg border border-jung-border bg-jung-base p-4">
                   <Icon className="h-4 w-4 text-jung-accent" />
@@ -223,6 +224,15 @@ export const Checkout: React.FC = () => {
                 <Tag className="mt-0.5 h-4 w-4 flex-none text-jung-accent" />
                 <p className="text-xs leading-5 text-jung-secondary">
                   Promotion codes are entered on the secure Stripe step before payment is confirmed.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-4">
+              <div className="flex gap-3">
+                <RefreshCcw className="mt-0.5 h-4 w-4 flex-none text-jung-accent" />
+                <p className="text-xs leading-5 text-jung-secondary">
+                  If the paid report does not feel helpful, contact support within 30 days with your Stripe receipt.
                 </p>
               </div>
             </div>

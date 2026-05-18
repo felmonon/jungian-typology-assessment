@@ -739,6 +739,258 @@ export const seoLandingPages = [
     ],
   },
   {
+    slug: 'infj-vs-infp-test',
+    query: 'INFJ vs INFP test',
+    title: 'INFJ vs INFP Test - Compare Ni-Fe and Fi-Ne | TypeJung',
+    description: 'Use TypeJung as an INFJ vs INFP test by comparing Ni-Fe and Fi-Ne evidence instead of relying on stereotypes.',
+    keywords: ['INFJ vs INFP test', 'INFJ or INFP', 'Ni Fe vs Fi Ne', 'INFJ INFP cognitive functions'],
+    eyebrow: 'INFJ vs INFP test',
+    h1: 'INFJ vs INFP: test the function pattern, not the stereotype',
+    intro: [
+      'INFJ and INFP can both look private, sensitive, idealistic, and meaning-focused. That is why stereotype-based quizzes often confuse them.',
+      'TypeJung helps you compare the function evidence behind the labels: Ni-Fe for INFJ-like patterns and Fi-Ne for INFP-like patterns.',
+    ],
+    sections: [
+      {
+        heading: 'The real comparison: Ni-Fe versus Fi-Ne',
+        body: [
+          'INFJ usually points toward introverted intuition supported by extraverted feeling. INFP usually points toward introverted feeling supported by extraverted intuition.',
+          'Both patterns can care deeply, but they organize experience differently. Ni-Fe tends to converge on a pattern and translate it relationally. Fi-Ne tends to protect inner meaning and explore possibilities around it.',
+        ],
+        table: {
+          headers: ['Question', 'INFJ-like Ni-Fe', 'INFP-like Fi-Ne'],
+          rows: [
+            ['What comes first?', 'A converging pattern or future implication', 'A felt sense of personal truth or value'],
+            ['How does care show up?', 'Reading relational atmosphere and adjusting communication', 'Protecting authenticity and inner alignment'],
+            ['What creates stress?', 'Concrete limits, sensory overwhelm, or loss of groundedness', 'External demands, efficiency pressure, or being forced to systematize'],
+          ],
+        },
+      },
+      {
+        heading: 'Why a normal quiz may not settle it',
+        body: [
+          'Many quizzes ask whether you are organized, emotional, creative, or introverted. Those answers can shift with age, work, relationships, and stress.',
+          'A better INFJ vs INFP test looks for the order of attention: whether insight narrows toward one symbolic pattern or value opens into many possible meanings.',
+        ],
+      },
+      {
+        heading: 'Use TypeJung as the next check',
+        body: [
+          'Take the free assessment, then compare your strongest intuition and feeling signals, attitude direction, and likely inferior-function pressure. The result will not force certainty too quickly, but it gives a clearer map than a label-only quiz.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Can TypeJung tell me if I am INFJ or INFP?',
+        answer: 'TypeJung gives a likely type pattern and function map. Use it to compare Ni-Fe and Fi-Ne evidence instead of treating any test as final identity.',
+      },
+      {
+        question: 'Why do INFJ and INFP get confused?',
+        answer: 'They can share interests, sensitivity, introversion, and idealism. The difference is usually the function process underneath the behavior.',
+      },
+      {
+        question: 'Is this INFJ vs INFP test free?',
+        answer: 'The core 42-question TypeJung assessment is free. Deeper reports are optional one-time CAD upgrades.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/blog/infj-vs-infp-cognitive-functions', label: 'INFJ vs INFP guide' },
+      { href: '/functions/ni', label: 'Introverted Intuition' },
+      { href: '/functions/fi', label: 'Introverted Feeling' },
+      { href: '/types/infj', label: 'INFJ type guide' },
+      { href: '/types/infp', label: 'INFP type guide' },
+    ],
+  },
+  {
+    slug: 'intj-vs-intp-test',
+    query: 'INTJ vs INTP test',
+    title: 'INTJ vs INTP Test - Compare Ni-Te and Ti-Ne | TypeJung',
+    description: 'Use TypeJung as an INTJ vs INTP test by comparing Ni-Te and Ti-Ne function evidence instead of stereotypes.',
+    keywords: ['INTJ vs INTP test', 'INTJ or INTP', 'Ni Te vs Ti Ne', 'INTJ INTP cognitive functions'],
+    eyebrow: 'INTJ vs INTP test',
+    h1: 'INTJ vs INTP: test how your thinking actually works',
+    intro: [
+      'INTJ and INTP are often compared through shallow stereotypes: planner versus procrastinator, strategist versus philosopher, confident versus detached.',
+      'TypeJung makes the comparison more useful by looking at the function pattern: Ni-Te for INTJ-like convergence and execution, Ti-Ne for INTP-like precision and possibility testing.',
+    ],
+    sections: [
+      {
+        heading: 'The real comparison: Ni-Te versus Ti-Ne',
+        body: [
+          'An INTJ-like pattern often starts with a strategic read of where things are going, then organizes action around that direction. An INTP-like pattern often starts by refining the internal model, then tests alternate explanations.',
+          'Both can be analytical and private. The difference is whether insight tends to converge toward a plan or logic tends to stay open while the model becomes cleaner.',
+        ],
+        table: {
+          headers: ['Question', 'INTJ-like Ni-Te', 'INTP-like Ti-Ne'],
+          rows: [
+            ['What is satisfying?', 'A clear strategic direction that can be executed', 'A precise model that explains the edge cases'],
+            ['What is frustrating?', 'Endless debate without movement', 'Premature execution before the logic is clean'],
+            ['What often gets neglected?', 'Present sensory limits and improvisation', 'Relational calibration and social feedback'],
+          ],
+        },
+      },
+      {
+        heading: 'Why type descriptions are not enough',
+        body: [
+          'Many INTJ and INTP descriptions overlap around intelligence, independence, skepticism, and systems thinking. That overlap can make a type description feel accurate even when the function order is wrong.',
+          'A useful INTJ vs INTP test should ask what your attention does first and what kind of uncertainty bothers you most.',
+        ],
+      },
+      {
+        heading: 'Use the TypeJung result as a map',
+        body: [
+          'Take the free assessment, then compare your thinking and intuition scores, attitude direction, and inferior-function signal. The point is not to win a label. The point is to understand the operating pattern behind the label.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Can TypeJung decide INTJ vs INTP for me?',
+        answer: 'TypeJung gives a likely type pattern and function evidence. Use it as a structured comparison between Ni-Te and Ti-Ne, not as an unquestionable verdict.',
+      },
+      {
+        question: 'Why do INTJ and INTP get mistyped?',
+        answer: 'Both can be analytical, private, and independent. Many tests overfocus on behavior and underfocus on the order of cognition.',
+      },
+      {
+        question: 'Is this INTJ vs INTP test free?',
+        answer: 'The core TypeJung assessment is free. Optional paid reports add deeper interpretation after you see the result.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/blog/intj-vs-intp-ni-te-vs-ti-ne', label: 'INTJ vs INTP guide' },
+      { href: '/functions/ni', label: 'Introverted Intuition' },
+      { href: '/functions/ti', label: 'Introverted Thinking' },
+      { href: '/types/intj', label: 'INTJ type guide' },
+      { href: '/types/intp', label: 'INTP type guide' },
+    ],
+  },
+  {
+    slug: 'mbti-keeps-changing',
+    query: 'why does my MBTI keep changing',
+    title: 'Why Does My MBTI Keep Changing? Take a Function-Based Test | TypeJung',
+    description: 'If your MBTI type keeps changing, TypeJung can help you compare the cognitive function pattern behind shifting labels.',
+    keywords: ['why does my MBTI keep changing', 'MBTI keeps changing', 'changing MBTI results', 'function based MBTI test'],
+    eyebrow: 'Changing MBTI results',
+    h1: 'If your MBTI keeps changing, test the pattern underneath',
+    intro: [
+      'Getting INFJ one month, INFP the next, and ENFP after that does not always mean your personality changed. It may mean the test is measuring mood, role, or self-image.',
+      'TypeJung gives you a function map so you can inspect what stays stable beneath changing four-letter results.',
+    ],
+    sections: [
+      {
+        heading: 'Why results shift',
+        body: [
+          'Many MBTI-style quizzes mix behavior, identity, work role, social confidence, stress state, and preference into the same score. When your context changes, the answer pattern can change.',
+          'Close scores also make labels unstable. A small wording change can push someone across a letter boundary even if the underlying function profile is similar.',
+        ],
+        bullets: [
+          'Stress can make you answer from a defensive pattern',
+          'Work and relationship roles can change visible behavior',
+          'Binary letter scoring hides close or mixed function signals',
+          'A label can change while the deeper energy pattern remains recognizable',
+        ],
+      },
+      {
+        heading: 'What to test instead',
+        body: [
+          'Instead of chasing the perfect four-letter label, compare the function evidence. Which kinds of perception feel natural? Which judging mode feels trusted? Which inferior-function pressure appears under stress?',
+          'A function-based map gives you more to work with than a single unstable type code.',
+        ],
+      },
+      {
+        heading: 'Use TypeJung when the label is not enough',
+        body: [
+          'The free assessment shows a core energy map and likely type pattern. If the map feels accurate, optional Insight and Mastery reports add deeper stress, relationship, and growth interpretation.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does changing MBTI mean my personality changed?',
+        answer: 'Not necessarily. It often means the test is sensitive to context, mood, wording, or close scores.',
+      },
+      {
+        question: 'Can cognitive functions explain changing results?',
+        answer: 'Yes. A function profile can show why nearby type labels compete and where the underlying pattern is more stable.',
+      },
+      {
+        question: 'What should I do if every test gives a different type?',
+        answer: 'Stop comparing labels for a moment. Compare the function pattern, stress edge, and dominant-inferior axis instead.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/blog/why-mbti-type-keeps-changing', label: 'Read the full guide' },
+      { href: '/mbti-alternative', label: 'MBTI alternative' },
+      { href: '/cognitive-function-test', label: 'Cognitive function test' },
+    ],
+  },
+  {
+    slug: 'jungian-cognitive-functions-test',
+    query: 'Jungian cognitive functions test',
+    title: 'Jungian Cognitive Functions Test - Map Ni Ne Si Se Ti Te Fi Fe | TypeJung',
+    description: 'Take a Jungian cognitive functions test that maps all 8 function-attitudes and explains your dominant-inferior pattern.',
+    keywords: ['Jungian cognitive functions test', 'Jung functions test', 'Ni Ne Si Se Ti Te Fi Fe test', 'Jungian function stack test'],
+    eyebrow: 'Jungian functions test',
+    h1: 'A Jungian cognitive functions test for the full stack',
+    intro: [
+      'A serious Jungian cognitive functions test should do more than hand you a four-letter label. It should show how the function pattern is built.',
+      'TypeJung maps all 8 function-attitudes, then explains the dominant-inferior axis that often carries the clearest growth tension.',
+    ],
+    sections: [
+      {
+        heading: 'What makes it Jungian',
+        body: [
+          'TypeJung begins with Jung\'s core distinction between attitude direction and psychological function. It then measures introverted and extraverted versions of thinking, feeling, sensation, and intuition.',
+          'That gives you a practical map of attention, judgment, stress, and development instead of a flat type label.',
+        ],
+        bullets: [
+          'Introverted and extraverted attitude direction',
+          'Thinking and feeling as judging functions',
+          'Sensation and intuition as perceiving functions',
+          'Dominant, auxiliary, tertiary, and inferior pattern interpretation',
+        ],
+      },
+      {
+        heading: 'What the free result includes',
+        body: [
+          'The free result gives you the main energy map and likely function pattern. It is enough to start comparing your type hypothesis against real self-observation.',
+          'Paid reports are optional and add deeper interpretation only after you have seen the core map.',
+        ],
+      },
+      {
+        heading: 'How to use the output',
+        body: [
+          'Read the highest function as a hypothesis about what your ego trusts. Read the lowest or inferior signal as a place to observe stress, projection, attraction, and growth work. Then retake later to see whether the map becomes more flexible.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does TypeJung test all 8 Jungian cognitive functions?',
+        answer: 'Yes. It measures Ni, Ne, Si, Se, Ti, Te, Fi, and Fe as a profile rather than relying only on broad dichotomies.',
+      },
+      {
+        question: 'Is this different from an MBTI test?',
+        answer: 'Yes. TypeJung can support a likely type pattern, but the function map is the main output.',
+      },
+      {
+        question: 'Can I take it without paying?',
+        answer: 'Yes. The 42-question assessment and core energy map are free. Insight and Mastery are optional one-time CAD upgrades.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/cognitive-functions', label: 'Cognitive functions guide' },
+      { href: '/jungian-typology', label: 'Jungian typology guide' },
+      { href: '/inferior-function-test', label: 'Inferior function test' },
+    ],
+  },
+  {
     slug: 'jungian-typology',
     query: 'Jungian typology',
     title: 'Jungian Typology Guide - Functions, Type, and Growth | TypeJung',

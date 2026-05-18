@@ -7,6 +7,7 @@ import connectPg from "connect-pg-simple";
 import bcrypt from "bcryptjs";
 import { authStorage } from "./storage";
 import type { User } from "@shared/models/auth";
+import { getEnvValue, requireEnvValue } from "../../env";
 
 const SALT_ROUNDS = 10;
 
@@ -14,13 +15,13 @@ export function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
   const pgStore = connectPg(session);
   const sessionStore = new pgStore({
-    conString: process.env.DATABASE_URL,
+    conString: requireEnvValue("DATABASE_URL"),
     createTableIfMissing: false,
     ttl: sessionTtl,
     tableName: "sessions",
   });
   return session({
-    secret: process.env.SESSION_SECRET!,
+    secret: requireEnvValue("SESSION_SECRET"),
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
@@ -86,12 +87,15 @@ export async function setupAuth(app: Express) {
     )
   );
 
-  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  const googleClientId = getEnvValue("GOOGLE_CLIENT_ID");
+  const googleClientSecret = getEnvValue("GOOGLE_CLIENT_SECRET");
+
+  if (googleClientId && googleClientSecret) {
     passport.use(
       new GoogleStrategy(
         {
-          clientID: process.env.GOOGLE_CLIENT_ID,
-          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          clientID: googleClientId,
+          clientSecret: googleClientSecret,
           callbackURL: "/api/auth/google/callback",
         },
         async (accessToken, refreshToken, profile, done) => {

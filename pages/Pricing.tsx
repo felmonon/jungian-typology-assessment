@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Check, ChevronDown, Clock, FileText, RefreshCcw, ShieldCheck, Sparkles, X } from 'lucide-react';
+import { DiscountCaptureCard } from '../components/discount/DiscountCaptureCard';
 import { Button } from '../components/ui/Button';
 import { PRICING } from '../data/pricing';
 import type { PaidTierId, PricingTierId } from '../data/pricing';
@@ -201,6 +202,7 @@ export const Pricing: React.FC = () => {
                 </div>
               ))}
             </div>
+            <DiscountCaptureCard source="pricing_hero" compact className="mt-5" />
           </div>
         </div>
       </section>

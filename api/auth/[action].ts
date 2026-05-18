@@ -4,7 +4,9 @@ import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import { getSessionUserFromCookie, getVerifiedSessionId, shouldUseSecureCookie } from '../_lib/auth-utils.js';
 import { enforceRateLimit } from '../_lib/rate-limit.js';
-import { sendLifecycleEmail, type LifecycleEmailKind } from '../../server/resend.js';
+import { EMAIL_CAPTURE_DISCOUNT } from '../../data/discount.js';
+import { resolveCheckoutBaseUrl } from '../../server/checkout.js';
+import { sendDiscountLeadEmail, sendLifecycleEmail, type LifecycleEmailKind } from '../../server/resend.js';
 
 // Generate a random session ID
 function generateSessionId(): string {
@@ -22,6 +24,7 @@ function signSessionId(sessionId: string, secret: string): string {
 }
 
 const SALT_ROUNDS = 10;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const lifecycleKinds = new Set<LifecycleEmailKind>([
   'abandoned-assessment',
   'result-ready',
@@ -98,6 +101,16 @@ function cleanIdempotencyKey(value: unknown): string | undefined {
   return cleanString(value, 180)?.replace(/[^a-zA-Z0-9_-]/g, '_');
 }
 
+function cleanEmail(value: unknown): string | null {
+  const email = cleanString(value, 254)?.toLowerCase();
+  if (!email || !EMAIL_PATTERN.test(email)) return null;
+  return email;
+}
+
+function cleanSource(value: unknown): string {
+  return cleanString(value, 80)?.replace(/[^a-zA-Z0-9_-]/g, '_') || 'unknown';
+}
+
 async function hasPremiumAccess(supabase: SupabaseClient, userId: string): Promise<boolean | null> {
   const { data, error } = await supabase
     .from('purchases')
@@ -112,6 +125,39 @@ async function hasPremiumAccess(supabase: SupabaseClient, userId: string): Promi
   }
 
   return !!data?.length;
+}
+
+async function captureDiscountEmail(email: string) {
+  if (!process.env.SUPABASE_URL || !(process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY)) {
+    return { captured: false, reason: 'supabase_not_configured' };
+  }
+
+  const supabase = getSupabase();
+  const { data: existingUsers, error: lookupError } = await supabase
+    .from('users')
+    .select('id')
+    .eq('email', email)
+    .limit(1);
+
+  if (lookupError) {
+    console.error('Discount lead lookup failed:', lookupError);
+    return { captured: false, reason: 'lookup_failed' };
+  }
+
+  if (existingUsers?.length) {
+    return { captured: true, reason: 'existing_email' };
+  }
+
+  const { error: insertError } = await supabase
+    .from('users')
+    .insert({ email });
+
+  if (insertError) {
+    console.error('Discount lead capture failed:', insertError);
+    return { captured: false, reason: 'insert_failed' };
+  }
+
+  return { captured: true, reason: 'created_email_lead' };
 }
 
 async function createSession(userId: string, req: VercelRequest, res: VercelResponse) {
@@ -238,11 +284,42 @@ async function handleSignup(req: VercelRequest, res: VercelResponse) {
   const supabase = getSupabase();
   const { data: existingUsers } = await supabase
     .from('users')
-    .select('id')
+    .select('id, email, first_name, last_name, profile_image_url, password_hash, google_id, created_at')
     .eq('email', email);
 
   if (existingUsers && existingUsers.length > 0) {
-    return res.status(400).json({ message: 'Email already registered' });
+    const existingUser = existingUsers[0];
+    if (existingUser.password_hash || existingUser.google_id) {
+      return res.status(400).json({ message: 'Email already registered' });
+    }
+
+    const passwordHash = await hashPassword(password);
+    const { data: claimedUser, error: claimError } = await supabase
+      .from('users')
+      .update({
+        password_hash: passwordHash,
+        first_name: firstName || existingUser.first_name || '',
+        last_name: lastName || existingUser.last_name || '',
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', existingUser.id)
+      .select()
+      .single();
+
+    if (claimError || !claimedUser) {
+      return res.status(500).json({ message: 'Failed to create account' });
+    }
+
+    await createSession(claimedUser.id, req, res);
+
+    return res.status(200).json({
+      id: claimedUser.id,
+      email: claimedUser.email,
+      firstName: claimedUser.first_name,
+      lastName: claimedUser.last_name,
+      profileImageUrl: claimedUser.profile_image_url,
+      createdAt: claimedUser.created_at,
+    });
   }
 
   const passwordHash = await hashPassword(password);
@@ -332,6 +409,39 @@ async function handleLifecycleEmail(req: VercelRequest, res: VercelResponse) {
   return res.status(200).json(sendResult);
 }
 
+async function handleDiscountLead(req: VercelRequest, res: VercelResponse) {
+  if (cleanString(req.body?.website, 120)) {
+    return res.status(200).json({ sent: false, skipped: true, reason: 'bot_check' });
+  }
+
+  const email = cleanEmail(req.body?.email);
+
+  if (!email) {
+    return res.status(400).json({ error: 'Enter a valid email address' });
+  }
+
+  const source = cleanSource(req.body?.source);
+  const capture = await captureDiscountEmail(email);
+  const baseUrl = resolveCheckoutBaseUrl(req.headers.origin, req.headers.host);
+  const pricingUrl = `${baseUrl}/pricing?discount=${encodeURIComponent(EMAIL_CAPTURE_DISCOUNT.code)}&source=${encodeURIComponent(source)}`;
+  const sendResult = await sendDiscountLeadEmail({
+    toEmail: email,
+    discountCode: EMAIL_CAPTURE_DISCOUNT.code,
+    percentOff: EMAIL_CAPTURE_DISCOUNT.percentOff,
+    pricingUrl,
+    dominantLabel: cleanString(req.body?.dominantLabel, 120),
+    inferiorLabel: cleanString(req.body?.inferiorLabel, 120),
+    idempotencyKey: cleanIdempotencyKey(`discount-${email}-${source}`),
+  });
+
+  return res.status(200).json({
+    ...sendResult,
+    captured: capture.captured,
+    discountCode: EMAIL_CAPTURE_DISCOUNT.code,
+    percentOff: EMAIL_CAPTURE_DISCOUNT.percentOff,
+  });
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { action } = req.query;
 
@@ -396,6 +506,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           message: 'Too many lifecycle email attempts. Please try again later.',
         })) return;
         return handleLifecycleEmail(req, res);
+
+      case 'discount-lead':
+        if (req.method === 'OPTIONS') {
+          return res.status(204).end();
+        }
+        if (req.method !== 'POST') {
+          res.setHeader('Allow', 'POST');
+          return res.status(405).json({ error: 'Method not allowed' });
+        }
+        if (enforceRateLimit(req, res, {
+          keyPrefix: 'discount:lead',
+          limit: 5,
+          windowMs: 60 * 60 * 1000,
+          message: 'Too many discount email requests. Please try again later.',
+        })) return;
+        return handleDiscountLead(req, res);
 
       default:
         return res.status(404).json({ error: 'Not found' });

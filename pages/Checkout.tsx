@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Check, CreditCard, Loader2, Lock, Mail, RefreshCcw, ShieldCheck, Tag } from 'lucide-react';
 import { TypeJungMark } from '../components/brand/TypeJungMark';
+import { DiscountCaptureCard } from '../components/discount/DiscountCaptureCard';
 import { Button } from '../components/ui/Button';
 import { useAuth } from '../hooks/use-auth';
 import { useSEO } from '../hooks/useSEO';
@@ -242,6 +243,8 @@ export const Checkout: React.FC = () => {
                 </div>
               ))}
             </div>
+
+            <DiscountCaptureCard source={`checkout_${paidTier}`} compact showCheckoutButtons={false} className="mt-5" />
 
             <div className="mt-5 rounded-lg border border-jung-border bg-jung-base p-4">
               <div className="flex gap-3">

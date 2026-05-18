@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Check, Download, Link2, Loader2, LogIn, RefreshCcw, Save, Share2, ShieldCheck, Sparkles } from 'lucide-react';
 import { ChatBot } from '../components/ChatBot';
+import { DiscountCaptureCard } from '../components/discount/DiscountCaptureCard';
 import { Button } from '../components/ui/Button';
 import { ATTITUDE_LABELS, AttitudeDirection, FUNCTION_LABELS, FunctionChannel, depthLayerMeta } from '../data/depthAssessment';
 import { PRICING, type PaidTierId } from '../data/pricing';
@@ -666,6 +667,13 @@ export const Results: React.FC = () => {
                 <p className="mt-4 text-sm leading-7 text-jung-secondary">
                   Unlock only after the free map earns it. Paid access is a one-time CAD purchase handled by Stripe, with no hidden subscription.
                 </p>
+                <DiscountCaptureCard
+                  source="results_paid_report_card"
+                  dominantLabel={dominantLabel}
+                  inferiorLabel={inferiorLabel}
+                  compact
+                  className="mt-5"
+                />
                 <div className="mt-5 grid gap-3 sm:grid-cols-3">
                   {[
                     ['Pay after value', 'Read your free map first. Upgrade only if it feels worth keeping.'],

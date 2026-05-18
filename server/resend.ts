@@ -23,6 +23,16 @@ export type LifecycleEmailInput = {
   idempotencyKey?: string;
 };
 
+export type DiscountLeadEmailInput = {
+  toEmail: string;
+  discountCode: string;
+  percentOff: number;
+  pricingUrl?: string;
+  dominantLabel?: string;
+  inferiorLabel?: string;
+  idempotencyKey?: string;
+};
+
 type LifecycleEmailTemplate = {
   subject: string;
   preview: string;
@@ -117,7 +127,11 @@ function formatCompletedAt(value?: string): string {
   }
 }
 
-function buildBaseHtml(preview: string, body: string): string {
+function buildBaseHtml(
+  preview: string,
+  body: string,
+  footerReason = 'You received this TypeJung email because this account started or completed an assessment.',
+): string {
   return `
     <div style="display:none;max-height:0;overflow:hidden;color:transparent;opacity:0;">
       ${escapeHtml(preview)}
@@ -125,7 +139,7 @@ function buildBaseHtml(preview: string, body: string): string {
     <div style="font-family: Inter, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; color: #2f2a25;">
       ${body}
       <p style="margin-top: 32px; color: #8a8177; font-size: 12px; line-height: 1.6;">
-        You received this TypeJung email because this account started or completed an assessment.
+        ${escapeHtml(footerReason)}
       </p>
     </div>
   `;
@@ -241,6 +255,54 @@ export async function sendLifecycleEmail(input: LifecycleEmailInput): Promise<Li
     subject: template.subject,
     html: template.html,
     text: template.text,
+  }, input.idempotencyKey ? { idempotencyKey: input.idempotencyKey } : undefined);
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+
+  return { sent: true, id: result.data?.id };
+}
+
+export async function sendDiscountLeadEmail(input: DiscountLeadEmailInput): Promise<LifecycleEmailSendResult> {
+  if (!input.toEmail) {
+    return { sent: false, skipped: true, reason: 'missing_email' };
+  }
+
+  const credentials = await getCredentials();
+
+  if (!credentials) {
+    return { sent: false, skipped: true, reason: 'resend_not_configured' };
+  }
+
+  const pricingUrl = input.pricingUrl || 'https://typejung.com/pricing';
+  const safeCode = escapeHtml(input.discountCode);
+  const axisCopy = input.dominantLabel && input.inferiorLabel
+    ? ` Your map centers on ${escapeHtml(input.dominantLabel)} with ${escapeHtml(input.inferiorLabel)} as the developmental edge.`
+    : '';
+  const preview = `${input.percentOff}% off TypeJung Insight or Mastery.`;
+  const body = `
+    <h1 style="margin: 0 0 16px; color: #2f2a25; font-size: 28px; line-height: 1.2;">Your TypeJung discount code</h1>
+    <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
+      Here is ${input.percentOff}% off a one-time TypeJung Insight or Mastery upgrade.${axisCopy}
+    </p>
+    <div style="margin: 24px 0; border: 1px solid #d6ccc2; border-radius: 10px; background: #fbfaf8; padding: 18px;">
+      <p style="margin: 0 0 8px; color: #8a8177; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">Promotion code</p>
+      <p style="margin: 0; color: #2f2a25; font-family: 'SFMono-Regular', Consolas, monospace; font-size: 26px; font-weight: 800; letter-spacing: 0.08em;">${safeCode}</p>
+    </div>
+    <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
+      Use the code on the secure Stripe checkout step before you pay. Paid access is a one-time CAD purchase, not a subscription.
+    </p>
+    ${buildActionLink(pricingUrl, 'Choose your report')}
+  `;
+
+  const client = new Resend(credentials.apiKey);
+  const result = await client.emails.send({
+    from: credentials.fromEmail,
+    to: input.toEmail,
+    subject: `Your ${input.percentOff}% TypeJung code: ${input.discountCode}`,
+    html: buildBaseHtml(preview, body, 'You received this TypeJung email because you requested a discount code.'),
+    text: `Your TypeJung discount code is ${input.discountCode}. Use it for ${input.percentOff}% off Insight or Mastery on the secure Stripe checkout step: ${pricingUrl}`,
   }, input.idempotencyKey ? { idempotencyKey: input.idempotencyKey } : undefined);
 
   if (result.error) {

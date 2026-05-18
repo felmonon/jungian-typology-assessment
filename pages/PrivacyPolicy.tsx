@@ -73,7 +73,7 @@ export const PrivacyPolicy: React.FC = () => {
           <ul className="pl-14 space-y-3 text-jung-secondary font-body">
             <li><strong className="text-jung-dark">Account Management:</strong> To create and maintain your user account, authenticate your identity, and provide access to your assessment history.</li>
             <li><strong className="text-jung-dark">Assessment Delivery:</strong> To process your assessment responses, calculate your typology scores, and generate your personalized results.</li>
-            <li><strong className="text-jung-dark">Email Communications:</strong> To send you your assessment results report, purchase confirmations, and important account notifications via Resend.</li>
+            <li><strong className="text-jung-dark">Email Communications:</strong> To send you requested discount codes, assessment result follow-ups, purchase confirmations, and important account notifications via Resend.</li>
             <li><strong className="text-jung-dark">Service Improvement:</strong> To analyze usage patterns and improve our assessment methodology and user experience.</li>
           </ul>
         </section>

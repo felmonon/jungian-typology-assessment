@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight, BarChart3, Brain, Check, Clock, Compass, HeartPulse, Lock } from 'lucide-react';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { TypeJungMark } from '../components/brand/TypeJungMark';
+import { DiscountCaptureCard } from '../components/discount/DiscountCaptureCard';
 import { Button } from '../components/ui/Button';
 import { PRICING } from '../data/pricing';
 import { AnalyticsEvents } from '../lib/analytics';
@@ -329,6 +330,8 @@ export const Home: React.FC = () => {
               </div>
             ))}
           </div>
+
+          <DiscountCaptureCard source="home_pricing_section" compact className="mx-auto mt-6 max-w-3xl" />
         </section>
 
         <section className="bg-jung-surface py-20">

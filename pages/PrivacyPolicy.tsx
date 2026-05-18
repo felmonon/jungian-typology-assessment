@@ -132,7 +132,7 @@ export const PrivacyPolicy: React.FC = () => {
               We use essential session cookies to maintain your authentication state and provide a seamless experience. These cookies are necessary for the service to function and cannot be disabled.
             </p>
             <p className="mt-3">
-              We do not use advertising or tracking cookies. Our cookies are strictly functional and expire when you end your session or after a reasonable period of inactivity.
+              We also use privacy-minded analytics to understand aggregate product usage. We do not use advertising cookies or ad personalization signals.
             </p>
           </div>
         </section>

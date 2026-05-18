@@ -79,7 +79,7 @@ function safeTrackEvent(
   params?: Record<string, any>,
   schema?: z.ZodSchema<any>
 ): boolean {
-  if (!GA_MEASUREMENT_ID || typeof window === 'undefined' || !window.gtag) {
+  if (!analyticsEnabled || !canTrackEvent() || !GA_MEASUREMENT_ID || typeof window === 'undefined' || !window.gtag) {
     return false;
   }
 
@@ -96,9 +96,12 @@ function safeTrackEvent(
     }
 
     window.gtag('event', eventName, params || {});
+    analyticsState.lastEventTime = Date.now();
+    analyticsState.eventCount += 1;
     return true;
   } catch (error) {
     console.error(`Analytics: Failed to track event "${eventName}":`, error);
+    analyticsState.errors.push(error instanceof Error ? error.message : String(error));
     return false;
   }
 }
@@ -111,8 +114,17 @@ export function initAnalytics(): boolean {
   }
 
   try {
+    const analyticsConfig = {
+      send_page_view: false, // We'll handle page views manually for SPA
+      cookie_flags: 'SameSite=None;Secure',
+      allow_google_signals: false, // Privacy focused
+      allow_ad_personalization_signals: false, // Privacy focused
+    };
+
     // Check if already initialized
     if (window.gtag && window.dataLayer) {
+      window.gtag('config', GA_MEASUREMENT_ID, analyticsConfig);
+      analyticsState.isInitialized = true;
       return true;
     }
 
@@ -128,16 +140,13 @@ export function initAnalytics(): boolean {
       window.dataLayer.push(args);
     };
     window.gtag('js', new Date());
-    window.gtag('config', GA_MEASUREMENT_ID, {
-      send_page_view: false, // We'll handle page views manually for SPA
-      cookie_flags: 'SameSite=None;Secure',
-      allow_google_signals: false, // Privacy focused
-      allow_ad_personalization_signals: false, // Privacy focused
-    });
+    window.gtag('config', GA_MEASUREMENT_ID, analyticsConfig);
+    analyticsState.isInitialized = true;
 
     return true;
   } catch (error) {
     console.error('Analytics: Failed to initialize:', error);
+    analyticsState.errors.push(error instanceof Error ? error.message : String(error));
     return false;
   }
 }

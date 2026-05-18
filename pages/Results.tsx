@@ -5,6 +5,7 @@ import { ArrowRight, Check, Download, Link2, Loader2, LogIn, RefreshCcw, Save, S
 import { ChatBot } from '../components/ChatBot';
 import { Button } from '../components/ui/Button';
 import { ATTITUDE_LABELS, AttitudeDirection, FUNCTION_LABELS, FunctionChannel, depthLayerMeta } from '../data/depthAssessment';
+import { PRICING, type PaidTierId } from '../data/pricing';
 import { useAiAnalysis } from '../hooks/use-ai-analysis';
 import { useAuth } from '../hooks/use-auth';
 import { usePremiumStatus } from '../hooks/use-premium-status';
@@ -18,6 +19,26 @@ const RESULT_READY_EMAIL_ATTEMPT_PREFIX = 'typejung_lifecycle_email_result_ready
 const UPGRADE_EMAIL_DUE_PREFIX = 'typejung_lifecycle_email_upgrade_due_';
 const UPGRADE_EMAIL_ATTEMPT_PREFIX = 'typejung_lifecycle_email_upgrade_';
 const UPGRADE_EMAIL_DELAY_MS = 36 * 60 * 60 * 1000;
+
+const upgradeOptions: Array<{
+  tier: PaidTierId;
+  label: string;
+  description: string;
+  features: string[];
+}> = [
+  {
+    tier: 'insight',
+    label: 'Insight',
+    description: 'Best when you want the deeper report after the free map feels accurate.',
+    features: ['Developmental edge', 'Stress pattern map', 'Somatic practices'],
+  },
+  {
+    tier: 'mastery',
+    label: 'Mastery',
+    description: 'Best when you want the report plus ongoing AI coaching and exercises.',
+    features: ['Everything in Insight', 'AI Type Coach', 'Practice roadmap'],
+  },
+];
 
 type ResultsState =
   | { status: 'loading' }
@@ -200,6 +221,15 @@ export const Results: React.FC = () => {
   const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error' | 'skipped'>('idle');
   const [shareSlug, setShareSlug] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
+
+  const openUpgradeCheckout = useCallback((paidTier: PaidTierId, location: string) => {
+    AnalyticsEvents.upgradeClicked(location, paidTier);
+    AnalyticsEvents.ctaClicked(`unlock_${paidTier}`, location, {
+      buttonText: `Unlock ${PRICING[paidTier].name}`,
+      destination: `/checkout/${paidTier}`,
+    });
+    navigate(`/checkout/${paidTier}`);
+  }, [navigate]);
 
   useEffect(() => {
     setState(readResults());
@@ -546,7 +576,7 @@ export const Results: React.FC = () => {
           <SignalGrid results={results} />
         </section>
 
-        <section className="mt-8 grid gap-5 lg:grid-cols-3">
+        <section className="mt-8 grid gap-5 lg:grid-cols-3 lg:items-start">
           <div className="rounded-lg border border-jung-border bg-jung-surface p-6">
             <p className="text-label">Account</p>
             <h2 className="mt-3 text-2xl font-semibold text-jung-dark">Save this result</h2>
@@ -631,10 +661,55 @@ export const Results: React.FC = () => {
             ) : (
               <>
                 <p className="mt-4 text-sm leading-7 text-jung-secondary">
-                  Unlock the deeper report when you want the developmental edge, stress patterns, and practice guidance explained in detail.
+                  Unlock only after the free map earns it. Paid access is a one-time CAD purchase handled by Stripe, with no hidden subscription.
                 </p>
-                <Button className="mt-5" variant="accent" onClick={() => navigate('/pricing')} leftIcon={<Sparkles className="h-4 w-4" />}>
-                  Unlock report
+                <div className="mt-5 divide-y divide-jung-border rounded-lg border border-jung-border bg-jung-base">
+                  {upgradeOptions.map((option) => (
+                    <div key={option.tier} className="p-4">
+                      <div className="grid gap-4">
+                        <div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h3 className="text-base font-semibold text-jung-dark">{option.label}</h3>
+                            <span className="rounded-lg bg-jung-accent-light px-2 py-1 text-xs font-semibold text-jung-accent">
+                              {PRICING[option.tier].price} one-time
+                            </span>
+                          </div>
+                          <p className="mt-2 text-sm leading-6 text-jung-secondary">{option.description}</p>
+                          <ul className="mt-3 grid gap-2 text-xs text-jung-muted">
+                            {option.features.map((feature) => (
+                              <li key={feature} className="flex gap-2">
+                                <Check className="mt-0.5 h-3.5 w-3.5 flex-none text-jung-accent" />
+                                <span>{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <Button
+                          variant={option.tier === 'insight' ? 'accent' : 'outline'}
+                          size="sm"
+                          className="w-full"
+                          onClick={() => openUpgradeCheckout(option.tier, 'results_paid_report_card')}
+                          rightIcon={<ArrowRight className="h-4 w-4" />}
+                        >
+                          Unlock {option.label}
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <Button
+                  className="mt-4"
+                  variant="ghost"
+                  onClick={() => {
+                    AnalyticsEvents.ctaClicked('compare_pricing', 'results_paid_report_card', {
+                      buttonText: 'Compare plans',
+                      destination: '/pricing',
+                    });
+                    navigate('/pricing');
+                  }}
+                  leftIcon={<Sparkles className="h-4 w-4" />}
+                >
+                  Compare all plans
                 </Button>
               </>
             )}

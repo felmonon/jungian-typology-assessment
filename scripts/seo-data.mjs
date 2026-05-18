@@ -432,8 +432,8 @@ export const typeData = {
 
 export const pageData = {
   '/': {
-    title: 'TypeJung - Jungian Cognitive Function Assessment',
-    description: 'Measure all 8 cognitive functions using the Singer-Loomis methodology. Discover your true psychological profile, not just 4 letters.',
+    title: 'TypeJung - Jungian Energy Map Assessment',
+    description: 'Take a free depth-based Jungian assessment that maps cognitive functions, energy flow, inferior-function stress, and growth edges.',
   },
   '/assessment': {
     title: 'Take the Assessment | TypeJung',
@@ -441,7 +441,7 @@ export const pageData = {
   },
   '/results': {
     title: 'Your Results | TypeJung',
-    description: 'View your cognitive function assessment results with detailed radar chart and AI-powered insights.',
+    description: 'View your Jungian energy map with function scores, dominant-inferior axis, stress-edge context, and growth guidance.',
   },
   '/learn': {
     title: 'Learn Jungian Typology | TypeJung',

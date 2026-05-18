@@ -82,19 +82,19 @@ function generateHomepageNoscript() {
   return `<noscript>
   <div style="max-width: 900px; margin: 0 auto; padding: 40px 20px; font-family: Georgia, serif; line-height: 1.8; color: #333;">
     <header style="text-align: center; margin-bottom: 40px; border-bottom: 2px solid #b45309; padding-bottom: 30px;">
-      <h1 style="font-size: 2.5em; color: #451a03;">TypeJung - Jungian Cognitive Function Assessment</h1>
-      <p style="font-size: 1.3em; color: #57534e;">Measure all 8 cognitive functions using the Singer-Loomis methodology. Discover your true psychological profile, not just 4 letters.</p>
+      <h1 style="font-size: 2.5em; color: #451a03;">TypeJung - Jungian Energy Map Assessment</h1>
+      <p style="font-size: 1.3em; color: #57534e;">Map where your energy flows, where stress distorts it, and what your next growth edge looks like.</p>
       <p><a href="/assessment" style="display: inline-block; padding: 15px 30px; background: #451a03; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">Take the Free Assessment</a></p>
     </header>
 
     <section style="margin-bottom: 40px;">
       <h2 style="color: #451a03; border-bottom: 1px solid #e7e5e4; padding-bottom: 10px;">Why TypeJung is Different</h2>
-      <p>Unlike simplified 4-letter type indicators (like MBTI or 16Personalities), our assessment measures all 8 cognitive functions independently on a continuous spectrum. Based on Carl Jung's original 1921 work "Psychological Types" and the clinically-validated Singer-Loomis Type Deployment Inventory (SLTDI), we give you a profile that's actually unique to you.</p>
+      <p>Unlike simplified 4-letter type indicators, TypeJung combines behavioral scenarios, inferior-function triggers, somatic indicators, and attitude questions to build a practical energy map instead of only a type label.</p>
       <ul>
-        <li>No forced binary choices - measure each function independently</li>
-        <li>Based on Jung's original theory, not simplified dichotomies</li>
-        <li>See your full cognitive function profile on a radar chart</li>
-        <li>Understand your shadow functions and growth areas</li>
+        <li>No forced binary choices between only two traits</li>
+        <li>Inferior-function answers carry extra weight</li>
+        <li>See a function energy map instead of only a type label</li>
+        <li>Understand your developmental edge and stress pattern</li>
       </ul>
     </section>
 
@@ -129,17 +129,17 @@ function generateHomepageNoscript() {
         <div style="padding: 15px; border: 2px solid #e7e5e4; border-radius: 8px; background: white;">
           <h3 style="margin-top: 0;">Free</h3>
           <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 8px 0;">$0</p>
-          <ul style="padding-left: 18px; margin: 0;"><li>42-question assessment</li><li>Radar chart visualization</li><li>Basic AI insights</li></ul>
+          <ul style="padding-left: 18px; margin: 0;"><li>42-question assessment</li><li>Energy map visualization</li><li>Dominant-inferior axis</li></ul>
         </div>
         <div style="padding: 15px; border: 2px solid #b45309; border-radius: 8px; background: #fffbeb;">
           <h3 style="margin-top: 0;">Insight</h3>
           <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 8px 0;">CA$19</p>
-          <ul style="padding-left: 18px; margin: 0;"><li>Extended AI analysis</li><li>Function deep-dive</li><li>Stress patterns</li></ul>
+          <ul style="padding-left: 18px; margin: 0;"><li>Developmental edge report</li><li>Stress pattern map</li><li>Somatic practices</li></ul>
         </div>
         <div style="padding: 15px; border: 2px solid #451a03; border-radius: 8px; background: #fef3c7;">
           <h3 style="margin-top: 0;">Mastery</h3>
           <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 8px 0;">CA$39</p>
-          <ul style="padding-left: 18px; margin: 0;"><li>AI Type Coach</li><li>PDF report</li><li>Career insights</li></ul>
+          <ul style="padding-left: 18px; margin: 0;"><li>AI Type Coach</li><li>Practice roadmap</li><li>Priority support</li></ul>
         </div>
       </div>
       <p style="text-align: center; margin-top: 15px;"><a href="/pricing">View full pricing details</a></p>
@@ -323,8 +323,8 @@ function generateAssessmentNoscript() {
         <li>Your scores for all 8 cognitive functions (Ni, Ne, Si, Se, Ti, Te, Fi, Fe)</li>
         <li>Your dominant and auxiliary functions</li>
         <li>Your best-fit personality type based on your function profile</li>
-        <li>AI-generated insights about your cognitive patterns</li>
-        <li>A visual radar chart of your function strengths</li>
+        <li>A readable synthesis of your cognitive patterns</li>
+        <li>A visual energy map of your function strengths and stress edge</li>
       </ul>
     </section>
 
@@ -332,8 +332,8 @@ function generateAssessmentNoscript() {
       <h2 style="color: #451a03; border-bottom: 1px solid #e7e5e4; padding-bottom: 8px;">How It Works</h2>
       <ol>
         <li><strong>Answer 42 questions</strong> - Rate how much each statement describes you (12-16 minutes)</li>
-        <li><strong>Get your results</strong> - See your cognitive function scores on a radar chart</li>
-        <li><strong>Explore insights</strong> - Read AI-generated analysis of your profile</li>
+        <li><strong>Get your results</strong> - See your cognitive function scores in an energy map</li>
+        <li><strong>Explore insights</strong> - Read the synthesis of your dominant-inferior pattern</li>
         <li><strong>Share your results</strong> - Get a unique link to share with others</li>
       </ol>
     </section>
@@ -388,8 +388,8 @@ function generatePricingNoscript() {
         <p style="color: #57534e;">Perfect for getting started</p>
         <ul style="padding-left: 20px;">
           <li>42-question assessment</li>
-          <li>Radar chart visualization</li>
-          <li>Basic AI-generated insights</li>
+          <li>Energy map visualization</li>
+          <li>Dominant-inferior axis</li>
           <li>Shareable results link</li>
           <li>Your best-fit type</li>
         </ul>
@@ -402,11 +402,11 @@ function generatePricingNoscript() {
         <p style="color: #57534e;">One-time payment</p>
         <ul style="padding-left: 20px;">
           <li>Everything in Free, plus:</li>
-          <li>Extended AI analysis</li>
-          <li>Cognitive function deep-dive</li>
-          <li>Stress patterns (The Grip)</li>
-          <li>Growth recommendations</li>
-          <li>Shadow function analysis</li>
+          <li>Developmental edge report</li>
+          <li>Stress pattern map</li>
+          <li>Relationship trigger interpretation</li>
+          <li>Somatic practice guidance</li>
+          <li>Lifetime unlocked result access</li>
         </ul>
         <p><a href="/assessment" style="display: block; text-align: center; padding: 12px; background: #b45309; color: white; text-decoration: none; border-radius: 5px;">Get Insight - CA$19</a></p>
       </div>
@@ -418,10 +418,10 @@ function generatePricingNoscript() {
         <ul style="padding-left: 20px;">
           <li>Everything in Insight, plus:</li>
           <li>AI Type Coach chat</li>
-          <li>Comprehensive PDF report</li>
-          <li>Archetypal analysis</li>
-          <li>Career compatibility insights</li>
-          <li>Relationship dynamics</li>
+          <li>Individuation roadmap</li>
+          <li>Growth exercises tailored to your cognitive stack</li>
+          <li>Practice library</li>
+          <li>Priority support</li>
           <li>Individuation roadmap</li>
         </ul>
         <p><a href="/assessment" style="display: block; text-align: center; padding: 12px; background: #451a03; color: white; text-decoration: none; border-radius: 5px;">Get Mastery - CA$39</a></p>
@@ -432,10 +432,10 @@ function generatePricingNoscript() {
       <h2 style="color: #451a03; border-bottom: 1px solid #e7e5e4; padding-bottom: 8px;">Frequently Asked Questions</h2>
 
       <h3>Is the assessment really free?</h3>
-      <p>Yes! The core 42-question assessment, radar chart visualization, and basic AI insights are completely free. No credit card required.</p>
+      <p>Yes. The core 42-question assessment, energy map, and dominant-inferior axis are free. No credit card required.</p>
 
       <h3>What's the difference between plans?</h3>
-      <p>Free gives you your function scores and basic insights. Insight (CA$19) adds detailed analysis of each function and growth recommendations. Mastery (CA$39) includes an AI coach you can chat with and a comprehensive PDF report.</p>
+      <p>Free gives you your function scores and core map. Insight (CA$19) adds the deeper report, stress map, and practices. Mastery (CA$39) adds the AI Type Coach and ongoing practice support.</p>
 
       <h3>Is it a subscription?</h3>
       <p>No! Insight and Mastery are one-time payments. You keep access to your upgraded results forever.</p>
@@ -468,7 +468,7 @@ function generateLearnNoscript() {
     <section style="margin-bottom: 35px;">
       <h2 style="color: #451a03; border-bottom: 1px solid #e7e5e4; padding-bottom: 8px;">The History</h2>
       <p>In 1921, Swiss psychiatrist Carl Gustav Jung published "Psychological Types," introducing the concept of cognitive functions. Unlike later simplified interpretations, Jung saw type as a dynamic system where all functions exist but develop at different rates.</p>
-      <p>The Singer-Loomis Type Deployment Inventory (SLTDI), developed in the 1980s, measures each function independently rather than forcing binary choices. This methodology informs our assessment approach.</p>
+      <p>TypeJung keeps the function-first spirit of Jungian typology while adding behavioral, stress, somatic, and attitude evidence so the result can be read as a practical self-reflection map.</p>
     </section>
 
     <section style="margin-bottom: 35px;">

@@ -2,7 +2,7 @@
 
 export const siteConfig = {
   name: 'TypeJung',
-  description: 'Free Jungian cognitive function assessment using Singer-Loomis methodology. Measure all 8 functions and discover your unique psychological type profile.',
+  description: 'Free depth-based Jungian assessment that maps cognitive functions, energy flow, inferior-function stress, and growth edges.',
   url: 'https://typejung.com',
   ogImage: 'https://typejung.com/og-image.png',
   keywords: [
@@ -10,7 +10,6 @@ export const siteConfig = {
     'cognitive function test',
     'Jungian typology',
     '8 cognitive functions',
-    'Singer-Loomis',
     'psychological types',
     'MBTI alternative',
     'Ni Ne Si Se Ti Te Fi Fe',

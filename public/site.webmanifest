@@ -1,7 +1,7 @@
 {
   "name": "TypeJung - Jungian Cognitive Function Assessment",
   "short_name": "TypeJung",
-  "description": "Measure all 8 cognitive functions using the Singer-Loomis methodology",
+  "description": "A depth-based Jungian assessment that maps energy flow, stress patterns, and growth edges",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#faf9f6",

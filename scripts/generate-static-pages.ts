@@ -15,7 +15,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const siteConfig = {
   url: 'https://typejung.com',
   name: 'TypeJung',
-  description: 'Free Jungian cognitive function assessment using Singer-Loomis methodology',
+  description: 'Free depth-based Jungian assessment that maps cognitive functions, energy flow, and growth edges',
 };
 
 const escapeHtml = (value: unknown): string =>
@@ -330,7 +330,7 @@ ${renderJsonLd(breadcrumbs)}
 
   <div class="cta-box">
     <h3>Discover Your ${data.code} Score</h3>
-    <p>Take our free 42-question assessment to see how ${data.fullName} ranks in your cognitive function profile. Get a personalized radar chart showing all 8 functions.</p>
+    <p>Take the free 42-question assessment to see how ${data.fullName} appears in your TypeJung energy map, including function strength, attitude direction, and stress-edge context.</p>
     <p><a href="/assessment" class="btn">Take the Free Assessment</a></p>
   </div>
 

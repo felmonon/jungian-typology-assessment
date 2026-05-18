@@ -6,12 +6,12 @@
 ABOUT
 ================================================================================
 
-TypeJung is a free psychological assessment tool based on Carl Jung's
-original theory of psychological types (1921) and the Singer-Loomis methodology.
+TypeJung is a free psychological self-assessment based on Carl Jung's
+original theory of psychological types (1921).
 
-Unlike simplified 4-letter type indicators (MBTI), this assessment measures all
-8 cognitive functions independently on a spectrum, providing a unique profile
-rather than forcing users into one of 16 predetermined boxes.
+Unlike simplified 4-letter type indicators, this assessment combines behavioral
+evidence, inferior-function triggers, somatic signals, and attitude direction to
+map where energy flows and where it gets stuck.
 
 ================================================================================
 THE 8 COGNITIVE FUNCTIONS
@@ -93,31 +93,31 @@ FEATURES
 
 FREE TIER:
 - 42-question cognitive function assessment
-- Radar chart visualization of all 8 functions
-- Basic AI-generated personality insights
+- Energy map visualization of all 8 functions
+- Dominant-inferior axis
 - Shareable results page
 - Type distribution leaderboard
 
 INSIGHT TIER (CA$19):
-- Extended AI analysis
-- Cognitive function deep-dive
-- Stress patterns (The Grip)
-- Growth recommendations
+- Developmental edge report
+- Stress pattern map
+- Relationship trigger interpretation
+- Somatic practice guidance
 
 MASTERY TIER (CA$39):
 - AI Type Coach chat
-- Comprehensive PDF report
-- Archetypal analysis
-- Career and relationship insights
 - Individuation roadmap
+- Tailored growth exercises
+- Practice library
+- Priority support
 
 ================================================================================
 HOW IT WORKS
 ================================================================================
 
 1. Take the 42-question assessment (12-16 minutes)
-2. View your cognitive function radar chart
-3. Read AI-generated insights about your type
+2. View your Jungian energy map
+3. Read the synthesis of your dominant-inferior pattern
 4. Explore detailed function breakdowns
 5. Optionally upgrade for deeper analysis
 

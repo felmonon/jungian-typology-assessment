@@ -3,11 +3,14 @@ import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './styles/globals.css';
 import App from './App';
+import { initAnalytics } from './lib/analytics';
 
 const queryClient = new QueryClient();
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Failed to find the root element');
+
+initAnalytics();
 
 const root = ReactDOM.createRoot(rootElement);
 root.render(

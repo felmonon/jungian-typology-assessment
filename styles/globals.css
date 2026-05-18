@@ -73,6 +73,24 @@ body {
   overflow-x: hidden;
 }
 
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-jung-surface-alt) 62%, transparent) 0%, transparent 26rem),
+    repeating-linear-gradient(
+      0deg,
+      color-mix(in srgb, var(--color-jung-border-light) 34%, transparent) 0,
+      color-mix(in srgb, var(--color-jung-border-light) 34%, transparent) 1px,
+      transparent 1px,
+      transparent 42px
+    );
+  opacity: 0.55;
+}
+
 button,
 a,
 input,
@@ -172,10 +190,10 @@ select {
 
 .card-premium,
 .card-elevated {
-  background: color-mix(in srgb, var(--color-jung-surface-elevated) 92%, transparent);
+  background: color-mix(in srgb, var(--color-jung-surface-elevated) 96%, transparent);
   border: 1px solid var(--color-jung-border);
   border-radius: 8px;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
   transition:
     transform var(--duration-normal) var(--ease-tech),
     border-color var(--duration-normal) var(--ease-tech),
@@ -186,7 +204,7 @@ select {
 .card-premium:hover,
 .card-elevated:hover {
   border-color: var(--color-jung-accent-muted);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
 
@@ -215,6 +233,38 @@ select {
   background: var(--color-jung-accent-hover);
   transform: translateY(-1px);
   box-shadow: var(--shadow-lg);
+}
+
+.input-premium {
+  min-height: 3.1rem;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--color-jung-border);
+  background: var(--color-jung-base);
+  padding: 0.85rem 1rem;
+  color: var(--color-jung-dark);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  transition:
+    border-color var(--duration-fast) var(--ease-tech),
+    background-color var(--duration-fast) var(--ease-tech),
+    box-shadow var(--duration-fast) var(--ease-tech);
+}
+
+.input-premium::placeholder {
+  color: color-mix(in srgb, var(--color-jung-muted) 62%, transparent);
+}
+
+.input-premium:focus {
+  border-color: var(--color-jung-accent);
+  background: var(--color-jung-surface);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-jung-accent-light) 78%, transparent);
+  outline: none;
+}
+
+.section-rule {
+  border-block: 1px solid var(--color-jung-border);
+  background: color-mix(in srgb, var(--color-jung-surface) 78%, transparent);
 }
 
 @utility glass {

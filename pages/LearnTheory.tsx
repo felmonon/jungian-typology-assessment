@@ -162,8 +162,8 @@ export const LearnTheory: React.FC = () => {
               {[
                 {
                   icon: <Layers className="w-5 h-5 text-jung-accent" />,
-                  title: 'Singer-Loomis Method',
-                  desc: 'Created by Jungian analysts for clinically accurate measurement'
+                  title: 'Function-first method',
+                  desc: 'Scores cognitive processes separately instead of forcing either-or choices'
                 },
                 {
                   icon: <Sparkles className="w-5 h-5 text-jung-accent" />,
@@ -612,8 +612,8 @@ export const LearnTheory: React.FC = () => {
 
           {/* Footer */}
           <footer className="pt-12 border-t border-jung-border text-center">
-            <img src="/logo.svg" alt="Jungian Typology" className="w-12 h-12 mx-auto mb-3" />
-            <p className="font-serif text-jung-dark mb-2">Jungian Typology</p>
+            <img src="/logo.svg" alt="TypeJung" className="w-12 h-12 mx-auto mb-3" />
+            <p className="font-serif text-jung-dark mb-2">TypeJung</p>
             <p className="text-sm text-jung-muted mb-4 font-serif">
               A self-exploration tool based on Jung's <em>Psychological Types</em> (1921). Not diagnostic—just reflection.
             </p>
@@ -623,7 +623,7 @@ export const LearnTheory: React.FC = () => {
             <p className="text-xs text-jung-muted font-serif">
               <strong>Disclaimer:</strong> Self-report only—cannot access unconscious fully. Results = snapshot, not fixed identity.
             </p>
-            <p className="mt-6 text-xs text-jung-muted font-serif">© 2026 Jungian Typology Assessment</p>
+            <p className="mt-6 text-xs text-jung-muted font-serif">© 2026 TypeJung</p>
           </footer>
         </div>
       </div>

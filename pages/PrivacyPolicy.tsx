@@ -21,13 +21,13 @@ export const PrivacyPolicy: React.FC = () => {
           Privacy Policy
         </h1>
         <p className="text-jung-muted text-sm font-serif">
-          Last updated: January 12, 2026
+          Last updated: May 18, 2026
         </p>
       </header>
 
       <div className="max-w-none">
         <p className="text-lg text-jung-secondary leading-relaxed mb-8 font-body">
-          At Jungian Typology Assessment, we are committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your personal information when you use our assessment service.
+          At TypeJung, we are committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your personal information when you use our assessment service.
         </p>
 
         <section className="mb-12">
@@ -56,7 +56,7 @@ export const PrivacyPolicy: React.FC = () => {
             <div className="card-elevated rounded-2xl p-5">
               <h3 className="font-semibold text-jung-dark mb-2 font-serif">Payment Information</h3>
               <p className="text-jung-secondary text-sm m-0 font-body">
-                When you purchase premium access, payment processing is handled by Stripe. We do not store your credit card details. We receive confirmation of successful payment and your purchase status.
+                When you purchase one-time CAD premium access, payment processing is handled by Stripe. We do not store your credit card details. We receive confirmation of successful payment and your purchase status.
               </p>
             </div>
           </div>
@@ -176,7 +176,7 @@ export const PrivacyPolicy: React.FC = () => {
             If you have any questions about this Privacy Policy or wish to exercise your data rights, please contact us at:
           </p>
           <p className="text-jung-accent font-medium mt-3 m-0 font-serif">
-            [Contact Email Placeholder]
+            support@typejung.com
           </p>
         </section>
 

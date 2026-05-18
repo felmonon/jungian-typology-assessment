@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight, BarChart3, Brain, Check, Clock, Compass, HeartPulse, Lock, Sparkles } from 'lucide-react';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Button } from '../components/ui/Button';
+import { PRICING } from '../data/pricing';
+import { AnalyticsEvents } from '../lib/analytics';
 import { PAGE_SEO, useSEO } from '../hooks/useSEO';
 
 const sampleEnergy = [
@@ -18,19 +20,19 @@ const methodLayers = [
     icon: Brain,
     label: 'Behavioral evidence',
     title: 'What you actually do',
-    description: 'Scenario questions track first-noticed patterns across work, relationships, conflict, learning, leisure, and solitude.',
+    description: 'Scenario questions look for repeated patterns in work, conflict, learning, relationships, solitude, and pressure.',
   },
   {
     icon: HeartPulse,
     label: 'Inferior detection',
-    title: 'Where you get captured',
-    description: 'Stress and attraction triggers carry extra weight because the inferior function is harder for the ego to perform or fake.',
+    title: 'Where stress takes over',
+    description: 'Stress and attraction triggers reveal the function you are least able to control cleanly, so they carry extra weight.',
   },
   {
     icon: Compass,
     label: 'Somatic indicators',
-    title: 'Where energy lives in the body',
-    description: 'Body signals around engagement, anxiety, grounding, and threat add evidence beyond self-image.',
+    title: 'What your body signals',
+    description: 'Engagement, anxiety, grounding, and threat responses add evidence beyond what your self-image can explain.',
   },
   {
     icon: BarChart3,
@@ -43,56 +45,56 @@ const methodLayers = [
 const resultModules = [
   {
     title: 'Your energy map',
-    description: 'A distribution across thinking, feeling, sensation, and intuition with the dominant-inferior axis highlighted.',
+    description: 'See how attention and effort distribute across thinking, feeling, sensation, and intuition.',
   },
   {
     title: 'Your developmental edge',
-    description: 'The inferior function is translated into the concrete growth task your psyche keeps circling.',
+    description: 'Turn the inferior function from a vague weakness into a concrete growth pattern you can notice.',
   },
   {
-    title: 'Your complex vulnerability map',
-    description: 'The result names the situations where complexes are most likely to capture attention, body, and interpretation.',
+    title: 'Your stress pattern map',
+    description: 'Name the situations most likely to distort attention, body signals, and interpretation.',
   },
 ];
 
 const pricing = [
   {
     name: 'Free',
-    price: '$0',
-    description: 'Complete the assessment and receive the basic energy map.',
-    features: ['42-question assessment', 'Function hierarchy', 'Reliability score', 'No signup required'],
+    price: PRICING.free.price,
+    description: 'Take the full assessment and see whether the map feels accurate before paying.',
+    features: ['42-question assessment', 'Basic energy map', 'Dominant-inferior axis', 'No signup required'],
   },
   {
-    name: 'Detailed report',
-    price: '$12',
-    description: 'Unlock deeper developmental analysis and practice guidance.',
-    features: ['Developmental edge report', 'Complex vulnerability map', 'Somatic grounding practices', 'Downloadable report'],
+    name: PRICING.insight.name,
+    price: PRICING.insight.price,
+    description: 'Unlock the deeper report when you want the meaning behind your free map.',
+    features: ['Developmental edge report', 'Stress pattern analysis', 'Somatic grounding practices', 'Lifetime result access'],
     highlighted: true,
   },
   {
-    name: 'Tracking',
-    price: '$29',
-    description: 'Reassess over time and watch the distribution shift.',
-    features: ['Saved history', 'Development curves', 'Comparison across results', 'Ongoing practice library'],
+    name: PRICING.mastery.name,
+    price: PRICING.mastery.price,
+    description: 'Add the AI Type Coach when you want follow-up guidance and practice support.',
+    features: ['Everything in Insight', 'AI Type Coach', 'Individuation roadmap', 'Practice library'],
   },
 ];
 
 const faqs = [
   {
     question: 'Is this another MBTI test?',
-    answer: 'No. TypeJung does not stop at a four-letter label. It maps energy distribution, inferior-function tension, somatic signals, and reliability.',
+    answer: 'No. TypeJung does not stop at a four-letter label. It maps energy distribution, inferior-function tension, body signals, and reliability.',
   },
   {
     question: 'Why only 42 questions?',
-    answer: 'The assessment is longer than entertainment quizzes but shorter than a test people abandon. It uses targeted layers instead of many repeated self-report prompts.',
+    answer: 'It is long enough to catch patterns, but short enough to finish in one sitting. The questions are targeted instead of repeating the same self-report prompt many ways.',
   },
   {
     question: 'Why weight the inferior function?',
-    answer: 'The dominant function can describe itself too cleanly. Stress and trigger patterns reveal where the ego has less control, so those answers carry more diagnostic value.',
+    answer: 'People can describe their strengths too cleanly. Stress and trigger patterns show where control gets weaker, so those answers reveal the growth edge more clearly.',
   },
   {
     question: 'Do I need an account?',
-    answer: 'No. The free result is local and private. An account is only useful when you want saved history or paid reports.',
+    answer: 'No. You can take the free assessment without creating an account. An account is only useful for saved history and paid access.',
   },
 ];
 
@@ -101,51 +103,61 @@ export const Home: React.FC = () => {
 
   useSEO(PAGE_SEO.home);
 
-  const startAssessment = () => navigate('/assessment');
+  const startAssessment = (location: string) => {
+    AnalyticsEvents.ctaClicked('start_assessment', location);
+    navigate('/assessment');
+  };
 
   return (
     <ErrorBoundary>
       <div className="overflow-hidden">
-        <section className="lab-container grid items-center gap-12 py-14 lg:grid-cols-[0.95fr_1.05fr] lg:py-16">
+        <section className="lab-container grid items-center gap-10 py-12 lg:min-h-[calc(100vh-4.75rem)] lg:grid-cols-[0.92fr_1.08fr] lg:py-14">
           <motion.div
-            initial={{ opacity: 0, y: 18 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
             className="max-w-2xl"
           >
-            <div className="mb-6 inline-flex items-center gap-2 rounded-lg border border-jung-border bg-jung-surface px-3 py-2 text-sm font-medium text-jung-secondary">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-lg border border-jung-border bg-jung-surface px-3 py-2 text-sm font-semibold text-jung-secondary shadow-sm">
               <Sparkles className="h-4 w-4 text-jung-accent" />
               Depth-based Jungian typology assessment
             </div>
 
-            <h1 className="text-display text-6xl text-jung-dark sm:text-7xl lg:text-8xl">
+            <h1 className="max-w-[21rem] text-display text-5xl text-jung-dark sm:max-w-none sm:text-7xl lg:text-8xl">
               TypeJung
             </h1>
 
-            <p className="mt-6 max-w-xl text-heading text-3xl leading-tight text-jung-dark sm:text-4xl">
-              Not what type you are. Where your energy flows and where it gets stuck.
+            <p className="mt-5 max-w-[21rem] break-words text-heading text-2xl leading-tight text-jung-dark sm:mt-6 sm:max-w-xl sm:text-4xl">
+              Find the pattern beneath your personality type.
             </p>
 
-            <p className="mt-6 max-w-xl text-body-lg text-jung-secondary">
-              A 42-question assessment that uses behavioral scenarios, inferior-function triggers, somatic indicators, and Jungian attitude to build an energy map instead of a personality label.
+            <p className="mt-5 max-w-[21rem] text-body-lg text-jung-secondary sm:max-w-xl">
+              Take a free 42-question Jungian assessment that maps where your energy flows, where stress distorts it, and what your next growth edge looks like.
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button variant="accent" size="lg" onClick={startAssessment} rightIcon={<ArrowRight className="h-5 w-5" />}>
+            <div className="mt-7 flex max-w-[21rem] flex-col gap-3 sm:max-w-xl sm:flex-row">
+              <Button variant="accent" size="lg" onClick={() => startAssessment('home_hero')} rightIcon={<ArrowRight className="h-5 w-5" />}>
                 Start free assessment
               </Button>
-              <Button variant="outline" size="lg" onClick={() => navigate('/learn')}>
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => {
+                  AnalyticsEvents.ctaClicked('learn_method', 'home_hero');
+                  navigate('/learn');
+                }}
+              >
                 Learn the method
               </Button>
             </div>
 
-            <div className="mt-8 grid max-w-xl gap-3 sm:grid-cols-3">
+            <div className="mt-7 grid max-w-[21rem] gap-3 sm:max-w-xl sm:grid-cols-3">
               {[
                 ['12-16 min', 'one sitting'],
                 ['42 questions', 'four evidence layers'],
-                ['No signup', 'free energy map'],
+                ['Pay later', 'see value first'],
               ].map(([value, label]) => (
-                <div key={value} className="rounded-lg border border-jung-border bg-jung-surface/75 p-4">
+                <div key={value} className="rounded-lg border border-jung-border bg-jung-surface p-4 shadow-sm">
                   <p className="text-lg font-semibold text-jung-dark">{value}</p>
                   <p className="mt-1 text-sm text-jung-muted">{label}</p>
                 </div>
@@ -154,22 +166,22 @@ export const Home: React.FC = () => {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 18 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             className="relative"
           >
-            <div className="card-premium p-4 sm:p-5">
+            <div className="card-premium p-3 sm:p-4">
               <div className="rounded-lg border border-jung-border bg-jung-base p-5 sm:p-7">
-                <div className="mb-8 flex items-start justify-between gap-4">
+                <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row">
                   <div>
                     <p className="text-label">Sample result</p>
                     <h2 className="mt-2 text-heading text-3xl text-jung-dark">Energy map</h2>
                     <p className="mt-2 text-sm leading-6 text-jung-secondary">
-                      Distribution across the four Jungian channels.
+                      A readable map of the pattern behind your result.
                     </p>
                   </div>
-                  <div className="rounded-lg bg-jung-accent-light px-3 py-2 text-sm font-semibold text-jung-accent">
+                  <div className="rounded-lg bg-jung-accent-light px-3 py-2 text-sm font-semibold text-jung-accent shadow-sm">
                     87% reliable
                   </div>
                 </div>
@@ -208,7 +220,7 @@ export const Home: React.FC = () => {
           </motion.div>
         </section>
 
-        <section className="border-y border-jung-border bg-jung-surface/70 py-5">
+        <section className="section-rule py-5">
           <div className="lab-container flex flex-col gap-3 text-sm text-jung-secondary sm:flex-row sm:items-center sm:justify-between">
             <span className="inline-flex items-center gap-2">
               <Check className="h-4 w-4 text-jung-accent" />
@@ -233,7 +245,7 @@ export const Home: React.FC = () => {
                 Not another four-letter label.
               </h2>
               <p className="mt-5 text-body text-jung-secondary">
-                Most tests ask the ego to report on itself. TypeJung asks what you notice first, what you do under low pressure, what captures you under stress, and where the body registers engagement or threat.
+                Most personality tests ask you to label yourself. TypeJung looks for repeatable evidence: what you notice first, how you decide, what takes over under stress, and where your body registers engagement or threat.
               </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-3">
@@ -252,7 +264,7 @@ export const Home: React.FC = () => {
             <div className="mb-10 max-w-2xl">
               <p className="text-label">Assessment architecture</p>
               <h2 className="mt-3 text-heading text-4xl text-jung-dark sm:text-5xl">
-                Four evidence layers, one energy map.
+                Four evidence layers. One practical result.
               </h2>
             </div>
 
@@ -277,9 +289,15 @@ export const Home: React.FC = () => {
           <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-label">Pricing</p>
-              <h2 className="mt-3 text-heading text-4xl text-jung-dark">Start free. Go deeper when it is useful.</h2>
+              <h2 className="mt-3 text-heading text-4xl text-jung-dark">Start free. Upgrade only after the result earns it.</h2>
             </div>
-            <Button variant="outline" onClick={() => navigate('/pricing')}>
+            <Button
+              variant="outline"
+              onClick={() => {
+                AnalyticsEvents.ctaClicked('view_pricing', 'home_pricing_section');
+                navigate('/pricing');
+              }}
+            >
               View details
             </Button>
           </div>
@@ -294,7 +312,7 @@ export const Home: React.FC = () => {
                   </div>
                   {tier.highlighted && (
                     <span className="rounded-lg bg-jung-accent px-3 py-1.5 text-xs font-semibold text-white">
-                      Planned
+                      Standard
                     </span>
                   )}
                 </div>
@@ -321,7 +339,7 @@ export const Home: React.FC = () => {
             <div className="grid gap-3">
               {faqs.map((item) => (
                 <details key={item.question} className="group rounded-lg border border-jung-border bg-jung-surface-elevated p-5">
-                  <summary className="cursor-pointer list-none text-base font-semibold text-jung-dark">
+                  <summary className="flex min-h-11 cursor-pointer list-none items-center text-base font-semibold text-jung-dark">
                     {item.question}
                   </summary>
                   <p className="mt-3 text-sm leading-6 text-jung-secondary">{item.answer}</p>
@@ -336,12 +354,12 @@ export const Home: React.FC = () => {
             <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
               <div>
                 <p className="text-sm font-semibold text-white/60">Ready when you are</p>
-                <h2 className="mt-3 text-heading text-4xl text-white">Take the depth assessment in one quiet sitting.</h2>
+                <h2 className="mt-3 text-heading text-4xl text-white">Take the assessment before you pay for anything.</h2>
                 <p className="mt-4 max-w-2xl text-white/70">
-                  The free result shows your function hierarchy, inferior-function edge, somatic signal, and reliability score.
+                  Your free result shows the core map first. Paid upgrades only add deeper interpretation, practice guidance, and coaching tools.
                 </p>
               </div>
-              <Button variant="inverted" size="lg" onClick={startAssessment} rightIcon={<ArrowRight className="h-5 w-5" />}>
+              <Button variant="inverted" size="lg" onClick={() => startAssessment('home_final_cta')} rightIcon={<ArrowRight className="h-5 w-5" />}>
                 Start free
               </Button>
             </div>

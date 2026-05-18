@@ -129,16 +129,16 @@ function generateHomepageNoscript() {
         <div style="padding: 15px; border: 2px solid #e7e5e4; border-radius: 8px; background: white;">
           <h3 style="margin-top: 0;">Free</h3>
           <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 8px 0;">$0</p>
-          <ul style="padding-left: 18px; margin: 0;"><li>40-question assessment</li><li>Radar chart visualization</li><li>Basic AI insights</li></ul>
+          <ul style="padding-left: 18px; margin: 0;"><li>42-question assessment</li><li>Radar chart visualization</li><li>Basic AI insights</li></ul>
         </div>
         <div style="padding: 15px; border: 2px solid #b45309; border-radius: 8px; background: #fffbeb;">
           <h3 style="margin-top: 0;">Insight</h3>
-          <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 8px 0;">$19</p>
+          <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 8px 0;">CA$19</p>
           <ul style="padding-left: 18px; margin: 0;"><li>Extended AI analysis</li><li>Function deep-dive</li><li>Stress patterns</li></ul>
         </div>
         <div style="padding: 15px; border: 2px solid #451a03; border-radius: 8px; background: #fef3c7;">
           <h3 style="margin-top: 0;">Mastery</h3>
-          <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 8px 0;">$39</p>
+          <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 8px 0;">CA$39</p>
           <ul style="padding-left: 18px; margin: 0;"><li>AI Type Coach</li><li>PDF report</li><li>Career insights</li></ul>
         </div>
       </div>
@@ -315,7 +315,7 @@ function generateAssessmentNoscript() {
   <div style="max-width: 800px; margin: 0 auto; padding: 40px 20px; font-family: Georgia, serif; line-height: 1.8; color: #333;">
     <h1 style="color: #451a03; font-size: 2.2em; margin-bottom: 20px;">Jungian Cognitive Function Assessment</h1>
 
-    <p style="font-size: 1.15em; color: #57534e; margin-bottom: 30px;">Take our free 40-question assessment to discover your cognitive function profile. Unlike other tests, we measure all 8 functions independently on a spectrum.</p>
+    <p style="font-size: 1.15em; color: #57534e; margin-bottom: 30px;">Take our free 42-question assessment to discover your cognitive function profile. Unlike other tests, we measure all 8 functions independently on a spectrum.</p>
 
     <section style="margin-bottom: 35px; padding: 25px; background: #fef3c7; border-radius: 10px;">
       <h2 style="color: #451a03; margin-top: 0;">What You'll Learn</h2>
@@ -331,7 +331,7 @@ function generateAssessmentNoscript() {
     <section style="margin-bottom: 35px;">
       <h2 style="color: #451a03; border-bottom: 1px solid #e7e5e4; padding-bottom: 8px;">How It Works</h2>
       <ol>
-        <li><strong>Answer 40 questions</strong> - Rate how much each statement describes you (15-20 minutes)</li>
+        <li><strong>Answer 42 questions</strong> - Rate how much each statement describes you (12-16 minutes)</li>
         <li><strong>Get your results</strong> - See your cognitive function scores on a radar chart</li>
         <li><strong>Explore insights</strong> - Read AI-generated analysis of your profile</li>
         <li><strong>Share your results</strong> - Get a unique link to share with others</li>
@@ -387,7 +387,7 @@ function generatePricingNoscript() {
         <p style="font-size: 2.5em; font-weight: bold; color: #451a03; margin: 15px 0;">$0</p>
         <p style="color: #57534e;">Perfect for getting started</p>
         <ul style="padding-left: 20px;">
-          <li>40-question assessment</li>
+          <li>42-question assessment</li>
           <li>Radar chart visualization</li>
           <li>Basic AI-generated insights</li>
           <li>Shareable results link</li>
@@ -398,7 +398,7 @@ function generatePricingNoscript() {
 
       <div style="padding: 25px; border: 3px solid #b45309; border-radius: 10px; background: #fffbeb;">
         <h2 style="margin-top: 0; color: #451a03;">Insight</h2>
-        <p style="font-size: 2.5em; font-weight: bold; color: #451a03; margin: 15px 0;">$19</p>
+        <p style="font-size: 2.5em; font-weight: bold; color: #451a03; margin: 15px 0;">CA$19</p>
         <p style="color: #57534e;">One-time payment</p>
         <ul style="padding-left: 20px;">
           <li>Everything in Free, plus:</li>
@@ -408,12 +408,12 @@ function generatePricingNoscript() {
           <li>Growth recommendations</li>
           <li>Shadow function analysis</li>
         </ul>
-        <p><a href="/assessment" style="display: block; text-align: center; padding: 12px; background: #b45309; color: white; text-decoration: none; border-radius: 5px;">Get Insight - $19</a></p>
+        <p><a href="/assessment" style="display: block; text-align: center; padding: 12px; background: #b45309; color: white; text-decoration: none; border-radius: 5px;">Get Insight - CA$19</a></p>
       </div>
 
       <div style="padding: 25px; border: 3px solid #451a03; border-radius: 10px; background: #fef3c7;">
         <h2 style="margin-top: 0; color: #451a03;">Mastery</h2>
-        <p style="font-size: 2.5em; font-weight: bold; color: #451a03; margin: 15px 0;">$39</p>
+        <p style="font-size: 2.5em; font-weight: bold; color: #451a03; margin: 15px 0;">CA$39</p>
         <p style="color: #57534e;">One-time payment</p>
         <ul style="padding-left: 20px;">
           <li>Everything in Insight, plus:</li>
@@ -424,7 +424,7 @@ function generatePricingNoscript() {
           <li>Relationship dynamics</li>
           <li>Individuation roadmap</li>
         </ul>
-        <p><a href="/assessment" style="display: block; text-align: center; padding: 12px; background: #451a03; color: white; text-decoration: none; border-radius: 5px;">Get Mastery - $39</a></p>
+        <p><a href="/assessment" style="display: block; text-align: center; padding: 12px; background: #451a03; color: white; text-decoration: none; border-radius: 5px;">Get Mastery - CA$39</a></p>
       </div>
     </div>
 
@@ -432,10 +432,10 @@ function generatePricingNoscript() {
       <h2 style="color: #451a03; border-bottom: 1px solid #e7e5e4; padding-bottom: 8px;">Frequently Asked Questions</h2>
 
       <h3>Is the assessment really free?</h3>
-      <p>Yes! The core 40-question assessment, radar chart visualization, and basic AI insights are completely free. No credit card required.</p>
+      <p>Yes! The core 42-question assessment, radar chart visualization, and basic AI insights are completely free. No credit card required.</p>
 
       <h3>What's the difference between plans?</h3>
-      <p>Free gives you your function scores and basic insights. Insight ($19) adds detailed analysis of each function and growth recommendations. Mastery ($39) includes an AI coach you can chat with and a comprehensive PDF report.</p>
+      <p>Free gives you your function scores and basic insights. Insight (CA$19) adds detailed analysis of each function and growth recommendations. Mastery (CA$39) includes an AI coach you can chat with and a comprehensive PDF report.</p>
 
       <h3>Is it a subscription?</h3>
       <p>No! Insight and Mastery are one-time payments. You keep access to your upgraded results forever.</p>

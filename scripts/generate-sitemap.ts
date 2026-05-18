@@ -4,9 +4,11 @@
  * Generates sitemap.xml with all pages including static HTML files
  */
 
-import { writeFileSync } from 'fs';
-import { dirname } from 'path';
+import { existsSync, writeFileSync } from 'fs';
+import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import { seoLandingPages } from './seo-data.mjs';
+import { growthBlogArticles } from './growth-blog-data.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -36,6 +38,25 @@ const entries: SitemapEntry[] = [
   { loc: '/blog/singer-loomis-vs-mbti', lastmod: '2026-01-15', changefreq: 'monthly', priority: 0.7 },
   { loc: '/blog/understanding-the-grip', lastmod: '2026-01-10', changefreq: 'monthly', priority: 0.7 },
 ];
+
+for (const article of growthBlogArticles) {
+  entries.push({
+    loc: `/blog/${article.slug}`,
+    lastmod: article.date,
+    changefreq: 'monthly',
+    priority: 0.75
+  });
+}
+
+// Add high-intent SEO landing pages
+for (const page of seoLandingPages) {
+  entries.push({
+    loc: `/${page.slug}`,
+    lastmod: TODAY,
+    changefreq: 'monthly',
+    priority: 0.85
+  });
+}
 
 // Add function pages
 const functions = ['ni', 'ne', 'si', 'se', 'ti', 'te', 'fi', 'fe'];
@@ -89,12 +110,18 @@ const sitemap = generateSitemap(entries);
 const outputPath = `${__dirname}/../public/sitemap.xml`;
 writeFileSync(outputPath, sitemap);
 
+const distOutputPath = join(__dirname, '..', 'dist', 'public', 'sitemap.xml');
+if (existsSync(dirname(distOutputPath))) {
+  writeFileSync(distOutputPath, sitemap);
+}
+
 console.log('✅ Sitemap generated successfully!');
 console.log(`📄 Location: ${outputPath}`);
 console.log(`🔗 Total URLs: ${entries.length}`);
 console.log('\nBreakdown:');
 console.log(`  • Main pages: 7`);
-console.log(`  • Blog articles: 2`);
+console.log(`  • Blog articles: ${growthBlogArticles.length + 2}`);
+console.log(`  • High-intent landing pages: ${seoLandingPages.length}`);
 console.log(`  • Function pages: ${functions.length}`);
 console.log(`  • Type pages: ${types.length}`);
 console.log('\nNext steps:');

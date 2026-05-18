@@ -6,16 +6,22 @@ import { Button } from '../components/ui/Button';
 import { DepthLayer, depthLayerMeta, depthQuestions } from '../data/depthAssessment';
 import { PAGE_SEO, useSEO } from '../hooks/useSEO';
 import { useAssessmentTracking } from '../hooks/useAnalytics';
+import { useAuth } from '../hooks/use-auth';
 import { calculateDepthResults } from '../utils/depthScoring';
 
 const QUESTIONS_PER_PAGE = 3;
 const PROGRESS_KEY = 'jungian_depth_assessment_progress';
 const HISTORY_KEY = 'jungian_depth_results_history';
 const RESULTS_KEY = 'jungian_assessment_results';
+const LIFECYCLE_EMAIL_ENDPOINT = '/api/lifecycle-email';
+const ABANDONED_EMAIL_DELAY_MS = 30 * 60 * 1000;
+const ABANDONED_EMAIL_ATTEMPT_PREFIX = 'typejung_lifecycle_email_abandoned_';
 
 type SavedProgress = {
   answers: Record<string, string>;
   currentPage: number;
+  startedAt?: string;
+  updatedAt?: string;
 };
 
 const layerOrder: DepthLayer[] = ['behavioral', 'inferior', 'somatic', 'attitude'];
@@ -40,6 +46,8 @@ const readProgress = (): SavedProgress | null => {
     return {
       answers: parsed.answers && typeof parsed.answers === 'object' ? parsed.answers : {},
       currentPage: Number.isFinite(parsed.currentPage) ? parsed.currentPage : 0,
+      startedAt: typeof parsed.startedAt === 'string' ? parsed.startedAt : undefined,
+      updatedAt: typeof parsed.updatedAt === 'string' ? parsed.updatedAt : undefined,
     };
   } catch {
     return null;
@@ -47,7 +55,32 @@ const readProgress = (): SavedProgress | null => {
 };
 
 const writeProgress = (answers: Record<string, string>, currentPage: number) => {
-  localStorage.setItem(PROGRESS_KEY, JSON.stringify({ answers, currentPage }));
+  const now = new Date().toISOString();
+  const previous = readProgress();
+  localStorage.setItem(PROGRESS_KEY, JSON.stringify({
+    answers,
+    currentPage,
+    startedAt: previous?.startedAt || now,
+    updatedAt: now,
+  }));
+};
+
+const countAnswered = (answers: Record<string, string>) => Object.keys(answers).filter((key) => answers[key]).length;
+
+const postLifecycleEmail = async (body: Record<string, unknown>) => {
+  try {
+    const response = await fetch(LIFECYCLE_EMAIL_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(body),
+    });
+
+    const data = await response.json().catch(() => null);
+    return response.ok && !!data && (data.sent === true || data.skipped === true);
+  } catch {
+    return false;
+  }
 };
 
 export const Assessment: React.FC = () => {
@@ -58,6 +91,7 @@ export const Assessment: React.FC = () => {
   const hasLoadedProgressRef = useRef(false);
   const hasTrackedStartRef = useRef(false);
   const { trackStart, trackProgress, trackComplete } = useAssessmentTracking();
+  const { user, isLoading: authLoading } = useAuth();
 
   useSEO(PAGE_SEO.assessment);
 
@@ -67,7 +101,7 @@ export const Assessment: React.FC = () => {
     (currentPage + 1) * QUESTIONS_PER_PAGE,
   );
 
-  const totalAnswered = Object.keys(answers).filter((key) => answers[key]).length;
+  const totalAnswered = countAnswered(answers);
   const overallProgress = Math.round((totalAnswered / depthQuestions.length) * 100);
   const isPageComplete = currentQuestions.every((question) => answers[question.id]);
   const currentLayer = currentQuestions[0]?.layer ?? 'behavioral';
@@ -96,6 +130,50 @@ export const Assessment: React.FC = () => {
       hasTrackedStartRef.current = true;
     }
   }, [trackStart]);
+
+  useEffect(() => {
+    if (authLoading || !user?.email || showCompletion || totalAnswered === 0 || totalAnswered >= depthQuestions.length) {
+      return;
+    }
+
+    const progress = readProgress();
+    if (!progress) return;
+
+    const startedAt = progress.startedAt || progress.updatedAt || new Date().toISOString();
+    const updatedAt = progress.updatedAt || startedAt;
+    const attemptKey = `${ABANDONED_EMAIL_ATTEMPT_PREFIX}${startedAt}`;
+
+    if (localStorage.getItem(attemptKey)) return;
+
+    const updatedAtTime = Date.parse(updatedAt);
+    const dueAt = (Number.isFinite(updatedAtTime) ? updatedAtTime : Date.now()) + ABANDONED_EMAIL_DELAY_MS;
+    const delay = Math.max(0, dueAt - Date.now());
+
+    const timer = window.setTimeout(() => {
+      const latestProgress = readProgress();
+      if (!latestProgress) return;
+
+      const answeredCount = countAnswered(latestProgress.answers);
+      if (answeredCount === 0 || answeredCount >= depthQuestions.length) return;
+
+      const latestStartedAt = latestProgress.startedAt || startedAt;
+      const latestAttemptKey = `${ABANDONED_EMAIL_ATTEMPT_PREFIX}${latestStartedAt}`;
+      if (localStorage.getItem(latestAttemptKey)) return;
+
+      void postLifecycleEmail({
+        lifecycle: 'abandoned-assessment',
+        idempotencyKey: latestAttemptKey,
+        progressPercent: Math.round((answeredCount / depthQuestions.length) * 100),
+        completedAt: latestProgress.updatedAt,
+      }).then((ok) => {
+        if (ok) {
+          localStorage.setItem(latestAttemptKey, new Date().toISOString());
+        }
+      });
+    }, delay);
+
+    return () => window.clearTimeout(timer);
+  }, [answers, authLoading, showCompletion, totalAnswered, user?.email]);
 
   const persist = useCallback((nextAnswers: Record<string, string>, nextPage = currentPage) => {
     writeProgress(nextAnswers, nextPage);
@@ -176,13 +254,14 @@ export const Assessment: React.FC = () => {
         )}
       </AnimatePresence>
 
-      <header className="sticky top-[73px] z-40 border-b border-jung-border bg-jung-base/92 py-4 backdrop-blur lg:top-[81px]">
+      <header className="sticky top-[69px] z-40 border-b border-jung-border bg-jung-base/94 py-4 shadow-sm backdrop-blur lg:top-[73px]">
         <div className="mx-auto w-full max-w-5xl px-4 sm:px-6">
           <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
             <div>
               <p className="text-sm font-semibold text-jung-accent">Questions {pageRange} of {depthQuestions.length}</p>
               <h1 className="mt-1 text-heading text-2xl text-jung-dark sm:text-3xl">{currentLayerMeta.label}</h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-jung-secondary">{currentLayerMeta.description}</p>
+              <p className="mt-2 text-xs font-medium text-jung-muted">Progress saves on this device as you answer.</p>
             </div>
             <div className="min-w-[10rem] text-left lg:text-right">
               <p className="text-3xl font-semibold text-jung-dark">{overallProgress}%</p>
@@ -283,11 +362,12 @@ export const Assessment: React.FC = () => {
                             <button
                               key={option.id}
                               type="button"
+                              aria-pressed={isActive}
                               onClick={() => handleAnswer(question.id, option.id, questionNumber)}
                               className={`group flex min-h-14 w-full items-start gap-3 rounded-lg border px-4 py-3 text-left transition-all ${
                                 isActive
                                   ? 'border-jung-accent bg-jung-accent text-white shadow-md'
-                                  : 'border-jung-border bg-jung-surface hover:border-jung-accent-muted hover:bg-jung-accent-light'
+                                  : 'border-jung-border bg-jung-surface shadow-sm hover:-translate-y-px hover:border-jung-accent-muted hover:bg-jung-accent-light hover:shadow-md'
                               }`}
                             >
                               <span className={`mt-0.5 flex h-5 w-5 flex-none items-center justify-center rounded-full ${
@@ -310,7 +390,7 @@ export const Assessment: React.FC = () => {
           </motion.div>
         </AnimatePresence>
 
-        <div className="mt-10 grid gap-4 border-t border-jung-border pt-6 sm:grid-cols-[auto_1fr_auto] sm:items-center">
+        <div className="sticky bottom-0 z-30 -mx-4 mt-10 grid gap-4 border-t border-jung-border bg-jung-base/94 px-4 pb-4 pt-4 shadow-[0_-14px_30px_-28px_rgb(29_38_32_/_0.65)] backdrop-blur sm:-mx-6 sm:grid-cols-[auto_1fr_auto] sm:items-center sm:px-6 lg:static lg:mx-0 lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-6 lg:shadow-none lg:backdrop-blur-0">
           <Button
             variant="outline"
             size="lg"
@@ -323,7 +403,7 @@ export const Assessment: React.FC = () => {
           </Button>
 
           <div className="text-center text-sm text-jung-muted">
-            {!isPageComplete ? 'Answer these three questions to continue.' : `Section ${currentPage + 1} of ${totalPages} complete.`}
+            {!isPageComplete ? 'Choose one answer for each question on this page.' : `Section ${currentPage + 1} of ${totalPages} complete.`}
           </div>
 
           <Button

@@ -5,6 +5,7 @@
  */
 
 import { functionSEO, functionData, typeSEO, typeData } from '../data/seo-config.js';
+import { seoLandingPages } from './seo-data.mjs';
 import { writeFileSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -17,25 +18,50 @@ const siteConfig = {
   description: 'Free Jungian cognitive function assessment using Singer-Loomis methodology',
 };
 
+const escapeHtml = (value: unknown): string =>
+  String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+const renderJsonLd = (value: unknown): string =>
+  JSON.stringify(value, null, 2).replace(/</g, '\\u003c');
+
+const absoluteUrl = (path: string): string =>
+  path === '/' ? `${siteConfig.url}/` : `${siteConfig.url}${path}`;
+
+const breadcrumbSchema = (items: Array<{ name: string; path: string }>) => ({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: items.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.name,
+    item: absoluteUrl(item.path),
+  })),
+});
+
 // Common head template
-const getHead = (title: string, description: string, path: string) => `
+const getHead = (title: string, description: string, path: string, keywords?: string[]) => `
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${title}</title>
-<meta name="description" content="${description}">
-<meta name="keywords" content="Jung personality test, cognitive functions, ${title.split(' - ')[0].toLowerCase()}, psychological types">
+<title>${escapeHtml(title)}</title>
+<meta name="description" content="${escapeHtml(description)}">
+<meta name="keywords" content="${escapeHtml((keywords && keywords.length > 0 ? keywords : ['Jung personality test', 'cognitive functions', title.split(' - ')[0].toLowerCase(), 'psychological types']).join(', '))}">
 <meta name="author" content="TypeJung">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="index, follow, max-image-preview:large">
 <link rel="canonical" href="${siteConfig.url}${path}">
 <meta property="og:type" content="article">
 <meta property="og:url" content="${siteConfig.url}${path}">
-<meta property="og:title" content="${title}">
-<meta property="og:description" content="${description}">
+<meta property="og:title" content="${escapeHtml(title)}">
+<meta property="og:description" content="${escapeHtml(description)}">
 <meta property="og:image" content="${siteConfig.url}/og-image.png">
 <meta property="og:site_name" content="TypeJung">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="${title}">
-<meta name="twitter:description" content="${description}">
+<meta name="twitter:title" content="${escapeHtml(title)}">
+<meta name="twitter:description" content="${escapeHtml(description)}">
 <meta name="twitter:image" content="${siteConfig.url}/og-image.png">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <style>
@@ -46,12 +72,19 @@ const getHead = (title: string, description: string, path: string) => `
   .subtitle { color: #57534e; font-size: 1.3em; margin-bottom: 30px; }
   .breadcrumb { color: #78716c; margin-bottom: 20px; }
   .breadcrumb a { color: #b45309; text-decoration: none; }
+  .eyebrow { color: #b45309; font-weight: bold; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.78rem; }
   .cta-box { background: #fef3c7; padding: 25px; border-radius: 10px; margin: 30px 0; border-left: 4px solid #b45309; }
   .cta-box h3 { margin-top: 0; }
   .btn { display: inline-block; padding: 12px 25px; background: #451a03; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; }
   .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
   .related-card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
   .related-card a { color: #451a03; text-decoration: none; font-weight: bold; }
+  .faq-item { background: white; padding: 18px; border-radius: 8px; margin-bottom: 14px; border: 1px solid #e7e5e4; }
+  .faq-item h3 { margin: 0 0 8px; font-size: 1.05rem; }
+  .comparison-table { width: 100%; border-collapse: collapse; margin: 20px 0; background: white; }
+  .comparison-table th { background: #451a03; color: white; padding: 12px; text-align: left; }
+  .comparison-table td { padding: 12px; border-bottom: 1px solid #e7e5e4; vertical-align: top; }
+  .comparison-table tr:nth-child(even) { background: #f5f5f4; }
   .trait-list { columns: 2; column-gap: 30px; }
   .trait-list li { break-inside: avoid; margin-bottom: 10px; }
   footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #e7e5e4; color: #78716c; text-align: center; }
@@ -60,11 +93,150 @@ const getHead = (title: string, description: string, path: string) => `
 </style>
 `;
 
+function renderLandingSection(section: any) {
+  const paragraphs = section.body
+    .map((paragraph: string) => `<p>${escapeHtml(paragraph)}</p>`)
+    .join('\n  ');
+  const bullets = section.bullets
+    ? `<ul>\n    ${section.bullets.map((item: string) => `<li>${escapeHtml(item)}</li>`).join('\n    ')}\n  </ul>`
+    : '';
+  const table = section.table
+    ? `<table class="comparison-table">
+    <thead>
+      <tr>${section.table.headers.map((header: string) => `<th>${escapeHtml(header)}</th>`).join('')}</tr>
+    </thead>
+    <tbody>
+      ${section.table.rows.map((row: string[]) => `<tr>${row.map((cell: string) => `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('\n      ')}
+    </tbody>
+  </table>`
+    : '';
+
+  return `<section>
+  <h2>${escapeHtml(section.heading)}</h2>
+  ${paragraphs}
+  ${bullets}
+  ${table}
+</section>`;
+}
+
+function generateLandingPage(page: any) {
+  const path = `/${page.slug}`;
+  const breadcrumbs = breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: page.query, path },
+  ]);
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: page.faqs.map((faq: any) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
+  };
+  const webPageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: page.title,
+    description: page.description,
+    url: `${siteConfig.url}${path}`,
+    inLanguage: 'en',
+    dateModified: '2026-05-18',
+    isPartOf: {
+      '@type': 'WebSite',
+      name: siteConfig.name,
+      url: siteConfig.url,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: siteConfig.name,
+      url: siteConfig.url,
+      logo: `${siteConfig.url}/logo.png`,
+    },
+  };
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+${getHead(page.title, page.description, path, page.keywords)}
+<script type="application/ld+json">
+${renderJsonLd(webPageSchema)}
+</script>
+<script type="application/ld+json">
+${renderJsonLd(breadcrumbs)}
+</script>
+<script type="application/ld+json">
+${renderJsonLd(faqSchema)}
+</script>
+</head>
+<body>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/assessment">Take Assessment</a>
+    <a href="/learn">Learn</a>
+    <a href="/pricing">Pricing</a>
+    <a href="/blog/">Blog</a>
+  </nav>
+
+  <div class="breadcrumb">
+    <a href="/">Home</a> › ${escapeHtml(page.query)}
+  </div>
+
+  <header>
+    <p class="eyebrow">${escapeHtml(page.eyebrow)}</p>
+    <h1>${escapeHtml(page.h1)}</h1>
+    ${page.intro.map((paragraph: string) => `<p class="subtitle">${escapeHtml(paragraph)}</p>`).join('\n    ')}
+  </header>
+
+  ${page.sections.map(renderLandingSection).join('\n\n  ')}
+
+  <div class="cta-box">
+    <h2>Start with your own function profile</h2>
+    <p>Take the free TypeJung assessment, then use the Learn and Pricing pages to decide whether the core result is enough or whether a deeper one-time CAD report would help.</p>
+    <p>
+      <a href="/assessment" class="btn">Take the Free Assessment</a>
+      <a href="/pricing" style="margin-left: 16px; color: #451a03; font-weight: bold;">See pricing</a>
+    </p>
+  </div>
+
+  <section>
+    <h2>Frequently Asked Questions</h2>
+    ${page.faqs.map((faq: any) => `<div class="faq-item">
+      <h3>${escapeHtml(faq.question)}</h3>
+      <p>${escapeHtml(faq.answer)}</p>
+    </div>`).join('\n    ')}
+  </section>
+
+  <section>
+    <h2>Related TypeJung Pages</h2>
+    <div class="related-grid">
+      ${page.relatedLinks.map((link: any) => `<div class="related-card"><a href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a></div>`).join('\n      ')}
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 TypeJung. A tool for self-exploration based on Jung's Psychological Types.</p>
+    <p><a href="/privacy">Privacy Policy</a> | <a href="/terms">Terms of Service</a></p>
+  </footer>
+</body>
+</html>`;
+
+  return html;
+}
+
 // Generate function page HTML
 function generateFunctionPage(fn: string) {
   const seo = functionSEO[fn];
   const data = functionData[fn];
   const path = `/functions/${fn}`;
+  const breadcrumbs = breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Learn Jungian typology', path: '/learn' },
+    { name: data.fullName, path },
+  ]);
   
   const oppositeMap: Record<string, string> = {
     ni: 'ne', ne: 'ni', si: 'se', se: 'si',
@@ -84,10 +256,14 @@ ${getHead(seo.title, seo.description, path)}
   "headline": "${seo.name}",
   "description": "${seo.description}",
   "url": "${siteConfig.url}${path}",
+  "dateModified": "2026-05-18",
   "author": { "@type": "Organization", "name": "TypeJung" },
   "publisher": { "@type": "Organization", "name": "TypeJung", "logo": { "@type": "ImageObject", "url": "${siteConfig.url}/logo.png" } },
   "mainEntityOfPage": { "@type": "WebPage", "@id": "${siteConfig.url}${path}" }
 }
+</script>
+<script type="application/ld+json">
+${renderJsonLd(breadcrumbs)}
 </script>
 </head>
 <body>
@@ -154,7 +330,7 @@ ${getHead(seo.title, seo.description, path)}
 
   <div class="cta-box">
     <h3>Discover Your ${data.code} Score</h3>
-    <p>Take our free 40-question assessment to see how ${data.fullName} ranks in your cognitive function profile. Get a personalized radar chart showing all 8 functions.</p>
+    <p>Take our free 42-question assessment to see how ${data.fullName} ranks in your cognitive function profile. Get a personalized radar chart showing all 8 functions.</p>
     <p><a href="/assessment" class="btn">Take the Free Assessment</a></p>
   </div>
 
@@ -173,12 +349,6 @@ ${getHead(seo.title, seo.description, path)}
     <p><a href="/privacy">Privacy Policy</a> | <a href="/terms">Terms of Service</a></p>
   </footer>
 
-  <script>
-    // Redirect to React app for interactive experience
-    if (window.location.hash !== '#static') {
-      window.location.href = '/#' + window.location.pathname;
-    }
-  </script>
 </body>
 </html>`;
 
@@ -190,6 +360,11 @@ function generateTypePage(type: string) {
   const seo = typeSEO[type];
   const data = typeData[type];
   const path = `/types/${type}`;
+  const breadcrumbs = breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Learn Jungian typology', path: '/learn' },
+    { name: `${data.code} Personality Type`, path },
+  ]);
 
   const html = `<!DOCTYPE html>
 <html lang="en">
@@ -202,10 +377,14 @@ ${getHead(seo.title, seo.description, path)}
   "headline": "${data.code} - ${data.name}",
   "description": "${seo.description}",
   "url": "${siteConfig.url}${path}",
+  "dateModified": "2026-05-18",
   "author": { "@type": "Organization", "name": "TypeJung" },
   "publisher": { "@type": "Organization", "name": "TypeJung", "logo": { "@type": "ImageObject", "url": "${siteConfig.url}/logo.png" } },
   "mainEntityOfPage": { "@type": "WebPage", "@id": "${siteConfig.url}${path}" }
 }
+</script>
+<script type="application/ld+json">
+${renderJsonLd(breadcrumbs)}
 </script>
 </head>
 <body>
@@ -286,11 +465,6 @@ ${getHead(seo.title, seo.description, path)}
     <p><a href="/privacy">Privacy Policy</a> | <a href="/terms">Terms of Service</a></p>
   </footer>
 
-  <script>
-    if (window.location.hash !== '#static') {
-      window.location.href = '/#' + window.location.pathname;
-    }
-  </script>
 </body>
 </html>`;
 
@@ -320,7 +494,17 @@ for (const type of ['intj','intp','entj','entp','infj','infp','enfj','enfp','ist
   console.log(`  ✅ /types/${type}/index.html`);
 }
 
-console.log('\n✨ Generated 24 static HTML pages for SEO!');
+// Generate high-intent SEO landing pages
+console.log('\nGenerating high-intent landing pages...');
+for (const page of seoLandingPages) {
+  const html = generateLandingPage(page);
+  const path = `${__dirname}/../public/${page.slug}/index.html`;
+  mkdirSync(dirname(path), { recursive: true });
+  writeFileSync(path, html);
+  console.log(`  ✅ /${page.slug}/index.html`);
+}
+
+console.log(`\n✨ Generated ${24 + seoLandingPages.length} static HTML pages for SEO!`);
 console.log('\nNext steps:');
 console.log('  1. Run your build process');
 console.log('  2. Deploy to Vercel');

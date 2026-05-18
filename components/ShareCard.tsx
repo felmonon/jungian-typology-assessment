@@ -43,7 +43,7 @@ export const ShareCard: React.FC<ShareCardProps> = ({ dominantFunction, scores, 
                 className="text-sm font-semibold tracking-[0.2em] uppercase"
                 style={{ color: '#5C4033', fontFamily: '"DM Sans", sans-serif' }}
               >
-                Jungian Typology Assessment
+                TypeJung
               </span>
             </div>
 

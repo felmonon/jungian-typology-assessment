@@ -3,11 +3,91 @@
   "outputDirectory": "dist/public",
   "rewrites": [
     {
+      "source": "/api/stripe/webhook",
+      "destination": "/api/webhook"
+    },
+    {
+      "source": "/api/lifecycle-email",
+      "destination": "/api/auth/lifecycle-email"
+    },
+    {
+      "source": "/assessment",
+      "destination": "/assessment/index.html"
+    },
+    {
+      "source": "/learn",
+      "destination": "/learn/index.html"
+    },
+    {
+      "source": "/pricing",
+      "destination": "/pricing/index.html"
+    },
+    {
+      "source": "/checkout/insight",
+      "destination": "/checkout/insight/index.html"
+    },
+    {
+      "source": "/checkout/mastery",
+      "destination": "/checkout/mastery/index.html"
+    },
+    {
+      "source": "/leaderboard",
+      "destination": "/leaderboard/index.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/about/index.html"
+    },
+    {
+      "source": "/jungian-test",
+      "destination": "/jungian-test/index.html"
+    },
+    {
+      "source": "/mbti-alternative",
+      "destination": "/mbti-alternative/index.html"
+    },
+    {
+      "source": "/inferior-function-test",
+      "destination": "/inferior-function-test/index.html"
+    },
+    {
+      "source": "/cognitive-function-test",
+      "destination": "/cognitive-function-test/index.html"
+    },
+    {
+      "source": "/jungian-typology",
+      "destination": "/jungian-typology/index.html"
+    },
+    {
+      "source": "/cognitive-functions",
+      "destination": "/cognitive-functions/index.html"
+    },
+    {
+      "source": "/shadow-work-test",
+      "destination": "/shadow-work-test/index.html"
+    },
+    {
+      "source": "/functions/:fn",
+      "destination": "/functions/:fn/index.html"
+    },
+    {
+      "source": "/types/:type",
+      "destination": "/types/:type/index.html"
+    },
+    {
+      "source": "/blog",
+      "destination": "/blog/index.html"
+    },
+    {
+      "source": "/blog/:slug",
+      "destination": "/blog/:slug.html"
+    },
+    {
       "source": "/api/:path*",
       "destination": "/api/:path*"
     },
     {
-      "source": "/((?!api/|assets/|.*\\.html$|.*\\.txt$|.*\\.xml$|.*\\.png$|.*\\.svg$|.*\\.ico$|.*\\.webmanifest$|.*\\.css$|.*\\.js$|.*\\.woff2?$|.*\\.ttf$|.*\\.eot$).*)",
+      "source": "/((?!api/|assets/|@vite/|@react-refresh|.*\\.html$|.*\\.txt$|.*\\.xml$|.*\\.png$|.*\\.svg$|.*\\.ico$|.*\\.webmanifest$|.*\\.css$|.*\\.js$|.*\\.jsx$|.*\\.ts$|.*\\.tsx$|.*\\.woff2?$|.*\\.ttf$|.*\\.eot$).*)",
       "destination": "/index.html"
     }
   ],

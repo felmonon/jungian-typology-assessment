@@ -1,5 +1,5 @@
 {
-  "name": "Jungian Typology Assessment",
-  "description": "A deep psychological assessment based on Carl Jung's original framework, focusing on the 8 function-attitudes and the dominant-inferior axis.",
+  "name": "TypeJung",
+  "description": "A depth-based Jungian assessment that maps energy flow, inferior-function pressure, somatic signals, and attitude direction.",
   "requestFramePermissions": []
 }

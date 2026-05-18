@@ -3,37 +3,38 @@ import {
   MessageCircle, Sparkles, Users, FileText, Target, Zap,
   Star, Crown, Quote, ShieldCheck, ArrowUpRight
 } from 'lucide-react';
+import { PRICING } from '../../data/pricing';
 import { AnalyticsEvents } from '../../lib/analytics';
 
 export const AI_DEMO_CONVERSATION = [
   {
     role: 'user',
-    message: "How does my shadow affect my relationships?"
+    message: "How could my inferior function show up in relationships?"
   },
   {
     role: 'assistant',
-    message: `Your shadow—rooted in your inferior Extraverted Sensing (Se)—profoundly shapes your intimate connections. Because Se lives in your unconscious, you may unconsciously project it onto partners, finding yourself drawn to spontaneous, sensory-oriented people who embody what you've disowned.
+    message: `Your inferior Extraverted Sensing (Se) can show up when a relationship asks for direct presence, spontaneity, or contact with what is happening right now.
 
-**In practice, this creates a pattern:**
+**In practice, that may create a pattern:**
 
-When stress mounts, your shadow Se erupts as impulsive criticism of a partner's "irresponsibility" or sudden sensory indulgence (binge eating, overspending) that shocks both of you. Your partner may feel they're dealing with two different people.
+When stress builds, you may judge a partner's spontaneity as irresponsible, then swing into impulsive action yourself. The issue is not that Se is bad; it is that it arrives late, pressured, and hard to regulate.
 
-**The path forward:** Rather than fighting these eruptions, treat them as messages. When you feel the urge to criticize your partner's spontaneity, pause and ask: "What am I denying in myself?" Integration doesn't mean becoming Se-dominant—it means befriending that wild, present-moment energy so it enriches rather than sabotages your bonds.`
+**A useful next step:** before reacting, ask what concrete reality needs attention: the room, the body, the timing, the facts, or the immediate need. Integration does not mean becoming Se-dominant. It means giving that present-moment energy a small, conscious role before it takes over.`
   }
 ];
 
 export const FAQ_ITEMS = [
   {
     question: "How is this different from 16Personalities or other MBTI tests?",
-    answer: "Most tests force binary choices—you're either Thinking or Feeling. We measure all 8 cognitive functions on a spectrum, giving you a profile that's actually unique to you. We also base our methodology on Jung's original work and the Singer-Loomis framework, which has clinical validation."
+    answer: "Most tests collapse your answers into a four-letter label. TypeJung maps function patterns, inferior-function pressure, body signals, and attitude direction so you can inspect the pattern behind the label."
   },
   {
-    question: "Is this scientifically valid?",
-    answer: "The Singer-Loomis Type Development Inventory, which informs our methodology, has been used in clinical and research settings since the 1980s. Unlike MBTI (which most research psychologists consider unreliable), measuring functions independently produces more consistent, meaningful results."
+    question: "Is this a clinical assessment?",
+    answer: "No. TypeJung is an educational self-reflection tool, not a diagnosis or therapy substitute. It is research-informed, but the result should be tested against your lived patterns."
   },
   {
     question: "Why should I pay when other tests are free?",
-    answer: "The free assessment gives you real results—not a teaser. Our Insight tier ($19) unlocks a comprehensive PDF report and full analysis. The Mastery tier ($39) adds the AI Type Coach and growth exercises you won't find elsewhere. Compare that to 16Personalities ($30+) or Truity ($29) which offer less depth."
+    answer: `You do not have to pay first. The free assessment gives you the core map. Insight (${PRICING.insight.price}) adds deeper interpretation and practice guidance. Mastery (${PRICING.mastery.price}) adds the AI Type Coach and ongoing growth tools.`
   },
   {
     question: "What if I don't like my results?",
@@ -41,7 +42,7 @@ export const FAQ_ITEMS = [
   },
   {
     question: "How long does the assessment take?",
-    answer: "About 15-20 minutes. Answer honestly—don't overthink it."
+    answer: "About 12-16 minutes. Answer honestly—don't overthink it."
   },
   {
     question: "Do I need to create an account?",
@@ -52,98 +53,101 @@ export const FAQ_ITEMS = [
 export const TESTIMONIALS = [
   {
     quote: "I've taken MBTI tests probably 20 times over the years. Sometimes I'm INFP, sometimes INFJ, once I got ENFP. This assessment showed me why—my Fi and Ni scores are almost identical. The nuance matters.",
-    name: "Sarah K.",
-    role: "Designer"
+    name: "Early tester",
+    role: "Design professional"
   },
   {
     quote: "I was skeptical of all personality typing until I learned about cognitive functions. This is the only assessment I've found that measures them properly. The AI coach helped me understand shadow work in a way that actually made sense.",
-    name: "Marcus T.",
-    role: "Software Engineer"
+    name: "Early tester",
+    role: "Software engineer"
   },
   {
-    quote: "I recommend this to my coaching clients who want a deeper self-understanding baseline. It's more rigorous than most tools I've seen, and the price point makes it accessible.",
-    name: "Dr. Jennifer L.",
-    role: "Executive Coach"
+    quote: "The strongest part is that it gives people a way to talk about stress patterns without reducing them to a type box.",
+    name: "Early reviewer",
+    role: "Coach"
   }
 ];
 
 export const HOW_IT_WORKS_STEPS = [
   {
     step: '01',
-    title: 'Answer 132 questions honestly',
-    description: 'No trick questions. No "which animal are you?" nonsense. Each question measures a specific cognitive function based on the Singer-Loomis methodology.'
+    title: 'Answer 42 questions honestly',
+    description: 'Each prompt asks about concrete attention, decision, stress, body, and relationship patterns instead of forcing you into a simple either-or.'
   },
   {
     step: '02',
-    title: 'See your complete cognitive profile',
-    description: 'Your results show how you actually use all 8 functions—not which box you fit into. Visualized as a radar chart unique to you.'
+    title: 'See your function pattern',
+    description: 'Your result shows how the functions appear in your answers, with the dominant-inferior axis and reliability score made visible.'
   },
   {
     step: '03',
     title: 'Understand what it means',
-    description: 'Get AI-generated insights about your specific pattern. Not copy-pasted descriptions. Analysis written for your exact results.'
+    description: 'Turn the map into plain-language insight about your stress edge, relationship patterns, and practical next steps.'
   }
 ];
 
 export const DIFFERENTIATORS = [
   {
     icon: Brain,
-    title: '8 Functions Measured Independently',
-    description: 'MBTI forces binary choices: you\'re either a Thinker or a Feeler. We measure all 8 cognitive functions separately, because you use all of them—just in different proportions.'
+    title: 'Function patterns, not only labels',
+    description: 'TypeJung looks at all 8 cognitive functions instead of treating personality as a single fixed label.'
   },
   {
     icon: FileText,
-    title: "Based on Jung's Actual Work",
-    description: "We built this from Jung's 1921 Psychological Types, not the simplified corporate training version. The Singer-Loomis methodology has been validated in clinical research since the 1980s."
+    title: "Closer to Jung's original problem",
+    description: "The assessment focuses on psychological functions, attitude direction, one-sidedness, and inferior-function pressure."
   },
   {
     icon: Sparkles,
-    title: 'Personalized AI Analysis',
-    description: 'No generic "INFJs are creative healers" paragraphs. Our AI writes analysis specific to your function scores—because someone with strong Ti and moderate Fe is different from someone with strong Ti and weak Fe.'
+    title: 'Interpretation tied to your map',
+    description: 'Paid reports explain your actual score pattern instead of handing you a generic type description.'
   },
   {
     icon: Target,
-    title: 'Growth-Oriented, Not Just Labeling',
-    description: "Most tests stop at \"here's your type.\" We show you your path to individuation—Jung's term for psychological wholeness. Shadow work prompts, stress patterns, and specific exercises for your profile."
+    title: 'Growth-oriented, not just labeling',
+    description: "The result connects your pattern to stress, relationships, body signals, and practices you can test in daily life."
   }
 ];
 
 export const COMPARISON_ROWS = [
   { label: 'Approach', values: ['4 binary dichotomies', 'Motivation-based', '5 trait spectrums', '8 functions independently'] },
-  { label: 'Scientific basis', values: ['Weak', 'Minimal', 'Strong', 'Singer-Loomis validated'] },
-  { label: 'Personalization', values: ['Generic descriptions', 'Generic descriptions', 'Statistical placement', 'AI-written for your scores'] },
+  { label: 'Depth', values: ['Type label', 'Motivation label', 'Trait scores', 'Function and stress map'] },
+  { label: 'Personalization', values: ['Generic descriptions', 'Generic descriptions', 'Statistical placement', 'Interpretation tied to your map'] },
   { label: 'Growth path', values: ['Read about type', 'Work on "wing"', 'None', 'Individuation roadmap'] },
-  { label: 'Price', values: ['$30-40', '$29+', 'Free-$50', 'Free / $19 / $39'] }
+  { label: 'Price', values: ['Paid report', 'Paid report', 'Free and paid reports', `Free / ${PRICING.insight.price} / ${PRICING.mastery.price}`] }
 ];
 
 export const PRICING_TIERS = [
   {
     name: 'FREE',
     price: '$0',
+    amount: PRICING.free.amount,
     icon: Compass,
-    description: 'See Your Profile',
-    features: ['132-question assessment', 'Radar chart visualization', 'Basic AI insight', 'Shareable results'],
+    description: 'See Your Core Map',
+    features: ['42-question assessment', 'Energy map', 'Dominant-inferior axis', 'No signup required'],
     cta: 'Take Free Assessment',
     popular: false,
     variant: 'outline' as const,
   },
   {
     name: 'INSIGHT',
-    price: '$19',
+    price: PRICING.insight.price,
+    amount: PRICING.insight.amount,
     icon: Brain,
     description: 'Understand What It Means',
-    features: ['25-page PDF report', 'Full 8-function analysis', 'Relationship insights', 'Career alignment guide'],
-    cta: 'Get Insight',
+    features: ['Deeper report', 'Stress pattern map', 'Relationship triggers', 'Somatic practices'],
+    cta: 'Review Insight',
     popular: true,
     variant: 'accent' as const,
   },
   {
     name: 'MASTERY',
-    price: '$39',
+    price: PRICING.mastery.price,
+    amount: PRICING.mastery.amount,
     icon: Sparkles,
-    description: 'Transform With Guidance',
-    features: ['AI Type Coach (unlimited)', 'Growth exercises', 'Dream journaling guide', 'Everything in Insight'],
-    cta: 'Get Mastery',
+    description: 'Practice With Guidance',
+    features: ['AI Type Coach', 'Growth exercises', 'Individuation roadmap', 'Everything in Insight'],
+    cta: 'Review Mastery',
     popular: false,
     variant: 'primary' as const,
   }

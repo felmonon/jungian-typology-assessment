@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, AlertTriangle, CreditCard, User, Scale, Shield, ArrowLeft } from 'lucide-react';
+import { PRICING } from '../data/pricing';
 
 export const TermsOfService: React.FC = () => {
   return (
@@ -21,13 +22,13 @@ export const TermsOfService: React.FC = () => {
           Terms of Service
         </h1>
         <p className="text-jung-muted text-sm font-serif">
-          Last updated: January 12, 2026
+          Last updated: May 18, 2026
         </p>
       </header>
 
       <div className="max-w-none">
         <p className="text-lg text-jung-secondary leading-relaxed mb-8 font-body">
-          Welcome to Jungian Typology Assessment. By accessing or using our service, you agree to be bound by these Terms of Service. Please read them carefully before using our assessment.
+          Welcome to TypeJung. By accessing or using our service, you agree to be bound by these Terms of Service. Please read them carefully before using the assessment.
         </p>
 
         <section className="mb-12">
@@ -40,7 +41,7 @@ export const TermsOfService: React.FC = () => {
 
           <div className="pl-14 text-jung-secondary font-body">
             <p>
-              Jungian Typology Assessment is an online psychological self-assessment tool based on Carl Jung's theory of psychological types. Our service provides:
+              TypeJung is an online psychological self-assessment tool based on Carl Jung's theory of psychological types. Our service provides:
             </p>
             <ul className="mt-3 space-y-2">
               <li>A comprehensive questionnaire measuring the eight Jungian function-attitudes</li>
@@ -61,7 +62,7 @@ export const TermsOfService: React.FC = () => {
                   This assessment is for educational and self-exploration purposes only.
                 </p>
                 <p>
-                  The Jungian Typology Assessment is NOT:
+                  TypeJung is NOT:
                 </p>
                 <ul className="list-disc pl-5 space-y-1">
                   <li>Medical or psychological diagnosis</li>
@@ -92,14 +93,14 @@ export const TermsOfService: React.FC = () => {
             <div className="card-elevated rounded-2xl p-5">
               <h3 className="font-semibold text-jung-dark mb-2 font-serif">Pricing</h3>
               <p className="text-jung-secondary text-sm m-0 font-body">
-                Premium access to full assessment results is available for a one-time payment of <strong className="text-jung-dark">$10 USD</strong>. This is a non-recurring charge that provides lifetime access to your detailed results.
+                Premium access is available as one-time CAD payments: <strong className="text-jung-dark">{PRICING.insight.price}</strong> for Insight or <strong className="text-jung-dark">{PRICING.mastery.price}</strong> for Mastery. These are non-recurring charges that provide ongoing access to the tier you purchase.
               </p>
             </div>
 
             <div className="card-elevated rounded-2xl p-5">
               <h3 className="font-semibold text-jung-dark mb-2 font-serif">Refund Policy</h3>
               <p className="text-jung-secondary text-sm m-0 font-body">
-                We offer a <strong className="text-jung-dark">30-day refund policy</strong>. If you are not satisfied with your assessment results, you may request a full refund within 30 days of purchase. To request a refund, please contact us with your order details.
+                We offer a <strong className="text-jung-dark">30-day refund policy</strong>. If you are not satisfied with your paid TypeJung report, you may request a full refund within 30 days of purchase. To request a refund, please contact us with your order details.
               </p>
             </div>
 
@@ -146,7 +147,7 @@ export const TermsOfService: React.FC = () => {
 
           <div className="pl-14 text-jung-secondary font-body">
             <p>
-              All content on this website, including but not limited to assessment questions, scoring methodology, result interpretations, educational materials, graphics, and design elements, is the intellectual property of Jungian Typology Assessment and is protected by copyright law.
+              All content on this website, including but not limited to assessment questions, scoring methodology, result interpretations, educational materials, graphics, and design elements, is the intellectual property of TypeJung and is protected by copyright law.
             </p>
             <p className="mt-3">
               You may not:
@@ -209,7 +210,7 @@ export const TermsOfService: React.FC = () => {
             If you have any questions about these Terms of Service, please contact us at:
           </p>
           <p className="text-jung-accent font-medium mt-3 m-0 font-serif">
-            [Contact Email Placeholder]
+            support@typejung.com
           </p>
         </section>
 

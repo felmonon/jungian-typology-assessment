@@ -437,7 +437,7 @@ export const pageData = {
   },
   '/assessment': {
     title: 'Take the Assessment | TypeJung',
-    description: 'Start your free 40-question Jungian personality assessment. Measures all 8 cognitive functions independently. Takes 15-20 minutes.',
+    description: 'Start your free 42-question Jungian personality assessment. Measures all 8 cognitive functions independently. Takes 12-16 minutes.',
   },
   '/results': {
     title: 'Your Results | TypeJung',
@@ -449,7 +449,7 @@ export const pageData = {
   },
   '/pricing': {
     title: 'Pricing Plans | TypeJung',
-    description: 'Choose your TypeJung plan: Free ($0), Insight ($19), or Mastery ($39). Get deeper AI analysis, comprehensive reports, and AI coaching.',
+    description: 'Choose your TypeJung plan: Free ($0), Insight (CA$19), or Mastery (CA$39). Get deeper AI analysis, comprehensive reports, and AI coaching.',
   },
   '/privacy': {
     title: 'Privacy Policy | TypeJung',
@@ -459,4 +459,469 @@ export const pageData = {
     title: 'Terms of Service | TypeJung',
     description: 'Terms and conditions for using the TypeJung cognitive function assessment platform.',
   },
+  '/jungian-test': {
+    title: 'Jungian Test - Measure Your Cognitive Functions | TypeJung',
+    description: 'Take a Jungian test that maps all 8 cognitive functions, shows your likely type pattern, and highlights stress and growth edges.',
+  },
+  '/mbti-alternative': {
+    title: 'MBTI Alternative - Function-Based Personality Test | TypeJung',
+    description: 'Looking for an MBTI alternative? TypeJung measures all 8 Jungian cognitive functions instead of forcing binary personality letters.',
+  },
+  '/inferior-function-test': {
+    title: 'Inferior Function Test - Find Your Stress Pattern | TypeJung',
+    description: 'Find your likely inferior function and understand how it can show up under stress with TypeJung\'s cognitive function assessment.',
+  },
+  '/cognitive-function-test': {
+    title: 'Cognitive Function Test - Measure All 8 Functions | TypeJung',
+    description: 'Take a cognitive function test that scores Ni, Ne, Si, Se, Ti, Te, Fi, and Fe independently and maps your full Jungian profile.',
+  },
 };
+
+export const seoLandingPages = [
+  {
+    slug: 'jungian-test',
+    query: 'Jungian test',
+    title: 'Jungian Test - Measure Your Cognitive Functions | TypeJung',
+    description: 'Take a Jungian test that maps all 8 cognitive functions, shows your likely type pattern, and highlights stress and growth edges.',
+    keywords: ['Jungian test', 'Carl Jung personality test', 'Jungian personality test', 'Jung cognitive functions'],
+    eyebrow: 'Jungian test',
+    h1: 'A Jungian test that goes beyond a four-letter label',
+    intro: [
+      'TypeJung is a Jungian self-assessment for people who want more than a quick type label. It measures how you use all 8 cognitive functions, then turns that profile into a practical map of attention, decision-making, stress, and growth.',
+      'The free assessment takes about 12 to 16 minutes. Paid reports are optional one-time CAD upgrades: Insight for CA$19 and Mastery for CA$39.',
+    ],
+    sections: [
+      {
+        heading: 'What a Jungian test should show',
+        body: [
+          'Carl Jung described psychological type through patterns of perception and judgment. A useful Jungian test should therefore look at the function pattern behind the result, not only the final type code.',
+          'TypeJung scores the intuitive, sensing, thinking, and feeling functions in both introverted and extraverted attitudes. That creates a richer profile than a simple either-or quiz.',
+        ],
+        bullets: [
+          'Perceiving functions: Ni, Ne, Si, and Se',
+          'Judging functions: Ti, Te, Fi, and Fe',
+          'Likely dominant, auxiliary, tertiary, and inferior patterns',
+          'Stress signals connected to the inferior function',
+        ],
+      },
+      {
+        heading: 'How to read your result',
+        body: [
+          'Your result is best read as a working hypothesis. The strongest scores show the functions you may rely on most. The lower or less stable scores can point toward the parts of the psyche that need patience, context, and development.',
+          'Use the free result to orient yourself, then use the Learn section to compare your pattern with the 8 functions and 16 type profiles.',
+        ],
+      },
+      {
+        heading: 'When a paid report helps',
+        body: [
+          'The free assessment gives you the core map. Insight adds deeper AI analysis, archetype breakdowns, and stress patterns for a one-time CA$19 payment. Mastery adds broader individuation guidance, shadow work, and career path insights for a one-time CA$39 payment.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is TypeJung a clinical Jungian test?',
+        answer: 'No. TypeJung is for education and self-exploration. It is not a medical, psychological, or clinical diagnostic tool.',
+      },
+      {
+        question: 'How long does the Jungian test take?',
+        answer: 'Most people complete the free 42-question assessment in about 12 to 16 minutes.',
+      },
+      {
+        question: 'Does TypeJung give me an MBTI type?',
+        answer: 'TypeJung can suggest a likely type pattern, but the main value is the full cognitive function profile behind the type.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/jungian-typology', label: 'Jungian typology guide' },
+      { href: '/cognitive-functions', label: 'Cognitive functions guide' },
+      { href: '/learn', label: 'Learn Jungian typology' },
+      { href: '/pricing', label: 'Compare Free, Insight, and Mastery' },
+    ],
+  },
+  {
+    slug: 'mbti-alternative',
+    query: 'MBTI alternative',
+    title: 'MBTI Alternative - Function-Based Personality Test | TypeJung',
+    description: 'Looking for an MBTI alternative? TypeJung measures all 8 Jungian cognitive functions instead of forcing binary personality letters.',
+    keywords: ['MBTI alternative', 'alternative to MBTI', 'function based personality test', 'Jungian typology'],
+    eyebrow: 'MBTI alternative',
+    h1: 'An MBTI alternative built around cognitive functions',
+    intro: [
+      'If MBTI-style tests keep giving you different four-letter results, the problem may be the format. Many tests force binary choices, then compress your answers into a label before you can see the underlying pattern.',
+      'TypeJung is an MBTI alternative that scores all 8 Jungian cognitive functions independently. The result is a profile you can inspect, question, and use for development.',
+    ],
+    sections: [
+      {
+        heading: 'Why people look for an alternative',
+        body: [
+          'Four-letter personality tests can be useful shorthand, but they often hide the most important information: which functions are actually strong, weak, balanced, or under stress.',
+          'A person who receives INFP on one test and INFJ on another may not need another label. They may need to see the relative strength of Fi, Fe, Ni, Ne, Si, Se, Ti, and Te.',
+        ],
+        bullets: [
+          'No forced choice between intuition and sensing as if one removes the other',
+          'No assumption that everyone inside a type has the same function development',
+          'More visibility into stress patterns and inferior-function tension',
+        ],
+      },
+      {
+        heading: 'TypeJung versus a typical MBTI-style quiz',
+        body: [
+          'TypeJung still speaks the language of Jungian type, but it treats type as an interpretation of a function profile. That makes the result more useful for people who already know the basics and want a clearer self-assessment.',
+        ],
+        table: {
+          headers: ['Question', 'Typical MBTI-style quiz', 'TypeJung'],
+          rows: [
+            ['What gets measured?', 'Four broad preference pairs', 'All 8 cognitive functions'],
+            ['How are results shown?', 'A four-letter type label', 'Function scores plus likely type pattern'],
+            ['What is the growth angle?', 'General type advice', 'Dominant, auxiliary, inferior, stress, and shadow themes'],
+            ['What is free?', 'Usually a basic type result', 'A free 42-question assessment and core profile'],
+          ],
+        },
+      },
+      {
+        heading: 'What to do after your result',
+        body: [
+          'Start with the free assessment, then compare your strongest and weakest functions in the Learn section. If you want a deeper written interpretation, the Insight and Mastery reports are optional one-time CAD purchases.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is TypeJung the same as MBTI?',
+        answer: 'No. TypeJung uses Jungian type language, but it focuses on independent cognitive function scoring rather than only a four-letter result.',
+      },
+      {
+        question: 'Can TypeJung help if my MBTI result changes?',
+        answer: 'Yes. Seeing your full function profile can explain why nearby type labels may compete, especially when two functions score close together.',
+      },
+      {
+        question: 'Is the MBTI alternative free?',
+        answer: 'The core TypeJung assessment is free. Deeper Insight and Mastery reports are optional one-time CAD upgrades.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/blog/singer-loomis-vs-mbti', label: 'Singer-Loomis vs MBTI' },
+      { href: '/jungian-typology', label: 'Jungian typology guide' },
+      { href: '/learn', label: 'Explore all 8 functions' },
+      { href: '/pricing', label: 'View one-time pricing' },
+    ],
+  },
+  {
+    slug: 'inferior-function-test',
+    query: 'inferior function test',
+    title: 'Inferior Function Test - Find Your Stress Pattern | TypeJung',
+    description: 'Find your likely inferior function and understand how it can show up under stress with TypeJung\'s cognitive function assessment.',
+    keywords: ['inferior function test', 'inferior cognitive function', 'the grip Jungian', 'stress personality test'],
+    eyebrow: 'Inferior function test',
+    h1: 'Find your likely inferior function and stress pattern',
+    intro: [
+      'Your inferior function is often the least conscious part of your Jungian function stack. It can feel awkward, compelling, or strangely powerful under stress.',
+      'TypeJung estimates inferior-function patterns by measuring the whole cognitive profile first. That matters because the inferior function is not just the lowest number. It sits in relationship to the dominant function and the rest of the stack.',
+    ],
+    sections: [
+      {
+        heading: 'Why the inferior function matters',
+        body: [
+          'In Jungian typology, the inferior function often marks a growth edge. It may show up as avoidance in everyday life and as overreaction during pressure. Learning the pattern gives you a way to notice stress before it takes over.',
+        ],
+        bullets: [
+          'Ni-dominant patterns often struggle with inferior Se under stress',
+          'Ne-dominant patterns often struggle with inferior Si under stress',
+          'Ti-dominant patterns often struggle with inferior Fe under stress',
+          'Fi-dominant patterns often struggle with inferior Te under stress',
+        ],
+      },
+      {
+        heading: 'What the test looks for',
+        body: [
+          'A reliable inferior-function test needs more than a single question about weakness. TypeJung looks at how you attend, decide, respond to pressure, and distribute energy across the 8 functions.',
+          'The result helps you compare likely dominant and inferior poles, then gives you a language for recovery and development.',
+        ],
+      },
+      {
+        heading: 'Use your result carefully',
+        body: [
+          'Inferior-function language can be clarifying, but it should not become a self-criticism tool. Treat the result as a map for observation. If stress feels severe or persistent, work with a qualified professional.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is the inferior function just my weakest function?',
+        answer: 'Not always. The inferior function is understood in relation to the dominant function and the whole stack, so TypeJung interprets the broader pattern.',
+      },
+      {
+        question: 'What is the grip?',
+        answer: 'The grip is a Jungian term for a stress state where the inferior function can show up in a reactive or exaggerated way.',
+      },
+      {
+        question: 'Will the test diagnose my stress?',
+        answer: 'No. TypeJung offers educational personality insight. It does not diagnose stress, trauma, anxiety, or any mental health condition.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/shadow-work-test', label: 'Jungian shadow work test' },
+      { href: '/blog/understanding-the-grip', label: 'Read about the grip' },
+      { href: '/learn', label: 'Learn the function stack' },
+    ],
+  },
+  {
+    slug: 'cognitive-function-test',
+    query: 'cognitive function test',
+    title: 'Cognitive Function Test - Measure All 8 Functions | TypeJung',
+    description: 'Take a cognitive function test that scores Ni, Ne, Si, Se, Ti, Te, Fi, and Fe independently and maps your full Jungian profile.',
+    keywords: ['cognitive function test', '8 cognitive functions test', 'Jungian cognitive functions', 'Ni Ne Si Se Ti Te Fi Fe test'],
+    eyebrow: 'Cognitive function test',
+    h1: 'A cognitive function test for all 8 Jungian functions',
+    intro: [
+      'TypeJung measures Ni, Ne, Si, Se, Ti, Te, Fi, and Fe independently so you can see the shape of your cognitive profile instead of guessing from a type description.',
+      'The free assessment gives you a function map and likely type pattern. Optional paid reports add deeper analysis with one-time CAD pricing: CA$19 for Insight and CA$39 for Mastery.',
+    ],
+    sections: [
+      {
+        heading: 'The 8 functions TypeJung measures',
+        body: [
+          'The test separates perceiving functions, which describe how information comes into awareness, from judging functions, which describe how decisions and evaluations are made.',
+        ],
+        bullets: [
+          'Ni: convergent pattern insight and future orientation',
+          'Ne: divergent possibility scanning and idea generation',
+          'Si: memory, continuity, and experience-based comparison',
+          'Se: present-moment awareness and direct engagement',
+          'Ti: internal logic, precision, and model building',
+          'Te: external organization, results, and execution',
+          'Fi: personal values, authenticity, and inner alignment',
+          'Fe: relational attunement, harmony, and shared values',
+        ],
+      },
+      {
+        heading: 'What you receive after the assessment',
+        body: [
+          'Your result shows relative function strength and a likely type interpretation. That gives you a way to inspect the data instead of accepting a black-box label.',
+        ],
+        bullets: [
+          'A free cognitive function profile',
+          'A likely Jungian type pattern',
+          'Educational links for each function',
+          'Optional deeper reports for stress, shadow, and growth themes',
+        ],
+      },
+      {
+        heading: 'Best next step',
+        body: [
+          'Take the assessment first, then use the Learn section to understand your top two functions and your possible inferior function. The pattern between those positions is usually more useful than any single score.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does the cognitive function test measure all 8 functions?',
+        answer: 'Yes. TypeJung scores Ni, Ne, Si, Se, Ti, Te, Fi, and Fe rather than only asking broad type-dichotomy questions.',
+      },
+      {
+        question: 'Is the cognitive function test free?',
+        answer: 'The core 42-question assessment is free. Insight and Mastery are optional one-time CAD paid reports.',
+      },
+      {
+        question: 'Can I use the result to find my type?',
+        answer: 'Yes. The function profile supports a likely type interpretation, but the profile itself is the main source of insight.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Start the test' },
+      { href: '/cognitive-functions', label: 'Cognitive functions guide' },
+      { href: '/functions/ni', label: 'Introverted Intuition' },
+      { href: '/functions/ti', label: 'Introverted Thinking' },
+    ],
+  },
+  {
+    slug: 'jungian-typology',
+    query: 'Jungian typology',
+    title: 'Jungian Typology Guide - Functions, Type, and Growth | TypeJung',
+    description: 'Learn Jungian typology through cognitive functions, attitude direction, dominant-inferior patterns, and practical growth work.',
+    keywords: ['Jungian typology', 'Jung psychological types', 'Jungian personality types', 'Jungian functions'],
+    eyebrow: 'Jungian typology',
+    h1: 'A practical guide to Jungian typology',
+    intro: [
+      'Jungian typology is a way to understand the patterns behind attention, judgment, stress, and development. It is deeper than a label because it asks which mental functions carry the most energy and which parts of the psyche remain less conscious.',
+      'TypeJung turns that model into a free assessment and a set of readable guides so you can compare your own pattern with the theory.',
+    ],
+    sections: [
+      {
+        heading: 'The core idea behind Jungian type',
+        body: [
+          'Carl Jung described type through two attitudes, introversion and extraversion, and four psychological functions: thinking, feeling, sensation, and intuition. Modern cognitive-function language combines those into eight function-attitudes.',
+          'That means a useful Jungian typology result should explain more than whether someone is introverted or intuitive. It should show how attention and judgment actually organize themselves.',
+        ],
+        bullets: [
+          'Introverted and extraverted attitudes describe the direction of energy',
+          'Thinking and feeling describe judging or evaluation',
+          'Sensation and intuition describe perception or information gathering',
+          'The dominant-inferior axis often reveals the clearest growth tension',
+        ],
+      },
+      {
+        heading: 'Why TypeJung starts with the energy map',
+        body: [
+          'A four-letter type can be useful shorthand, but it can also flatten the person. TypeJung starts with an energy map because the relative pattern between functions usually explains more than a single label.',
+          'After the assessment, you can compare your strongest channels, likely type pattern, and inferior-function pressure before deciding whether you want a deeper paid report.',
+        ],
+      },
+      {
+        heading: 'How to study your result',
+        body: [
+          'Read the top function as a hypothesis about what your ego trusts most. Read the inferior function as a place where pressure, attraction, avoidance, or overreaction may show up. Then use the result as observation, not identity.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is Jungian typology the same as MBTI?',
+        answer: 'No. MBTI popularized four-letter type language, but Jungian typology begins with psychological functions and attitude direction.',
+      },
+      {
+        question: 'What is the most important part of Jungian typology?',
+        answer: 'The dominant-inferior relationship is often the most useful because it shows both a strength and a likely developmental edge.',
+      },
+      {
+        question: 'Can TypeJung tell me my exact type?',
+        answer: 'TypeJung gives a likely type pattern and a function map. Treat it as a structured self-observation tool, not a final identity label.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/cognitive-functions', label: 'Learn the cognitive functions' },
+      { href: '/jungian-test', label: 'Jungian test' },
+      { href: '/inferior-function-test', label: 'Inferior function test' },
+    ],
+  },
+  {
+    slug: 'cognitive-functions',
+    query: 'Jungian cognitive functions',
+    title: 'Jungian Cognitive Functions Guide - Ni Ne Si Se Ti Te Fi Fe | TypeJung',
+    description: 'Understand the 8 Jungian cognitive functions: Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, plus how they shape type and stress patterns.',
+    keywords: ['Jungian cognitive functions', '8 cognitive functions', 'Ni Ne Si Se Ti Te Fi Fe', 'cognitive functions guide'],
+    eyebrow: 'Cognitive functions',
+    h1: 'Understand the 8 Jungian cognitive functions',
+    intro: [
+      'The 8 cognitive functions are the working parts behind Jungian type. They describe how attention gathers information and how judgment makes decisions.',
+      'TypeJung measures these functions through a 42-question assessment, then turns the scores into an energy map, likely type pattern, and growth-focused interpretation.',
+    ],
+    sections: [
+      {
+        heading: 'The four perceiving functions',
+        body: [
+          'Perceiving functions describe how information enters awareness. Intuition looks for pattern and possibility. Sensing stays closer to concrete reality, memory, and present experience.',
+        ],
+        bullets: [
+          'Ni: convergent pattern insight, symbolic meaning, future orientation',
+          'Ne: possibilities, alternatives, associations, and divergent ideas',
+          'Si: memory, continuity, precedent, and experience-based comparison',
+          'Se: direct contact with the present, action, and sensory detail',
+        ],
+      },
+      {
+        heading: 'The four judging functions',
+        body: [
+          'Judging functions describe how decisions are organized. Thinking evaluates through logic and structure. Feeling evaluates through value, relationship, and meaning.',
+        ],
+        bullets: [
+          'Ti: internal precision, categories, and logical models',
+          'Te: external order, measurable outcomes, and execution',
+          'Fi: personal value, authenticity, and inner alignment',
+          'Fe: shared value, emotional tone, and relational coordination',
+        ],
+      },
+      {
+        heading: 'Functions are more useful in relationship',
+        body: [
+          'A single high score can be interesting, but the pattern matters more. Dominant and auxiliary functions usually feel more available. Inferior-function material often appears through stress, attraction, projection, or sudden overreaction.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'What are the 8 Jungian cognitive functions?',
+        answer: 'The 8 functions are Ni, Ne, Si, Se, Ti, Te, Fi, and Fe. They combine Jung\'s four functions with introverted and extraverted attitudes.',
+      },
+      {
+        question: 'Can I have more than one strong cognitive function?',
+        answer: 'Yes. TypeJung scores functions as a profile, so nearby functions can both be meaningful instead of forcing one winner too quickly.',
+      },
+      {
+        question: 'How do cognitive functions relate to MBTI types?',
+        answer: 'A four-letter type can be interpreted as a likely function stack, but TypeJung starts with the function evidence before interpreting the type pattern.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/cognitive-function-test', label: 'Take the cognitive function test' },
+      { href: '/functions/ni', label: 'Introverted Intuition' },
+      { href: '/functions/fe', label: 'Extraverted Feeling' },
+      { href: '/jungian-typology', label: 'Jungian typology guide' },
+    ],
+  },
+  {
+    slug: 'shadow-work-test',
+    query: 'shadow work test',
+    title: 'Shadow Work Test - Jungian Stress and Growth Patterns | TypeJung',
+    description: 'Use a Jungian shadow work test to explore inferior-function pressure, stress reactions, and practical self-observation without clinical diagnosis.',
+    keywords: ['shadow work test', 'Jungian shadow test', 'shadow work questions', 'inferior function shadow'],
+    eyebrow: 'Shadow work test',
+    h1: 'A Jungian shadow work test for self-observation',
+    intro: [
+      'Shadow work is not about finding a villain inside yourself. In Jungian language, it starts by noticing what the ego avoids, disowns, overreacts to, or projects onto other people.',
+      'TypeJung approaches shadow work through cognitive-function patterns, especially the inferior-function edge where stress and growth often meet.',
+    ],
+    sections: [
+      {
+        heading: 'What a shadow work test can and cannot do',
+        body: [
+          'A self-assessment can give language for observation. It cannot diagnose trauma, anxiety, depression, or any mental health condition. The safest use is reflective: notice the pattern, test it against real life, and slow down before making it your identity.',
+        ],
+        bullets: [
+          'Use the result as a starting hypothesis',
+          'Notice where stress creates overreaction or avoidance',
+          'Look for repeated projections and relationship triggers',
+          'Work with a qualified professional for severe or persistent distress',
+        ],
+      },
+      {
+        heading: 'Why TypeJung connects shadow work to the inferior function',
+        body: [
+          'The inferior function often marks the least conscious side of the dominant pattern. When pressure rises, that function can feel awkward, compulsive, or surprisingly intense.',
+          'Mapping the dominant-inferior axis gives you a practical way to ask: what am I overusing, and what am I neglecting?',
+        ],
+      },
+      {
+        heading: 'How to use the result',
+        body: [
+          'After the assessment, read the inferior-function section first. Then watch for moments when the same theme appears in stress, conflict, envy, attraction, or body tension. That is where reflection becomes useful.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is TypeJung a clinical shadow work test?',
+        answer: 'No. TypeJung is an educational self-exploration tool. It is not therapy, diagnosis, or medical advice.',
+      },
+      {
+        question: 'What is the Jungian shadow?',
+        answer: 'The shadow refers to parts of the psyche that are less conscious, disowned, avoided, or projected. In TypeJung, inferior-function pressure is one practical entry point.',
+      },
+      {
+        question: 'Can shadow work be uncomfortable?',
+        answer: 'Yes. If reflection feels overwhelming or destabilizing, pause and work with a qualified professional rather than forcing the process alone.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/inferior-function-test', label: 'Inferior function test' },
+      { href: '/blog/understanding-the-grip', label: 'Understand the grip' },
+      { href: '/pricing', label: 'See deeper reports' },
+    ],
+  },
+];

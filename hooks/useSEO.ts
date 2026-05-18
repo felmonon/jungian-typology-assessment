@@ -11,7 +11,7 @@ interface SEOConfig {
 
 const BASE_URL = 'https://typejung.com';
 const DEFAULT_IMAGE = '/og-image.png';
-const SITE_NAME = 'Jungian Typology Assessment';
+const SITE_NAME = 'TypeJung';
 
 // SEO configurations for each page
 export const PAGE_SEO: Record<string, SEOConfig> = {
@@ -33,24 +33,24 @@ export const PAGE_SEO: Record<string, SEOConfig> = {
     description: 'Understand Carl Jung\'s theory of psychological types. Learn about the 8 cognitive functions, introversion vs extraversion, and the process of individuation.',
   },
   about: {
-    title: 'About | Jungian Typology Assessment',
-    description: 'Learn why we built the most accurate Jungian typology assessment online. Our methodology, team, and commitment to depth psychology.',
+    title: 'About | TypeJung',
+    description: 'Learn why TypeJung maps Jungian energy, inferior-function pressure, somatic signals, and attitude direction instead of forcing a four-letter label.',
   },
   pricing: {
-    title: 'Pricing | Jungian Typology Assessment',
-    description: 'Get your full psychological type report with personalized insights, shadow work exercises, and individuation guidance.',
+    title: 'Pricing | TypeJung',
+    description: 'Start with the free TypeJung assessment, then unlock Insight for CA$19 or Mastery for CA$39 with one-time CAD pricing.',
   },
   privacy: {
-    title: 'Privacy Policy | Jungian Typology Assessment',
-    description: 'How we handle your data and protect your privacy when using the Jungian Typology Assessment.',
+    title: 'Privacy Policy | TypeJung',
+    description: 'How TypeJung handles assessment data, account data, payments, and privacy controls.',
   },
   terms: {
-    title: 'Terms of Service | Jungian Typology Assessment',
-    description: 'Terms and conditions for using the Jungian Typology Assessment platform.',
+    title: 'Terms of Service | TypeJung',
+    description: 'Terms and conditions for using TypeJung, including free assessment access, paid reports, and account features.',
   },
   leaderboard: {
-    title: 'Community Leaderboard | Jungian Typology',
-    description: 'See how your type compares with others. View the distribution of cognitive function types in our community.',
+    title: 'Community Results | TypeJung',
+    description: 'See how TypeJung energy maps distribute across the community and compare dominant-inferior patterns.',
   },
 };
 
@@ -92,7 +92,7 @@ export function useSEO(config: SEOConfig) {
     if (noIndex) {
       setMetaTag('robots', 'noindex, nofollow');
     } else {
-      setMetaTag('robots', 'index, follow');
+      setMetaTag('robots', 'index, follow, max-image-preview:large');
     }
 
     // Open Graph tags
@@ -132,8 +132,8 @@ export function useSEO(config: SEOConfig) {
 // Hook for dynamic share page SEO
 export function useSharePageSEO(dominantFunction: string) {
   useSEO({
-    title: `${dominantFunction} Type Result | Jungian Typology Assessment`,
-    description: `See this ${dominantFunction} psychological type profile. Take the assessment to discover your own cognitive function stack.`,
+    title: `${dominantFunction} Type Result | TypeJung`,
+    description: `See this ${dominantFunction} psychological type profile. Take TypeJung to discover your own cognitive function stack.`,
     type: 'article',
   });
 }

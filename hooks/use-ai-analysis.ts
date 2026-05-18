@@ -78,12 +78,11 @@ export function useAiAnalysis() {
     setPremiumError(null);
     
     try {
-      const unlockDate = localStorage.getItem('jungian_assessment_unlock_date');
       const response = await fetch('/api/ai/premium-analysis', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ ...input, unlockDate }),
+        body: JSON.stringify(input),
       });
 
       if (!response.ok) {

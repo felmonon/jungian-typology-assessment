@@ -1,4 +1,39 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { createClient } from '@supabase/supabase-js';
+import { getSessionUserFromCookie } from './_lib/auth-utils.js';
+import { getStripeSecretKey, parsePaidTier, resolveCheckoutBaseUrl } from '../server/checkout.js';
+import { PRICING } from '../data/pricing.js';
+import type { PaidTierId } from '../data/pricing.js';
+
+const CHECKOUT_PRODUCT_COPY: Record<PaidTierId, { name: string; description: string }> = {
+  insight: {
+    name: 'TypeJung Insight Package',
+    description: 'Deep TypeJung report with developmental edge analysis, stress patterns, relationship triggers, and somatic practice guidance.',
+  },
+  mastery: {
+    name: 'TypeJung Mastery Package',
+    description: 'Complete TypeJung experience with the deep report, AI Type Coach, tailored growth exercises, and individuation practice support.',
+  },
+};
+
+function cleanCheckoutSource(source: unknown): string {
+  return typeof source === 'string' && source.trim()
+    ? source.trim().replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 80)
+    : 'unknown';
+}
+
+async function getCheckoutCustomerEmail(req: VercelRequest): Promise<string | null> {
+  if (!process.env.SUPABASE_URL || !(process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY)) {
+    return null;
+  }
+
+  const supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY!,
+  );
+  const user = await getSessionUserFromCookie(req.headers.cookie, supabase);
+  return user?.email || null;
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -7,47 +42,57 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    if (!process.env.STRIPE_SECRET_KEY) {
+    const stripeSecretKey = getStripeSecretKey();
+    if (!stripeSecretKey) {
       return res.status(500).json({ error: 'Stripe not configured' });
     }
 
-    const { tier } = req.body;
+    const resolvedTier = parsePaidTier(req.body?.tier);
 
-    // Resolve the price ID based on tier
-    let resolvedPriceId;
-    let resolvedTier = tier || 'insight';
-
-    if (tier === 'insight') {
-      resolvedPriceId = process.env.STRIPE_INSIGHT_PRICE_ID;
-    } else if (tier === 'mastery') {
-      resolvedPriceId = process.env.STRIPE_MASTERY_PRICE_ID;
-    }
-
-    if (!resolvedPriceId) {
+    if (!resolvedTier) {
       return res.status(400).json({ error: 'Invalid tier' });
     }
 
-    // Get the origin for redirect URLs
-    const origin = req.headers.origin || 'https://typejung.com';
+    const baseUrl = resolveCheckoutBaseUrl(req.headers.origin, req.headers.host);
+    const customerEmail = await getCheckoutCustomerEmail(req);
+    const tierPricing = PRICING[resolvedTier];
+    const productCopy = CHECKOUT_PRODUCT_COPY[resolvedTier];
+    const checkoutSource = cleanCheckoutSource(req.body?.source);
+    const checkoutParams = new URLSearchParams({
+      'mode': 'payment',
+      'payment_method_types[0]': 'card',
+      'line_items[0][price_data][currency]': tierPricing.currency.toLowerCase(),
+      'line_items[0][price_data][unit_amount]': String(Math.round(tierPricing.amount * 100)),
+      'line_items[0][price_data][product_data][name]': productCopy.name,
+      'line_items[0][price_data][product_data][description]': productCopy.description,
+      'line_items[0][quantity]': '1',
+      'allow_promotion_codes': 'true',
+      'submit_type': 'pay',
+      'success_url': `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+      'cancel_url': `${baseUrl}/checkout/${resolvedTier}`,
+      'custom_text[after_submit][message]': 'TypeJung paid access is a one-time CAD purchase. No subscription is created.',
+      'payment_intent_data[description]': productCopy.name,
+      'payment_intent_data[metadata][product]': 'typejung_premium',
+      'payment_intent_data[metadata][tier]': resolvedTier,
+      'payment_intent_data[metadata][source]': checkoutSource,
+      'metadata[product]': 'typejung_premium',
+      'metadata[tier]': resolvedTier,
+      'metadata[source]': checkoutSource,
+      'metadata[amount_cad]': String(tierPricing.amount),
+    });
+
+    if (customerEmail) {
+      checkoutParams.set('customer_email', customerEmail);
+    }
 
     // Use fetch directly to Stripe API
     const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}`,
+        'Authorization': `Bearer ${stripeSecretKey}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: new URLSearchParams({
-        'mode': 'payment',
-        'payment_method_types[0]': 'card',
-        'line_items[0][price]': resolvedPriceId,
-        'line_items[0][quantity]': '1',
-        'allow_promotion_codes': 'true',
-        'success_url': `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-        'cancel_url': `${origin}/results`,
-        'metadata[product]': 'jungian_assessment_premium',
-        'metadata[tier]': resolvedTier,
-      }).toString(),
+      body: checkoutParams.toString(),
     });
 
     const session = await response.json();

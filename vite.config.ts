@@ -17,6 +17,9 @@ export default defineConfig(({ mode }) => {
           output: {
             manualChunks: {
               'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+              'query-vendor': ['@tanstack/react-query'],
+              'motion-vendor': ['framer-motion'],
+              'validation-vendor': ['zod'],
               'charts': ['recharts'],
               'ui': ['lucide-react'],
             }

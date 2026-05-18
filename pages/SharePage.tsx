@@ -168,9 +168,9 @@ export const SharePage: React.FC = () => {
       {/* Header */}
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-3 mb-4">
-          <img src="/logo.svg" alt="Jungian Typology" className="w-10 h-10" />
+          <img src="/logo.svg" alt="TypeJung" className="w-10 h-10" />
           <span className="text-xs md:text-sm font-data font-bold tracking-widest uppercase text-jung-secondary">
-            Jungian Typology Assessment
+            TypeJung Shared Result
           </span>
         </div>
         <p className="text-jung-muted text-sm md:text-base">Someone shared their psychological type profile with you</p>
@@ -254,7 +254,7 @@ export const SharePage: React.FC = () => {
           Discover Your Own Psychological Type
         </h2>
         <p className="text-jung-secondary mb-6 max-w-xl mx-auto text-sm md:text-base">
-          Take the Jungian Typology Assessment to uncover your dominant cognitive functions and receive a personalized analysis based on Carl Jung's theory of psychological types.
+          Take the TypeJung assessment to uncover your dominant cognitive functions and receive a personalized analysis based on Carl Jung's theory of psychological types.
         </p>
         <Link to="/assessment">
           <Button variant="accent" size="lg" className="w-full sm:w-auto min-h-[48px]">

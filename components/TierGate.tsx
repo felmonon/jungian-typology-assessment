@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Lock, Loader2, Sparkles, Crown } from 'lucide-react';
 import { Button } from './ui/Button';
+import { PRICING } from '../data/pricing';
 import { PremiumTier } from '../hooks/use-premium-status';
 
 interface TierGateProps {
@@ -13,8 +15,7 @@ interface TierGateProps {
 const TIER_INFO = {
   insight: {
     name: 'Insight',
-    price: '$19',
-    priceId: import.meta.env.VITE_STRIPE_INSIGHT_PRICE_ID || import.meta.env.VITE_STRIPE_PRICE_ID,
+    price: PRICING.insight.price,
     icon: Sparkles,
     gradient: 'from-jung-accent to-jung-accent/80',
     bgLight: 'bg-jung-accent/10',
@@ -23,8 +24,7 @@ const TIER_INFO = {
   },
   mastery: {
     name: 'Mastery',
-    price: '$39',
-    priceId: import.meta.env.VITE_STRIPE_MASTERY_PRICE_ID,
+    price: PRICING.mastery.price,
     icon: Crown,
     gradient: 'from-jung-dark to-jung-secondary',
     bgLight: 'bg-jung-dark/10',
@@ -39,8 +39,8 @@ export const TierGate: React.FC<TierGateProps> = ({
   children,
   featureDescription
 }) => {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const hasAccess = () => {
     if (requiredTier === 'insight') return currentTier === 'insight' || currentTier === 'mastery';
@@ -56,36 +56,9 @@ export const TierGate: React.FC<TierGateProps> = ({
   const TierIcon = tierInfo.icon;
   const isUpgrade = currentTier === 'insight' && requiredTier === 'mastery';
 
-  const handleUnlock = async () => {
+  const handleUnlock = () => {
     setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch('/api/create-checkout-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          priceId: tierInfo.priceId,
-          tier: requiredTier,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to create checkout session');
-      }
-
-      if (data.url) {
-        window.location.href = data.url;
-      }
-    } catch (err: any) {
-      console.error('Checkout error:', err);
-      setError(err.message || 'Something went wrong. Please try again.');
-      setIsLoading(false);
-    }
+    navigate(`/checkout/${requiredTier}`);
   };
 
   return (
@@ -120,8 +93,8 @@ export const TierGate: React.FC<TierGateProps> = ({
           {/* Subtitle */}
           <p className="text-jung-muted text-sm mb-5 leading-relaxed">
             {isUpgrade
-              ? 'Access advanced features for deeper self-discovery'
-              : 'Unlock premium insights for comprehensive type analysis'
+              ? 'Add the coach and long-term practice tools to your existing report.'
+              : 'Unlock the deeper explanation behind this part of your result.'
             }
           </p>
 
@@ -153,7 +126,7 @@ export const TierGate: React.FC<TierGateProps> = ({
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Processing...
+                Opening checkout...
               </>
             ) : (
               <>
@@ -162,11 +135,6 @@ export const TierGate: React.FC<TierGateProps> = ({
               </>
             )}
           </Button>
-
-          {/* Error message */}
-          {error && (
-            <p className="mt-4 text-sm text-red-600">{error}</p>
-          )}
 
           {/* Trust indicator */}
           <p className="mt-4 text-xs text-jung-muted">One-time payment • Secure checkout via Stripe</p>

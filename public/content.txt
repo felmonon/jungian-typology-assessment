@@ -1,6 +1,6 @@
 # TypeJung - Measure All 8 Cognitive Functions
 # Website: https://typejung.com
-# Last Updated: 2026-01-26
+# Last Updated: 2026-05-18
 
 ================================================================================
 ABOUT
@@ -92,19 +92,19 @@ FEATURES
 ================================================================================
 
 FREE TIER:
-- 40-question cognitive function assessment
+- 42-question cognitive function assessment
 - Radar chart visualization of all 8 functions
 - Basic AI-generated personality insights
 - Shareable results page
 - Type distribution leaderboard
 
-INSIGHT TIER ($19):
+INSIGHT TIER (CA$19):
 - Extended AI analysis
 - Cognitive function deep-dive
 - Stress patterns (The Grip)
 - Growth recommendations
 
-MASTERY TIER ($39):
+MASTERY TIER (CA$39):
 - AI Type Coach chat
 - Comprehensive PDF report
 - Archetypal analysis
@@ -115,11 +115,61 @@ MASTERY TIER ($39):
 HOW IT WORKS
 ================================================================================
 
-1. Take the 40-question assessment (15-20 minutes)
+1. Take the 42-question assessment (12-16 minutes)
 2. View your cognitive function radar chart
 3. Read AI-generated insights about your type
 4. Explore detailed function breakdowns
 5. Optionally upgrade for deeper analysis
+
+================================================================================
+HIGH-INTENT GUIDES
+================================================================================
+
+Jungian test:
+https://typejung.com/jungian-test
+
+MBTI alternative:
+https://typejung.com/mbti-alternative
+
+Inferior function test:
+https://typejung.com/inferior-function-test
+
+Cognitive function test:
+https://typejung.com/cognitive-function-test
+
+Jungian typology guide:
+https://typejung.com/jungian-typology
+
+Cognitive functions guide:
+https://typejung.com/cognitive-functions
+
+Shadow work test:
+https://typejung.com/shadow-work-test
+
+================================================================================
+GROWTH ARTICLES
+================================================================================
+
+Why MBTI type changes:
+https://typejung.com/blog/why-mbti-type-keeps-changing
+
+INFJ vs INFP:
+https://typejung.com/blog/infj-vs-infp-cognitive-functions
+
+INTJ vs INTP:
+https://typejung.com/blog/intj-vs-intp-ni-te-vs-ti-ne
+
+Inferior function:
+https://typejung.com/blog/what-is-the-inferior-function
+
+The grip:
+https://typejung.com/blog/what-does-it-mean-to-be-in-the-grip
+
+Shadow work prompts:
+https://typejung.com/blog/jungian-shadow-work-prompts-by-cognitive-function
+
+Best MBTI alternatives:
+https://typejung.com/blog/best-mbti-alternative-tests
 
 ================================================================================
 CONTACT & LINKS

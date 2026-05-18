@@ -2,7 +2,49 @@ import { Resend } from 'resend';
 
 let connectionSettings: any;
 
-async function getCredentials() {
+type ResendCredentials = {
+  apiKey: string;
+  fromEmail: string;
+};
+
+export type LifecycleEmailKind = 'abandoned-assessment' | 'result-ready' | 'free-result-upgrade';
+
+export type LifecycleEmailInput = {
+  kind: LifecycleEmailKind;
+  toEmail: string;
+  resultUrl?: string;
+  assessmentUrl?: string;
+  upgradeUrl?: string;
+  dominantLabel?: string;
+  inferiorLabel?: string;
+  progressPercent?: number;
+  completedAt?: string;
+  idempotencyKey?: string;
+};
+
+type LifecycleEmailTemplate = {
+  subject: string;
+  preview: string;
+  html: string;
+  text: string;
+};
+
+type LifecycleEmailSendResult =
+  | { sent: true; id?: string }
+  | { sent: false; skipped: true; reason: string };
+
+function getEnvCredentials(): ResendCredentials | null {
+  const apiKey = process.env.RESEND_API_KEY;
+  const fromEmail = process.env.RESEND_FROM_EMAIL || process.env.FROM_EMAIL;
+
+  if (!apiKey || !fromEmail) {
+    return null;
+  }
+
+  return { apiKey, fromEmail };
+}
+
+async function getReplitCredentials(): Promise<ResendCredentials | null> {
   const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
   const xReplitToken = process.env.REPL_IDENTITY 
     ? 'repl ' + process.env.REPL_IDENTITY 
@@ -10,8 +52,8 @@ async function getCredentials() {
     ? 'depl ' + process.env.WEB_REPL_RENEWAL 
     : null;
 
-  if (!xReplitToken) {
-    throw new Error('X_REPLIT_TOKEN not found for repl/depl');
+  if (!hostname || !xReplitToken) {
+    return null;
   }
 
   connectionSettings = await fetch(
@@ -24,21 +66,187 @@ async function getCredentials() {
     }
   ).then(res => res.json()).then(data => data.items?.[0]);
 
-  if (!connectionSettings || (!connectionSettings.settings.api_key)) {
-    throw new Error('Resend not connected');
+  if (!connectionSettings || !connectionSettings.settings.api_key || !connectionSettings.settings.from_email) {
+    return null;
   }
+
   return {
     apiKey: connectionSettings.settings.api_key, 
     fromEmail: connectionSettings.settings.from_email
   };
 }
 
+async function getCredentials(): Promise<ResendCredentials | null> {
+  return getEnvCredentials() || await getReplitCredentials();
+}
+
 export async function getResendClient() {
-  const { apiKey, fromEmail } = await getCredentials();
+  const credentials = await getCredentials();
+
+  if (!credentials) {
+    throw new Error('Resend not configured');
+  }
+
   return {
-    client: new Resend(apiKey),
-    fromEmail
+    client: new Resend(credentials.apiKey),
+    fromEmail: credentials.fromEmail
   };
+}
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function formatCompletedAt(value?: string): string {
+  if (!value) return 'recently';
+
+  try {
+    return new Intl.DateTimeFormat('en', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    }).format(new Date(value));
+  } catch {
+    return 'recently';
+  }
+}
+
+function buildBaseHtml(preview: string, body: string): string {
+  return `
+    <div style="display:none;max-height:0;overflow:hidden;color:transparent;opacity:0;">
+      ${escapeHtml(preview)}
+    </div>
+    <div style="font-family: Inter, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; color: #2f2a25;">
+      ${body}
+      <p style="margin-top: 32px; color: #8a8177; font-size: 12px; line-height: 1.6;">
+        You received this TypeJung email because this account started or completed an assessment.
+      </p>
+    </div>
+  `;
+}
+
+function buildActionLink(url: string, label: string): string {
+  const safeUrl = escapeHtml(url);
+  return `
+    <p style="margin: 28px 0;">
+      <a href="${safeUrl}" style="display: inline-block; border-radius: 8px; background: #8a5a32; color: #ffffff; font-weight: 700; padding: 12px 18px; text-decoration: none;">
+        ${escapeHtml(label)}
+      </a>
+    </p>
+  `;
+}
+
+function buildLifecycleEmail(input: LifecycleEmailInput): LifecycleEmailTemplate {
+  const resultUrl = input.resultUrl || 'https://typejung.com/results';
+  const assessmentUrl = input.assessmentUrl || 'https://typejung.com/assessment';
+  const upgradeUrl = input.upgradeUrl || 'https://typejung.com/pricing';
+  const dominantLabel = input.dominantLabel ? escapeHtml(input.dominantLabel) : null;
+  const inferiorLabel = input.inferiorLabel ? escapeHtml(input.inferiorLabel) : null;
+
+  if (input.kind === 'abandoned-assessment') {
+    const progressCopy = Number.isFinite(input.progressPercent)
+      ? ` You were about ${Math.max(0, Math.min(100, Math.round(input.progressPercent || 0)))}% through.`
+      : '';
+    const preview = 'Your TypeJung assessment progress is waiting on this device.';
+    const body = `
+      <h1 style="margin: 0 0 16px; color: #2f2a25; font-size: 28px; line-height: 1.2;">Finish your TypeJung assessment</h1>
+      <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
+        You started the TypeJung depth assessment but did not finish it.${progressCopy}
+        If you are on the same device, your progress should still be saved.
+      </p>
+      <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
+        Come back when you have a quiet moment and complete the remaining questions.
+      </p>
+      ${buildActionLink(assessmentUrl, 'Continue assessment')}
+    `;
+
+    return {
+      subject: 'Finish your TypeJung assessment',
+      preview,
+      html: buildBaseHtml(preview, body),
+      text: `You started the TypeJung depth assessment but did not finish it.${progressCopy} Continue here: ${assessmentUrl}`,
+    };
+  }
+
+  if (input.kind === 'free-result-upgrade') {
+    const axisCopy = dominantLabel && inferiorLabel
+      ? ` Your current map centers on ${dominantLabel} with ${inferiorLabel} as the developmental edge.`
+      : '';
+    const preview = 'A deeper TypeJung report is available for your saved result.';
+    const body = `
+      <h1 style="margin: 0 0 16px; color: #2f2a25; font-size: 28px; line-height: 1.2;">Go deeper into your TypeJung result</h1>
+      <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
+        You have your free TypeJung synthesis.${axisCopy}
+      </p>
+      <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
+        The paid report adds the developmental read: stress patterns, relationship triggers, work guidance, and practices for the dominant-inferior axis.
+      </p>
+      ${buildActionLink(upgradeUrl, 'View report options')}
+    `;
+
+    return {
+      subject: 'Go deeper into your TypeJung result',
+      preview,
+      html: buildBaseHtml(preview, body),
+      text: `A deeper TypeJung report is available for your saved result.${axisCopy} View report options: ${upgradeUrl}`,
+    };
+  }
+
+  const completedCopy = formatCompletedAt(input.completedAt);
+  const axisCopy = dominantLabel && inferiorLabel
+    ? ` Your dominant-inferior axis is ${dominantLabel} to ${inferiorLabel}.`
+    : '';
+  const preview = 'Your TypeJung energy map is ready.';
+  const body = `
+    <h1 style="margin: 0 0 16px; color: #2f2a25; font-size: 28px; line-height: 1.2;">Your TypeJung result is ready</h1>
+    <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
+      Your TypeJung energy map was completed ${escapeHtml(completedCopy)}.${axisCopy}
+    </p>
+    <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
+      You can return to the result page to review the free synthesis, save the result to your account, or unlock the deeper report.
+    </p>
+    ${buildActionLink(resultUrl, 'Open result')}
+  `;
+
+  return {
+    subject: 'Your TypeJung result is ready',
+    preview,
+    html: buildBaseHtml(preview, body),
+    text: `Your TypeJung energy map was completed ${completedCopy}.${axisCopy} Open it here: ${resultUrl}`,
+  };
+}
+
+export async function sendLifecycleEmail(input: LifecycleEmailInput): Promise<LifecycleEmailSendResult> {
+  if (!input.toEmail) {
+    return { sent: false, skipped: true, reason: 'missing_email' };
+  }
+
+  const credentials = await getCredentials();
+
+  if (!credentials) {
+    return { sent: false, skipped: true, reason: 'resend_not_configured' };
+  }
+
+  const template = buildLifecycleEmail(input);
+  const client = new Resend(credentials.apiKey);
+  const result = await client.emails.send({
+    from: credentials.fromEmail,
+    to: input.toEmail,
+    subject: template.subject,
+    html: template.html,
+    text: template.text,
+  }, input.idempotencyKey ? { idempotencyKey: input.idempotencyKey } : undefined);
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+
+  return { sent: true, id: result.data?.id };
 }
 
 export async function sendPdfEmail(
@@ -52,11 +260,11 @@ export async function sendPdfEmail(
   const result = await client.emails.send({
     from: fromEmail,
     to: toEmail,
-    subject: 'Your Jungian Typology Assessment Results',
+    subject: 'Your TypeJung Results',
     html: `
       <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <h1 style="color: #44403c; border-bottom: 2px solid #d4a574; padding-bottom: 10px;">
-          Your Jungian Typology Results
+          Your TypeJung Results
         </h1>
         
         <p style="color: #57534e; font-size: 16px; line-height: 1.6;">
@@ -64,7 +272,7 @@ export async function sendPdfEmail(
         </p>
         
         <p style="color: #57534e; font-size: 16px; line-height: 1.6;">
-          Thank you for completing the Jungian Typology Assessment. Your dominant cognitive function appears to be <strong>${dominantFunction}</strong>.
+          Thank you for completing TypeJung. Your dominant cognitive function appears to be <strong>${dominantFunction}</strong>.
         </p>
         
         <p style="color: #57534e; font-size: 16px; line-height: 1.6;">
@@ -95,7 +303,7 @@ export async function sendPdfEmail(
         </div>
         
         <p style="color: #a8a29e; font-size: 12px; margin-top: 30px; text-align: center;">
-          Jungian Typology Assessment<br>
+          TypeJung<br>
           Based on the typological work of Carl Gustav Jung
         </p>
       </div>

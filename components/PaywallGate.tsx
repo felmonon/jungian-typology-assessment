@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Lock, Check, Loader2, Sparkles, FileText, Layers, AlertTriangle, Heart, Briefcase, Compass, PenTool, BookOpen, RefreshCcw, Shield, Unlock, MessageCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Lock, Check, Loader2, Sparkles, FileText, Layers, AlertTriangle, Heart, Briefcase, Compass, PenTool, BookOpen, RefreshCcw, Unlock, MessageCircle } from 'lucide-react';
 import { Button } from './ui/Button';
+import { PRICING } from '../data/pricing';
 
 interface PaywallGateProps {
   onUnlock?: () => void;
@@ -20,39 +22,14 @@ const PREMIUM_FEATURES = [
   { icon: RefreshCcw, text: 'Lifetime access (retake anytime)' },
 ];
 
-export const PaywallGate: React.FC<PaywallGateProps> = ({ onUnlock }) => {
+export const PaywallGate: React.FC<PaywallGateProps> = () => {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const premiumTier = PRICING.mastery;
 
-  const handleUnlock = async () => {
+  const handleUnlock = () => {
     setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch('/api/create-checkout-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          priceId: import.meta.env.VITE_STRIPE_PRICE_ID,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to create checkout session');
-      }
-
-      if (data.url) {
-        window.location.href = data.url;
-      }
-    } catch (err: any) {
-      console.error('Checkout error:', err);
-      setError(err.message || 'Something went wrong. Please try again.');
-      setIsLoading(false);
-    }
+    navigate(`/checkout/${premiumTier.id}`);
   };
 
   return (
@@ -84,7 +61,7 @@ export const PaywallGate: React.FC<PaywallGateProps> = ({ onUnlock }) => {
           <div className="space-y-3 order-2 md:order-1">
             <h3 className="font-serif font-bold text-jung-dark mb-4 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-jung-accent" />
-              Premium Includes:
+              Mastery includes:
             </h3>
             {PREMIUM_FEATURES.map((feature, i) => {
               const Icon = feature.icon;
@@ -129,16 +106,16 @@ export const PaywallGate: React.FC<PaywallGateProps> = ({ onUnlock }) => {
               </p>
 
               <div className="mb-2">
-                <span className="text-jung-muted line-through text-lg">$150 value</span>
+                <span className="text-jung-muted text-lg">{premiumTier.name}</span>
               </div>
 
               <div className="flex items-baseline justify-center gap-1 mb-3">
-                <span className="text-5xl font-serif font-bold text-jung-dark">$10</span>
-                <span className="text-jung-muted ml-1 font-data">CAD</span>
+                <span className="text-5xl font-serif font-bold text-jung-dark">{premiumTier.price}</span>
+                <span className="text-jung-muted ml-1 font-data">one-time</span>
               </div>
 
               <p className="text-sm text-jung-accent font-medium mb-4">
-                Equivalent to a 2-hour Jungian consultation
+                Includes the full report, AI Type Coach, and growth toolkit
               </p>
 
               <p className="text-sm text-jung-muted mb-6">
@@ -155,24 +132,15 @@ export const PaywallGate: React.FC<PaywallGateProps> = ({ onUnlock }) => {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Processing...
+                    Opening checkout...
                   </>
                 ) : (
                   <>
                     <Unlock className="mr-2 h-5 w-5" />
-                    Unlock Premium Analysis
+                    Unlock {premiumTier.name}
                   </>
                 )}
               </Button>
-
-              {error && (
-                <p className="mt-4 text-sm text-red-600">{error}</p>
-              )}
-
-              <div className="mt-5 flex items-center justify-center gap-2 text-emerald-600">
-                <Shield className="w-4 h-4" />
-                <span className="text-sm font-medium">30-Day Money-Back Guarantee</span>
-              </div>
 
               <p className="mt-3 text-xs text-jung-muted">
                 Secure payment powered by Stripe
@@ -191,9 +159,6 @@ export const PaywallGate: React.FC<PaywallGateProps> = ({ onUnlock }) => {
           </span>
           <span className="flex items-center gap-2">
             <Check className="w-4 h-4 text-emerald-500" /> Secure Checkout
-          </span>
-          <span className="flex items-center gap-2">
-            <Shield className="w-4 h-4 text-emerald-500" /> 30-Day Guarantee
           </span>
         </div>
       </div>

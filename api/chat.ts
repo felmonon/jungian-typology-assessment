@@ -11,7 +11,6 @@ interface ChatMessage {
 interface ChatRequest {
   message?: string;
   history?: ChatMessage[];
-  unlockDate?: string;
   userProfile?: {
     dominantFunction: string;
     auxiliaryFunction: string;
@@ -66,7 +65,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(401).json({ error: 'Authentication required' });
     }
 
-    const { message, history = [], userProfile, unlockDate } = (req.body || {}) as ChatRequest;
+    const { message, history = [], userProfile } = (req.body || {}) as ChatRequest;
     if (!message?.trim() || !userProfile) {
       return res.status(400).json({ error: 'Message and user profile are required' });
     }
@@ -86,11 +85,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (purchases && purchases.length > 0) {
       hasPremiumAccess = true;
-    }
-
-    if (!hasPremiumAccess && unlockDate) {
-      const hoursSinceUnlock = (Date.now() - new Date(unlockDate).getTime()) / (1000 * 60 * 60);
-      hasPremiumAccess = hoursSinceUnlock < 24;
     }
 
     if (!hasPremiumAccess) {

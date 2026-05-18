@@ -1,327 +1,339 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Check, ChevronDown, Clock, ShieldCheck, Sparkles, X } from 'lucide-react';
 import { Button } from '../components/ui/Button';
-import { Check, X, ChevronDown, ChevronUp, Loader2, Sparkles, Star, Crown, ArrowRight, Shield, Clock, Zap, Target, BookOpen, Brain, ZapIcon } from 'lucide-react';
-import { useSEO, PAGE_SEO } from '../hooks/useSEO';
+import { PRICING } from '../data/pricing';
+import type { PaidTierId, PricingTierId } from '../data/pricing';
+import { AnalyticsEvents } from '../lib/analytics';
+import { PAGE_SEO, useSEO } from '../hooks/useSEO';
 
-const TIERS = [
+type Tier = {
+  name: string;
+  price: string;
+  eyebrow: string;
+  summary: string;
+  bestFor: string;
+  features: string[];
+  buttonText: string;
+  tier: PricingTierId;
+  highlighted?: boolean;
+};
+
+const TIERS: Tier[] = [
   {
     name: 'Free',
-    price: '$0',
-    tagline: 'Initial Diagnostic',
+    price: PRICING.free.price,
+    eyebrow: 'Start here',
+    summary: 'Take the full assessment and see your core energy map before paying.',
+    bestFor: 'First-time users who want to test the result before unlocking deeper interpretation.',
     features: [
-      'Full 42-question depth assessment',
+      '42-question depth assessment',
       'Energy distribution map',
       'Dominant-inferior axis',
       'Reliability score',
     ],
-    buttonText: 'Begin Assessment',
-    buttonLink: '/assessment',
+    buttonText: 'Start free assessment',
     tier: 'free',
   },
   {
-    name: 'Insight',
-    price: '$19',
-    tagline: 'Deep Architecture',
-    badge: 'Standard Protocol',
-    includesPrefix: 'Everything in Free, plus:',
+    name: PRICING.insight.name,
+    price: PRICING.insight.price,
+    eyebrow: 'Best first upgrade',
+    summary: 'Unlock the meaning behind your map: stress patterns, growth edge, and practice guidance.',
+    bestFor: 'Users who want a deeper report they can read, keep, and return to without needing the AI coach.',
     features: [
+      'Everything in Free',
       'Developmental edge analysis',
-      'Complex vulnerability map',
-      'Somatic signal interpretation',
+      'Stress pattern map',
       'Stress and relationship triggers',
       'Personalized practice guidance',
-      'Lifetime result archive',
+      'Lifetime unlocked result access',
     ],
-    buttonText: 'Unlock Insight — $19',
-    note: 'One-time payment. Eternal access.',
+    buttonText: `Unlock Insight for ${PRICING.insight.price}`,
     tier: 'insight',
     highlighted: true,
   },
   {
-    name: 'Mastery',
-    price: '$39',
-    tagline: 'Psychic Integration',
-    badge: 'Peak Individualisation',
-    includesPrefix: 'Everything in Insight, plus:',
+    name: PRICING.mastery.name,
+    price: PRICING.mastery.price,
+    eyebrow: 'Complete guidance',
+    summary: 'Add the AI Type Coach when you want follow-up questions, exercises, and a practice plan.',
+    bestFor: 'Users who want to keep working with the result after the first read-through.',
     features: [
-      { text: 'AI Type Coach', subtext: 'Ask questions against your saved result' },
+      'Everything in Insight',
+      'AI Type Coach',
       'Individuation roadmap',
-      'Development tracking over time',
+      'Reassessment tracking over time',
       'Practice library',
-      'Priority feature access',
-      'Priority Priority Support',
+      'Priority support',
     ],
-    buttonText: 'Unlock Mastery — $39',
-    note: 'One-time payment. Complete evolution.',
+    buttonText: `Unlock Mastery for ${PRICING.mastery.price}`,
     tier: 'mastery',
-    bestValue: true,
   },
 ];
 
 const COMPARISON_FEATURES = [
-  { name: '42-question depth assessment', free: true, insight: true, mastery: true },
+  { name: '42-question assessment', free: true, insight: true, mastery: true },
   { name: 'Energy map and hierarchy', free: true, insight: true, mastery: true },
-  { name: 'Shareable profile', free: true, insight: true, mastery: true },
   { name: 'Developmental edge report', free: false, insight: true, mastery: true },
-  { name: 'Complex vulnerability map', free: false, insight: true, mastery: true },
+  { name: 'Stress pattern map', free: false, insight: true, mastery: true },
   { name: 'Somatic practice guidance', free: false, insight: true, mastery: true },
   { name: 'AI Type Coach', free: false, insight: false, mastery: true },
-  { name: 'Individuation roadmap', free: false, insight: false, mastery: true },
   { name: 'Reassessment tracking', free: false, insight: false, mastery: true },
 ];
 
 const FAQ_ITEMS = [
   {
-    question: "How is this different from standard typology?",
-    answer: "TypeJung does not ask you to choose a personality label. It maps how energy moves across thinking, feeling, sensation, and intuition using behavior, stress triggers, body signals, and attitude direction.",
+    question: 'Is this a subscription?',
+    answer: 'No. Insight and Mastery are one-time payments in Canadian dollars. There is no renewal or hidden subscription.',
   },
   {
-    question: "Is this a recurring subscription?",
-    answer: "No. TypeJung is built on a 'Pay Once, Evolve Forever' model. Your insights are private and eternally yours.",
+    question: 'Which plan should I choose?',
+    answer: 'Start free first. Choose Insight if the map feels accurate and you want the deeper report. Choose Mastery if you also want the AI coach and practice tools.',
   },
   {
-    question: "Can I upgrade my tier later?",
-    answer: "Yes. You can start with the free map, unlock the deeper report when it is useful, and use Mastery when you want the coach and ongoing tracking.",
+    question: 'Can I start with Free and upgrade later?',
+    answer: 'Yes. Take the assessment first, review the free map, then unlock the paid report only if the result feels worth keeping.',
   },
 ];
 
+const TRUST_ITEMS = [
+  { icon: ShieldCheck, label: 'CAD pricing', body: 'clear Canadian-dollar prices' },
+  { icon: Clock, label: 'One-time payment', body: 'no renewal or subscription' },
+  { icon: Sparkles, label: 'Secure checkout', body: 'payment handled by Stripe' },
+];
+
+const IncludedIcon: React.FC<{ included: boolean }> = ({ included }) => (
+  <span
+    className={`inline-flex h-7 w-7 items-center justify-center rounded-lg ${
+      included ? 'bg-jung-accent-light text-jung-accent' : 'bg-jung-surface-alt text-jung-muted'
+    }`}
+    aria-label={included ? 'Included' : 'Not included'}
+  >
+    {included ? <Check className="h-4 w-4" /> : <X className="h-4 w-4" />}
+  </span>
+);
+
 export const Pricing: React.FC = () => {
   const navigate = useNavigate();
-  const [loadingTier, setLoadingTier] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   useSEO(PAGE_SEO.pricing);
 
-  const handleCheckout = async (tier: string) => {
+  useEffect(() => {
+    AnalyticsEvents.pricingViewed('pricing_page', document.referrer || undefined);
+  }, []);
+
+  const startAssessment = (location: string) => {
+    AnalyticsEvents.ctaClicked('start_assessment', location, {
+      buttonText: 'Start free assessment',
+      destination: '/assessment',
+    });
+    navigate('/assessment');
+  };
+
+  const handleCheckout = async (tier: PricingTierId) => {
     if (tier === 'free') {
-      navigate('/assessment');
+      startAssessment('pricing_free_tier');
       return;
     }
-    setLoadingTier(tier);
-    setError(null);
-    try {
-      const response = await fetch('/api/create-checkout-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId: import.meta.env.VITE_STRIPE_PRICE_ID, tier: tier }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Failed to create checkout session');
-      if (data.url) window.location.href = data.url;
-    } catch (err: any) {
-      setError(err.message || 'Something went wrong. Please try again.');
-      setLoadingTier(null);
-    }
+
+    const paidTier: PaidTierId = tier;
+    AnalyticsEvents.ctaClicked(`unlock_${paidTier}`, 'pricing_tier_card', {
+      buttonText: PRICING[paidTier].name,
+      destination: `/checkout/${paidTier}`,
+    });
+    AnalyticsEvents.upgradeClicked('pricing_tier_card', paidTier);
+    navigate(`/checkout/${paidTier}`);
   };
 
   return (
-    <div className="min-h-screen bg-jung-base dark:bg-dark-base transition-colors duration-500">
-      {/* Header */}
-      <section className="relative pt-32 pb-24 overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-jung-accent/5 rounded-full blur-[100px] -mr-32 -mt-32" />
-          <div className="absolute top-40 left-0 w-80 h-80 bg-jung-gold/5 rounded-full blur-[100px] -ml-32" />
-        </div>
-
-        <div className="editorial-container relative z-10 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <p className="text-[10px] uppercase font-bold tracking-[0.4em] text-jung-accent mb-6">Access Tiers</p>
-            <h1 className="text-display text-5xl lg:text-7xl text-jung-dark dark:text-white mb-8">
-              Invest in your <br /><span className="italic text-jung-secondary">Psychic Evolution.</span>
+    <div className="min-h-screen bg-jung-base">
+      <section className="section-rule py-12 lg:py-16">
+        <div className="editorial-container grid gap-10 lg:grid-cols-[0.78fr_1fr] lg:items-end">
+          <div>
+            <p className="text-label">Pricing</p>
+            <h1 className="mt-4 text-display text-5xl text-jung-dark sm:text-6xl">
+              Take the test first. Pay only if the result is worth keeping.
             </h1>
-            <p className="max-w-2xl mx-auto text-body-lg text-jung-muted font-serif italic mb-12">
-              Start free, go deeper when you're ready. One-time payments for lifetime insights. No subscriptions, just genuine growth.
+            <Button
+              variant="accent"
+              size="lg"
+              className="mt-7"
+              onClick={() => startAssessment('pricing_hero')}
+              rightIcon={<ArrowRight className="h-5 w-5" />}
+            >
+              Start with the free assessment
+            </Button>
+          </div>
+          <div className="max-w-2xl lg:justify-self-end">
+            <p className="text-body-lg text-jung-secondary">
+              The free assessment gives you the core map. Insight and Mastery are optional one-time upgrades for deeper interpretation, practice guidance, and coaching support.
             </p>
-          </motion.div>
+            <div className="mt-6 grid gap-3 sm:grid-cols-3">
+              {TRUST_ITEMS.map(({ icon: Icon, label, body }) => (
+                <div key={label} className="rounded-lg border border-jung-border bg-jung-surface p-4 shadow-sm">
+                  <Icon className="mb-3 h-4 w-4 text-jung-accent" />
+                  <p className="text-sm font-semibold text-jung-dark">{label}</p>
+                  <p className="mt-1 text-xs leading-5 text-jung-muted">{body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Pricing Grid */}
-      <section className="editorial-container pb-32">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto items-stretch">
-          {TIERS.map((tier, i) => (
-            <motion.div
-              key={tier.name}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className={`
-                relative flex flex-col p-10 lg:p-14 rounded-[3rem] transition-all duration-500 group
-                ${tier.highlighted
-                  ? 'bg-jung-dark text-white shadow-2xl scale-105 z-10'
-                  : tier.bestValue
-                    ? 'bg-white dark:bg-dark-surface border-2 border-jung-dark dark:border-white/10 shadow-xl'
-                    : 'bg-white/50 dark:bg-dark-surface/50 border border-jung-border dark:border-dark-border hover:bg-white dark:hover:bg-dark-surface'
-                }
-              `}
-            >
-              {tier.badge && (
-                <div className={`absolute -top-4 left-10 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 ${tier.highlighted ? 'bg-jung-accent text-white' : 'bg-jung-dark text-white'}`}>
-                  {tier.highlighted ? <Star className="w-3 h-3" /> : <Crown className="w-3 h-3" />}
-                  {tier.badge}
-                </div>
-              )}
+      <section className="editorial-container py-12 lg:py-16">
+        <div className="grid gap-5 lg:grid-cols-3">
+          {TIERS.map((tier) => {
+            return (
+              <article
+                key={tier.name}
+                className={`relative flex min-h-full flex-col rounded-lg border p-5 shadow-sm transition-all sm:p-6 ${
+                  tier.highlighted
+                    ? 'border-jung-accent-muted bg-jung-dark text-white shadow-xl'
+                    : 'border-jung-border bg-jung-surface hover:-translate-y-1 hover:border-jung-accent-muted hover:shadow-md'
+                }`}
+              >
+                {tier.highlighted && (
+                  <span className="mb-5 inline-flex w-fit items-center gap-2 rounded-lg bg-jung-accent px-3 py-1.5 text-xs font-semibold text-white">
+                    <Sparkles className="h-3.5 w-3.5" />
+                    Recommended
+                  </span>
+                )}
 
-              <div className="mb-10">
-                <h3 className={`text-display text-2xl mb-2 ${tier.highlighted ? 'text-white' : 'text-jung-dark dark:text-white'}`}>
+                <p className={`text-sm font-semibold ${tier.highlighted ? 'text-jung-subtle' : 'text-jung-accent'}`}>
+                  {tier.eyebrow}
+                </p>
+                <h2 className={`mt-2 text-heading text-3xl ${tier.highlighted ? 'text-white' : 'text-jung-dark'}`}>
                   {tier.name}
-                </h3>
-                <div className="flex items-baseline gap-2 mb-4">
-                  <span className={`text-5xl font-display font-bold ${tier.highlighted ? 'text-jung-accent-muted' : 'text-jung-dark dark:text-white'}`}>
+                </h2>
+                <div className="mt-5 flex flex-wrap items-end gap-x-2 gap-y-1">
+                  <span className={`text-display text-4xl sm:text-5xl ${tier.highlighted ? 'text-white' : 'text-jung-dark'}`}>
                     {tier.price}
                   </span>
-                  <span className="text-[10px] font-bold uppercase tracking-widest opacity-50">One-Time</span>
+                  <span className={`pb-2 text-xs font-semibold uppercase tracking-[0.08em] ${tier.highlighted ? 'text-white/55' : 'text-jung-muted'}`}>
+                    one-time
+                  </span>
                 </div>
-                <p className={`text-sm font-serif italic ${tier.highlighted ? 'text-jung-subtle' : 'text-jung-muted'}`}>
-                  {tier.tagline}
+
+                <p className={`mt-5 text-sm leading-6 ${tier.highlighted ? 'text-white/75' : 'text-jung-secondary'}`}>
+                  {tier.summary}
                 </p>
-              </div>
-
-              <div className="space-y-6 mb-12 flex-grow">
-                {tier.includesPrefix && (
-                  <p className={`text-[10px] font-bold uppercase tracking-widest pt-6 border-t ${tier.highlighted ? 'border-white/10 text-jung-accent-muted' : 'border-jung-border dark:border-dark-border text-jung-accent'}`}>
-                    {tier.includesPrefix}
+                <div className={`mt-5 rounded-lg border p-4 ${tier.highlighted ? 'border-white/15 bg-white/10' : 'border-jung-border bg-jung-base'}`}>
+                  <p className={`text-xs font-semibold uppercase tracking-[0.08em] ${tier.highlighted ? 'text-jung-subtle' : 'text-jung-muted'}`}>
+                    Best for
                   </p>
-                )}
-                <ul className="space-y-4">
-                  {tier.features.map((f, idx) => {
-                    const text = typeof f === 'string' ? f : f.text;
-                    return (
-                      <li key={idx} className="flex gap-4 items-start">
-                        <Check className={`w-4 h-4 mt-1 flex-shrink-0 ${tier.highlighted ? 'text-jung-accent-muted' : 'text-jung-accent'}`} />
-                        <span className={`text-sm font-serif ${tier.highlighted ? 'text-jung-subtle' : 'text-jung-secondary dark:text-jung-muted'}`}>
-                          {text}
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-
-              <Button
-                onClick={() => tier.buttonLink ? navigate(tier.buttonLink) : handleCheckout(tier.tier)}
-                disabled={loadingTier === tier.tier}
-                className={`w-full py-6 text-[10px] font-bold uppercase tracking-[0.3em] rounded-2xl ${tier.highlighted
-                    ? 'bg-jung-accent text-white hover:bg-jung-accent-hover'
-                    : 'bg-jung-dark text-white hover:bg-black dark:bg-white dark:text-jung-dark dark:hover:bg-jung-subtle'
-                  }`}
-              >
-                {loadingTier === tier.tier ? <Loader2 className="w-4 h-4 animate-spin" /> : tier.buttonText}
-              </Button>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* Comparison */}
-      <section className="editorial-container pb-32">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-display text-4xl text-jung-dark dark:text-white mb-4">Deep Comparison</h2>
-            <p className="text-sm font-bold uppercase tracking-widest text-jung-muted">Feature Matrix Analysis</p>
-          </div>
-
-          <div className="card-premium overflow-hidden bg-white dark:bg-dark-surface border-jung-border dark:border-dark-border">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-jung-base dark:bg-dark-base/50">
-                  <th className="px-8 py-6 text-left text-[10px] font-bold uppercase tracking-widest text-jung-muted">Capabilities</th>
-                  <th className="px-6 py-6 text-center text-[10px] font-bold uppercase tracking-widest text-jung-muted">Free</th>
-                  <th className="px-6 py-6 text-center text-[10px] font-bold uppercase tracking-widest text-jung-accent">Insight</th>
-                  <th className="px-6 py-6 text-center text-[10px] font-bold uppercase tracking-widest text-jung-muted">Mastery</th>
-                </tr>
-              </thead>
-              <tbody>
-                {COMPARISON_FEATURES.map((f, i) => (
-                  <tr key={i} className="border-t border-jung-border dark:border-dark-border">
-                    <td className="px-8 py-5 text-sm font-serif text-jung-dark dark:text-white">{f.name}</td>
-                    <td className="px-6 py-5">
-                      {f.free ? <Zap className="w-4 h-4 mx-auto text-jung-accent" /> : <X className="w-4 h-4 mx-auto text-jung-muted opacity-30" />}
-                    </td>
-                    <td className="px-6 py-5 bg-jung-accent/5">
-                      {f.insight ? <Zap className="w-4 h-4 mx-auto text-jung-accent" /> : <X className="w-4 h-4 mx-auto text-jung-muted opacity-30" />}
-                    </td>
-                    <td className="px-6 py-5">
-                      {f.mastery ? <Zap className="w-4 h-4 mx-auto text-jung-accent" /> : <X className="w-4 h-4 mx-auto text-jung-muted opacity-30" />}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      {/* Trust */}
-      <section className="bg-jung-dark py-24 border-y border-white/5">
-        <div className="editorial-container">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-5xl mx-auto">
-            {[
-              { icon: Shield, title: '30-Day Protocol', desc: 'Sovereign refund guarantee' },
-              { icon: Clock, title: 'Lifetime Access', desc: 'Snapshot preserved eternally' },
-              { icon: Brain, title: 'Deep Synthesis', desc: 'Instant analytical delivery' },
-            ].map((item, i) => (
-              <div key={i} className="text-center group">
-                <div className="w-16 h-16 rounded-[2rem] bg-white/5 flex items-center justify-center mx-auto mb-6 group-hover:bg-jung-accent transition-colors">
-                  <item.icon className="w-6 h-6 text-jung-accent group-hover:text-white transition-colors" />
+                  <p className={`mt-2 text-sm leading-6 ${tier.highlighted ? 'text-white/75' : 'text-jung-secondary'}`}>
+                    {tier.bestFor}
+                  </p>
                 </div>
-                <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-white mb-2">{item.title}</h4>
-                <p className="text-xs text-jung-subtle font-serif italic">{item.desc}</p>
+
+                <ul className="mt-6 grid flex-1 gap-3">
+                  {tier.features.map((feature) => (
+                    <li key={feature} className={`flex gap-3 text-sm ${tier.highlighted ? 'text-white/78' : 'text-jung-secondary'}`}>
+                      <Check className={`mt-0.5 h-4 w-4 flex-none ${tier.highlighted ? 'text-jung-accent-muted' : 'text-jung-accent'}`} />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Button
+                  onClick={() => handleCheckout(tier.tier)}
+                  variant={tier.highlighted ? 'accent' : 'primary'}
+                  size="lg"
+                  className="mt-8 w-full"
+                  rightIcon={<ArrowRight className="h-5 w-5" />}
+                >
+                  {tier.buttonText}
+                </Button>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="border-y border-jung-border bg-jung-surface py-14">
+        <div className="editorial-container">
+          <div className="mb-8 max-w-2xl">
+            <p className="text-label">Compare</p>
+            <h2 className="mt-3 text-heading text-4xl text-jung-dark">What each tier unlocks.</h2>
+          </div>
+
+          <div className="overflow-hidden rounded-lg border border-jung-border bg-jung-surface">
+            <div className="hidden grid-cols-[1fr_8rem_8rem_8rem] border-b border-jung-border bg-jung-base text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted md:grid">
+              <div className="p-4">Feature</div>
+              <div className="p-4 text-center">Free</div>
+              <div className="p-4 text-center text-jung-accent">Insight</div>
+              <div className="p-4 text-center">Mastery</div>
+            </div>
+
+            {COMPARISON_FEATURES.map((feature) => (
+              <div key={feature.name} className="grid gap-3 border-b border-jung-border p-4 last:border-b-0 md:grid-cols-[1fr_8rem_8rem_8rem] md:items-center">
+                <p className="text-sm font-semibold text-jung-dark">{feature.name}</p>
+                <div className="grid grid-cols-3 gap-2 md:contents">
+                  {[
+                    ['Free', feature.free],
+                    ['Insight', feature.insight],
+                    ['Mastery', feature.mastery],
+                  ].map(([label, included]) => (
+                    <div key={label as string} className="flex items-center justify-between rounded-lg bg-jung-base px-3 py-2 md:justify-center md:bg-transparent md:px-4">
+                      <span className="text-xs font-semibold text-jung-muted md:hidden">{label as string}</span>
+                      <IncludedIcon included={Boolean(included)} />
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="editorial-container py-32">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-display text-4xl text-jung-dark dark:text-white mb-4">Inquiry & Clarity</h2>
-            <p className="text-sm font-bold uppercase tracking-widest text-jung-muted">Knowledge Base</p>
+      <section className="editorial-container py-14">
+        <div className="grid gap-4 md:grid-cols-3">
+          {[
+            { icon: ShieldCheck, title: 'Private by default', body: 'The free result can stay local. Accounts are only needed for saved history and paid access.' },
+            { icon: Clock, title: 'Lifetime access', body: 'Paid access is a one-time purchase for the unlocked report tier.' },
+            { icon: Sparkles, title: 'Upgrade after seeing value', body: 'You can complete the assessment first and decide after the free map is generated.' },
+          ].map((item) => (
+            <div key={item.title} className="rounded-lg border border-jung-border bg-jung-surface p-6">
+              <item.icon className="h-5 w-5 text-jung-accent" />
+              <h3 className="mt-4 text-lg font-semibold text-jung-dark">{item.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-jung-secondary">{item.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="editorial-container pb-16">
+        <div className="mx-auto max-w-3xl">
+          <div className="mb-8 text-center">
+            <p className="text-label">Questions</p>
+            <h2 className="mt-3 text-heading text-4xl text-jung-dark">Clear answers before checkout.</h2>
           </div>
 
-          <div className="space-y-4">
-            {FAQ_ITEMS.map((item, i) => (
-              <details key={i} className="group card-premium p-0 overflow-hidden bg-white dark:bg-dark-surface border-jung-border dark:border-dark-border">
-                <summary className="flex items-center justify-between p-8 cursor-pointer list-none">
-                  <span className="text-display text-lg text-jung-dark dark:text-white pr-6">{item.question}</span>
-                  <ChevronDown className="w-5 h-5 text-jung-muted group-open:rotate-180 transition-transform" />
+          <div className="space-y-3">
+            {FAQ_ITEMS.map((item) => (
+              <details key={item.question} className="group rounded-lg border border-jung-border bg-jung-surface">
+                <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 p-5">
+                  <span className="font-semibold text-jung-dark">{item.question}</span>
+                  <ChevronDown className="h-5 w-5 flex-none text-jung-muted transition-transform group-open:rotate-180" />
                 </summary>
-                <div className="px-8 pb-8 pt-0 opacity-70">
-                  <p className="text-sm text-jung-secondary dark:text-jung-muted font-serif leading-relaxed italic">{item.answer}</p>
-                </div>
+                <p className="px-5 pb-5 text-sm leading-6 text-jung-secondary">{item.answer}</p>
               </details>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="relative py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-jung-dark" />
-        <div className="absolute inset-0 bg-gradient-to-t from-jung-accent/10 to-transparent" />
-
-        <div className="editorial-container relative z-10 text-center">
-          <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
-            <Sparkles className="w-12 h-12 text-jung-accent mx-auto mb-10" />
-            <h2 className="text-display text-5xl text-white mb-8">Ready for the energy map?</h2>
-            <p className="max-w-xl mx-auto text-jung-subtle font-serif italic mb-12">
-              Start with the free depth assessment, then unlock more only when the result is worth keeping.
-            </p>
-            <Button
-              onClick={() => navigate('/assessment')}
-              className="bg-white text-jung-dark hover:bg-jung-accent hover:text-white px-12 py-6 rounded-2xl text-[10px] font-bold uppercase tracking-[0.4em] transition-all"
-            >
-              Start Free Assessment
-            </Button>
-          </motion.div>
+      <section className="bg-jung-dark py-16">
+        <div className="editorial-container grid gap-8 text-white lg:grid-cols-[1fr_auto] lg:items-center">
+          <div>
+            <p className="text-sm font-semibold text-white/60">Ready when you are</p>
+            <h2 className="mt-3 text-heading text-4xl text-white">Start with the free map. Decide after you see it.</h2>
+          </div>
+          <Button variant="inverted" size="lg" onClick={() => startAssessment('pricing_final_cta')} rightIcon={<ArrowRight className="h-5 w-5" />}>
+            Start free assessment
+          </Button>
         </div>
       </section>
     </div>

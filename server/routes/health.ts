@@ -32,10 +32,8 @@ async function checkDatabase(): Promise<boolean> {
 
 async function checkAI(): Promise<boolean> {
   try {
-    // Check if AI env vars are set
     const apiKey = process.env.AI_INTEGRATIONS_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
-    const baseUrl = process.env.AI_INTEGRATIONS_GEMINI_BASE_URL;
-    return !!(apiKey && baseUrl);
+    return !!apiKey;
   } catch {
     return false;
   }

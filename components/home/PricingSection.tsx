@@ -9,9 +9,9 @@ interface PricingSectionProps {
 }
 
 export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) => {
-  const handlePricingClick = (tier: string, price: string) => {
+  const handlePricingClick = (tier: string, amount: number) => {
     AnalyticsEvents.ctaClicked(`view_${tier.toLowerCase()}_pricing`, 'pricing_section');
-    AnalyticsEvents.purchaseStarted(tier, parseInt(price.replace('$', '')));
+    AnalyticsEvents.purchaseStarted(tier, amount);
     onNavigate('/pricing');
   };
 
@@ -24,14 +24,14 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) =>
         <div className="text-center mb-24 max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-2 mb-6 text-jung-accent/80 font-mono text-[10px] uppercase tracking-[0.3em]">
             <Terminal className="w-3 h-3" />
-            <span>Clearance Levels</span>
+            <span>Pricing</span>
           </div>
 
           <h2 className="text-display text-5xl md:text-6xl text-jung-dark mb-6">
-            Access the <span className="text-jung-accent">Dossier.</span>
+            Start free. <span className="text-jung-accent">Upgrade after value.</span>
           </h2>
           <p className="text-jung-secondary font-light text-lg">
-            Select your required depth of analysis. All data is encrypted and permanently archived for your personal access.
+            Take the assessment first. Paid tiers are one-time CAD upgrades for deeper interpretation, coaching, and practice support.
           </p>
         </div>
 
@@ -95,7 +95,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) =>
                     </ul>
 
                     <Button
-                      onClick={() => handlePricingClick(tier.name, tier.price)}
+                      onClick={() => handlePricingClick(tier.name, tier.amount)}
                       className={`w-full py-6 text-xs uppercase tracking-[0.2em] font-bold border ${isPopular
                           ? 'bg-jung-accent text-black hover:bg-jung-accent-hover border-transparent'
                           : 'bg-transparent text-jung-accent border-jung-accent/50 hover:bg-jung-accent/10'
@@ -114,7 +114,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) =>
         <div className="mt-20 flex justify-center">
           <div className="inline-flex items-center gap-3 px-6 py-3 border border-success/30 bg-success/5 rounded text-success text-xs font-mono uppercase tracking-widest">
             <ShieldCheck className="w-4 h-4" />
-            <span>Encrypted Vault Storage</span>
+            <span>Secure Stripe checkout</span>
           </div>
         </div>
       </div>

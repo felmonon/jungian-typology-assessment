@@ -1,4 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { createClient } from '@supabase/supabase-js';
+import { getSessionUserFromCookie } from './_lib/auth-utils.js';
+import { recordCheckoutPurchase, resolveCheckoutTransactionId, resolveTierFromCheckoutSession } from './_lib/purchases.js';
+import { getStripeSecretKey } from '../server/checkout.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET' && req.method !== 'POST') {
@@ -16,15 +20,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'Missing session_id parameter' });
   }
 
-  if (!process.env.STRIPE_SECRET_KEY) {
+  const stripeSecretKey = getStripeSecretKey();
+  if (!stripeSecretKey) {
     return res.status(500).json({ error: 'Stripe not configured' });
   }
 
   try {
-    const response = await fetch(`https://api.stripe.com/v1/checkout/sessions/${session_id}`, {
+    const query = new URLSearchParams({
+      'expand[]': 'line_items.data.price',
+    });
+    const response = await fetch(`https://api.stripe.com/v1/checkout/sessions/${session_id}?${query.toString()}`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}`,
+        'Authorization': `Bearer ${stripeSecretKey}`,
       },
     });
 
@@ -36,12 +44,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     if (session.payment_status === 'paid') {
-      const tier = session.metadata?.tier || 'insight';
+      const tier = resolveTierFromCheckoutSession(session);
+      const transactionId = resolveCheckoutTransactionId(session);
+      if (process.env.SUPABASE_URL && (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY)) {
+        const supabase = createClient(
+          process.env.SUPABASE_URL,
+          process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY!,
+        );
+        const user = await getSessionUserFromCookie(req.headers.cookie, supabase);
+        await recordCheckoutPurchase(supabase, session, user?.id || null);
+      }
+
       return res.status(200).json({
         success: true,
         paid: true,
         tier,
         metadata: { tier },
+        transactionId,
         customerEmail: session.customer_details?.email,
       });
     } else {

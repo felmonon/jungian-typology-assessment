@@ -207,11 +207,7 @@ async function handlePremiumAnalysis(req: VercelRequest, res: VercelResponse) {
     hasPremiumAccess = true;
   }
 
-  const { unlockDate, scores, stack, attitudeScore, isUndifferentiated, depthResult } = req.body || {};
-  if (!hasPremiumAccess && unlockDate) {
-    const hoursSinceUnlock = (Date.now() - new Date(unlockDate).getTime()) / (1000 * 60 * 60);
-    hasPremiumAccess = hoursSinceUnlock < 24;
-  }
+  const { scores, stack, attitudeScore, isUndifferentiated, depthResult } = req.body || {};
 
   if (!hasPremiumAccess) {
     return res.status(403).json({ error: 'Premium access required' });

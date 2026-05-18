@@ -8,7 +8,7 @@ import { usePageTracking } from '../../hooks/useAnalytics';
 const navigation = [
   { to: '/', label: 'Home' },
   { to: '/learn', label: 'Learn' },
-  { to: '/leaderboard', label: 'Data' },
+  { to: '/leaderboard', label: 'Community' },
   { to: '/pricing', label: 'Pricing' },
 ];
 
@@ -32,7 +32,14 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   }, [location.pathname]);
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+    `inline-flex min-h-10 items-center rounded-lg px-3.5 py-2 text-sm font-semibold transition-all ${
+      isActive
+        ? 'bg-jung-accent-light text-jung-accent shadow-sm'
+        : 'text-jung-secondary hover:bg-jung-surface-alt hover:text-jung-dark'
+    }`;
+
+  const mobileNavLinkClass = ({ isActive }: { isActive: boolean }) =>
+    `flex min-h-11 w-full items-center rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
       isActive
         ? 'bg-jung-accent-light text-jung-accent'
         : 'text-jung-secondary hover:bg-jung-surface-alt hover:text-jung-dark'
@@ -77,12 +84,12 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         className={`sticky top-0 z-50 border-b transition-all duration-300 ${
           scrolled
             ? 'glass border-jung-border py-3 shadow-sm'
-            : 'border-transparent bg-jung-base/90 py-5'
+            : 'border-jung-border/60 bg-jung-base/95 py-4'
         }`}
       >
         <div className="lab-container flex items-center justify-between gap-4">
-          <Link to="/" className="flex items-center gap-3" aria-label="TypeJung home">
-            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-jung-accent text-white shadow-sm">
+          <Link to="/" className="flex min-h-11 items-center gap-3" aria-label="TypeJung home">
+            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-jung-accent text-white shadow-md shadow-jung-accent/15">
               <Sparkles className="h-5 w-5" />
             </span>
             <span className="flex flex-col">
@@ -91,7 +98,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-1 rounded-lg border border-jung-border bg-jung-surface/80 p-1 lg:flex">
+          <nav className="hidden items-center gap-1 rounded-lg border border-jung-border bg-jung-surface/88 p-1 shadow-sm lg:flex">
             {navigation.map((item) => (
               <NavLink key={item.to} to={item.to} end={item.to === '/'} className={navLinkClass}>
                 {item.label}
@@ -107,7 +114,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             )}
             <Link
               to="/assessment"
-              className="hidden h-10 items-center justify-center rounded-lg bg-jung-accent px-4 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-px hover:bg-jung-accent-hover hover:shadow-md sm:inline-flex"
+              className="hidden h-10 items-center justify-center rounded-lg bg-jung-accent px-4 text-sm font-semibold text-white shadow-md shadow-jung-accent/10 transition-all hover:-translate-y-px hover:bg-jung-accent-hover hover:shadow-lg sm:inline-flex"
             >
               Start free
             </Link>
@@ -135,19 +142,19 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               <div className="lab-container pb-4 pt-3">
                 <div className="rounded-lg border border-jung-border bg-jung-surface p-2 shadow-lg">
                   {navigation.map((item) => (
-                    <NavLink key={item.to} to={item.to} end={item.to === '/'} className={navLinkClass}>
+                    <NavLink key={item.to} to={item.to} end={item.to === '/'} className={mobileNavLinkClass}>
                       {item.label}
                     </NavLink>
                   ))}
                   {isAuthenticated && (
                     <>
-                      <NavLink to="/history" className={navLinkClass}>
+                      <NavLink to="/history" className={mobileNavLinkClass}>
                         <span className="inline-flex items-center gap-2">
                           <Clock className="h-4 w-4" />
                           History
                         </span>
                       </NavLink>
-                      <NavLink to="/leaderboard" className={navLinkClass}>
+                      <NavLink to="/leaderboard" className={mobileNavLinkClass}>
                         <span className="inline-flex items-center gap-2">
                           <Trophy className="h-4 w-4" />
                           Results data
@@ -192,9 +199,9 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       <main>{children}</main>
 
       <footer className="border-t border-jung-border bg-jung-surface/70 py-12">
-        <div className="lab-container grid gap-10 md:grid-cols-[1.3fr_1fr_1fr]">
+        <div className="lab-container grid gap-10 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
           <div>
-            <Link to="/" className="mb-4 inline-flex items-center gap-3">
+            <Link to="/" className="mb-4 inline-flex min-h-11 items-center gap-3">
               <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
                 <Sparkles className="h-4 w-4" />
               </span>
@@ -208,20 +215,33 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           <div>
             <h4 className="mb-4 text-sm font-semibold text-jung-dark">Explore</h4>
             <div className="grid gap-3 text-sm text-jung-secondary">
-              <Link to="/assessment" className="hover:text-jung-accent">Assessment</Link>
-              <Link to="/learn" className="hover:text-jung-accent">Learn the theory</Link>
-              <Link to="/pricing" className="hover:text-jung-accent">Pricing</Link>
-              <Link to="/about" className="hover:text-jung-accent">About</Link>
+              <Link to="/assessment" className="inline-flex min-h-10 items-center hover:text-jung-accent">Assessment</Link>
+              <Link to="/learn" className="inline-flex min-h-10 items-center hover:text-jung-accent">Learn the theory</Link>
+              <Link to="/pricing" className="inline-flex min-h-10 items-center hover:text-jung-accent">Pricing</Link>
+              <Link to="/about" className="inline-flex min-h-10 items-center hover:text-jung-accent">About</Link>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="mb-4 text-sm font-semibold text-jung-dark">Guides</h4>
+            <div className="grid gap-3 text-sm text-jung-secondary">
+              <a href="/jungian-test" className="inline-flex min-h-10 items-center hover:text-jung-accent">Jungian test</a>
+              <a href="/jungian-typology" className="inline-flex min-h-10 items-center hover:text-jung-accent">Jungian typology</a>
+              <a href="/cognitive-functions" className="inline-flex min-h-10 items-center hover:text-jung-accent">Cognitive functions</a>
+              <a href="/mbti-alternative" className="inline-flex min-h-10 items-center hover:text-jung-accent">MBTI alternative</a>
+              <a href="/inferior-function-test" className="inline-flex min-h-10 items-center hover:text-jung-accent">Inferior function test</a>
+              <a href="/cognitive-function-test" className="inline-flex min-h-10 items-center hover:text-jung-accent">Cognitive function test</a>
+              <a href="/shadow-work-test" className="inline-flex min-h-10 items-center hover:text-jung-accent">Shadow work test</a>
             </div>
           </div>
 
           <div>
             <h4 className="mb-4 text-sm font-semibold text-jung-dark">Account</h4>
             <div className="grid gap-3 text-sm text-jung-secondary">
-              <Link to="/auth" className="hover:text-jung-accent">Sign in</Link>
-              <Link to="/history" className="hover:text-jung-accent">History</Link>
-              <Link to="/privacy" className="hover:text-jung-accent">Privacy</Link>
-              <Link to="/terms" className="hover:text-jung-accent">Terms</Link>
+              <Link to="/auth" className="inline-flex min-h-10 items-center hover:text-jung-accent">Sign in</Link>
+              <Link to="/history" className="inline-flex min-h-10 items-center hover:text-jung-accent">History</Link>
+              <Link to="/privacy" className="inline-flex min-h-10 items-center hover:text-jung-accent">Privacy</Link>
+              <Link to="/terms" className="inline-flex min-h-10 items-center hover:text-jung-accent">Terms</Link>
             </div>
           </div>
         </div>

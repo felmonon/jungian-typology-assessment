@@ -1,17 +1,23 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Download, Loader2, LogIn, RefreshCcw, Save, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, Check, Download, Link2, Loader2, LogIn, RefreshCcw, Save, Share2, ShieldCheck, Sparkles } from 'lucide-react';
 import { ChatBot } from '../components/ChatBot';
 import { Button } from '../components/ui/Button';
-import { ATTITUDE_LABELS, FUNCTION_LABELS, FunctionChannel, depthLayerMeta } from '../data/depthAssessment';
+import { ATTITUDE_LABELS, AttitudeDirection, FUNCTION_LABELS, FunctionChannel, depthLayerMeta } from '../data/depthAssessment';
 import { useAiAnalysis } from '../hooks/use-ai-analysis';
 import { useAuth } from '../hooks/use-auth';
 import { usePremiumStatus } from '../hooks/use-premium-status';
+import { AnalyticsEvents } from '../lib/analytics';
 import { depthResultToLegacyAnalysisInput } from '../utils/depthCompatibility';
 import { DepthAssessmentResult, isDepthAssessmentResult } from '../utils/depthScoring';
 
 const RESULTS_KEY = 'jungian_assessment_results';
+const LIFECYCLE_EMAIL_ENDPOINT = '/api/lifecycle-email';
+const RESULT_READY_EMAIL_ATTEMPT_PREFIX = 'typejung_lifecycle_email_result_ready_';
+const UPGRADE_EMAIL_DUE_PREFIX = 'typejung_lifecycle_email_upgrade_due_';
+const UPGRADE_EMAIL_ATTEMPT_PREFIX = 'typejung_lifecycle_email_upgrade_';
+const UPGRADE_EMAIL_DELAY_MS = 36 * 60 * 60 * 1000;
 
 type ResultsState =
   | { status: 'loading' }
@@ -32,6 +38,28 @@ const axisCopy: Record<FunctionChannel, string> = {
   sensation: 'Sensation holds the most conscious energy here. Intuition is the opposite pole and the likely site of meaning, possibility, dread, or symbolic development.',
   intuition: 'Intuition holds the most conscious energy here. Sensation is the opposite pole and the likely site of embodiment, limits, appetite, and concrete follow-through.',
 };
+
+const functionCodeByChannel: Record<FunctionChannel, Record<AttitudeDirection, string>> = {
+  thinking: {
+    introverted: 'Ti',
+    extraverted: 'Te',
+  },
+  feeling: {
+    introverted: 'Fi',
+    extraverted: 'Fe',
+  },
+  sensation: {
+    introverted: 'Si',
+    extraverted: 'Se',
+  },
+  intuition: {
+    introverted: 'Ni',
+    extraverted: 'Ne',
+  },
+};
+
+const getFunctionCode = (channel: FunctionChannel, attitude: AttitudeDirection) =>
+  functionCodeByChannel[channel]?.[attitude] ?? 'unknown';
 
 const formatDate = (iso: string) => {
   try {
@@ -56,6 +84,22 @@ const readResults = (): ResultsState => {
     return { status: 'legacy' };
   } catch {
     return { status: 'no-results' };
+  }
+};
+
+const postLifecycleEmail = async (body: Record<string, unknown>) => {
+  try {
+    const response = await fetch(LIFECYCLE_EMAIL_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(body),
+    });
+
+    const data = await response.json().catch(() => null);
+    return response.ok && !!data && (data.sent === true || data.skipped === true);
+  } catch {
+    return false;
   }
 };
 
@@ -155,6 +199,7 @@ export const Results: React.FC = () => {
   } = useAiAnalysis();
   const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error' | 'skipped'>('idle');
   const [shareSlug, setShareSlug] = useState<string | null>(null);
+  const [shareCopied, setShareCopied] = useState(false);
 
   useEffect(() => {
     setState(readResults());
@@ -165,6 +210,30 @@ export const Results: React.FC = () => {
     () => currentResults ? depthResultToLegacyAnalysisInput(currentResults) : null,
     [currentResults],
   );
+
+  useEffect(() => {
+    if (!currentResults) return;
+
+    const dominantFunction = getFunctionCode(currentResults.dominant, currentResults.attitude.dominant);
+    const viewedKey = `typejung_results_viewed_${currentResults.completedAt}`;
+
+    try {
+      if (sessionStorage.getItem(viewedKey)) return;
+      AnalyticsEvents.resultsViewed(dominantFunction);
+      sessionStorage.setItem(viewedKey, 'true');
+    } catch {
+      AnalyticsEvents.resultsViewed(dominantFunction);
+    }
+  }, [currentResults]);
+
+  const lifecycleEmailSummary = useMemo(() => {
+    if (!currentResults) return null;
+
+    return {
+      dominantLabel: `${ATTITUDE_LABELS[currentResults.attitude.dominant]} ${FUNCTION_LABELS[currentResults.dominant]}`,
+      inferiorLabel: `${ATTITUDE_LABELS[currentResults.hierarchy.find((item) => item.position === 'inferior')?.attitude ?? 'extraverted']} ${FUNCTION_LABELS[currentResults.inferior]}`,
+    };
+  }, [currentResults]);
 
   useEffect(() => {
     if (!currentResults || !legacyInput || authLoading) return;
@@ -206,6 +275,7 @@ export const Results: React.FC = () => {
           localStorage.setItem('jungian_assessment_share_slug', saved.shareSlug);
           setShareSlug(saved.shareSlug);
         }
+        AnalyticsEvents.resultSaved('auto_save_after_result', Boolean(saved?.shareSlug));
         setSaveState('saved');
       })
       .catch((error) => {
@@ -229,6 +299,67 @@ export const Results: React.FC = () => {
     fetchPremiumAnalysis(legacyInput);
   }, [fetchPremiumAnalysis, isAuthenticated, isLoadingPremium, isPremium, legacyInput, premiumAnalysis, premiumError, premiumLoading]);
 
+  useEffect(() => {
+    if (!currentResults || !lifecycleEmailSummary || authLoading || !user?.email) return;
+
+    const attemptKey = `${RESULT_READY_EMAIL_ATTEMPT_PREFIX}${currentResults.completedAt}`;
+    if (localStorage.getItem(attemptKey)) return;
+
+    void postLifecycleEmail({
+      lifecycle: 'result-ready',
+      idempotencyKey: attemptKey,
+      completedAt: currentResults.completedAt,
+      dominantLabel: lifecycleEmailSummary.dominantLabel,
+      inferiorLabel: lifecycleEmailSummary.inferiorLabel,
+    }).then((ok) => {
+      if (ok) {
+        localStorage.setItem(attemptKey, new Date().toISOString());
+      }
+    });
+  }, [authLoading, currentResults, lifecycleEmailSummary, user?.email]);
+
+  useEffect(() => {
+    if (!currentResults || !lifecycleEmailSummary || authLoading || premiumLoading || !user?.email) return;
+
+    const dueKey = `${UPGRADE_EMAIL_DUE_PREFIX}${currentResults.completedAt}`;
+    const attemptKey = `${UPGRADE_EMAIL_ATTEMPT_PREFIX}${currentResults.completedAt}`;
+
+    if (isPremium) {
+      localStorage.removeItem(dueKey);
+      return;
+    }
+
+    if (localStorage.getItem(attemptKey)) return;
+
+    const savedDueAt = Number(localStorage.getItem(dueKey));
+    const dueAt = Number.isFinite(savedDueAt) && savedDueAt > 0
+      ? savedDueAt
+      : Date.now() + UPGRADE_EMAIL_DELAY_MS;
+
+    if (!Number.isFinite(savedDueAt) || savedDueAt <= 0) {
+      localStorage.setItem(dueKey, String(dueAt));
+    }
+
+    const timer = window.setTimeout(() => {
+      if (localStorage.getItem('jungian_assessment_unlocked') === 'true') return;
+      if (localStorage.getItem(attemptKey)) return;
+
+      void postLifecycleEmail({
+        lifecycle: 'free-result-upgrade',
+        idempotencyKey: attemptKey,
+        completedAt: currentResults.completedAt,
+        dominantLabel: lifecycleEmailSummary.dominantLabel,
+        inferiorLabel: lifecycleEmailSummary.inferiorLabel,
+      }).then((ok) => {
+        if (ok) {
+          localStorage.setItem(attemptKey, new Date().toISOString());
+        }
+      });
+    }, Math.max(0, dueAt - Date.now()));
+
+    return () => window.clearTimeout(timer);
+  }, [authLoading, currentResults, isPremium, lifecycleEmailSummary, premiumLoading, user?.email]);
+
   const downloadResults = useCallback(() => {
     if (state.status !== 'ready') return;
     const blob = new Blob([JSON.stringify(state.results, null, 2)], { type: 'application/json' });
@@ -239,6 +370,34 @@ export const Results: React.FC = () => {
     link.click();
     URL.revokeObjectURL(url);
   }, [state]);
+
+  const copyShareUrl = useCallback(async () => {
+    if (!shareSlug || typeof window === 'undefined') return;
+
+    const url = `${window.location.origin}/share/${shareSlug}`;
+
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareCopied(true);
+      AnalyticsEvents.resultsShared('link');
+      window.setTimeout(() => setShareCopied(false), 2400);
+    } catch (error) {
+      console.error('Failed to copy share URL:', error);
+    }
+  }, [shareSlug]);
+
+  const openShareWindow = useCallback((method: 'twitter' | 'linkedin') => {
+    if (!shareSlug || typeof window === 'undefined') return;
+
+    const url = `${window.location.origin}/share/${shareSlug}`;
+    const text = 'I mapped my Jungian energy pattern with TypeJung. It shows cognitive functions, inferior-function stress, and a growth edge.';
+    const shareUrl = method === 'twitter'
+      ? `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`
+      : `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+
+    AnalyticsEvents.resultsShared(method);
+    window.open(shareUrl, '_blank', 'noopener,noreferrer');
+  }, [shareSlug]);
 
   if (state.status === 'loading') {
     return (
@@ -291,8 +450,8 @@ export const Results: React.FC = () => {
 
   const { results } = state;
   const shareUrl = shareSlug && typeof window !== 'undefined' ? `${window.location.origin}/share/${shareSlug}` : null;
-  const dominantLabel = `${ATTITUDE_LABELS[results.attitude.dominant]} ${FUNCTION_LABELS[results.dominant]}`;
-  const inferiorLabel = `${ATTITUDE_LABELS[results.hierarchy.find((item) => item.position === 'inferior')?.attitude ?? 'extraverted']} ${FUNCTION_LABELS[results.inferior]}`;
+  const dominantLabel = lifecycleEmailSummary?.dominantLabel ?? `${ATTITUDE_LABELS[results.attitude.dominant]} ${FUNCTION_LABELS[results.dominant]}`;
+  const inferiorLabel = lifecycleEmailSummary?.inferiorLabel ?? `${ATTITUDE_LABELS[results.hierarchy.find((item) => item.position === 'inferior')?.attitude ?? 'extraverted']} ${FUNCTION_LABELS[results.inferior]}`;
   const chatProfile = legacyInput ? {
     dominantFunction: legacyInput.stack.dominant.function,
     auxiliaryFunction: legacyInput.stack.auxiliary.function,
@@ -311,7 +470,7 @@ export const Results: React.FC = () => {
           </Button>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button variant="outline" onClick={downloadResults} leftIcon={<Download className="h-4 w-4" />}>
-              Download JSON
+              Download result file
             </Button>
             <Button variant="outline" onClick={() => navigate('/assessment')} leftIcon={<RefreshCcw className="h-4 w-4" />}>
               Retake
@@ -389,14 +548,14 @@ export const Results: React.FC = () => {
 
         <section className="mt-8 grid gap-5 lg:grid-cols-3">
           <div className="rounded-lg border border-jung-border bg-jung-surface p-6">
-            <p className="text-label">Live account API</p>
-            <h2 className="mt-3 text-2xl font-semibold text-jung-dark">History sync</h2>
+            <p className="text-label">Account</p>
+            <h2 className="mt-3 text-2xl font-semibold text-jung-dark">Save this result</h2>
             <div className="mt-4 text-sm leading-7 text-jung-secondary">
               {authLoading && 'Checking your session.'}
               {!authLoading && !user && 'Sign in to save this result to your live history and create a share link.'}
               {isAuthenticated && saveState === 'saving' && 'Saving this result to your account history.'}
               {isAuthenticated && saveState === 'saved' && 'Saved to your account history.'}
-              {isAuthenticated && saveState === 'error' && 'The local result is ready, but saving to the live API failed.'}
+              {isAuthenticated && saveState === 'error' && 'The result is ready, but it could not be saved to your account right now.'}
             </div>
             <div className="mt-5 flex flex-col gap-3">
               {!authLoading && !user && (
@@ -410,15 +569,32 @@ export const Results: React.FC = () => {
                 </Button>
               )}
               {shareUrl && (
-                <a className="break-all text-xs leading-5 text-jung-accent hover:underline" href={shareUrl}>
-                  {shareUrl}
-                </a>
+                <div className="rounded-lg border border-jung-border bg-jung-base p-4">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-jung-dark">
+                    <Share2 className="h-4 w-4 text-jung-accent" />
+                    Launch-ready share link
+                  </div>
+                  <a className="mt-3 block break-all text-xs leading-5 text-jung-accent hover:underline" href={shareUrl}>
+                    {shareUrl}
+                  </a>
+                  <div className="mt-4 grid gap-2 sm:grid-cols-3">
+                    <Button variant="outline" size="sm" onClick={copyShareUrl} leftIcon={shareCopied ? <Check className="h-4 w-4" /> : <Link2 className="h-4 w-4" />}>
+                      {shareCopied ? 'Copied' : 'Copy'}
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => openShareWindow('twitter')}>
+                      Share on X
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => openShareWindow('linkedin')}>
+                      LinkedIn
+                    </Button>
+                  </div>
+                </div>
               )}
             </div>
           </div>
 
           <div className="rounded-lg border border-jung-border bg-jung-surface p-6">
-            <p className="text-label">AI analysis API</p>
+            <p className="text-label">First read</p>
             <h2 className="mt-3 text-2xl font-semibold text-jung-dark">Pattern synthesis</h2>
             {isLoadingFree ? (
               <div className="mt-5 flex items-center gap-3 text-sm text-jung-secondary">
@@ -429,13 +605,13 @@ export const Results: React.FC = () => {
               <p className="mt-4 text-sm leading-7 text-jung-secondary">{freeAnalysis}</p>
             ) : (
               <p className="mt-4 text-sm leading-7 text-jung-secondary">
-                {freeError ? `AI synthesis unavailable: ${freeError}` : 'AI synthesis will appear here when the live endpoint responds.'}
+                {freeError ? `Pattern synthesis unavailable: ${freeError}` : 'A short synthesis will appear here when it is ready.'}
               </p>
             )}
           </div>
 
           <div className="rounded-lg border border-jung-border bg-jung-surface p-6">
-            <p className="text-label">Premium APIs</p>
+            <p className="text-label">Paid report</p>
             <h2 className="mt-3 text-2xl font-semibold text-jung-dark">{isPremium ? `${tier} access` : 'Detailed report'}</h2>
             {premiumLoading ? (
               <div className="mt-5 flex items-center gap-3 text-sm text-jung-secondary">
@@ -455,7 +631,7 @@ export const Results: React.FC = () => {
             ) : (
               <>
                 <p className="mt-4 text-sm leading-7 text-jung-secondary">
-                  Stripe checkout, premium status, and report unlocks are connected through the live API.
+                  Unlock the deeper report when you want the developmental edge, stress patterns, and practice guidance explained in detail.
                 </p>
                 <Button className="mt-5" variant="accent" onClick={() => navigate('/pricing')} leftIcon={<Sparkles className="h-4 w-4" />}>
                   Unlock report
@@ -510,7 +686,7 @@ export const Results: React.FC = () => {
             ['What to do next', 'Use the developmental edge as a practice target, then reassess later. The goal is not to change labels but to see whether energy distribution becomes more flexible.'],
           ].map(([title, body]) => (
             <details key={title} className="rounded-lg border border-jung-border bg-jung-surface p-5">
-              <summary className="cursor-pointer list-none text-base font-semibold text-jung-dark">{title}</summary>
+              <summary className="flex min-h-11 cursor-pointer list-none items-center text-base font-semibold text-jung-dark">{title}</summary>
               <p className="mt-3 text-sm leading-6 text-jung-secondary">{body}</p>
             </details>
           ))}

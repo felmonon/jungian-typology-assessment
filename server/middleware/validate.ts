@@ -111,8 +111,7 @@ export const schemas = {
 
   // Checkout session
   checkoutSession: z.object({
-    priceId: z.string().optional(),
-    tier: z.enum(['insight', 'mastery']).optional(),
+    tier: z.enum(['insight', 'mastery']),
   }),
 
   // Verify session

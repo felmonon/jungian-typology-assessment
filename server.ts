@@ -17,6 +17,7 @@ import { handleChatMessage } from './server/chat';
 import { z } from 'zod';
 import { requestLogger, errorLogger } from './server/middleware/logger';
 import { validate, schemas } from './server/middleware/validate';
+import { getStripePriceIdForTier, getStripeWebhookSecret, resolveCheckoutBaseUrl } from './server/checkout';
 
 const analysisInputSchema = z.object({
   scores: z.array(z.object({
@@ -119,7 +120,7 @@ async function startServer() {
       return res.status(400).json({ error: 'Missing stripe-signature header' });
     }
 
-    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    const webhookSecret = getStripeWebhookSecret();
     if (!webhookSecret) {
       console.error('STRIPE_WEBHOOK_SECRET not configured');
       return res.status(500).json({ error: 'Webhook secret not configured' });
@@ -155,9 +156,9 @@ async function startServer() {
           let tier = session.metadata?.tier || null;
           if (!tier && session.line_items?.data?.[0]?.price?.id) {
             const priceId = session.line_items.data[0].price.id;
-            if (priceId === process.env.STRIPE_MASTERY_PRICE_ID) {
+            if (priceId === getStripePriceIdForTier('mastery')) {
               tier = 'mastery';
-            } else if (priceId === process.env.STRIPE_INSIGHT_PRICE_ID) {
+            } else if (priceId === getStripePriceIdForTier('insight')) {
               tier = 'insight';
             }
           }
@@ -259,23 +260,15 @@ async function startServer() {
   app.post('/api/create-checkout-session', checkoutLimiter, validate(schemas.checkoutSession), async (req: any, res) => {
     try {
       const stripe = await getUncachableStripeClient();
-      const { priceId, tier } = req.body;
+      const { tier } = req.body;
+      const resolvedTier = tier;
+      const resolvedPriceId = getStripePriceIdForTier(resolvedTier);
 
-      let resolvedPriceId = priceId;
-      let resolvedTier = tier || 'insight';
-      
-      if (tier === 'insight') {
-        resolvedPriceId = process.env.STRIPE_INSIGHT_PRICE_ID;
-      } else if (tier === 'mastery') {
-        resolvedPriceId = process.env.STRIPE_MASTERY_PRICE_ID;
-      }
-      
       if (!resolvedPriceId) {
-        resolvedPriceId = process.env.STRIPE_PRICE_ID;
+        return res.status(500).json({ error: `Stripe price not configured for ${resolvedTier}` });
       }
 
-      const origin = req.headers.origin || req.headers.host || 'http://localhost:5000';
-      const baseUrl = origin.startsWith('http') ? origin : 'https://' + origin;
+      const baseUrl = resolveCheckoutBaseUrl(req.headers.origin, req.headers.host);
 
       const sessionParams: any = {
         mode: 'payment',
@@ -288,6 +281,7 @@ async function startServer() {
         ],
         success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${baseUrl}/results`,
+        allow_promotion_codes: true,
         metadata: {
           product: 'jungian_assessment_premium',
           tier: resolvedTier,
@@ -436,15 +430,6 @@ async function startServer() {
           if (emailPurchase && emailPurchase.status === 'completed') {
             hasPremiumAccess = true;
           }
-        }
-      }
-
-      // Check if user claims recent purchase (grace period for webhook delays)
-      const { unlockDate } = req.body;
-      if (!hasPremiumAccess && unlockDate) {
-        const hoursSinceUnlock = (Date.now() - new Date(unlockDate).getTime()) / (1000 * 60 * 60);
-        if (hoursSinceUnlock < 24) {
-          hasPremiumAccess = true;
         }
       }
 

@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CheckCircle, Loader2, XCircle, Sparkles, FileText, Layers, AlertTriangle, Heart, Briefcase, Compass, RefreshCcw, Download, Shield } from 'lucide-react';
 import { Button } from '../components/ui/Button';
+import { PRICING } from '../data/pricing';
 import { FUNCTION_DESCRIPTIONS } from '../data/questions';
 import { FUNCTION_LABELS } from '../data/depthAssessment';
+import { AnalyticsEvents } from '../lib/analytics';
 import { extractDepthResult } from '../utils/depthCompatibility';
 import { useAuth } from '../hooks/use-auth';
 
@@ -17,6 +19,20 @@ const UNLOCKED_FEATURES = [
   { icon: Download, text: 'Downloadable result archive' },
   { icon: RefreshCcw, text: 'Lifetime access to future updates' },
 ];
+
+type VerifySessionResponse = {
+  paid?: boolean;
+  tier?: string;
+  metadata?: {
+    tier?: string;
+  };
+  transactionId?: string;
+  customerEmail?: string;
+};
+
+function purchaseTrackingKey(transactionId: string): string {
+  return `jungian_assessment_purchase_tracked_${transactionId}`;
+}
 
 export const CheckoutSuccess: React.FC = () => {
   const navigate = useNavigate();
@@ -65,18 +81,20 @@ export const CheckoutSuccess: React.FC = () => {
       setError('No session ID found');
       return;
     }
+    const verifiedSessionId = sessionId;
 
     const verifySession = async () => {
       try {
         const response = await fetch('/api/verify-session', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ sessionId })
+          body: JSON.stringify({ sessionId: verifiedSessionId })
         });
-        const data = await response.json();
+        const data = await response.json() as VerifySessionResponse;
 
         if (data.paid) {
-          const tier = data.metadata?.tier || 'insight';
+          const tier = data.tier || data.metadata?.tier || 'insight';
+          const transactionId = data.transactionId || verifiedSessionId;
           localStorage.setItem('jungian_assessment_tier', tier);
           localStorage.setItem('jungian_assessment_unlocked', 'true');
           localStorage.setItem('jungian_assessment_unlock_date', new Date().toISOString());
@@ -87,20 +105,23 @@ export const CheckoutSuccess: React.FC = () => {
           if (data.customerEmail) {
             localStorage.setItem('jungian_assessment_customer_email', data.customerEmail);
           }
+          if (tier === 'insight' || tier === 'mastery') {
+            const trackingKey = purchaseTrackingKey(transactionId);
+            if (localStorage.getItem(trackingKey) !== 'true') {
+              const tracked = AnalyticsEvents.purchaseCompleted(tier, PRICING[tier].amount, transactionId);
+              if (tracked) {
+                localStorage.setItem(trackingKey, 'true');
+              }
+            }
+          }
           setStatus('success');
         } else {
           setStatus('error');
           setError('Payment not completed');
         }
       } catch {
-        localStorage.setItem('jungian_assessment_tier', 'insight');
-        localStorage.setItem('jungian_assessment_unlocked', 'true');
-        localStorage.setItem('jungian_assessment_unlock_date', new Date().toISOString());
-        localStorage.setItem('jungian_assessment_send_email', 'true');
-        if (user?.id) {
-          localStorage.setItem('jungian_assessment_unlock_user_id', user.id);
-        }
-        setStatus('success');
+        setStatus('error');
+        setError('Unable to verify payment right now. Please refresh or contact support with your Stripe receipt.');
       }
     };
 
@@ -109,27 +130,27 @@ export const CheckoutSuccess: React.FC = () => {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center bg-jung-surface px-4">
-        <Loader2 className="w-12 h-12 md:w-16 md:h-16 text-jung-accent animate-spin mb-4" />
-        <h1 className="text-xl md:text-2xl font-serif font-bold text-jung-dark mb-2 text-center">
+      <div className="flex min-h-[60vh] flex-col items-center justify-center bg-jung-base px-4">
+        <Loader2 className="mb-4 h-12 w-12 animate-spin text-jung-accent md:h-16 md:w-16" />
+        <h1 className="mb-2 text-center text-heading text-2xl text-jung-dark">
           Verifying your payment...
         </h1>
-        <p className="text-jung-secondary text-sm md:text-base">Please wait a moment.</p>
+        <p className="text-sm text-jung-secondary md:text-base">This usually takes a few seconds.</p>
       </div>
     );
   }
 
   if (status === 'error') {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center bg-jung-surface px-4">
-        <div className="bg-error-light rounded-full p-4 mb-6">
-          <XCircle className="w-12 h-12 md:w-16 md:h-16 text-error" />
+      <div className="flex min-h-[60vh] flex-col items-center justify-center bg-jung-base px-4">
+        <div className="mb-6 rounded-lg bg-error/5 p-4">
+          <XCircle className="h-12 w-12 text-error md:h-16 md:w-16" />
         </div>
-        <h1 className="text-xl md:text-2xl font-serif font-bold text-jung-dark mb-2 text-center">
-          Something went wrong
+        <h1 className="mb-2 text-center text-heading text-2xl text-jung-dark">
+          We could not verify the payment
         </h1>
-        <p className="text-jung-secondary mb-6 text-sm md:text-base text-center">{error || 'Unable to verify payment'}</p>
-        <div className="flex flex-col sm:flex-row gap-4">
+        <p className="mb-6 max-w-md text-center text-sm text-jung-secondary md:text-base">{error || 'Unable to verify payment'}</p>
+        <div className="flex flex-col gap-4 sm:flex-row">
           <Button onClick={() => navigate('/results')} variant="primary">
             Back to Results
           </Button>
@@ -144,40 +165,38 @@ export const CheckoutSuccess: React.FC = () => {
   const funcTitle = dominantFunction ? FUNCTION_DESCRIPTIONS[dominantFunction]?.title || dominantFunction : null;
 
   return (
-    <div className="min-h-[60vh] py-12 bg-jung-surface">
+    <div className="min-h-[60vh] bg-jung-base py-12">
       <div className="editorial-container max-w-2xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-emerald-100 rounded-full mb-6 shadow-lg">
-            <span className="text-4xl font-serif text-emerald-600">ψ</span>
+        <div className="mb-10 text-center">
+          <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent shadow-sm">
+            <CheckCircle className="h-8 w-8" />
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-jung-dark mb-4">
-            Welcome to Your Complete Jungian Analysis
+          <h1 className="mb-4 text-heading text-4xl text-jung-dark">
+            Your report is unlocked
           </h1>
 
           {dominantFunction && funcTitle && (
-            <p className="text-lg text-jung-accent font-medium mb-3">
+            <p className="mb-3 text-lg font-medium text-jung-accent">
               Based on your <span className="font-bold">{funcTitle}</span> profile...
             </p>
           )}
 
-          <div className="flex items-center justify-center gap-2 text-emerald-600 mb-4">
-            <Sparkles className="w-5 h-5" />
-            <span className="font-medium font-serif">Premium Unlocked Successfully</span>
-            <Sparkles className="w-5 h-5" />
+          <div className="mb-4 flex items-center justify-center gap-2 text-jung-accent">
+            <Sparkles className="h-5 w-5" />
+            <span className="font-medium">Premium access is active</span>
+            <Sparkles className="h-5 w-5" />
           </div>
 
-          <p className="text-sm text-jung-muted italic">
-            Your premium TypeJung report is connected to your live account.
+          <p className="text-sm text-jung-muted">
+            You can return to your result and paid report from this browser or your account history.
           </p>
         </div>
 
-        {/* Features card */}
-        <div className="bg-jung-surface rounded-2xl border border-jung-border shadow-md p-6 mb-8">
-          <h2 className="text-lg font-serif font-bold text-jung-dark mb-5 flex items-center gap-2">
-            <CheckCircle className="w-5 h-5 text-emerald-500" />
-            What You've Unlocked
+        <div className="mb-8 rounded-lg border border-jung-border bg-jung-surface p-6 shadow-md">
+          <h2 className="mb-5 flex items-center gap-2 text-lg font-semibold text-jung-dark">
+            <CheckCircle className="h-5 w-5 text-jung-accent" />
+            What you unlocked
           </h2>
 
           <div className="space-y-4">
@@ -185,8 +204,8 @@ export const CheckoutSuccess: React.FC = () => {
               const Icon = feature.icon;
               return (
                 <div key={i} className="flex items-start gap-3">
-                  <div className="flex-shrink-0 w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center mt-0.5">
-                    <Icon className="w-4 h-4 text-emerald-600" />
+                  <div className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-jung-accent-light">
+                    <Icon className="h-4 w-4 text-jung-accent" />
                   </div>
                   <span className="text-jung-secondary leading-relaxed">{feature.text}</span>
                 </div>
@@ -195,8 +214,7 @@ export const CheckoutSuccess: React.FC = () => {
           </div>
         </div>
 
-        {/* CTA */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row">
           <Button
             onClick={() => navigate('/results')}
             variant="accent"
@@ -208,10 +226,9 @@ export const CheckoutSuccess: React.FC = () => {
           </Button>
         </div>
 
-        {/* Trust indicators */}
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-2 text-jung-muted">
-            <Shield className="w-4 h-4 text-emerald-500" />
+            <Shield className="h-4 w-4 text-jung-accent" />
             <span className="text-sm">30-Day Money-Back Guarantee</span>
           </div>
           <p className="text-xs text-jung-muted">

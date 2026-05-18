@@ -39,28 +39,28 @@ export const ScientificValidationSection: React.FC = () => {
           <div className="space-y-8">
             <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-2 bg-jung-accent/10 dark:bg-jung-accent/20 border border-jung-accent/20 rounded-full">
               <GraduationCap className="w-4 h-4 text-jung-accent" />
-              <span className="text-xs font-serif font-bold text-jung-accent uppercase tracking-widest">Post-Jungian Research</span>
+              <span className="text-xs font-serif font-bold text-jung-accent uppercase tracking-widest">Research-informed method</span>
             </motion.div>
 
             <motion.h2 variants={itemVariants} className="text-display text-4xl sm:text-5xl text-jung-dark leading-tight">
-              A Validated Approach to the <span className="italic">Human Psyche</span>
+              A deeper way to read <span className="italic">your pattern</span>
             </motion.h2>
 
             <motion.p variants={itemVariants} className="text-body text-lg text-jung-secondary dark:text-jung-muted leading-relaxed">
-              We return to the clinical depth of Carl Jung's original definitions. Most assessments use behavioral proxies; we measure the cognitive archetypes themselves.
+              TypeJung returns to Jung's core problem: how attention, judgment, stress, and one-sidedness form a repeatable pattern in daily life.
             </motion.p>
 
             <motion.div variants={itemVariants} className="space-y-6">
               {[
                 {
                   icon: Microscope,
-                  title: 'Singer-Loomis Framework',
-                  desc: 'Developed by Drs. Singer and Loomis, this methodology rejects binary "types" in favor of measuring function deployment independently.'
+                  title: 'Function-first structure',
+                  desc: 'The assessment looks at cognitive functions directly instead of reducing everything to a single four-letter label.'
                 },
                 {
                   icon: FileText,
-                  title: 'Peer-Reviewed Reliability',
-                  desc: 'Our 132-question instrument provides the statistical power necessary to produce stable, repeatable results across different settings.'
+                  title: 'Multiple evidence layers',
+                  desc: 'Behavior, stress, body signals, and attitude direction are compared so the result is easier to test against lived experience.'
                 }
               ].map((item, i) => (
                 <div key={i} className="flex gap-4">
@@ -86,21 +86,21 @@ export const ScientificValidationSection: React.FC = () => {
                     <Brain className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-display text-lg">Statistical Power</h3>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-jung-muted">Scientific Roadmap</p>
+                    <h3 className="text-display text-lg">Method Layers</h3>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-jung-muted">Assessment design</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-display font-bold text-jung-accent">α = 0.89</p>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-jung-muted">Cronbach's Alpha</p>
+                  <p className="text-2xl font-display font-bold text-jung-accent">42</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-jung-muted">Questions</p>
                 </div>
               </div>
 
               <div className="space-y-6">
                 {[
-                  { label: 'Construct Validity', value: 92 },
-                  { label: 'Long-term Reliability', value: 87 },
-                  { label: 'Function Differentiation', value: 94 }
+                  { label: 'Behavioral scenarios', value: 92 },
+                  { label: 'Stress indicators', value: 87 },
+                  { label: 'Body and attitude signals', value: 94 }
                 ].map((bar, i) => (
                   <div key={i} className="space-y-2">
                     <div className="flex justify-between text-xs font-bold uppercase tracking-widest">
@@ -120,7 +120,7 @@ export const ScientificValidationSection: React.FC = () => {
               </div>
 
               <div className="mt-10 p-4 rounded-xl bg-jung-accent/5 dark:bg-dark-surface-elevated border border-jung-accent/10 italic text-sm text-jung-secondary">
-                "By measuring functions independently, we reveal how you use each capacity uniquely—avoiding the forced binary of standard assessments."
+                "The point is not to prove a fixed identity. The point is to give you a pattern clear enough to observe, question, and practice with."
               </div>
             </div>
           </motion.div>

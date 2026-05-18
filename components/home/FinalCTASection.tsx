@@ -77,12 +77,12 @@ export const FinalCTASection: React.FC<FinalCTASectionProps> = ({ onStartAssessm
               </motion.div>
 
               <h2 className="text-display text-4xl sm:text-5xl lg:text-7xl text-white mb-8 tracking-tight leading-[1.1]">
-                Stop Guessing. <br />
-                <span className="italic text-jung-accent-muted">Know for Certain.</span>
+                Stop chasing labels. <br />
+                <span className="italic text-jung-accent-muted">Read the pattern.</span>
               </h2>
 
               <p className="text-xl text-jung-subtle mb-12 max-w-2xl mx-auto leading-relaxed font-serif">
-                Join 12,847 individuals who discovered the underlying architecture of their mind this month.
+                Start with the free map, then upgrade only if the result feels worth keeping.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
@@ -105,7 +105,7 @@ export const FinalCTASection: React.FC<FinalCTASectionProps> = ({ onStartAssessm
                   <div className="w-1 h-1 rounded-full bg-jung-accent" /> ~15 MINUTE DURATION
                 </span>
                 <span className="flex items-center gap-2">
-                  <div className="w-1 h-1 rounded-full bg-jung-accent" /> CLINICALLY VALIDATED
+                  <div className="w-1 h-1 rounded-full bg-jung-accent" /> ONE-TIME CAD UPGRADES
                 </span>
               </div>
             </div>

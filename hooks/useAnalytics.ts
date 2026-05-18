@@ -51,7 +51,7 @@ export function useAssessmentTracking() {
       state.current.answeredQuestions.clear();
       state.current.questionStartTimes.clear();
       
-      AnalyticsEvents.assessmentStarted();
+      AnalyticsEvents.assessmentStarted('assessment_page', window.location.pathname);
     } catch (error) {
       console.warn('Analytics: Failed to track assessment start:', error);
     }
@@ -169,7 +169,7 @@ export function useResultsTracking(dominantFunction: string) {
     if (!isAnalyticsEnabled()) return;
 
     try {
-      AnalyticsEvents.resultsSaved();
+      AnalyticsEvents.resultSaved('results_interaction');
     } catch (error) {
       console.warn('Analytics: Failed to track save:', error);
     }

@@ -1,7 +1,8 @@
 import Stripe from 'stripe';
+import { getStripeSecretKey as readStripeSecretKey } from './server/checkout';
 
 export async function getUncachableStripeClient() {
-  const secretKey = process.env.STRIPE_SECRET_KEY;
+  const secretKey = readStripeSecretKey();
   
   if (!secretKey) {
     throw new Error('STRIPE_SECRET_KEY not found in environment');
@@ -23,7 +24,7 @@ export function getStripePublishableKey() {
 }
 
 export function getStripeSecretKey() {
-  const secretKey = process.env.STRIPE_SECRET_KEY;
+  const secretKey = readStripeSecretKey();
   
   if (!secretKey) {
     throw new Error('STRIPE_SECRET_KEY not found in environment');

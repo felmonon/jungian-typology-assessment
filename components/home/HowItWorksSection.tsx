@@ -53,7 +53,7 @@ export const HowItWorksSection: React.FC<HowItWorksSectionProps> = ({ onStartAss
             Actual understanding, <span className="italic">simplified.</span>
           </motion.h2>
           <motion.p variants={itemVariants} className="text-body-lg text-jung-secondary dark:text-jung-muted max-w-2xl mx-auto">
-            Not a behavioral quiz. A cognitive diagnostic.
+            Not a quick label quiz. A practical map you can test against real patterns.
           </motion.p>
         </motion.div>
 
@@ -88,7 +88,7 @@ export const HowItWorksSection: React.FC<HowItWorksSectionProps> = ({ onStartAss
                 </p>
 
                 <div className="flex items-center gap-2 text-jung-accent font-bold text-sm group-hover:gap-3 transition-all duration-300">
-                  <span className="uppercase tracking-widest">Learn More</span>
+                  <span className="uppercase tracking-widest">What you get</span>
                   <ChevronRight className="w-4 h-4" />
                 </div>
               </div>
@@ -110,7 +110,7 @@ export const HowItWorksSection: React.FC<HowItWorksSectionProps> = ({ onStartAss
               variant="accent"
               className="px-10 py-5 text-xl rounded-xl shadow-none hover:shadow-none"
             >
-              Begin Your Journey <ArrowRight className="ml-3 w-6 h-6 group-hover:translate-x-1 transition-transform" />
+              Start Free Assessment <ArrowRight className="ml-3 w-6 h-6 group-hover:translate-x-1 transition-transform" />
             </Button>
           </div>
           <div className="mt-8 flex flex-col items-center gap-2">
@@ -123,7 +123,7 @@ export const HowItWorksSection: React.FC<HowItWorksSectionProps> = ({ onStartAss
               </div>
             </div>
             <p className="text-xs font-bold uppercase tracking-widest text-jung-muted">
-              Joined by <span className="text-jung-accent">12,847</span> users this month
+              Free to start. Upgrade only after you see your map.
             </p>
           </div>
         </motion.div>

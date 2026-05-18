@@ -32,8 +32,8 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variants = {
     primary: `
-      bg-jung-dark text-white shadow-sm
-      hover:bg-jung-accent hover:-translate-y-px hover:shadow-md
+      bg-jung-dark text-white shadow-md shadow-jung-dark/10
+      hover:bg-jung-accent-hover hover:-translate-y-px hover:shadow-lg
     `,
     secondary: `
       bg-jung-surface-alt text-jung-dark border border-jung-border

@@ -1,5 +1,8 @@
 import Stripe from 'stripe';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { createClient } from '@supabase/supabase-js';
+import { recordCheckoutPurchase } from './_lib/purchases.js';
+import { getStripeSecretKey, getStripeWebhookSecret } from '../server/checkout.js';
 
 // Disable body parsing, need raw body for webhook signature
 export const config = {
@@ -22,18 +25,28 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
+  const stripeSecretKey = getStripeSecretKey();
+  const webhookSecret = getStripeWebhookSecret();
+  if (!stripeSecretKey || !webhookSecret) {
     return res.status(500).json({ error: 'Stripe not configured' });
   }
 
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+  if (!process.env.SUPABASE_URL || !(process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY)) {
+    return res.status(500).json({ error: 'Database not configured' });
+  }
+
+  const stripe = new Stripe(stripeSecretKey);
+  const supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY!,
+  );
   const buf = await buffer(req);
   const sig = req.headers['stripe-signature'] as string;
 
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(buf, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    event = stripe.webhooks.constructEvent(buf, sig, webhookSecret);
   } catch (err: any) {
     console.error(`Webhook signature verification failed: ${err.message}`);
     return res.status(400).json({ error: `Webhook Error: ${err.message}` });
@@ -42,10 +55,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Handle the event
   switch (event.type) {
     case 'checkout.session.completed':
-      const session = event.data.object as Stripe.Checkout.Session;
-      console.log('Payment successful for session:', session.id);
-      console.log('Customer email:', session.customer_details?.email);
-      console.log('Tier:', session.metadata?.tier);
+      const checkoutSession = event.data.object as Stripe.Checkout.Session;
+      const session = await stripe.checkout.sessions.retrieve(checkoutSession.id, {
+        expand: ['line_items.data.price'],
+      });
+      await recordCheckoutPurchase(supabase, session);
+      console.log('Payment recorded for session:', session.id);
       break;
 
     case 'payment_intent.succeeded':

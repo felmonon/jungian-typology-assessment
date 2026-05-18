@@ -58,7 +58,6 @@ export const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
           message: userMessage,
           history: messages,
           userProfile,
-          unlockDate: localStorage.getItem('jungian_assessment_unlock_date'),
         }),
       });
 

@@ -1,10 +1,10 @@
-# TypeJung - Cognitive Function Analysis for Engineering Teams
+# TypeJung - Jungian Cognitive Function Assessment
 
 [![CI/CD Pipeline](https://github.com/felmonon/jungian-typology-assessment/actions/workflows/ci.yml/badge.svg)](https://github.com/felmonon/jungian-typology-assessment/actions/workflows/ci.yml)
 [![Live App](https://img.shields.io/badge/live-typejung.com-brightgreen)](https://typejung.com)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-A production full-stack SaaS that applies Jungian cognitive-function theory to how people think, debug, review work, handle stress, and collaborate. It combines a free assessment, saved profiles, share links, Stripe-backed paid reports, Supabase persistence, and AI-generated analysis.
+A production full-stack SaaS that applies Jungian cognitive-function theory to how people notice patterns, make decisions, handle stress, and relate to others. It combines a free assessment, saved profiles, share links, Stripe-backed one-time paid reports, Supabase persistence, and AI-assisted interpretation.
 
 **[Try the Live App](https://typejung.com)**
 
@@ -12,9 +12,9 @@ A production full-stack SaaS that applies Jungian cognitive-function theory to h
 
 ## What Is Live Today
 
-- 40-question assessment flow for all 8 cognitive functions
+- 42-question assessment flow for all 8 cognitive functions
 - saved result history and shareable result links via [`api/results.ts`](api/results.ts) and [`api/share`](api/share)
-- free AI analysis via [`api/ai/free-analysis.ts`](api/ai/free-analysis.ts)
+- free interpretation and paid AI-assisted features via [`api/ai/[action].ts`](api/ai/[action].ts)
 - paid checkout tiers and webhook handling via [`api/create-checkout-session.ts`](api/create-checkout-session.ts) and [`api/webhook.ts`](api/webhook.ts)
 - Google auth, session verification, and premium status checks via [`api/auth`](api/auth), [`api/verify-session.ts`](api/verify-session.ts), and [`api/premium-status.ts`](api/premium-status.ts)
 - leaderboard and public ranking data via [`api/leaderboard.ts`](api/leaderboard.ts)
@@ -44,14 +44,14 @@ flowchart LR
 
 ## Why This Exists
 
-Consumer personality quizzes like 16personalities sort you into a four-letter label and stop there. That is fine for entertainment — but useless when you need to understand why two senior engineers keep clashing in code review, or why your best architect freezes under on-call pressure.
+Consumer personality quizzes like 16personalities sort you into a four-letter label and stop there. That can be fine for entertainment, but it is thin when you want to understand why two capable people keep misreading each other, or why your usual strengths become unreliable under pressure.
 
-This project goes deeper. It measures all **8 Jungian cognitive functions** (Ti, Te, Fi, Fe, Ni, Ne, Si, Se), maps your full function stack, and surfaces patterns that actually matter in engineering contexts:
+This project goes deeper. It measures all **8 Jungian cognitive functions** (Ti, Te, Fi, Fe, Ni, Ne, Si, Se), maps your full function stack, and surfaces patterns that matter in real self-understanding:
 
-- **How you debug** — Do you follow a deductive model (Ti-dominant) or scan for pattern anomalies (Ne-dominant)?
-- **How you review code** — Do you optimize for correctness (Te) or maintainability and team norms (Fe/Fi)?
-- **How you handle production incidents** — The Grip analysis reveals what happens to your decision-making under stress, based on your inferior function.
-- **How you collaborate** — Archetypal stack analysis (Hero, Parent, Child, Anima/Animus) explains mentoring dynamics, blind spots, and team friction.
+- **How you reason** - Do you follow a precise internal model (Ti) or organize around visible outcomes (Te)?
+- **How you notice information** - Do you converge on a single pattern (Ni), explore possibilities (Ne), trust experience (Si), or respond to the present moment (Se)?
+- **How you handle stress** - The Grip analysis explains what can happen when your inferior function takes over.
+- **How you relate** - Archetypal stack analysis (Hero, Parent, Child, Anima/Animus) explains blind spots, friction, and growth edges.
 
 The underlying model is Carl Jung's original typology — not the simplified MBTI dichotomies. Every assessment result includes function scores, not just a type label.
 
@@ -59,13 +59,13 @@ The underlying model is Carl Jung's original typology — not the simplified MBT
 
 ## Features
 
-- **Free Assessment** - 40-question assessment measuring all 8 cognitive functions
+- **Free Assessment** - 42-question assessment measuring all 8 cognitive functions
 - **Cognitive Function Stack** - Dominant, auxiliary, tertiary, inferior, and shadow-function breakdowns
 - **Saved Results** - Persisted assessment history for signed-in users
 - **Shareable Profiles** - Public result sharing through generated slugs
 - **Stress And Grip Analysis** - Patterns for how decision-making changes under pressure
-- **Free AI Analysis** - Short AI-generated analysis based on assessment output
-- **Premium Tiers** - Stripe-backed paid tiers for deeper analysis
+- **Free Interpretation** - Short explanation based on assessment output
+- **Premium Tiers** - Stripe-backed one-time CAD paid tiers for deeper analysis
 - **Leaderboard** - Type distribution and public ranking view
 - **Results Breakdown** - Charts, score views, and results components in [`components/results`](components/results)
 
@@ -79,7 +79,7 @@ The underlying model is Carl Jung's original typology — not the simplified MBT
 | **Backend** | Express.js, Vercel Serverless Functions |
 | **Database** | Supabase (PostgreSQL, real-time subscriptions) |
 | **Auth** | Google OAuth 2.0, Email/Password |
-| **Payments** | Stripe (3-tier: Free / Insight $19 / Mastery $39) |
+| **Payments** | Stripe (3-tier: Free / Insight CA$19 / Mastery CA$39) |
 | **AI** | Google Gemini API |
 | **CI/CD** | GitHub Actions, Vercel |
 | **Testing** | Vitest, E2E suite |
@@ -90,9 +90,9 @@ The underlying model is Carl Jung's original typology — not the simplified MBT
 
 | Tier | Price | What You Get |
 |------|-------|-------------|
-| **Free** | $0 | 40-question assessment, function scores, type result |
-| **Insight** | $19 | + AI analysis, archetype breakdown, The Grip stress patterns |
-| **Mastery** | $39 | + Individuation guidance, shadow work, career path insights |
+| **Free** | $0 | 42-question assessment, basic energy map, dominant-inferior axis |
+| **Insight** | CA$19 one-time | + deeper report, stress pattern map, relationship triggers, somatic practices |
+| **Mastery** | CA$39 one-time | + AI Type Coach, individuation roadmap, practice library, reassessment tracking |
 
 ---
 
@@ -139,9 +139,13 @@ The repo includes:
    GOOGLE_CLIENT_ID=your_google_client_id
    GOOGLE_CLIENT_SECRET=your_google_client_secret
    STRIPE_SECRET_KEY=your_stripe_secret_key
-   STRIPE_PUBLIC_KEY=your_stripe_public_key
+   STRIPE_INSIGHT_PRICE_ID=price_your_insight_price_id
+   STRIPE_MASTERY_PRICE_ID=price_your_mastery_price_id
+   STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
    GEMINI_API_KEY=your_gemini_api_key
    ```
+
+   Stripe should send checkout events to `/api/stripe/webhook`, which is rewritten to [`api/webhook.ts`](api/webhook.ts) in Vercel.
 
 4. Run the development server:
    ```bash

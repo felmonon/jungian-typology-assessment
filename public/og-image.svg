@@ -28,17 +28,17 @@
 
   <!-- Text content -->
   <text x="340" y="260" font-family="Georgia, serif" font-size="56" font-weight="bold" fill="#1f2937">
-    Jungian Typology
+    TypeJung
   </text>
   <text x="340" y="330" font-family="Georgia, serif" font-size="56" font-weight="bold" fill="#1f2937">
-    Assessment
+    Energy Map
   </text>
 
   <text x="340" y="400" font-family="system-ui, sans-serif" font-size="28" fill="#6B7280">
-    Discover your true psychological type
+    Map dominant energy and inferior pressure
   </text>
   <text x="340" y="440" font-family="system-ui, sans-serif" font-size="28" fill="#6B7280">
-    based on Carl Jung's original theory
+    with a depth-based Jungian assessment
   </text>
 
   <!-- CTA badge -->

@@ -42,14 +42,14 @@ export const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({
           </h3>
 
           <p className="text-body text-jung-secondary mb-6">
-            You're not alone. <strong>73% of people</strong> get different MBTI results each time they test. Our assessment measures all 8 functions independently—finally giving you consistent, accurate results.
+            If four-letter tests keep changing, the issue may be the format. TypeJung maps the function pattern underneath the label so you can compare it with your lived experience.
           </p>
 
           <div className="bg-jung-base rounded-xl p-4 mb-6 text-left border border-jung-border">
             <p className="text-sm italic text-jung-secondary">
               "I've taken MBTI tests 20 times and always got different results. This finally explained why."
             </p>
-            <p className="text-xs font-serif text-jung-muted mt-2">— Sarah K.</p>
+            <p className="text-xs font-serif text-jung-muted mt-2">— Early tester</p>
           </div>
 
           <Button

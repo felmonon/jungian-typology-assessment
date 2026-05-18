@@ -8,7 +8,8 @@ declare global {
   }
 }
 
-const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;
+const DEFAULT_GA_MEASUREMENT_ID = 'G-3CQKPQZ942';
+const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID || DEFAULT_GA_MEASUREMENT_ID;
 
 // Validation schemas for analytics events
 const EventParamsSchema = z.record(
@@ -23,24 +24,53 @@ const PageViewSchema = z.object({
 
 const AssessmentEventSchema = z.object({
   time_spent_seconds: z.number().min(0).max(7200).optional(), // Max 2 hours
+  duration_seconds: z.number().min(0).max(7200).optional(),
   question_number: z.number().min(1).max(200).optional(),
   progress_percent: z.number().min(0).max(100).optional(),
+  source: z.string().min(1).max(100).optional(),
+  entry_page: z.string().min(1).max(500).optional(),
+  result_type: z.string().min(1).max(50).optional(),
 });
 
 const ResultsEventSchema = z.object({
-  dominant_function: z.enum(['Te', 'Ti', 'Fe', 'Fi', 'Se', 'Si', 'Ne', 'Ni']).optional(),
-  share_method: z.enum(['link', 'twitter', 'facebook', 'linkedin']).optional(),
+  dominant_function: z.string().min(1).max(20).optional(),
+  share_method: z.string().min(1).max(50).optional(),
+});
+
+const ResultSaveEventSchema = z.object({
+  source: z.string().min(1).max(100).optional(),
+  has_share_slug: z.boolean().optional(),
+});
+
+const PricingViewEventSchema = z.object({
+  source: z.string().min(1).max(100).optional(),
+  referrer: z.string().max(500).optional(),
+});
+
+const SignupEventSchema = z.object({
+  method: z.string().min(1).max(50).optional(),
+  source: z.string().min(1).max(100).optional(),
 });
 
 const PurchaseEventSchema = z.object({
   plan: z.string().min(1).max(50),
+  tier: z.string().min(1).max(50).optional(),
   value: z.number().min(0).max(10000),
-  currency: z.string().length(3).default('USD'),
+  price: z.number().min(0).max(10000).optional(),
+  currency: z.string().length(3).default('CAD'),
+  transaction_id: z.string().min(1).max(100).optional(),
+});
+
+const UpgradeEventSchema = z.object({
+  location: z.string().min(1).max(100),
+  tier: z.string().min(1).max(50),
 });
 
 const CTAEventSchema = z.object({
   cta_name: z.string().min(1).max(100),
   location: z.string().min(1).max(100),
+  button_text: z.string().min(1).max(150).optional(),
+  destination: z.string().min(1).max(500).optional(),
 });
 
 // Safe tracking helper with validation
@@ -151,12 +181,21 @@ export function trackEvent(
 // Predefined events for the assessment with validation
 export const AnalyticsEvents = {
   // Assessment funnel
-  assessmentStarted: () => {
-    return safeTrackEvent('assessment_started');
+  assessmentStarted: (source = 'assessment_page', entryPage?: string) => {
+    const params = {
+      source: String(source).substring(0, 100),
+      ...(entryPage ? { entry_page: String(entryPage).substring(0, 500) } : {}),
+    };
+    return safeTrackEvent('assessment_started', params, AssessmentEventSchema);
   },
   
   assessmentCompleted: (timeSpentSeconds: number) => {
-    const params = { time_spent_seconds: Math.round(timeSpentSeconds) };
+    const seconds = Math.round(timeSpentSeconds);
+    const params = {
+      time_spent_seconds: seconds,
+      duration_seconds: seconds,
+      result_type: 'depth_energy_map',
+    };
     const validation = AssessmentEventSchema.safeParse(params);
     if (!validation.success) {
       console.warn('Analytics: Invalid completion params:', validation.error.format());
@@ -198,34 +237,86 @@ export const AnalyticsEvents = {
   },
   
   resultsSaved: () => {
-    return safeTrackEvent('results_saved');
+    const params = { source: 'legacy_hook' };
+    const canonicalEventTracked = safeTrackEvent('result_saved', params, ResultSaveEventSchema);
+    const legacyEventTracked = safeTrackEvent('results_saved', params, ResultSaveEventSchema);
+    return canonicalEventTracked || legacyEventTracked;
+  },
+
+  resultSaved: (source = 'results_page', hasShareSlug?: boolean) => {
+    const params = {
+      source: String(source).substring(0, 100),
+      ...(typeof hasShareSlug === 'boolean' ? { has_share_slug: hasShareSlug } : {}),
+    };
+    const canonicalEventTracked = safeTrackEvent('result_saved', params, ResultSaveEventSchema);
+    const legacyEventTracked = safeTrackEvent('results_saved', params, ResultSaveEventSchema);
+    return canonicalEventTracked || legacyEventTracked;
   },
 
   // Conversions
-  signupStarted: () => {
-    return safeTrackEvent('signup_started');
+  pricingViewed: (source = 'direct', referrer?: string) => {
+    const cleanedReferrer = typeof referrer === 'string' && referrer.trim()
+      ? referrer.trim().substring(0, 500)
+      : undefined;
+    const params = {
+      source: String(source).substring(0, 100),
+      ...(cleanedReferrer ? { referrer: cleanedReferrer } : {}),
+    };
+    return safeTrackEvent('pricing_viewed', params, PricingViewEventSchema);
+  },
+
+  signupStarted: (method = 'email', source?: string) => {
+    const params = {
+      method: String(method).substring(0, 50),
+      ...(source ? { source: String(source).substring(0, 100) } : {}),
+    };
+    return safeTrackEvent('signup_started', params, SignupEventSchema);
   },
   
-  signupCompleted: () => {
-    return safeTrackEvent('signup_completed');
+  signupCompleted: (method = 'email', source?: string) => {
+    const params = {
+      method: String(method).substring(0, 50),
+      ...(source ? { source: String(source).substring(0, 100) } : {}),
+    };
+    return safeTrackEvent('signup_completed', params, SignupEventSchema);
   },
   
   purchaseStarted: (plan: string, price: number) => {
     const params = {
       plan: String(plan).substring(0, 50),
+      tier: String(plan).substring(0, 50),
       value: Math.max(0, Number(price)),
-      currency: 'USD',
+      price: Math.max(0, Number(price)),
+      currency: 'CAD',
     };
-    return safeTrackEvent('begin_checkout', params, PurchaseEventSchema);
+    const recommendedEventTracked = safeTrackEvent('begin_checkout', params, PurchaseEventSchema);
+    const customEventTracked = safeTrackEvent('checkout_started', params, PurchaseEventSchema);
+    return recommendedEventTracked || customEventTracked;
   },
   
-  purchaseCompleted: (plan: string, price: number) => {
+  purchaseCompleted: (plan: string, price: number, transactionId?: string | null) => {
+    const cleanedTransactionId = typeof transactionId === 'string'
+      ? transactionId.trim().substring(0, 100)
+      : '';
     const params = {
       plan: String(plan).substring(0, 50),
+      tier: String(plan).substring(0, 50),
       value: Math.max(0, Number(price)),
-      currency: 'USD',
+      price: Math.max(0, Number(price)),
+      currency: 'CAD',
+      ...(cleanedTransactionId ? { transaction_id: cleanedTransactionId } : {}),
     };
-    return safeTrackEvent('purchase', params, PurchaseEventSchema);
+    const recommendedEventTracked = safeTrackEvent('purchase', params, PurchaseEventSchema);
+    const customEventTracked = safeTrackEvent('purchase_completed', params, PurchaseEventSchema);
+    return recommendedEventTracked || customEventTracked;
+  },
+
+  upgradeClicked: (location: string, tier: string) => {
+    const params = {
+      location: String(location).substring(0, 100),
+      tier: String(tier).substring(0, 50),
+    };
+    return safeTrackEvent('upgrade_clicked', params, UpgradeEventSchema);
   },
 
   // Engagement
@@ -237,10 +328,12 @@ export const AnalyticsEvents = {
     return safeTrackEvent('about_page_viewed');
   },
   
-  ctaClicked: (ctaName: string, location: string) => {
+  ctaClicked: (ctaName: string, location: string, options?: { buttonText?: string; destination?: string }) => {
     const params = {
       cta_name: String(ctaName).substring(0, 100),
       location: String(location).substring(0, 100),
+      ...(options?.buttonText ? { button_text: String(options.buttonText).substring(0, 150) } : {}),
+      ...(options?.destination ? { destination: String(options.destination).substring(0, 500) } : {}),
     };
     return safeTrackEvent('cta_clicked', params, CTAEventSchema);
   },

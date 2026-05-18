@@ -11,13 +11,13 @@ export const About: React.FC = () => {
       {/* Hero Header */}
       <header className="mb-16 md:mb-20 text-center">
         <div className="inline-flex items-center gap-3 mb-6">
-          <img src="/logo.svg" alt="Jungian Typology" className="w-12 h-12" />
+          <img src="/logo.svg" alt="TypeJung" className="w-12 h-12" />
         </div>
         <h1 className="text-display text-4xl sm:text-5xl md:text-6xl mb-6 max-w-3xl mx-auto font-serif">
           About This Assessment
         </h1>
         <p className="text-body text-xl text-jung-muted max-w-2xl mx-auto leading-relaxed font-serif">
-          Why this is not another MBTI clone—and how we stay true to Jung's original clinical insights.
+          Why this is not another MBTI clone, and how TypeJung turns Jung's ideas into a practical self-reflection map.
         </p>
       </header>
 
@@ -48,7 +48,7 @@ export const About: React.FC = () => {
           </blockquote>
 
           <p>
-            Jung created typology as a <strong>clinical tool</strong>—to help understand our natural "one-sidedness"
+            Jung used typology to help people understand natural "one-sidedness"
             (biases in how we think/perceive) and grow beyond it through <strong>individuation</strong> (becoming a
             more whole, unique self).
           </p>
@@ -68,7 +68,7 @@ export const About: React.FC = () => {
 
           <p>
             Popular tools (like MBTI) often focus on fun labels ("INTJ Judge"). This site returns to Jung:
-            reflection on strengths, blind spots, and psychic balance.
+            reflection on strengths, blind spots, and psychological balance.
           </p>
         </div>
       </section>
@@ -128,7 +128,7 @@ export const About: React.FC = () => {
 
         <div className="bg-jung-surface rounded-xl p-6 text-center border border-jung-border">
           <p className="text-body text-jung-secondary font-medium font-serif">
-            No 4-letter codes. No boxes. Just an honest psychic profile.
+            No forced four-letter box. Just a clearer map of the pattern in your answers.
           </p>
         </div>
       </section>
@@ -141,7 +141,7 @@ export const About: React.FC = () => {
           </div>
           <div>
             <h2 className="text-heading text-2xl md:text-3xl font-serif">Our Methodology</h2>
-            <p className="text-body text-jung-muted mt-1 font-serif">Honoring clinical roots</p>
+            <p className="text-body text-jung-muted mt-1 font-serif">Research-informed, not diagnostic</p>
           </div>
         </div>
 
@@ -158,9 +158,8 @@ export const About: React.FC = () => {
             </h3>
             <div className="text-body text-jung-secondary space-y-4 pl-10 font-serif">
               <p>
-                Traditional tests pit functions against each other (mutually exclusive). We follow
-                <strong> Singer-Loomis</strong> (validated 1984 research): Each process (Te, Ti, Fe, etc.)
-                scored alone on a scale.
+                Traditional tests pit functions against each other as mutually exclusive. TypeJung follows the
+                function-first direction of Singer-Loomis by scoring each process (Te, Ti, Fe, etc.) separately.
               </p>
               <p>
                 <strong>Why?</strong> Real people use multiple processes fluidly. High Te + high Fe?
@@ -326,7 +325,7 @@ export const About: React.FC = () => {
           </li>
         </ul>
         <p className="text-sm text-jung-muted mt-6 italic font-serif">
-          Inspired by clinical Jungians—aiming for insight, not entertainment.
+          Inspired by Jungian writers and analysts, with the goal of reflection rather than entertainment.
         </p>
       </section>
 
@@ -375,8 +374,8 @@ export const About: React.FC = () => {
 
       {/* Footer */}
       <footer className="mt-12 pt-10 border-t border-jung-border text-center">
-        <img src="/logo.svg" alt="Jungian Typology" className="w-12 h-12 mx-auto mb-4" />
-        <p className="text-ui font-semibold text-jung-dark mb-2 font-serif">Jungian Typology</p>
+        <img src="/logo.svg" alt="TypeJung" className="w-12 h-12 mx-auto mb-4" />
+        <p className="text-ui font-semibold text-jung-dark mb-2 font-serif">TypeJung</p>
         <p className="text-body text-sm text-jung-muted mb-4 max-w-md mx-auto font-serif">
           A self-exploration tool based on Jung's <em>Psychological Types</em> (1921). Mirror for reflection—not fixed label.
         </p>
@@ -386,7 +385,7 @@ export const About: React.FC = () => {
         <p className="text-xs text-jung-muted/70 font-serif">
           <strong>Disclaimer:</strong> Self-report only. Results = current configuration, not permanent identity.
         </p>
-        <p className="mt-6 text-xs text-jung-muted/50 font-serif">© 2026 Jungian Typology Assessment</p>
+        <p className="mt-6 text-xs text-jung-muted/50 font-serif">© 2026 TypeJung</p>
       </footer>
     </div>
   );

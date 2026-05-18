@@ -1,6 +1,7 @@
 import type { VercelRequest } from '@vercel/node';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { User } from '../../shared/models/auth';
+import crypto from 'crypto';
 
 function getHeaderValue(value: string | string[] | undefined): string | undefined {
   if (Array.isArray(value)) {
@@ -20,29 +21,52 @@ export function parseCookies(cookieHeader: string | undefined): Record<string, s
   cookieHeader.split(';').forEach((cookie) => {
     const [name, ...rest] = cookie.split('=');
     if (name && rest.length > 0) {
-      cookies[name.trim()] = rest.join('=').trim();
+      const rawValue = rest.join('=').trim();
+      try {
+        cookies[name.trim()] = decodeURIComponent(rawValue);
+      } catch {
+        cookies[name.trim()] = rawValue;
+      }
     }
   });
 
   return cookies;
 }
 
+function signSessionId(sessionId: string, secret: string): string {
+  return crypto
+    .createHmac('sha256', secret)
+    .update(sessionId)
+    .digest('base64')
+    .replace(/=+$/, '');
+}
+
+export function getVerifiedSessionId(cookieHeader: string | undefined): string | null {
+  const sessionSecret = process.env.SESSION_SECRET;
+  if (!sessionSecret || !cookieHeader) return null;
+
+  const cookies = parseCookies(cookieHeader);
+  const sessionCookie = cookies['connect.sid'];
+  const match = sessionCookie?.match(/^s:([^.]+)\.([^.]*)$/);
+  if (!match) return null;
+
+  const [, sessionId, signature] = match;
+  const expectedSignature = signSessionId(sessionId, sessionSecret);
+  const signatureBuffer = Buffer.from(signature);
+  const expectedBuffer = Buffer.from(expectedSignature);
+
+  if (signatureBuffer.length !== expectedBuffer.length) return null;
+  return crypto.timingSafeEqual(signatureBuffer, expectedBuffer) ? sessionId : null;
+}
+
 export async function getSessionUserFromCookie(
   cookieHeader: string | undefined,
   supabase: SupabaseClient,
 ): Promise<User | null> {
-  if (!cookieHeader) return null;
-
   try {
-    const cookies = parseCookies(cookieHeader);
-    const sessionCookie = cookies['connect.sid'];
+    const sessionId = getVerifiedSessionId(cookieHeader);
+    if (!sessionId) return null;
 
-    if (!sessionCookie) return null;
-
-    const match = sessionCookie.match(/^s:([^.]+)\./);
-    if (!match) return null;
-
-    const sessionId = match[1];
     const { data: sessions, error: sessionError } = await supabase
       .from('sessions')
       .select('sid, sess, expire')

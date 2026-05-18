@@ -17,7 +17,7 @@ export function usePremiumStatus() {
       const localUnlockUserId = localStorage.getItem('jungian_assessment_unlock_user_id');
       const unlockDate = localStorage.getItem('jungian_assessment_unlock_date');
       
-      const isLocalUnlockForCurrentUser = (localTier || localUnlocked) && localUnlockUserId === userId;
+      const isLocalUnlockForCurrentUser = Boolean(userId && (localTier || localUnlocked) && localUnlockUserId === userId);
 
       if (isAuthenticated && userId) {
         try {
@@ -59,12 +59,7 @@ export function usePremiumStatus() {
           }
         }
       } else if (!isAuthenticated) {
-        if (localUnlocked && !localUnlockUserId) {
-          const resolvedTier = localTier || 'insight';
-          setTier(resolvedTier);
-        } else {
-          setTier('free');
-        }
+        setTier('free');
       }
       setIsLoading(false);
     }

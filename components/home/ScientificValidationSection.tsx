@@ -98,19 +98,19 @@ export const ScientificValidationSection: React.FC = () => {
 
               <div className="space-y-6">
                 {[
-                  { label: 'Behavioral scenarios', value: 92 },
-                  { label: 'Stress indicators', value: 87 },
-                  { label: 'Body and attitude signals', value: 94 }
+                  { label: 'Behavioral scenarios', value: 'Layer 1' },
+                  { label: 'Stress indicators', value: 'Layer 2' },
+                  { label: 'Body and attitude signals', value: 'Layer 3' }
                 ].map((bar, i) => (
                   <div key={i} className="space-y-2">
                     <div className="flex justify-between text-xs font-bold uppercase tracking-widest">
                       <span className="text-jung-dark">{bar.label}</span>
-                      <span className="text-jung-accent">{bar.value}%</span>
+                      <span className="text-jung-accent">{bar.value}</span>
                     </div>
                     <div className="h-2 bg-jung-base dark:bg-dark-base rounded-full overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
-                        whileInView={{ width: `${bar.value}%` }}
+                        whileInView={{ width: '100%' }}
                         transition={{ duration: 1, delay: 0.5 + i * 0.1 }}
                         className="h-full bg-jung-accent"
                       />

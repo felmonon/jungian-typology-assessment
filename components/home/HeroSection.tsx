@@ -72,7 +72,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
             transition={{ delay: 0.5 }}
             className="text-lg md:text-xl text-jung-secondary font-light max-w-xl leading-relaxed font-sans"
           >
-            Analyze your cognitive stack with the Singer-Loomis protocol.
+            Explore your cognitive stack with a function-first assessment.
             <span className="text-jung-dark border-b border-jung-accent/30 mx-1">Measure all 8 functions</span>
             independently—moving beyond binary typologies.
           </motion.p>
@@ -96,7 +96,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
               variant="outline"
               className="border-jung-border text-jung-secondary hover:text-jung-dark hover:border-jung-accent font-mono text-xs uppercase tracking-widest px-8"
             >
-              Review Protocol
+              Review Method
             </Button>
           </motion.div>
 

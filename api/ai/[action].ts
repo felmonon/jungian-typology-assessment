@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { getSessionUser } from '../_lib/auth.js';
 import { generateGeminiText } from '../_lib/gemini.js';
+import { enforceRateLimit } from '../_lib/rate-limit.js';
 
 interface FunctionScore {
   function: string;
@@ -260,10 +261,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const action = actionName(req.query.action);
     if (action === 'free-analysis') {
+      if (enforceRateLimit(req, res, {
+        keyPrefix: 'ai:free-analysis',
+        limit: 20,
+        windowMs: 60 * 60 * 1000,
+        message: 'Too many analysis requests. Please wait and try again.',
+      })) return;
+
       return await handleFreeAnalysis(req, res);
     }
 
     if (action === 'premium-analysis') {
+      if (enforceRateLimit(req, res, {
+        keyPrefix: 'ai:premium-analysis',
+        limit: 12,
+        windowMs: 60 * 60 * 1000,
+        message: 'Too many premium report requests. Please wait and try again.',
+      })) return;
+
       return await handlePremiumAnalysis(req, res);
     }
 

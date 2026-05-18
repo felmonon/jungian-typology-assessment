@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { getSessionUserFromCookie } from './_lib/auth-utils.js';
 import { recordCheckoutPurchase, resolveCheckoutTransactionId, resolveTierFromCheckoutSession } from './_lib/purchases.js';
+import { enforceRateLimit } from './_lib/rate-limit.js';
 import { getStripeSecretKey } from '../server/checkout.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -19,6 +20,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!session_id || typeof session_id !== 'string') {
     return res.status(400).json({ error: 'Missing session_id parameter' });
   }
+
+  if (enforceRateLimit(req, res, {
+    keyPrefix: 'checkout:verify-session',
+    limit: 30,
+    windowMs: 15 * 60 * 1000,
+    message: 'Too many payment verification attempts. Please wait and try again.',
+  })) return;
 
   const stripeSecretKey = getStripeSecretKey();
   if (!stripeSecretKey) {

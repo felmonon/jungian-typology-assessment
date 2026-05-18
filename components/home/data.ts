@@ -116,7 +116,7 @@ export const COMPARISON_ROWS = [
 export const PRICING_TIERS = [
   {
     name: 'FREE',
-    price: '$0',
+    price: PRICING.free.price,
     amount: PRICING.free.amount,
     icon: Compass,
     description: 'See Your Core Map',

@@ -3,6 +3,7 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import { getSessionUserFromCookie, getVerifiedSessionId, shouldUseSecureCookie } from '../_lib/auth-utils.js';
+import { enforceRateLimit } from '../_lib/rate-limit.js';
 import { sendLifecycleEmail, type LifecycleEmailKind } from '../../server/resend.js';
 
 // Generate a random session ID
@@ -352,6 +353,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           res.setHeader('Allow', 'POST');
           return res.status(405).json({ error: 'Method not allowed' });
         }
+        if (enforceRateLimit(req, res, {
+          keyPrefix: 'auth:login',
+          limit: 10,
+          windowMs: 15 * 60 * 1000,
+          message: 'Too many login attempts. Please wait and try again.',
+        })) return;
         return handleLogin(req, res);
 
       case 'signup':
@@ -359,6 +366,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           res.setHeader('Allow', 'POST');
           return res.status(405).json({ error: 'Method not allowed' });
         }
+        if (enforceRateLimit(req, res, {
+          keyPrefix: 'auth:signup',
+          limit: 6,
+          windowMs: 60 * 60 * 1000,
+          message: 'Too many signup attempts. Please wait and try again.',
+        })) return;
         return handleSignup(req, res);
 
       case 'logout':
@@ -376,6 +389,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           res.setHeader('Allow', 'POST');
           return res.status(405).json({ error: 'Method not allowed' });
         }
+        if (enforceRateLimit(req, res, {
+          keyPrefix: 'email:lifecycle',
+          limit: 4,
+          windowMs: 24 * 60 * 60 * 1000,
+          message: 'Too many lifecycle email attempts. Please try again later.',
+        })) return;
         return handleLifecycleEmail(req, res);
 
       default:

@@ -128,7 +128,7 @@ function generateHomepageNoscript() {
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">
         <div style="padding: 15px; border: 2px solid #e7e5e4; border-radius: 8px; background: white;">
           <h3 style="margin-top: 0;">Free</h3>
-          <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 8px 0;">$0</p>
+          <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 8px 0;">CA$0</p>
           <ul style="padding-left: 18px; margin: 0;"><li>42-question assessment</li><li>Energy map visualization</li><li>Dominant-inferior axis</li></ul>
         </div>
         <div style="padding: 15px; border: 2px solid #b45309; border-radius: 8px; background: #fffbeb;">
@@ -384,7 +384,7 @@ function generatePricingNoscript() {
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-bottom: 40px;">
       <div style="padding: 25px; border: 2px solid #e7e5e4; border-radius: 10px; background: white;">
         <h2 style="margin-top: 0; color: #451a03;">Free</h2>
-        <p style="font-size: 2.5em; font-weight: bold; color: #451a03; margin: 15px 0;">$0</p>
+        <p style="font-size: 2.5em; font-weight: bold; color: #451a03; margin: 15px 0;">CA$0</p>
         <p style="color: #57534e;">Perfect for getting started</p>
         <ul style="padding-left: 20px;">
           <li>42-question assessment</li>

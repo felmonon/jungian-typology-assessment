@@ -97,8 +97,8 @@ export const About: React.FC = () => {
           {[
             {
               icon: Target,
-              title: 'Independent Measurement',
-              description: 'Singer-Loomis method: All 8 processes scored separately on scales.'
+              title: 'Independent Scoring',
+              description: 'All 8 processes are scored separately so mixed patterns stay visible.'
             },
             {
               icon: Scale,
@@ -146,8 +146,8 @@ export const About: React.FC = () => {
         </div>
 
         <p className="text-body text-jung-secondary mb-10 font-serif">
-          We draw from Jung's writings, Marie-Louise von Franz's lectures on typology, and Singer-Loomis-style
-          independent function scoring. The result is an educational self-reflection framework, not a clinical instrument.
+          We draw from Jung's writings, Marie-Louise von Franz's lectures on typology, and function-first
+          independent scoring traditions. The result is an educational self-reflection framework, not a clinical instrument.
         </p>
 
         <div className="space-y-10">
@@ -159,8 +159,8 @@ export const About: React.FC = () => {
             </h3>
             <div className="text-body text-jung-secondary space-y-4 pl-10 font-serif">
               <p>
-                Traditional tests pit functions against each other as mutually exclusive. TypeJung follows the
-                function-first direction of Singer-Loomis by scoring each process (Te, Ti, Fe, etc.) separately.
+                Traditional tests pit functions against each other as mutually exclusive. TypeJung uses a
+                function-first approach by scoring each process (Te, Ti, Fe, etc.) separately.
               </p>
               <p>
                 <strong>Why?</strong> Real people use multiple processes fluidly. High Te + high Fe?
@@ -308,7 +308,7 @@ export const About: React.FC = () => {
           <Users className="w-6 h-6 text-jung-muted" />
           <h3 className="text-heading text-xl font-serif">Primary Sources & Credits</h3>
         </div>
-        <p className="text-body text-jung-muted mb-6 font-serif">Faithful to originals:</p>
+        <p className="text-body text-jung-muted mb-6 font-serif">Influenced by:</p>
         <ul className="text-body text-sm text-jung-secondary space-y-3 font-serif">
           <li className="flex items-start gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-jung-accent mt-2 flex-shrink-0" />

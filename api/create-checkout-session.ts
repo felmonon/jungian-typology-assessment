@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { getSessionUserFromCookie } from './_lib/auth-utils.js';
+import { enforceRateLimit } from './_lib/rate-limit.js';
 import { getStripeSecretKey, parsePaidTier, resolveCheckoutBaseUrl } from '../server/checkout.js';
 import { PRICING } from '../data/pricing.js';
 import type { PaidTierId } from '../data/pricing.js';
@@ -40,6 +41,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  if (enforceRateLimit(req, res, {
+    keyPrefix: 'checkout:create-session',
+    limit: 12,
+    windowMs: 60 * 60 * 1000,
+    message: 'Too many checkout attempts. Please wait and try again.',
+  })) return;
 
   try {
     const stripeSecretKey = getStripeSecretKey();

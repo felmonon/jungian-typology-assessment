@@ -91,7 +91,7 @@ export const ResultsHeader: React.FC<ResultsHeaderProps> = ({ results }) => {
                   Primary Orientation
                 </div>
                 <div className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest text-jung-subtle">
-                  Loomis Validated
+                  Function-first
                 </div>
               </div>
             </div>

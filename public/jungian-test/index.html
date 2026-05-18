@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jungian Test - Measure Your Cognitive Functions | TypeJung</title>
-<meta name="description" content="Take a Jungian test that maps all 8 cognitive functions, shows your likely type pattern, and highlights stress and growth edges.">
+<meta name="description" content="Take a Jungian test that maps all 8 cognitive functions, shows your likely type pattern, and supports educational self-reflection.">
 <meta name="keywords" content="Jungian test, Carl Jung personality test, Jungian personality test, Jung cognitive functions">
 <meta name="author" content="TypeJung">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -13,40 +13,84 @@
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://typejung.com/jungian-test">
 <meta property="og:title" content="Jungian Test - Measure Your Cognitive Functions | TypeJung">
-<meta property="og:description" content="Take a Jungian test that maps all 8 cognitive functions, shows your likely type pattern, and highlights stress and growth edges.">
+<meta property="og:description" content="Take a Jungian test that maps all 8 cognitive functions, shows your likely type pattern, and supports educational self-reflection.">
 <meta property="og:image" content="https://typejung.com/og-image.png">
 <meta property="og:site_name" content="TypeJung">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Jungian Test - Measure Your Cognitive Functions | TypeJung">
-<meta name="twitter:description" content="Take a Jungian test that maps all 8 cognitive functions, shows your likely type pattern, and highlights stress and growth edges.">
+<meta name="twitter:description" content="Take a Jungian test that maps all 8 cognitive functions, shows your likely type pattern, and supports educational self-reflection.">
 <meta name="twitter:image" content="https://typejung.com/og-image.png">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  body { font-family: Georgia, serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 40px 20px; background: #fafaf9; }
-  h1 { color: #451a03; font-size: 2.5em; margin-bottom: 0.2em; }
-  h2 { color: #451a03; border-bottom: 2px solid #b45309; padding-bottom: 10px; margin-top: 40px; }
-  h3 { color: #451a03; margin-top: 30px; }
-  .subtitle { color: #57534e; font-size: 1.3em; margin-bottom: 30px; }
-  .breadcrumb { color: #78716c; margin-bottom: 20px; }
-  .breadcrumb a { color: #b45309; text-decoration: none; }
-  .eyebrow { color: #b45309; font-weight: bold; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.78rem; }
-  .cta-box { background: #fef3c7; padding: 25px; border-radius: 10px; margin: 30px 0; border-left: 4px solid #b45309; }
+  :root {
+    --jung-base: #fafaf8;
+    --jung-surface: #ffffff;
+    --jung-surface-alt: #f4f4f2;
+    --jung-dark: #1a1a1a;
+    --jung-secondary: #555d56;
+    --jung-muted: #666666;
+    --jung-border: #d4d4d2;
+    --jung-border-light: #e8e8e6;
+    --jung-accent: #2d5a3d;
+    --jung-accent-hover: #234832;
+    --jung-accent-light: #e8f1ea;
+    --jung-accent-muted: #7fa085;
+    --jung-gold: #a17932;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Space Grotesk", Verdana, sans-serif;
+    line-height: 1.75;
+    color: var(--jung-dark);
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 32px 20px 48px;
+    background:
+      linear-gradient(180deg, rgba(244,244,242,0.72) 0%, rgba(250,250,248,0) 360px),
+      var(--jung-base);
+  }
+  h1, h2, h3 { font-family: "Fraunces", Georgia, serif; font-weight: 600; letter-spacing: 0; }
+  h1 { color: var(--jung-dark); font-size: clamp(2.35rem, 7vw, 4.4rem); line-height: 0.98; margin: 0 0 0.35em; }
+  h2 { color: var(--jung-dark); border-bottom: 1px solid var(--jung-border); padding-bottom: 12px; margin-top: 48px; font-size: clamp(1.55rem, 3.5vw, 2.25rem); line-height: 1.1; }
+  h3 { color: var(--jung-dark); margin-top: 30px; font-size: 1.2rem; line-height: 1.25; }
+  p, li { color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; }
+  a { color: var(--jung-accent); text-decoration-thickness: 0.08em; text-underline-offset: 0.18em; }
+  .subtitle { color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; font-size: clamp(1.1rem, 2.6vw, 1.35rem); line-height: 1.65; margin-bottom: 22px; }
+  .breadcrumb { color: var(--jung-muted); margin-bottom: 28px; font-size: 0.92rem; }
+  .breadcrumb a { color: var(--jung-accent); text-decoration: none; font-weight: 600; }
+  .eyebrow { color: var(--jung-accent); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.78rem; margin-bottom: 14px; }
+  .cta-box { background: var(--jung-dark); color: white; padding: clamp(24px, 5vw, 40px); border-radius: 8px; margin: 38px 0; border: 1px solid var(--jung-dark); box-shadow: 0 24px 60px -36px rgb(29 38 32 / 0.55); }
+  .cta-box p, .cta-box h2, .cta-box h3 { color: white; }
+  .cta-box h2 { border: 0; margin-top: 0; padding-bottom: 0; }
   .cta-box h3 { margin-top: 0; }
-  .btn { display: inline-block; padding: 12px 25px; background: #451a03; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; }
-  .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
-  .related-card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-  .related-card a { color: #451a03; text-decoration: none; font-weight: bold; }
-  .faq-item { background: white; padding: 18px; border-radius: 8px; margin-bottom: 14px; border: 1px solid #e7e5e4; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 12px 22px; background: var(--jung-accent); color: white; text-decoration: none; border-radius: 8px; font-weight: 700; box-shadow: 0 18px 50px -34px rgb(47 111 88 / 0.7); }
+  .btn:hover { background: var(--jung-accent-hover); }
+  .text-link { color: var(--jung-accent-light); font-weight: 700; margin-left: 16px; }
+  .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 20px 0; }
+  .related-card { background: var(--jung-surface); padding: 16px; border-radius: 8px; border: 1px solid var(--jung-border-light); box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
+  .related-card a { color: var(--jung-dark); text-decoration: none; font-weight: 700; }
+  .faq-item { background: var(--jung-surface); padding: 18px; border-radius: 8px; margin-bottom: 14px; border: 1px solid var(--jung-border-light); }
   .faq-item h3 { margin: 0 0 8px; font-size: 1.05rem; }
-  .comparison-table { width: 100%; border-collapse: collapse; margin: 20px 0; background: white; }
-  .comparison-table th { background: #451a03; color: white; padding: 12px; text-align: left; }
-  .comparison-table td { padding: 12px; border-bottom: 1px solid #e7e5e4; vertical-align: top; }
-  .comparison-table tr:nth-child(even) { background: #f5f5f4; }
+  .comparison-table { width: 100%; border-collapse: collapse; margin: 22px 0; background: var(--jung-surface); border: 1px solid var(--jung-border); border-radius: 8px; overflow: hidden; }
+  .comparison-table th { background: var(--jung-dark); color: white; padding: 13px; text-align: left; }
+  .comparison-table td { padding: 13px; border-bottom: 1px solid var(--jung-border-light); vertical-align: top; color: var(--jung-secondary); }
+  .comparison-table tr:nth-child(even) { background: var(--jung-surface-alt); }
   .trait-list { columns: 2; column-gap: 30px; }
   .trait-list li { break-inside: avoid; margin-bottom: 10px; }
-  footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #e7e5e4; color: #78716c; text-align: center; }
-  nav { background: #f5f5f4; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
-  nav a { color: #b45309; text-decoration: none; margin-right: 20px; }
+  footer { margin-top: 50px; padding-top: 22px; border-top: 1px solid var(--jung-border); color: var(--jung-muted); text-align: center; }
+  nav { background: rgba(255,255,255,0.88); padding: 12px; border: 1px solid var(--jung-border); border-radius: 8px; margin-bottom: 30px; box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
+  nav a { color: var(--jung-secondary); text-decoration: none; margin-right: 18px; font-weight: 700; font-size: 0.92rem; }
+  nav a:hover { color: var(--jung-accent); }
+  @media (max-width: 640px) {
+    body { padding: 20px 16px 40px; }
+    nav { display: flex; flex-wrap: wrap; gap: 10px 14px; }
+    nav a { margin-right: 0; }
+    .trait-list { columns: 1; }
+    .text-link { display: inline-block; margin: 14px 0 0; }
+  }
 </style>
 
 <script type="application/ld+json">
@@ -54,7 +98,7 @@
   "@context": "https://schema.org",
   "@type": "WebPage",
   "name": "Jungian Test - Measure Your Cognitive Functions | TypeJung",
-  "description": "Take a Jungian test that maps all 8 cognitive functions, shows your likely type pattern, and highlights stress and growth edges.",
+  "description": "Take a Jungian test that maps all 8 cognitive functions, shows your likely type pattern, and supports educational self-reflection.",
   "url": "https://typejung.com/jungian-test",
   "inLanguage": "en",
   "dateModified": "2026-05-18",
@@ -140,7 +184,7 @@
   <header>
     <p class="eyebrow">Jungian test</p>
     <h1>A Jungian test that goes beyond a four-letter label</h1>
-    <p class="subtitle">TypeJung is a Jungian self-assessment for people who want more than a quick type label. It measures how you use all 8 cognitive functions, then turns that profile into a practical map of attention, decision-making, stress, and growth.</p>
+    <p class="subtitle">TypeJung is a Jungian self-assessment for people who want more than a quick type label. It measures how you use all 8 cognitive functions, then turns that profile into an educational map of attention, decision-making, and stress patterns.</p>
     <p class="subtitle">The free assessment takes about 12 to 16 minutes. Paid reports are optional one-time CAD upgrades: Insight for CA$19 and Mastery for CA$39.</p>
   </header>
 
@@ -167,17 +211,17 @@
 
   <section>
   <h2>When a paid report helps</h2>
-  <p>The free assessment gives you the core map. Insight adds deeper AI analysis, archetype breakdowns, and stress patterns for a one-time CA$19 payment. Mastery adds broader individuation guidance, shadow work, and career path insights for a one-time CA$39 payment.</p>
+  <p>The free assessment gives you the core map. Insight adds developmental edge analysis, a stress pattern map, relationship triggers, personalized practice guidance, and lifetime unlocked result access for a one-time CA$19 payment. Mastery adds the AI Type Coach, an individuation roadmap, reassessment tracking, a practice library, and priority support for a one-time CA$39 payment.</p>
   
   
 </section>
 
   <div class="cta-box">
     <h2>Start with your own function profile</h2>
-    <p>Take the free TypeJung assessment, then use the Learn and Pricing pages to decide whether the core result is enough or whether a deeper one-time CAD report would help.</p>
+    <p>Take the free TypeJung assessment first. If the core map feels useful, Insight is a one-time CA$19 report and Mastery is a one-time CA$39 upgrade with the AI Type Coach and practice tools.</p>
     <p>
       <a href="/assessment" class="btn">Take the Free Assessment</a>
-      <a href="/pricing" style="margin-left: 16px; color: #451a03; font-weight: bold;">See pricing</a>
+      <a href="/pricing" class="text-link">See pricing</a>
     </p>
   </div>
 

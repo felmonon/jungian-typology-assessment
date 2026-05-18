@@ -1,8 +1,4 @@
-import { 
-  Compass, Brain, Beaker, ArrowRight, CheckCircle, 
-  MessageCircle, Sparkles, Users, FileText, Target, Zap,
-  Star, Crown, Quote, ShieldCheck, ArrowUpRight
-} from 'lucide-react';
+import { Compass, Brain, Sparkles, FileText, Target } from 'lucide-react';
 import { PRICING } from '../../data/pricing';
 import { AnalyticsEvents } from '../../lib/analytics';
 
@@ -50,21 +46,21 @@ export const FAQ_ITEMS = [
   }
 ];
 
-export const TESTIMONIALS = [
+export const PRODUCT_PROOF_ITEMS = [
   {
-    quote: "I've taken MBTI tests probably 20 times over the years. Sometimes I'm INFP, sometimes INFJ, once I got ENFP. This assessment showed me why—my Fi and Ni scores are almost identical. The nuance matters.",
-    name: "Early tester",
-    role: "Design professional"
+    title: "Built for mixed scores",
+    description: "When two functions sit close together, TypeJung keeps that tension visible instead of forcing a single neat label.",
+    detail: "Shows adjacent function strength"
   },
   {
-    quote: "I was skeptical of all personality typing until I learned about cognitive functions. This is the only assessment I've found that measures them properly. The AI coach helped me understand shadow work in a way that actually made sense.",
-    name: "Early tester",
-    role: "Software engineer"
+    title: "Maps pressure points",
+    description: "Results include the dominant-inferior axis so stress patterns and growth edges are part of the map from the start.",
+    detail: "Dominant-inferior axis included"
   },
   {
-    quote: "The strongest part is that it gives people a way to talk about stress patterns without reducing them to a type box.",
-    name: "Early reviewer",
-    role: "Coach"
+    title: "Designed for reflection",
+    description: "The report language is educational and testable against lived patterns, not a clinical diagnosis or fixed identity claim.",
+    detail: "Self-reflection, not diagnosis"
   }
 ];
 
@@ -77,7 +73,7 @@ export const HOW_IT_WORKS_STEPS = [
   {
     step: '02',
     title: 'See your function pattern',
-    description: 'Your result shows how the functions appear in your answers, with the dominant-inferior axis and reliability score made visible.'
+    description: 'Your result shows how the functions appear in your answers, with the dominant-inferior axis and answer consistency signal made visible.'
   },
   {
     step: '03',

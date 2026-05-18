@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Check, ChevronDown, Clock, RefreshCcw, ShieldCheck, Sparkles, X } from 'lucide-react';
+import { ArrowRight, Check, ChevronDown, Clock, FileText, RefreshCcw, ShieldCheck, Sparkles, X } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { PRICING } from '../data/pricing';
 import type { PaidTierId, PricingTierId } from '../data/pricing';
@@ -30,7 +30,7 @@ const TIERS: Tier[] = [
       '42-question depth assessment',
       'Energy distribution map',
       'Dominant-inferior axis',
-      'Reliability score',
+      'Answer consistency signal',
     ],
     buttonText: 'Start free assessment',
     tier: 'free',
@@ -106,6 +106,24 @@ const TRUST_ITEMS = [
   { icon: Clock, label: 'One-time payment', body: 'no renewal or subscription' },
   { icon: Sparkles, label: 'Secure checkout', body: 'payment handled by Stripe' },
   { icon: RefreshCcw, label: '30-day refund', body: 'request a refund if the paid report is not useful' },
+];
+
+const PREVIEW_MODULES = [
+  {
+    title: 'Developmental edge preview',
+    tier: 'Insight',
+    body: 'A plain-language read on the inferior function: where stress, projection, avoidance, or fascination may point toward the next growth edge.',
+  },
+  {
+    title: 'Stress pattern map',
+    tier: 'Insight',
+    body: 'Examples of how your dominant-inferior axis can show up in pressure, conflict, work habits, and relationship triggers.',
+  },
+  {
+    title: 'Practice plan sample',
+    tier: 'Mastery',
+    body: 'A starting exercise set for grounding, reflection, and follow-up coaching prompts tied to your cognitive stack.',
+  },
 ];
 
 const IncludedIcon: React.FC<{ included: boolean }> = ({ included }) => (
@@ -294,9 +312,33 @@ export const Pricing: React.FC = () => {
       </section>
 
       <section className="editorial-container py-14">
+        <div className="grid gap-8 lg:grid-cols-[0.72fr_1fr] lg:items-start">
+          <div>
+            <p className="text-label">Paid preview</p>
+            <h2 className="mt-3 text-heading text-4xl text-jung-dark">What the upgrade adds to your free map.</h2>
+            <p className="mt-4 text-sm leading-7 text-jung-secondary">
+              Free shows the scores and core axis. Paid tiers turn that map into interpretation you can use: what the pattern may mean, where it tends to tighten under pressure, and what to practice next.
+            </p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            {PREVIEW_MODULES.map((module) => (
+              <div key={module.title} className="rounded-lg border border-jung-border bg-jung-surface p-5">
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em] text-jung-accent">
+                  <FileText className="h-4 w-4" />
+                  {module.tier}
+                </div>
+                <h3 className="mt-4 text-lg font-semibold text-jung-dark">{module.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-jung-secondary">{module.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="editorial-container pb-14">
         <div className="grid gap-4 md:grid-cols-3">
           {[
-            { icon: ShieldCheck, title: 'Private by default', body: 'The free result can stay local. Accounts are only needed for saved history and paid access.' },
+            { icon: ShieldCheck, title: 'Private by default', body: 'The free result can stay local. Sign in when you want saved history, share links, or paid access restored across devices.' },
             { icon: Clock, title: 'Lifetime access', body: 'Paid access is a one-time purchase for the unlocked report tier.' },
             { icon: Sparkles, title: 'Upgrade after seeing value', body: 'You can complete the assessment first and decide after the free map is generated.' },
           ].map((item) => (

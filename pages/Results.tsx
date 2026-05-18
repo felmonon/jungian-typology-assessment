@@ -25,18 +25,21 @@ const upgradeOptions: Array<{
   label: string;
   description: string;
   features: string[];
+  preview: string;
 }> = [
   {
     tier: 'insight',
     label: 'Insight',
     description: 'Best when you want the deeper report after the free map feels accurate.',
     features: ['Developmental edge', 'Stress pattern map', 'Somatic practices'],
+    preview: 'Unlocks a detailed interpretation of your inferior-function edge, stress triggers, and practice guidance.',
   },
   {
     tier: 'mastery',
     label: 'Mastery',
     description: 'Best when you want the report plus ongoing AI coaching and exercises.',
     features: ['Everything in Insight', 'AI Type Coach', 'Practice roadmap'],
+    preview: 'Adds coach questions, tailored exercises, and a roadmap for working with the result over time.',
   },
 ];
 
@@ -132,7 +135,7 @@ const EnergyBars: React.FC<{ results: DepthAssessmentResult }> = ({ results }) =
         <h2 className="mt-2 text-heading text-3xl text-jung-dark">Your energy map</h2>
       </div>
       <div className="rounded-lg bg-jung-accent-light px-3 py-2 text-sm font-semibold text-jung-accent">
-        {results.reliability.score}% reliable
+        {results.reliability.score}% consistency
       </div>
     </div>
 
@@ -536,7 +539,7 @@ export const Results: React.FC = () => {
                   <ShieldCheck className="h-5 w-5" />
                 </span>
                 <div>
-                  <p className="text-label">Reliability</p>
+                  <p className="text-label">Answer consistency signal</p>
                   <h2 className="text-2xl font-semibold text-jung-dark">{results.reliability.label}</h2>
                 </div>
               </div>
@@ -582,7 +585,7 @@ export const Results: React.FC = () => {
             <h2 className="mt-3 text-2xl font-semibold text-jung-dark">Save this result</h2>
             <div className="mt-4 text-sm leading-7 text-jung-secondary">
               {authLoading && 'Checking your session.'}
-              {!authLoading && !user && 'Sign in to save this result to your live history and create a share link.'}
+              {!authLoading && !user && 'Sign in to save this result to your history, create a share link, and restore any paid access tied to your email.'}
               {isAuthenticated && saveState === 'saving' && 'Saving this result to your account history.'}
               {isAuthenticated && saveState === 'saved' && 'Saved to your account history.'}
               {isAuthenticated && saveState === 'error' && 'The result is ready, but it could not be saved to your account right now.'}
@@ -590,7 +593,7 @@ export const Results: React.FC = () => {
             <div className="mt-5 flex flex-col gap-3">
               {!authLoading && !user && (
                 <Button variant="outline" onClick={() => navigate('/auth')} leftIcon={<LogIn className="h-4 w-4" />}>
-                  Sign in to save
+                  Sign in
                 </Button>
               )}
               {isAuthenticated && (
@@ -650,7 +653,7 @@ export const Results: React.FC = () => {
               </div>
             ) : isPremium && !isAuthenticated ? (
               <div className="mt-4 text-sm leading-7 text-jung-secondary">
-                Sign in to use the premium report and coach APIs with your saved account.
+                Your paid status is active for this session. Sign in with the purchase email to save the unlock to your account and use premium report or coach features across devices.
               </div>
             ) : isPremium ? (
               <div className="mt-4 text-sm leading-7 text-jung-secondary">
@@ -690,6 +693,9 @@ export const Results: React.FC = () => {
                             </span>
                           </div>
                           <p className="mt-2 text-sm leading-6 text-jung-secondary">{option.description}</p>
+                          <div className="mt-3 rounded-lg border border-jung-border bg-jung-surface p-3 text-xs leading-5 text-jung-secondary">
+                            {option.preview}
+                          </div>
                           <ul className="mt-3 grid gap-2 text-xs text-jung-muted">
                             {option.features.map((feature) => (
                               <li key={feature} className="flex gap-2">

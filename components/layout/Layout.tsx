@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { BookOpen, Clock, LogIn, LogOut, Menu, Sparkles, Trophy, User, X } from 'lucide-react';
+import { BookOpen, Clock, LogIn, LogOut, Menu, Trophy, User, X } from 'lucide-react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
+import { TypeJungMark } from '../brand/TypeJungMark';
 import { useAuth } from '../../hooks/use-auth';
 import { usePageTracking } from '../../hooks/useAnalytics';
 
@@ -89,8 +90,8 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       >
         <div className="lab-container flex items-center justify-between gap-4">
           <Link to="/" className="flex min-h-11 items-center gap-3" aria-label="TypeJung home">
-            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-jung-accent text-white shadow-md shadow-jung-accent/15">
-              <Sparkles className="h-5 w-5" />
+            <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-jung-border bg-jung-surface shadow-sm">
+              <TypeJungMark size="sm" />
             </span>
             <span className="flex flex-col">
               <span className="font-display text-2xl leading-none text-jung-dark">TypeJung</span>
@@ -202,8 +203,8 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         <div className="lab-container grid gap-10 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
           <div>
             <Link to="/" className="mb-4 inline-flex min-h-11 items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
-                <Sparkles className="h-4 w-4" />
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-jung-border bg-jung-surface">
+                <TypeJungMark size="sm" className="scale-90" />
               </span>
               <span className="font-display text-2xl text-jung-dark">TypeJung</span>
             </Link>

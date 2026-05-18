@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Check, CreditCard, Loader2, Lock, Mail, RefreshCcw, ShieldCheck, Sparkles, Tag } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, CreditCard, Loader2, Lock, Mail, RefreshCcw, ShieldCheck, Tag } from 'lucide-react';
+import { TypeJungMark } from '../components/brand/TypeJungMark';
 import { Button } from '../components/ui/Button';
 import { useAuth } from '../hooks/use-auth';
 import { useSEO } from '../hooks/useSEO';
@@ -13,6 +14,7 @@ type CheckoutTierDetails = {
   headline: string;
   description: string;
   includes: string[];
+  previewModules: Array<{ title: string; body: string }>;
   nextStep: string;
 };
 
@@ -29,7 +31,12 @@ const CHECKOUT_DETAILS: Record<PaidTierId, CheckoutTierDetails> = {
       'Somatic grounding practices',
       'Lifetime access to this unlocked result',
     ],
-    nextStep: 'Stripe handles payment securely. After checkout, you return to TypeJung and the deeper report unlocks automatically.',
+    previewModules: [
+      { title: 'Developmental edge', body: 'A deeper read on what your inferior function may be asking you to build, tolerate, or integrate.' },
+      { title: 'Stress pattern map', body: 'Concrete ways the axis can show up in conflict, pressure, avoidance, and relationship triggers.' },
+      { title: 'Practice guidance', body: 'Somatic and reflective practices matched to the pattern in your free map.' },
+    ],
+    nextStep: 'Stripe handles payment securely. After checkout, return to TypeJung and sign in with the purchase email if prompted so the unlocked report can be attached to your account.',
   },
   mastery: {
     packageName: 'Mastery Package',
@@ -43,7 +50,12 @@ const CHECKOUT_DETAILS: Record<PaidTierId, CheckoutTierDetails> = {
       'Growth exercises tailored to your cognitive stack',
       'Priority support and reassessment tracking',
     ],
-    nextStep: 'Stripe handles payment securely. After checkout, you return to TypeJung with Mastery access enabled.',
+    previewModules: [
+      { title: 'AI Type Coach', body: 'Follow-up questions about the result, with coaching prompts grounded in your mapped stack.' },
+      { title: 'Individuation roadmap', body: 'A practice sequence for using the report after the first read-through.' },
+      { title: 'Tracking over time', body: 'Reassessment context so later maps can be compared against the current one.' },
+    ],
+    nextStep: 'Stripe handles payment securely. After checkout, return to TypeJung and sign in with the purchase email if prompted so Mastery features can be enabled on your account.',
   },
 };
 
@@ -147,7 +159,7 @@ export const Checkout: React.FC = () => {
         <div className="grid w-full max-w-full min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_26rem] lg:items-start">
           <div className="mx-auto min-w-0 w-full max-w-[19rem] rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm sm:max-w-full sm:p-8">
             <div className="inline-flex items-center gap-2 rounded-lg border border-jung-border bg-jung-base px-3 py-2 text-sm font-semibold text-jung-secondary">
-              <Sparkles className="h-4 w-4 text-jung-accent" />
+              <TypeJungMark size="xs" />
               TypeJung secure checkout
             </div>
 
@@ -186,6 +198,18 @@ export const Checkout: React.FC = () => {
                   </li>
                 ))}
               </ul>
+            </div>
+
+            <div className="mt-5 rounded-lg border border-jung-border bg-jung-base p-5">
+              <h2 className="text-lg font-semibold text-jung-dark">Preview modules</h2>
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                {checkoutDetails.previewModules.map((module) => (
+                  <div key={module.title} className="rounded-lg border border-jung-border bg-jung-surface p-4">
+                    <p className="text-sm font-semibold text-jung-dark">{module.title}</p>
+                    <p className="mt-2 text-xs leading-5 text-jung-secondary">{module.body}</p>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="mt-5 rounded-lg border border-jung-border bg-jung-surface p-5">

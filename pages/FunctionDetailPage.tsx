@@ -262,7 +262,7 @@ export const FunctionDetailPage: React.FC = () => {
             Want to know your {data.code} score?
           </h2>
           <p className="text-jung-secondary mb-8 max-w-lg mx-auto">
-            Take our free assessment to measure all 8 cognitive functions and discover your unique psychological profile.
+            Take our free assessment to measure all 8 cognitive functions and see your educational TypeJung result.
           </p>
           <Button onClick={() => navigate('/assessment')} size="lg">
             Take the Free Assessment

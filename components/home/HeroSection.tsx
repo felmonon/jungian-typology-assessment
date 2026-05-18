@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Hexagon, Activity, Play, Terminal } from 'lucide-react';
+import { Activity } from 'lucide-react';
 import { Button } from '../ui/Button';
+import { TypeJungMark } from '../brand/TypeJungMark';
 
 interface HeroSectionProps {
   onStartAssessment: () => void;
@@ -27,10 +28,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
       {/* Background Grid */}
       <div className="absolute inset-0 z-0 opacity-20 pointer-events-none bg-[size:50px_50px] [background-image:linear-gradient(to_right,#333_1px,transparent_1px),linear-gradient(to_bottom,#333_1px,transparent_1px)]" />
 
-      {/* Center "Eye" / Interface */}
+      {/* Center Interface */}
       <div className="relative z-10 w-full max-w-5xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 
-        {/* Left Column: Terminal Data */}
+        {/* Left Column: Product Narrative */}
         <div className="lg:col-span-7 space-y-8">
           {/* Status Line */}
           <motion.div
@@ -39,7 +40,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
             className="flex items-center gap-3 text-xs font-mono text-jung-accent"
           >
             <div className="w-2 h-2 bg-jung-accent animate-pulse" />
-            <span>SYSTEM_READY /// V2.0.4</span>
+            <span>FUNCTION MAP /// 8-POINT PROFILE</span>
           </motion.div>
 
           {/* Main Headline */}
@@ -54,14 +55,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
               <span className="text-jung-accent opacity-90">of the Psyche.</span>
             </motion.h1>
 
-            {/* Decoding Text Effect */}
+            {/* Brand Mark */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1 }}
-              className="absolute -right-10 top-0 hidden lg:block"
+              className="absolute -right-10 top-0 hidden lg:block opacity-25"
             >
-              <Hexagon className="w-24 h-24 text-jung-border stroke-[0.5] animate-spin-slow opacity-20" />
+              <TypeJungMark size="lg" />
             </motion.div>
           </div>
 
@@ -86,8 +87,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
               onClick={onStartAssessment}
               className="btn-premium group"
             >
-              <Activity className="w-4 h-4 mr-2 group-hover:animate-pulse" />
-              Initiate Diagnostic
+              <Activity className="w-4 h-4 mr-2" />
+              Start the Assessment
             </Button>
 
             <Button
@@ -108,7 +109,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
           >
             {[
               { label: 'Time', value: '15m 00s' },
-              { label: 'Precision', value: '99.8%' },
+              { label: 'Questions', value: '42' },
               { label: 'Functions', value: '08' },
               { label: 'Status', value: 'Private' }
             ].map((stat, i) => (
@@ -122,7 +123,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
 
         {/* Right Column: Visualizer */}
         <div className="lg:col-span-5 relative h-[500px] flex items-center justify-center">
-          {/* Central Orb */}
+          {/* Energy Map */}
           <div className="relative w-full aspect-square max-w-md">
             {/* Spinning Rings */}
             <motion.div
@@ -143,11 +144,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
 
             {/* Core */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-32 h-32 bg-jung-accent/5 backdrop-blur-md rounded-full border border-jung-accent/30 flex items-center justify-center shadow-[0_0_50px_rgba(212,175,55,0.1)]">
-                <div className="text-center space-y-1">
-                  <div className="text-[10px] font-mono text-jung-accent animate-pulse">Scanning...</div>
-                  <div className="text-2xl font-display text-jung-dark">&psi;</div>
-                </div>
+              <div className="w-36 h-36 bg-jung-accent/5 backdrop-blur-md rounded-full border border-jung-accent/30 flex items-center justify-center shadow-[0_0_50px_rgba(212,175,55,0.1)]">
+                <TypeJungMark size="lg" />
               </div>
             </div>
 

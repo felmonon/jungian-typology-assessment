@@ -45,7 +45,7 @@ export const TermsOfService: React.FC = () => {
             </p>
             <ul className="mt-3 space-y-2">
               <li>A comprehensive questionnaire measuring the eight Jungian function-attitudes</li>
-              <li>Personalized results and analysis of your psychological profile</li>
+              <li>Personalized educational results and self-reflection analysis</li>
               <li>Educational content about Jungian typology and individuation</li>
               <li>The ability to save, view, and share your assessment results</li>
             </ul>

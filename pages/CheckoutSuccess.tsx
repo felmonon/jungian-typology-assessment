@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { CheckCircle, Loader2, XCircle, Sparkles, FileText, Layers, AlertTriangle, Heart, Briefcase, Compass, RefreshCcw, Download, Shield } from 'lucide-react';
+import { CheckCircle, Loader2, XCircle, FileText, Layers, AlertTriangle, Heart, Briefcase, Compass, RefreshCcw, Download, Shield } from 'lucide-react';
+import { TypeJungMark } from '../components/brand/TypeJungMark';
 import { Button } from '../components/ui/Button';
 import { PRICING } from '../data/pricing';
 import { FUNCTION_DESCRIPTIONS } from '../data/questions';
@@ -183,15 +184,30 @@ export const CheckoutSuccess: React.FC = () => {
           )}
 
           <div className="mb-4 flex items-center justify-center gap-2 text-jung-accent">
-            <Sparkles className="h-5 w-5" />
+            <TypeJungMark size="xs" />
             <span className="font-medium">Premium access is active</span>
-            <Sparkles className="h-5 w-5" />
           </div>
 
           <p className="text-sm text-jung-muted">
-            You can return to your result and paid report from this browser or your account history.
+            You can return to this unlocked result from this browser. Sign in with the purchase email to restore access across devices and use account-based premium features.
           </p>
         </div>
+
+        {!user && (
+          <div className="mb-8 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-5">
+            <h2 className="text-lg font-semibold text-jung-dark">Save the unlock to your account</h2>
+            <p className="mt-2 text-sm leading-6 text-jung-secondary">
+              Your Stripe receipt verifies the purchase in this browser. To keep access in history, restore it later, or use the AI Type Coach, sign in with the same email used at checkout.
+            </p>
+            <Button
+              onClick={() => navigate('/auth')}
+              variant="outline"
+              className="mt-4"
+            >
+              Sign in with purchase email
+            </Button>
+          </div>
+        )}
 
         <div className="mb-8 rounded-lg border border-jung-border bg-jung-surface p-6 shadow-md">
           <h2 className="mb-5 flex items-center gap-2 text-lg font-semibold text-jung-dark">

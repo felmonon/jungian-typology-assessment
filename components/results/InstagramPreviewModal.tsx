@@ -79,7 +79,7 @@ export const InstagramPreviewModal: React.FC<InstagramPreviewModalProps> = ({
                         </div>
                         <h3 className="text-display text-3xl text-white mb-4">Social Asset <br /><span className="text-jung-accent-muted italic">Generator.</span></h3>
                         <p className="text-sm text-jung-subtle leading-relaxed font-serif">
-                            We've synthesized your functional hierarchy into a cinematically rendered Instagram Story asset. Ready for immediate social dissemination.
+                            We've turned your result pattern into a cinematically rendered Instagram Story asset for sharing.
                         </p>
                     </div>
 
@@ -115,7 +115,7 @@ export const InstagramPreviewModal: React.FC<InstagramPreviewModalProps> = ({
                             <Sparkles className="w-5 h-5 text-jung-gold" />
                         </div>
                         <p className="text-[10px] text-jung-muted leading-relaxed uppercase tracking-widest">
-                            Loomis protocol compliant high-resolution export.
+                            High-resolution export based on your TypeJung result pattern.
                         </p>
                     </div>
                 </div>

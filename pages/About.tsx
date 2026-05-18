@@ -146,7 +146,8 @@ export const About: React.FC = () => {
         </div>
 
         <p className="text-body text-jung-secondary mb-10 font-serif">
-          We draw from Jung's writings, von Franz (his closest student), and Singer-Loomis (Jungian analysts' research).
+          We draw from Jung's writings, Marie-Louise von Franz's lectures on typology, and Singer-Loomis-style
+          independent function scoring. The result is an educational self-reflection framework, not a clinical instrument.
         </p>
 
         <div className="space-y-10">
@@ -163,7 +164,7 @@ export const About: React.FC = () => {
               </p>
               <p>
                 <strong>Why?</strong> Real people use multiple processes fluidly. High Te + high Fe?
-                Possible—and reveals nuanced psyche.
+                Possible—and worth reflecting on as a more nuanced answer pattern.
               </p>
               <div className="bg-jung-surface rounded-lg p-4 border border-jung-border">
                 <p className="text-sm text-jung-muted italic">
@@ -186,8 +187,8 @@ export const About: React.FC = () => {
                 emotional "touchiness," and rigid behaviors.
               </p>
               <p>
-                These reveal the <strong>inferior function</strong> (most unconscious)—your "ever-bleeding wound"
-                (von Franz) but also "treasure hard to attain."
+                These can point toward the <strong>inferior function</strong> (least conscious in this framework)—what
+                von Franz called the "ever-bleeding wound," but also "treasure hard to attain."
               </p>
               <div className="bg-jung-surface rounded-lg p-4 border border-jung-border">
                 <p className="text-sm text-jung-muted italic">
@@ -195,7 +196,8 @@ export const About: React.FC = () => {
                 </p>
               </div>
               <p className="text-sm text-jung-muted">
-                <strong>Why reliable?</strong> Negative patterns show unconscious compensation better than claimed strengths.
+                <strong>Why include this?</strong> Tension and stress-pattern questions can add a confidence signal
+                beyond claimed strengths, while still remaining self-report.
               </p>
             </div>
           </div>
@@ -276,7 +278,8 @@ export const About: React.FC = () => {
                     Self-report captures conscious image, not full unconscious (Jung: "Every mind contains unacknowledged contents").
                   </p>
                   <p className="text-sm text-jung-muted italic mt-2 font-serif">
-                    Analogy: Like a mirror (surface reflection)—not an X-ray (deep scan). True depth needs dreams/therapy.
+                    Analogy: Like a mirror for reflection, not an X-ray or clinical assessment. Deeper personal work
+                    belongs with appropriate professional support.
                   </p>
                 </div>
 
@@ -290,7 +293,7 @@ export const About: React.FC = () => {
                 <div>
                   <p className="font-semibold text-jung-dark mb-1">3. Not Diagnosis</p>
                   <p className="text-sm text-jung-secondary font-serif">
-                    Educational/reflective only. Deep work requires trained analyst.
+                    Educational/reflective only. It is not medical, mental-health, or diagnostic advice.
                   </p>
                 </div>
               </div>
@@ -325,7 +328,7 @@ export const About: React.FC = () => {
           </li>
         </ul>
         <p className="text-sm text-jung-muted mt-6 italic font-serif">
-          Inspired by Jungian writers and analysts, with the goal of reflection rather than entertainment.
+          Inspired by Jungian writers and analysts, with the goal of reflection rather than certainty or diagnosis.
         </p>
       </section>
 
@@ -338,7 +341,7 @@ export const About: React.FC = () => {
           Ready for Reflection?
         </h2>
         <p className="text-body text-jung-muted mb-8 max-w-md mx-auto font-serif">
-          Begin your journey of self-discovery with an assessment rooted in authentic Jungian psychology.
+          Begin a self-reflection exercise informed by Jungian typology.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link

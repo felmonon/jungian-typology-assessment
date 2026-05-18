@@ -133,7 +133,7 @@ export const SharePage: React.FC = () => {
               {depthResult.narrative.developmentalEdge}
             </p>
             <div className="mt-6 rounded-lg bg-jung-accent-light px-4 py-3 text-sm font-semibold text-jung-accent">
-              {depthResult.reliability.score}% reliability
+              {depthResult.reliability.score}% answer consistency
             </div>
           </div>
         </div>

@@ -86,7 +86,7 @@ Depth Energy Map:
 - Dominant channel: ${depth.dominant}
 - Auxiliary channel: ${depth.auxiliary}
 - Inferior channel: ${depth.inferior}
-- Reliability: ${depth.reliability?.score}% (${depth.reliability?.label})
+- Answer consistency signal: ${depth.reliability?.score}% (${depth.reliability?.label})
 - Developmental edge: ${depth.narrative?.developmentalEdge}
 - Complex vulnerability: ${depth.narrative?.complexVulnerability}
 ` : '';
@@ -162,7 +162,7 @@ async function handleFreeAnalysis(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'Invalid assessment data format' });
   }
 
-  const prompt = `You are an expert in Jungian psychology, depth typology, and cognitive function development. Based on the following TypeJung depth assessment results, provide a brief but insightful personalized analysis.
+  const prompt = `Write as an educational Jungian typology guide. Based on the following TypeJung self-reflection results, provide a brief but insightful personalized analysis.
 
 ${formatScoresForPrompt({ scores, stack, attitudeScore: attitudeScore || 0, isUndifferentiated: isUndifferentiated || false, resultVersion, depthResult })}
 
@@ -171,7 +171,7 @@ Write a personalized analysis in 150-200 words that:
 2. Names the inferior-function developmental edge without reducing them to a four-letter label
 3. Offers one practical observation about how they likely experience stress, the body, or value
 
-Keep the tone direct, psychologically grounded, and useful. Use second person ("you"). Do not mention that this is a free or limited analysis. Do not use bullet points, headers, or any markdown formatting like asterisks. Write in plain flowing paragraphs only.`;
+Keep the tone direct, psychologically grounded, and useful. Use second person ("you"). Clearly treat the result as educational self-reflection, not diagnosis, therapy, or a clinical assessment. Avoid certainty, treatment advice, and claims of scientific validation. Do not mention that this is a free or limited analysis. Do not use bullet points, headers, or any markdown formatting like asterisks. Write in plain flowing paragraphs only.`;
 
   const analysis = await generateGeminiText(prompt, {
     temperature: 0.7,
@@ -217,12 +217,12 @@ async function handlePremiumAnalysis(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'Invalid assessment data format' });
   }
 
-  const prompt = `You are an expert in Jungian depth typology. Create a premium TypeJung report from this result.
+  const prompt = `Write as an educational Jungian typology guide. Create a premium TypeJung self-reflection report from this result.
 
 Return valid JSON only with these exact string keys:
 ${SECTION_KEYS.join(', ')}
 
-Each value should be 120-180 words, direct, psychologically grounded, and second-person.
+Each value should be 120-180 words, direct, psychologically grounded, and second-person. Frame interpretations as possibilities for reflection, not clinical findings. Do not diagnose, provide therapy, or claim scientific validation.
 
 Compatibility scores:
 ${JSON.stringify({ scores, stack, attitudeScore, isUndifferentiated }, null, 2)}

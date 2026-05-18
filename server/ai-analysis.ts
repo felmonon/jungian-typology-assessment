@@ -105,7 +105,7 @@ Depth Energy Map:
 - Dominant channel: ${depth.dominant}
 - Auxiliary channel: ${depth.auxiliary}
 - Inferior channel: ${depth.inferior}
-- Reliability: ${depth.reliability?.score}% (${depth.reliability?.label})
+- Answer consistency signal: ${depth.reliability?.score}% (${depth.reliability?.label})
 - Developmental edge: ${depth.narrative?.developmentalEdge}
 - Complex vulnerability: ${depth.narrative?.complexVulnerability}
 ` : "";
@@ -123,7 +123,7 @@ ${depthBlock}
 }
 
 export async function generateFreeAnalysis(input: AnalysisInput): Promise<string> {
-  const prompt = `You are an expert in Jungian psychology, depth typology, and cognitive function development. Based on the following TypeJung depth assessment results, provide a brief but insightful personalized analysis.
+  const prompt = `Write as an educational Jungian typology guide. Based on the following TypeJung self-reflection results, provide a brief but insightful personalized analysis.
 
 ${formatScoresForPrompt(input)}
 
@@ -132,7 +132,7 @@ Write a personalized analysis in 150-200 words that:
 2. Names the inferior-function developmental edge without reducing them to a four-letter label
 3. Offers one practical observation about how they likely experience stress, the body, or value
 
-Keep the tone direct, psychologically grounded, and useful. Use second person ("you"). Do not mention that this is a free or limited analysis. Do not use bullet points, headers, or any markdown formatting like asterisks. Write in plain flowing paragraphs only.`;
+Keep the tone direct, psychologically grounded, and useful. Use second person ("you"). Clearly treat the result as educational self-reflection, not diagnosis, therapy, or a clinical assessment. Avoid certainty, treatment advice, and claims of scientific validation. Do not mention that this is a free or limited analysis. Do not use bullet points, headers, or any markdown formatting like asterisks. Write in plain flowing paragraphs only.`;
 
   try {
     const ai = getAiClient();
@@ -199,7 +199,7 @@ async function generateSection(
   secondary: string
 ): Promise<string> {
   const prompts: Record<string, string> = {
-    overview: `You are an expert in Jungian analytical psychology. Based on these TypeJung depth assessment results, write a comprehensive psychological profile overview (300-400 words).
+    overview: `Write as an educational Jungian typology guide. Based on these TypeJung self-reflection results, write a comprehensive typology overview (300-400 words).
 
 ${basePrompt}
 
@@ -209,9 +209,9 @@ Write about:
 - Their natural strengths and areas of psychological development
 - How their type processes information and makes decisions
 
-Use second person ("you"). Write in flowing, insightful paragraphs. Be specific to their actual scores. Do not use any markdown formatting like asterisks or bold text - use plain text only.`,
+Use second person ("you"). Write in flowing, insightful paragraphs. Be specific to their actual scores. Frame interpretations as possibilities for reflection, not clinical findings. Do not use any markdown formatting like asterisks or bold text - use plain text only.`,
 
-    functionAnalysis: `You are an expert in Jungian cognitive functions. Provide a detailed analysis of each cognitive function in this person's stack (400-500 words).
+    functionAnalysis: `Write as an educational guide to Jungian cognitive functions. Provide a detailed reflection on each cognitive function in this person's stack (400-500 words).
 
 ${basePrompt}
 
@@ -220,9 +220,9 @@ For each function in their stack (dominant, auxiliary, tertiary, inferior):
 - Describe specific behaviors and thought patterns
 - Discuss the development level suggested by their scores
 
-Use second person. Be psychologically grounded and specific to their scores. Do not use any markdown formatting - write in plain text paragraphs only.`,
+Use second person. Be psychologically grounded and specific to their scores. Avoid diagnostic language or fixed labels. Do not use any markdown formatting - write in plain text paragraphs only.`,
 
-    archetypes: `You are an expert in Jungian archetypes. Based on these results, describe the archetypal patterns in this person's psyche (300-350 words).
+    archetypes: `Write as an educational guide to Jungian archetypes. Based on these results, describe possible archetypal themes for reflection (300-350 words).
 
 ${basePrompt}
 
@@ -232,9 +232,9 @@ Discuss:
 - The Parent archetype in relation to their auxiliary function
 - The Child and Anima/Animus archetypes and their tertiary/inferior functions
 
-Be specific about how these archetypes might appear in their life. Write in plain text without any markdown formatting.`,
+Be specific about how these archetypes might appear in their life while avoiding certainty or clinical claims. Write in plain text without any markdown formatting.`,
 
-    theGrip: `You are an expert in Jungian stress patterns. Describe "The Grip" experience for this person (300-350 words).
+    theGrip: `Write as an educational guide to Jungian stress patterns. Describe possible "Grip" experiences for this person (300-350 words).
 
 ${basePrompt}
 
@@ -245,9 +245,9 @@ Their inferior function is ${FUNCTION_NAMES[secondary]}. Explain:
 - Specific strategies for recognizing and recovering from Grip episodes
 - How to prevent falling into the Grip
 
-Be practical and specific to their function stack. Write in plain text without any markdown formatting.`,
+Be practical and specific to their function stack. Offer grounding-oriented reflection, not mental-health treatment advice. Write in plain text without any markdown formatting.`,
 
-    relationships: `You are an expert in Jungian relationship dynamics. Analyze this person's relationship patterns (350-400 words).
+    relationships: `Write as an educational guide to Jungian relationship dynamics. Reflect on possible relationship patterns (350-400 words).
 
 ${basePrompt}
 
@@ -258,9 +258,9 @@ Cover:
 - Compatible types and why those connections work
 - Practical advice for relationship growth
 
-Be warm, specific, and constructive. Write in plain text without any markdown formatting.`,
+Be warm, specific, and constructive. Avoid predicting compatibility as a certainty. Write in plain text without any markdown formatting.`,
 
-    career: `You are an expert in Jungian typology and career counseling. Provide career guidance based on these results (350-400 words).
+    career: `Write as an educational guide to Jungian typology and work reflection. Provide non-clinical career reflection based on these results (350-400 words).
 
 ${basePrompt}
 
@@ -271,9 +271,9 @@ Include:
 - How to leverage their auxiliary function for career growth
 - Warning signs of career misalignment with their type
 
-Be specific and actionable. Write in plain text without any markdown formatting.`,
+Be specific and actionable, but do not present this as professional career counseling. Write in plain text without any markdown formatting.`,
 
-    individuation: `You are an expert in Jung's concept of individuation. Create a personalized individuation path (400-450 words).
+    individuation: `Write as an educational guide to Jung's concept of individuation. Create a reflective individuation path (400-450 words).
 
 ${basePrompt}
 
@@ -284,9 +284,9 @@ Describe:
 - Integration of shadow elements related to ${FUNCTION_NAMES[secondary]}
 - Milestones to watch for on their individuation path
 
-Be practical and encouraging. Write in plain text without any markdown formatting.`,
+Be practical and encouraging. Keep it educational and avoid therapeutic directives. Write in plain text without any markdown formatting.`,
 
-    shadow: `You are an expert in Jungian shadow work. Analyze this person's shadow dynamics (300-350 words).
+    shadow: `Write as an educational guide to Jungian shadow work. Reflect on possible shadow dynamics (300-350 words).
 
 ${basePrompt}
 
@@ -297,9 +297,9 @@ Explore:
 - Specific shadow integration exercises
 - The gifts hidden within their shadow
 
-Be insightful but compassionate. Write in plain text without any markdown formatting.`,
+Be insightful but compassionate. Avoid framing projections, triggers, or shadow content as clinical facts. Write in plain text without any markdown formatting.`,
 
-    growth: `You are an expert in psychological development. Provide a personal growth roadmap (350-400 words).
+    growth: `Write as an educational guide to personal development through Jungian typology. Provide a personal growth reflection map (350-400 words).
 
 ${basePrompt}
 
@@ -310,9 +310,9 @@ Include:
 - Daily practices to strengthen underutilized functions
 - Books, resources, or modalities that support their growth path
 
-Be practical and motivating. Write in plain text without any markdown formatting.`,
+Be practical and motivating. Avoid treatment language and keep practices low-risk and self-reflective. Write in plain text without any markdown formatting.`,
 
-    dreams: `You are an expert in Jungian dream analysis. Provide dreamwork guidance tailored to their type (300-350 words).
+    dreams: `Write as an educational guide to Jungian dream reflection. Provide dreamwork prompts tailored to their type (300-350 words).
 
 ${basePrompt}
 
@@ -323,7 +323,7 @@ Cover:
 - A personalized dream journaling approach
 - Active imagination techniques suited to their function stack
 
-Be mystical yet practical. Write in plain text without any markdown formatting.`,
+Be imaginative yet practical. Present symbols as prompts for reflection, not authoritative interpretations. Write in plain text without any markdown formatting.`,
   };
 
   try {

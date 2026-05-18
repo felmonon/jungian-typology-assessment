@@ -433,7 +433,7 @@ export const typeData = {
 export const pageData = {
   '/': {
     title: 'TypeJung - Jungian Energy Map Assessment',
-    description: 'Take a free depth-based Jungian assessment that maps cognitive functions, energy flow, inferior-function stress, and growth edges.',
+    description: 'Take a free depth-based Jungian assessment that maps cognitive functions, energy flow, and inferior-function stress for educational self-reflection.',
   },
   '/assessment': {
     title: 'Take the Assessment | TypeJung',
@@ -449,7 +449,7 @@ export const pageData = {
   },
   '/pricing': {
     title: 'Pricing Plans | TypeJung',
-    description: 'Choose your TypeJung plan: Free ($0), Insight (CA$19), or Mastery (CA$39). Get deeper AI analysis, comprehensive reports, and AI coaching.',
+    description: 'Choose your TypeJung plan: Free, Insight (CA$19), or Mastery (CA$39). One-time CAD upgrades add deeper interpretation, practice guidance, and coaching support.',
   },
   '/privacy': {
     title: 'Privacy Policy | TypeJung',
@@ -461,7 +461,7 @@ export const pageData = {
   },
   '/jungian-test': {
     title: 'Jungian Test - Measure Your Cognitive Functions | TypeJung',
-    description: 'Take a Jungian test that maps all 8 cognitive functions, shows your likely type pattern, and highlights stress and growth edges.',
+    description: 'Take a Jungian test that maps all 8 cognitive functions, shows your likely type pattern, and supports educational self-reflection.',
   },
   '/mbti-alternative': {
     title: 'MBTI Alternative - Function-Based Personality Test | TypeJung',
@@ -482,12 +482,12 @@ export const seoLandingPages = [
     slug: 'jungian-test',
     query: 'Jungian test',
     title: 'Jungian Test - Measure Your Cognitive Functions | TypeJung',
-    description: 'Take a Jungian test that maps all 8 cognitive functions, shows your likely type pattern, and highlights stress and growth edges.',
+    description: 'Take a Jungian test that maps all 8 cognitive functions, shows your likely type pattern, and supports educational self-reflection.',
     keywords: ['Jungian test', 'Carl Jung personality test', 'Jungian personality test', 'Jung cognitive functions'],
     eyebrow: 'Jungian test',
     h1: 'A Jungian test that goes beyond a four-letter label',
     intro: [
-      'TypeJung is a Jungian self-assessment for people who want more than a quick type label. It measures how you use all 8 cognitive functions, then turns that profile into a practical map of attention, decision-making, stress, and growth.',
+      'TypeJung is a Jungian self-assessment for people who want more than a quick type label. It measures how you use all 8 cognitive functions, then turns that profile into an educational map of attention, decision-making, and stress patterns.',
       'The free assessment takes about 12 to 16 minutes. Paid reports are optional one-time CAD upgrades: Insight for CA$19 and Mastery for CA$39.',
     ],
     sections: [
@@ -514,7 +514,7 @@ export const seoLandingPages = [
       {
         heading: 'When a paid report helps',
         body: [
-          'The free assessment gives you the core map. Insight adds deeper AI analysis, archetype breakdowns, and stress patterns for a one-time CA$19 payment. Mastery adds broader individuation guidance, shadow work, and career path insights for a one-time CA$39 payment.',
+          'The free assessment gives you the core map. Insight adds developmental edge analysis, a stress pattern map, relationship triggers, personalized practice guidance, and lifetime unlocked result access for a one-time CA$19 payment. Mastery adds the AI Type Coach, an individuation roadmap, reassessment tracking, a practice library, and priority support for a one-time CA$39 payment.',
         ],
       },
     ],
@@ -575,7 +575,7 @@ export const seoLandingPages = [
           rows: [
             ['What gets measured?', 'Four broad preference pairs', 'All 8 cognitive functions'],
             ['How are results shown?', 'A four-letter type label', 'Function scores plus likely type pattern'],
-            ['What is the growth angle?', 'General type advice', 'Dominant, auxiliary, inferior, stress, and shadow themes'],
+            ['What is the development angle?', 'General type advice', 'Dominant, auxiliary, inferior, stress, and development themes'],
             ['What is free?', 'Usually a basic type result', 'A free 42-question assessment and core profile'],
           ],
         },
@@ -637,7 +637,7 @@ export const seoLandingPages = [
       {
         heading: 'What the test looks for',
         body: [
-          'A reliable inferior-function test needs more than a single question about weakness. TypeJung looks at how you attend, decide, respond to pressure, and distribute energy across the 8 functions.',
+          'A useful inferior-function test needs more than a single question about weakness. TypeJung looks at how you attend, decide, respond to pressure, and distribute energy across the 8 functions.',
           'The result helps you compare likely dominant and inferior poles, then gives you a language for recovery and development.',
         ],
       },
@@ -664,7 +664,7 @@ export const seoLandingPages = [
     ],
     relatedLinks: [
       { href: '/assessment', label: 'Take the free assessment' },
-      { href: '/shadow-work-test', label: 'Jungian shadow work test' },
+      { href: '/shadow-work-test', label: 'Jungian self-observation test' },
       { href: '/blog/understanding-the-grip', label: 'Read about the grip' },
       { href: '/learn', label: 'Learn the function stack' },
     ],
@@ -707,7 +707,7 @@ export const seoLandingPages = [
           'A free cognitive function profile',
           'A likely Jungian type pattern',
           'Educational links for each function',
-          'Optional deeper reports for stress, shadow, and growth themes',
+          'Optional deeper reports for stress patterns, relationship triggers, and practice guidance',
         ],
       },
       {
@@ -728,7 +728,7 @@ export const seoLandingPages = [
       },
       {
         question: 'Can I use the result to find my type?',
-        answer: 'Yes. The function profile supports a likely type interpretation, but the profile itself is the main source of insight.',
+        answer: 'Yes. The function profile supports a likely type interpretation, but the profile itself is the main source of self-reflection.',
       },
     ],
     relatedLinks: [
@@ -965,7 +965,7 @@ export const seoLandingPages = [
       {
         heading: 'How to use the output',
         body: [
-          'Read the highest function as a hypothesis about what your ego trusts. Read the lowest or inferior signal as a place to observe stress, projection, attraction, and growth work. Then retake later to see whether the map becomes more flexible.',
+          'Read the highest function as a hypothesis about what your ego trusts. Read the lowest or inferior signal as a place to observe stress, reaction, attraction, and developmental tension. Then retake later to see whether the map becomes more flexible.',
         ],
       },
     ],
@@ -993,8 +993,8 @@ export const seoLandingPages = [
   {
     slug: 'jungian-typology',
     query: 'Jungian typology',
-    title: 'Jungian Typology Guide - Functions, Type, and Growth | TypeJung',
-    description: 'Learn Jungian typology through cognitive functions, attitude direction, dominant-inferior patterns, and practical growth work.',
+    title: 'Jungian Typology Guide - Functions, Type, and Self-Reflection | TypeJung',
+    description: 'Learn Jungian typology through cognitive functions, attitude direction, dominant-inferior patterns, and practical self-reflection.',
     keywords: ['Jungian typology', 'Jung psychological types', 'Jungian personality types', 'Jungian functions'],
     eyebrow: 'Jungian typology',
     h1: 'A practical guide to Jungian typology',
@@ -1061,7 +1061,7 @@ export const seoLandingPages = [
     h1: 'Understand the 8 Jungian cognitive functions',
     intro: [
       'The 8 cognitive functions are the working parts behind Jungian type. They describe how attention gathers information and how judgment makes decisions.',
-      'TypeJung measures these functions through a 42-question assessment, then turns the scores into an energy map, likely type pattern, and growth-focused interpretation.',
+      'TypeJung measures these functions through a 42-question assessment, then turns the scores into an energy map, likely type pattern, and educational self-reflection.',
     ],
     sections: [
       {
@@ -1119,14 +1119,14 @@ export const seoLandingPages = [
   {
     slug: 'shadow-work-test',
     query: 'shadow work test',
-    title: 'Shadow Work Test - Jungian Stress and Growth Patterns | TypeJung',
-    description: 'Use a Jungian shadow work test to explore inferior-function pressure, stress reactions, and practical self-observation without clinical diagnosis.',
+    title: 'Shadow Work Test - Jungian Self-Observation Patterns | TypeJung',
+    description: 'Use a Jungian self-observation test to explore inferior-function pressure and stress reactions without clinical diagnosis.',
     keywords: ['shadow work test', 'Jungian shadow test', 'shadow work questions', 'inferior function shadow'],
     eyebrow: 'Shadow work test',
     h1: 'A Jungian shadow work test for self-observation',
     intro: [
       'Shadow work is not about finding a villain inside yourself. In Jungian language, it starts by noticing what the ego avoids, disowns, overreacts to, or projects onto other people.',
-      'TypeJung approaches shadow work through cognitive-function patterns, especially the inferior-function edge where stress and growth often meet.',
+      'TypeJung approaches shadow-language carefully through cognitive-function patterns, especially the inferior-function edge where stress and self-observation often meet.',
     ],
     sections: [
       {
@@ -1137,7 +1137,7 @@ export const seoLandingPages = [
         bullets: [
           'Use the result as a starting hypothesis',
           'Notice where stress creates overreaction or avoidance',
-          'Look for repeated projections and relationship triggers',
+          'Look for repeated reactions and relationship triggers',
           'Work with a qualified professional for severe or persistent distress',
         ],
       },
@@ -1173,7 +1173,7 @@ export const seoLandingPages = [
       { href: '/assessment', label: 'Take the free assessment' },
       { href: '/inferior-function-test', label: 'Inferior function test' },
       { href: '/blog/understanding-the-grip', label: 'Understand the grip' },
-      { href: '/pricing', label: 'See deeper reports' },
+      { href: '/pricing', label: 'See one-time pricing' },
     ],
   },
 ];

@@ -1,8 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, BarChart3, Brain, Check, Clock, Compass, HeartPulse, Lock, Sparkles } from 'lucide-react';
+import { ArrowRight, BarChart3, Brain, Check, Clock, Compass, HeartPulse, Lock } from 'lucide-react';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import { TypeJungMark } from '../components/brand/TypeJungMark';
 import { Button } from '../components/ui/Button';
 import { PRICING } from '../data/pricing';
 import { AnalyticsEvents } from '../lib/analytics';
@@ -82,7 +83,7 @@ const pricing = [
 const faqs = [
   {
     question: 'Is this another MBTI test?',
-    answer: 'No. TypeJung does not stop at a four-letter label. It maps energy distribution, inferior-function tension, body signals, and reliability.',
+    answer: 'No. TypeJung does not stop at a four-letter label. It maps energy distribution, inferior-function tension, body signals, and an answer consistency signal.',
   },
   {
     question: 'Why only 42 questions?',
@@ -119,7 +120,7 @@ export const Home: React.FC = () => {
             className="max-w-2xl"
           >
             <div className="mb-6 inline-flex items-center gap-2 rounded-lg border border-jung-border bg-jung-surface px-3 py-2 text-sm font-semibold text-jung-secondary shadow-sm">
-              <Sparkles className="h-4 w-4 text-jung-accent" />
+              <TypeJungMark size="xs" />
               Depth-based Jungian typology assessment
             </div>
 
@@ -182,7 +183,7 @@ export const Home: React.FC = () => {
                     </p>
                   </div>
                   <div className="rounded-lg bg-jung-accent-light px-3 py-2 text-sm font-semibold text-jung-accent shadow-sm">
-                    87% reliable
+                    87% consistency
                   </div>
                 </div>
 

@@ -1,7 +1,8 @@
 import React from 'react';
-import { X, Compass, ArrowRight } from 'lucide-react';
+import { X, ArrowRight } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { AnalyticsEvents } from './data';
+import { TypeJungMark } from '../brand/TypeJungMark';
 
 interface ExitIntentPopupProps {
   isOpen: boolean;
@@ -34,7 +35,7 @@ export const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({
 
         <div className="text-center">
           <div className="w-16 h-16 bg-jung-accent-light rounded-full flex items-center justify-center mx-auto mb-6">
-            <Compass className="w-8 h-8 text-jung-accent" />
+            <TypeJungMark size="md" />
           </div>
 
           <h3 className="text-display text-2xl text-jung-dark mb-4">
@@ -46,10 +47,12 @@ export const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({
           </p>
 
           <div className="bg-jung-base rounded-xl p-4 mb-6 text-left border border-jung-border">
-            <p className="text-sm italic text-jung-secondary">
-              "I've taken MBTI tests 20 times and always got different results. This finally explained why."
+            <p className="text-sm font-serif text-jung-dark mb-2">
+              Your free result includes:
             </p>
-            <p className="text-xs font-serif text-jung-muted mt-2">— Early tester</p>
+            <p className="text-sm text-jung-secondary">
+              an 8-function energy map, your dominant-inferior axis, and a plain-language starting point for reflection.
+            </p>
           </div>
 
           <Button

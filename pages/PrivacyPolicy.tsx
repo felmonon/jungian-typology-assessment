@@ -49,7 +49,7 @@ export const PrivacyPolicy: React.FC = () => {
             <div className="card-elevated rounded-2xl p-5">
               <h3 className="font-semibold text-jung-dark mb-2 font-serif">Assessment Responses</h3>
               <p className="text-jung-secondary text-sm m-0 font-body">
-                We store your responses to the typology assessment questions and the calculated results. This data is used to generate your personalized psychological profile and is linked to your account.
+                We store your responses to the typology assessment questions and the calculated results. This data is used to generate your personalized educational results and is linked to your account.
               </p>
             </div>
 
@@ -165,7 +165,7 @@ export const PrivacyPolicy: React.FC = () => {
 
           <div className="pl-14 text-jung-secondary font-body">
             <p>
-              We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. This includes encryption of data in transit and at rest, secure authentication practices, and regular security assessments.
+              We use established platform security controls to protect your personal information against unauthorized access, alteration, disclosure, or destruction. This includes encrypted connections, managed database protections, secure authentication practices, and periodic review of access and configuration.
             </p>
           </div>
         </section>

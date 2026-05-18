@@ -18,7 +18,8 @@ export const ActiveImaginationSection: React.FC = () => (
         <div className="card-premium p-8 lg:p-12 bg-white dark:bg-dark-surface border-jung-border dark:border-dark-border mb-12">
             <div className="max-w-3xl space-y-6 mb-12">
                 <p className="text-body-lg text-jung-secondary dark:text-jung-muted leading-relaxed font-serif italic">
-                    Active Imagination is a meditative technique developed by Jung to bridge the gap between conscious ego and unconscious archetypes. Unlike passive fantasy, it requires active participation and ethical confrontation with inner figures.
+                    Active Imagination is a reflective practice associated with Jung's work, used here as a guided writing
+                    exercise for exploring images, moods, and inner figures. Treat it as self-reflection, not therapy.
                 </p>
             </div>
 
@@ -49,7 +50,9 @@ export const ActiveImaginationSection: React.FC = () => (
             <div className="mt-12 p-8 rounded-[2rem] bg-indigo-500/5 border border-indigo-500/10 flex items-start gap-4">
                 <UserCircle className="w-6 h-6 text-indigo-500 flex-shrink-0" />
                 <p className="text-xs text-jung-secondary dark:text-jung-muted leading-relaxed italic font-serif">
-                    <strong>Protocol:</strong> If you encounter overwhelming images or have a history of trauma, please conduct these sessions with a qualified depth therapist. The unconscious is a powerful objective reality.
+                    <strong>Note:</strong> If an exercise feels overwhelming, pause and return to ordinary grounding. If
+                    you are working with trauma or significant distress, use this material only with appropriate
+                    professional support.
                 </p>
             </div>
         </div>

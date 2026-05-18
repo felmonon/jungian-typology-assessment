@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import './server/load-env';
 import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import { rateLimit } from 'express-rate-limit';

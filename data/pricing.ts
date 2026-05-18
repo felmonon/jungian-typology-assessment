@@ -7,7 +7,7 @@ export const PRICING = {
   free: {
     id: 'free',
     name: 'Free',
-    price: '$0',
+    price: 'CA$0',
     amount: 0,
     currency: 'CAD',
   },

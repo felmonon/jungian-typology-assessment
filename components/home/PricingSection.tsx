@@ -1,12 +1,24 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { Zap, Hexagon, Crown, Check, ArrowUpRight, ShieldCheck, Terminal } from 'lucide-react';
+import { motion, type Variants } from 'framer-motion';
 import { Button } from '../ui/Button';
 import { PRICING_TIERS, AnalyticsEvents } from './data';
 
 interface PricingSectionProps {
   onNavigate: (path: string) => void;
 }
+
+const volumes = ['Vol. I', 'Vol. II', 'Vol. III'];
+const ease = [0.22, 1, 0.36, 1] as const;
+
+const container: Variants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.12 } },
+};
+
+const item: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease } },
+};
 
 export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) => {
   const handlePricingClick = (tier: string, amount: number) => {
@@ -16,107 +28,139 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) =>
   };
 
   return (
-    <section className="py-32 bg-jung-base relative overflow-hidden">
-      {/* Background Grid */}
-      <div className="absolute inset-0 z-0 opacity-10 pointer-events-none bg-[size:30px_30px] [background-image:linear-gradient(to_right,#333_1px,transparent_1px),linear-gradient(to_bottom,#333_1px,transparent_1px)]" />
+    <section id="pricing" className="relative py-24 lg:py-32 bg-jung-base">
+      <div className="lab-container">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-80px' }}
+          variants={container}
+          className="max-w-2xl mb-16"
+        >
+          <motion.div variants={item} className="flex items-center gap-3 mb-6">
+            <span className="h-px w-10 bg-jung-border-light" />
+            <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted">
+              Editions
+            </span>
+          </motion.div>
+          <motion.h2
+            variants={item}
+            className="text-display text-4xl md:text-5xl leading-[1.02] tracking-tight text-jung-dark mb-4"
+          >
+            One assessment.{' '}
+            <span className="italic text-jung-accent">Three&nbsp;depths</span> of insight.
+          </motion.h2>
+          <motion.p variants={item} className="text-jung-secondary font-light">
+            Start free. Upgrade only when you want more. No subscriptions.
+          </motion.p>
+        </motion.div>
 
-      <div className="lab-container relative z-10">
-        <div className="text-center mb-24 max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 mb-6 text-jung-accent/80 font-mono text-[10px] uppercase tracking-[0.3em]">
-            <Terminal className="w-3 h-3" />
-            <span>Pricing</span>
-          </div>
-
-          <h2 className="text-display text-5xl md:text-6xl text-jung-dark mb-6">
-            Start free. <span className="text-jung-accent">Upgrade after value.</span>
-          </h2>
-          <p className="text-jung-secondary font-light text-lg">
-            Take the assessment first. Paid tiers are one-time CAD upgrades for deeper interpretation, coaching, and practice support.
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-6 max-w-7xl mx-auto items-stretch">
-          {PRICING_TIERS.map((tier, index) => {
-            const isPopular = tier.popular;
-            const isMastery = tier.name === 'MASTERY';
-            const Icon = tier.icon;
-
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-80px' }}
+          variants={container}
+          className="grid md:grid-cols-3 gap-5"
+        >
+          {PRICING_TIERS.map((p, idx) => {
+            const highlighted = p.popular;
             return (
               <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="h-full"
+                key={p.name}
+                variants={item}
+                className={`relative flex flex-col rounded-2xl p-8 transition-all ${
+                  highlighted
+                    ? 'bg-jung-accent text-jung-base border border-jung-accent shadow-glow'
+                    : 'bg-jung-surface border border-jung-border hover:border-jung-accent/40 shadow-sm'
+                }`}
               >
-                <div
-                  className={`
-                    relative h-full flex flex-col p-1
-                    ${isPopular ? 'bg-gradient-to-b from-jung-accent to-jung-accent/10' : 'bg-jung-border/30'}
-                    ${isMastery ? 'bg-gradient-to-b from-jung-dark to-jung-base border-jung-border' : ''}
-                  `}
-                  style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%)' }}
-                >
-                  <div className="bg-jung-surface h-full w-full p-8 relative overflow-hidden flex flex-col" style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 19px), calc(100% - 19px) 100%, 0 100%)' }}>
-
-                    {/* Header */}
-                    <div className="border-b border-jung-border/50 pb-8 mb-8">
-                      <div className="flex justify-between items-start mb-4">
-                        <div className={`p-3 border border-jung-border/50 ${isPopular ? 'text-jung-accent' : 'text-jung-muted'}`}>
-                          <Icon className="w-6 h-6" />
-                        </div>
-                        {isPopular && (
-                          <div className="bg-jung-accent text-black px-2 py-1 text-[10px] font-bold uppercase tracking-widest">
-                            Standard
-                          </div>
-                        )}
-                        {isMastery && (
-                          <div className="bg-jung-dark text-white border border-white/20 px-2 py-1 text-[10px] font-bold uppercase tracking-widest">
-                            Complete
-                          </div>
-                        )}
-                      </div>
-
-                      <h3 className="text-display text-2xl text-jung-dark mb-2">{tier.name}</h3>
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-4xl font-mono font-bold text-jung-dark">{tier.price}</span>
-                        <span className="text-[10px] uppercase text-jung-muted tracking-widest">/ One-time</span>
-                      </div>
-                    </div>
-
-                    {/* Features */}
-                    <ul className="space-y-4 mb-10 flex-grow">
-                      {tier.features.map((feature, idx) => (
-                        <li key={idx} className="flex gap-4 items-start text-sm text-jung-secondary">
-                          <div className="w-1 h-1 bg-jung-accent mt-2 flex-shrink-0" />
-                          <span className={isMastery ? 'text-white' : ''}>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <Button
-                      onClick={() => handlePricingClick(tier.name, tier.amount)}
-                      className={`w-full py-6 text-xs uppercase tracking-[0.2em] font-bold border ${isPopular
-                          ? 'bg-jung-accent text-black hover:bg-jung-accent-hover border-transparent'
-                          : 'bg-transparent text-jung-accent border-jung-accent/50 hover:bg-jung-accent/10'
-                        }`}
-                    >
-                      {tier.cta}
-                    </Button>
+                {highlighted && (
+                  <div className="absolute -top-3 left-8 px-3 py-1 bg-jung-gold text-jung-base rounded-full">
+                    <span className="font-mono text-[10px] tracking-[0.22em] uppercase">
+                      Recommended
+                    </span>
                   </div>
+                )}
+
+                <div className="flex items-baseline justify-between mb-6">
+                  <h3
+                    className={`text-display italic text-2xl ${
+                      highlighted ? 'text-jung-base' : 'text-jung-dark'
+                    }`}
+                  >
+                    {p.name.charAt(0) + p.name.slice(1).toLowerCase()}
+                  </h3>
+                  <span
+                    className={`font-mono text-[10px] tracking-[0.22em] uppercase ${
+                      highlighted ? 'text-jung-base/60' : 'text-jung-muted'
+                    }`}
+                  >
+                    {volumes[idx] ?? `Vol. ${idx + 1}`}
+                  </span>
                 </div>
+
+                <div className="flex items-baseline gap-1 mb-3">
+                  <span
+                    className={`text-display text-6xl leading-none ${
+                      highlighted ? 'text-jung-base' : 'text-jung-dark'
+                    }`}
+                  >
+                    {p.price}
+                  </span>
+                  <span
+                    className={`font-mono text-[10px] tracking-[0.22em] uppercase ml-2 ${
+                      highlighted ? 'text-jung-base/60' : 'text-jung-muted'
+                    }`}
+                  >
+                    {p.amount === 0 ? 'forever' : 'one-time'}
+                  </span>
+                </div>
+
+                <p
+                  className={`text-sm leading-relaxed mb-8 font-light ${
+                    highlighted ? 'text-jung-base/80' : 'text-jung-secondary'
+                  }`}
+                >
+                  {p.description}
+                </p>
+
+                <button
+                  onClick={() => handlePricingClick(p.name, p.amount)}
+                  className={`w-full py-3 rounded-full mb-8 transition-all ${
+                    highlighted
+                      ? 'bg-jung-base text-jung-accent hover:bg-jung-base/95'
+                      : 'bg-jung-dark text-jung-base hover:bg-jung-dark/90'
+                  }`}
+                >
+                  <span className="font-mono text-[11px] tracking-[0.18em] uppercase">
+                    {p.cta}
+                  </span>
+                </button>
+
+                <ul
+                  className={`space-y-3 pt-6 border-t ${
+                    highlighted ? 'border-jung-base/15' : 'border-jung-border'
+                  }`}
+                >
+                  {p.features.map((f, i) => (
+                    <li key={i} className="flex items-start gap-3 text-sm">
+                      <span
+                        className={`font-mono text-[10px] tabular-nums mt-1 ${
+                          highlighted ? 'text-jung-base/55' : 'text-jung-muted'
+                        }`}
+                      >
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                      <span className={highlighted ? 'text-jung-base' : 'text-jung-dark'}>
+                        {f}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
               </motion.div>
             );
           })}
-        </div>
-
-        {/* Security Footer */}
-        <div className="mt-20 flex justify-center">
-          <div className="inline-flex items-center gap-3 px-6 py-3 border border-success/30 bg-success/5 rounded text-success text-xs font-mono uppercase tracking-widest">
-            <ShieldCheck className="w-4 h-4" />
-            <span>Secure Stripe checkout</span>
-          </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,108 +1,82 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Plus, Minus, HelpCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Plus, Minus } from 'lucide-react';
 import { FAQ_ITEMS } from './data';
 
+const ease = [0.22, 1, 0.36, 1] as const;
+
 export const FAQSection: React.FC = () => {
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 15 },
-    visible: {
-      opacity: 1,
-      y: 0,
-    },
-  };
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="py-24 lg:py-32 bg-jung-base dark:bg-dark-base relative overflow-hidden">
-      <div className="editorial-container">
-        <div className="max-w-4xl mx-auto">
+    <section id="faq" className="relative py-24 lg:py-32 bg-jung-surface-alt border-y border-jung-border">
+      <div className="lab-container">
+        <div className="grid lg:grid-cols-12 gap-12">
           <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={containerVariants}
-            className="text-center mb-20"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.7, ease }}
+            className="lg:col-span-4"
           >
-            <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-2 bg-jung-accent/5 rounded-full mb-6">
-              <HelpCircle className="w-4 h-4 text-jung-accent" />
-              <span className="text-[10px] font-bold uppercase tracking-widest text-jung-accent">Curiosity & Clarity</span>
-            </motion.div>
-            <motion.h2
-              variants={itemVariants}
-              className="text-display text-4xl sm:text-5xl text-jung-dark mb-4 tracking-tight"
-            >
-              The Science of the <span className="italic">Details</span>
-            </motion.h2>
+            <div className="lg:sticky lg:top-32">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="h-px w-10 bg-jung-border-light" />
+                <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted">
+                  Inquiries
+                </span>
+              </div>
+              <h2 className="text-display text-4xl md:text-5xl leading-[1.02] tracking-tight text-jung-dark mb-6">
+                Questions, <span className="italic text-jung-accent">answered</span>.
+              </h2>
+              <p className="text-jung-secondary font-light leading-relaxed">
+                Curious about methodology, accuracy, or what makes this different?
+                The most common questions are here.
+              </p>
+            </div>
           </motion.div>
 
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={containerVariants}
-            className="space-y-4"
+          <motion.ol
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.6, ease }}
+            className="lg:col-span-8 divide-y divide-jung-border border-t border-b border-jung-border"
           >
-            {FAQ_ITEMS.map((item, index) => {
-              const isOpen = openFaq === index;
+            {FAQ_ITEMS.map((f, i) => {
+              const open = openIndex === i;
               return (
-                <motion.div
-                  key={index}
-                  variants={itemVariants}
-                  className={`group transition-all duration-500 rounded-3xl border ${isOpen
-                      ? 'bg-white dark:bg-dark-surface border-jung-accent shadow-2xl'
-                      : 'bg-white/50 dark:bg-white/5 border-jung-border dark:border-dark-border hover:border-jung-accent/30'
-                    }`}
-                >
+                <li key={i}>
                   <button
-                    id={`faq-button-${index}`}
-                    className="w-full px-8 py-7 flex items-center justify-between text-left focus:outline-none"
-                    onClick={() => setOpenFaq(isOpen ? null : index)}
-                    aria-expanded={isOpen}
-                    aria-controls={`faq-panel-${index}`}
+                    onClick={() => setOpenIndex(open ? null : i)}
+                    className="w-full py-6 flex items-start gap-6 text-left group"
+                    aria-expanded={open}
                   >
-                    <span className={`text-display text-xl transition-colors duration-300 ${isOpen ? 'text-jung-accent' : 'text-jung-dark'
-                      }`}>
-                      {item.question}
+                    <span className="font-mono text-[10px] tabular-nums text-jung-muted pt-1 w-8 shrink-0">
+                      {String(i + 1).padStart(2, '0')}
                     </span>
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500 ${isOpen ? 'bg-jung-accent text-white rotate-180' : 'bg-jung-base dark:bg-dark-base text-jung-muted'
-                      }`}>
-                      {isOpen ? <Minus className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
-                    </div>
+                    <span className="flex-1 text-display text-xl md:text-2xl text-jung-dark leading-snug group-hover:text-jung-accent transition-colors">
+                      {f.question}
+                    </span>
+                    <span className="shrink-0 pt-1.5 text-jung-muted group-hover:text-jung-accent transition-colors">
+                      {open ? <Minus size={18} /> : <Plus size={18} />}
+                    </span>
                   </button>
-                  <AnimatePresence>
-                    {isOpen && (
-                      <motion.div
-                        id={`faq-panel-${index}`}
-                        role="region"
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                        className="overflow-hidden"
-                      >
-                        <div className="px-8 pb-8 pt-0">
-                          <div className="w-12 h-0.5 bg-jung-accent/20 mb-6 rounded-full" />
-                          <p className="text-body text-jung-secondary dark:text-jung-muted leading-relaxed text-lg font-serif italic">
-                            {item.answer}
-                          </p>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
+                  <div
+                    className={`grid transition-all duration-300 ease-out ${
+                      open ? 'grid-rows-[1fr] opacity-100 pb-6' : 'grid-rows-[0fr] opacity-0'
+                    }`}
+                  >
+                    <div className="overflow-hidden pl-14 pr-4 md:pr-10">
+                      <p className="text-jung-secondary leading-relaxed font-light whitespace-pre-line">
+                        {f.answer}
+                      </p>
+                    </div>
+                  </div>
+                </li>
               );
             })}
-          </motion.div>
+          </motion.ol>
         </div>
       </div>
     </section>

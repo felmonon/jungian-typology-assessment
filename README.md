@@ -79,7 +79,7 @@ The underlying model is Carl Jung's original typology — not the simplified MBT
 | **Backend** | Express.js, Vercel Serverless Functions |
 | **Database** | Supabase (PostgreSQL, real-time subscriptions) |
 | **Auth** | Google OAuth 2.0, Email/Password |
-| **Payments** | Stripe (3-tier: Free / Insight CA$19 / Mastery CA$39) |
+| **Payments** | Stripe (3-tier: Free / Insight CA$10 / Mastery CA$29) |
 | **AI** | Google Gemini API |
 | **CI/CD** | GitHub Actions, Vercel |
 | **Testing** | Vitest, E2E suite |
@@ -91,8 +91,8 @@ The underlying model is Carl Jung's original typology — not the simplified MBT
 | Tier | Price | What You Get |
 |------|-------|-------------|
 | **Free** | $0 | 42-question assessment, basic energy map, dominant-inferior axis |
-| **Insight** | CA$19 one-time | + deeper report, stress pattern map, relationship triggers, somatic practices |
-| **Mastery** | CA$39 one-time | + AI Type Coach, individuation roadmap, practice library, reassessment tracking |
+| **Insight** | CA$10 one-time | + deeper report, stress pattern map, relationship triggers, somatic practices |
+| **Mastery** | CA$29 one-time | + AI Type Coach, individuation roadmap, practice library, reassessment tracking |
 
 ---
 

@@ -57,7 +57,7 @@ function createStaticServer(dir, port) {
   return new Promise((resolve) => {
     const server = createServer((req, res) => {
       let filePath = join(dir, req.url === '/' ? 'index.html' : req.url);
-      if (!existsSync(filePath) || !filePath.includes('.')) {
+      if (!existsSync(filePath) || !req.url.includes('.')) {
         filePath = join(dir, 'index.html');
       }
       try {
@@ -133,12 +133,12 @@ function generateHomepageNoscript() {
         </div>
         <div style="padding: 15px; border: 2px solid #b45309; border-radius: 8px; background: #fffbeb;">
           <h3 style="margin-top: 0;">Insight</h3>
-          <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 8px 0;">CA$19</p>
+          <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 8px 0;">CA$10</p>
           <ul style="padding-left: 18px; margin: 0;"><li>Developmental edge report</li><li>Stress pattern map</li><li>Somatic practices</li></ul>
         </div>
         <div style="padding: 15px; border: 2px solid #451a03; border-radius: 8px; background: #fef3c7;">
           <h3 style="margin-top: 0;">Mastery</h3>
-          <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 8px 0;">CA$39</p>
+          <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 8px 0;">CA$29</p>
           <ul style="padding-left: 18px; margin: 0;"><li>AI Type Coach</li><li>Practice roadmap</li><li>Priority support</li></ul>
         </div>
       </div>
@@ -398,7 +398,7 @@ function generatePricingNoscript() {
 
       <div style="padding: 25px; border: 3px solid #b45309; border-radius: 10px; background: #fffbeb;">
         <h2 style="margin-top: 0; color: #451a03;">Insight</h2>
-        <p style="font-size: 2.5em; font-weight: bold; color: #451a03; margin: 15px 0;">CA$19</p>
+        <p style="font-size: 2.5em; font-weight: bold; color: #451a03; margin: 15px 0;">CA$10</p>
         <p style="color: #57534e;">One-time payment</p>
         <ul style="padding-left: 20px;">
           <li>Everything in Free, plus:</li>
@@ -408,12 +408,12 @@ function generatePricingNoscript() {
           <li>Somatic practice guidance</li>
           <li>Lifetime unlocked result access</li>
         </ul>
-        <p><a href="/assessment" style="display: block; text-align: center; padding: 12px; background: #b45309; color: white; text-decoration: none; border-radius: 5px;">Get Insight - CA$19</a></p>
+        <p><a href="/assessment" style="display: block; text-align: center; padding: 12px; background: #b45309; color: white; text-decoration: none; border-radius: 5px;">Get Insight - CA$10</a></p>
       </div>
 
       <div style="padding: 25px; border: 3px solid #451a03; border-radius: 10px; background: #fef3c7;">
         <h2 style="margin-top: 0; color: #451a03;">Mastery</h2>
-        <p style="font-size: 2.5em; font-weight: bold; color: #451a03; margin: 15px 0;">CA$39</p>
+        <p style="font-size: 2.5em; font-weight: bold; color: #451a03; margin: 15px 0;">CA$29</p>
         <p style="color: #57534e;">One-time payment</p>
         <ul style="padding-left: 20px;">
           <li>Everything in Insight, plus:</li>
@@ -424,7 +424,7 @@ function generatePricingNoscript() {
           <li>Priority support</li>
           <li>Individuation roadmap</li>
         </ul>
-        <p><a href="/assessment" style="display: block; text-align: center; padding: 12px; background: #451a03; color: white; text-decoration: none; border-radius: 5px;">Get Mastery - CA$39</a></p>
+        <p><a href="/assessment" style="display: block; text-align: center; padding: 12px; background: #451a03; color: white; text-decoration: none; border-radius: 5px;">Get Mastery - CA$29</a></p>
       </div>
     </div>
 
@@ -435,7 +435,7 @@ function generatePricingNoscript() {
       <p>Yes. The core 42-question assessment, energy map, and dominant-inferior axis are free. No credit card required.</p>
 
       <h3>What's the difference between plans?</h3>
-      <p>Free gives you your function scores and core map. Insight (CA$19) adds the deeper report, stress map, and practices. Mastery (CA$39) adds the AI Type Coach and ongoing practice support.</p>
+      <p>Free gives you your function scores and core map. Insight (CA$10) adds the deeper report, stress map, and practices. Mastery (CA$29) adds the AI Type Coach and ongoing practice support.</p>
 
       <h3>Is it a subscription?</h3>
       <p>No! Insight and Mastery are one-time payments. You keep access to your upgraded results forever.</p>

@@ -25,7 +25,7 @@ These pages target bottom-of-funnel and comparison searches with useful copy, ca
 - `/inferior-function-test`
 - `/cognitive-function-test`
 
-Each page links users into the assessment, Learn content, and pricing. Pricing copy uses the current one-time CAD tiers: Free, Insight at CA$19, and Mastery at CA$39.
+Each page links users into the assessment, Learn content, and pricing. Pricing copy uses the current one-time CAD tiers: Free, Insight at CA$10, and Mastery at CA$29.
 
 ## Static Generation
 

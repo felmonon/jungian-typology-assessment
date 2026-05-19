@@ -34,7 +34,7 @@ const routePages = [
     path: '/pricing',
     title: 'TypeJung Pricing - Free, Insight, and Mastery Plans',
     description:
-      'Start with the free TypeJung assessment, then unlock Insight for CA$19 or Mastery for CA$39 with transparent one-time CAD pricing.',
+      'Start with the free TypeJung assessment, then unlock Insight for CA$10 or Mastery for CA$29 with transparent one-time CAD pricing.',
     h1: 'TypeJung pricing',
     cta: 'Compare plans',
   },

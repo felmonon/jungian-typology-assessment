@@ -677,7 +677,7 @@ export const Results: React.FC = () => {
                 <div className="mt-5 grid gap-3 sm:grid-cols-3">
                   {[
                     ['Pay after value', 'Read your free map first. Upgrade only if it feels worth keeping.'],
-                    ['One-time CAD', 'Insight is CA$19 and Mastery is CA$39. No renewal or hidden subscription.'],
+                    ['One-time CAD', 'Insight is CA$10 and Mastery is CA$29. No renewal or hidden subscription.'],
                     ['30-day refund', 'If the paid report is not useful, contact support with your Stripe receipt.'],
                   ].map(([label, copy]) => (
                     <div key={label} className="rounded-lg border border-jung-border bg-jung-base p-3">

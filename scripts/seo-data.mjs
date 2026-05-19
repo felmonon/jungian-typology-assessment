@@ -449,7 +449,7 @@ export const pageData = {
   },
   '/pricing': {
     title: 'Pricing Plans | TypeJung',
-    description: 'Choose your TypeJung plan: Free, Insight (CA$19), or Mastery (CA$39). One-time CAD upgrades add deeper interpretation, practice guidance, and coaching support.',
+    description: 'Choose your TypeJung plan: Free, Insight (CA$10), or Mastery (CA$29). One-time CAD upgrades add deeper interpretation, practice guidance, and coaching support.',
   },
   '/privacy': {
     title: 'Privacy Policy | TypeJung',
@@ -488,7 +488,7 @@ export const seoLandingPages = [
     h1: 'A Jungian test that goes beyond a four-letter label',
     intro: [
       'TypeJung is a Jungian self-assessment for people who want more than a quick type label. It measures how you use all 8 cognitive functions, then turns that profile into an educational map of attention, decision-making, and stress patterns.',
-      'The free assessment takes about 12 to 16 minutes. Paid reports are optional one-time CAD upgrades: Insight for CA$19 and Mastery for CA$39.',
+      'The free assessment takes about 12 to 16 minutes. Paid reports are optional one-time CAD upgrades: Insight for CA$10 and Mastery for CA$29.',
     ],
     intent: {
       bestFor: 'Searchers who want a Jungian test with visible cognitive-function evidence, not only a fast type label.',
@@ -550,7 +550,7 @@ export const seoLandingPages = [
       {
         heading: 'When a paid report helps',
         body: [
-          'The free assessment gives you the core map. Insight adds developmental edge analysis, a stress pattern map, relationship triggers, personalized practice guidance, and lifetime unlocked result access for a one-time CA$19 payment. Mastery adds the AI Type Coach, an individuation roadmap, reassessment tracking, a practice library, and priority support for a one-time CA$39 payment.',
+          'The free assessment gives you the core map. Insight adds developmental edge analysis, a stress pattern map, relationship triggers, personalized practice guidance, and lifetime unlocked result access for a one-time CA$10 payment. Mastery adds the AI Type Coach, an individuation roadmap, reassessment tracking, a practice library, and priority support for a one-time CA$29 payment.',
           'The best path is to take the free test first. Upgrade only if the function map feels accurate enough to make deeper interpretation useful.',
         ],
         links: [
@@ -784,7 +784,7 @@ export const seoLandingPages = [
     h1: 'A cognitive function test for all 8 Jungian functions',
     intro: [
       'TypeJung measures Ni, Ne, Si, Se, Ti, Te, Fi, and Fe independently so you can see the shape of your cognitive profile instead of guessing from a type description.',
-      'The free assessment gives you a function map and likely type pattern. Optional paid reports add deeper analysis with one-time CAD pricing: CA$19 for Insight and CA$39 for Mastery.',
+      'The free assessment gives you a function map and likely type pattern. Optional paid reports add deeper analysis with one-time CAD pricing: CA$10 for Insight and CA$29 for Mastery.',
     ],
     intent: {
       bestFor: 'Searchers who want a cognitive function test that shows all 8 scores and explains the pattern behind them.',

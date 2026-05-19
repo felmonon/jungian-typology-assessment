@@ -7,52 +7,52 @@
   --font-sans: "Space Grotesk", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
-  /* Light, quiet product palette */
+  /* Quiet, high-end academic product palette */
   --color-jung-base: #fafaf8;
   --color-jung-surface: #ffffff;
   --color-jung-surface-elevated: #ffffff;
-  --color-jung-surface-alt: #f4f4f2;
+  --color-jung-surface-alt: #f3f3ef;
 
-  --color-jung-dark: #1a1a1a;
-  --color-jung-secondary: #555d56;
-  --color-jung-muted: #666666;
-  --color-jung-subtle: #b9c4ba;
+  --color-jung-dark: #121512;
+  --color-jung-secondary: #4b524c;
+  --color-jung-muted: #6f7871;
+  --color-jung-subtle: #abb5ad;
 
-  --color-jung-border: #d4d4d2;
-  --color-jung-border-light: #e8e8e6;
+  --color-jung-border: #d2dcd3;
+  --color-jung-border-light: #e4ebe5;
 
-  --color-jung-primary: #2d5a3d;
-  --color-jung-accent: #2d5a3d;
-  --color-jung-accent-hover: #234832;
-  --color-jung-accent-light: #e8f1ea;
-  --color-jung-accent-muted: #7fa085;
-  --color-jung-gold: #a17932;
+  --color-jung-primary: #1e3f2a;
+  --color-jung-accent: #224a31;
+  --color-jung-accent-hover: #173422;
+  --color-jung-accent-light: #eef5f0;
+  --color-jung-accent-muted: #688c72;
+  --color-jung-gold: #8c6827;
 
-  --color-science-cyan: #2f6f58;
-  --color-science-purple: #725c86;
+  --color-science-cyan: #225a46;
+  --color-science-purple: #5c4970;
 
-  --color-error: #b42318;
-  --color-success: #16734a;
-  --color-warning: #a15c12;
+  --color-error: #9e1c14;
+  --color-success: #115c3a;
+  --color-warning: #8c4e0b;
 
-  --color-dark-base: #121712;
-  --color-dark-surface: #192019;
-  --color-dark-surface-elevated: #202820;
-  --color-dark-text: #f4f1ea;
-  --color-dark-border: #354137;
+  /* Dark mode variables - extremely deep, luxurious dark green-gray */
+  --color-dark-base: #0a0d0a;
+  --color-dark-surface: #101410;
+  --color-dark-surface-elevated: #161c16;
+  --color-dark-text: #f0ede6;
+  --color-dark-border: #222c24;
 
-  --shadow-sm: 0 1px 2px 0 rgb(29 38 32 / 0.05);
-  --shadow-md: 0 12px 30px -20px rgb(29 38 32 / 0.35);
-  --shadow-lg: 0 24px 60px -36px rgb(29 38 32 / 0.45);
-  --shadow-xl: 0 32px 80px -42px rgb(29 38 32 / 0.55);
-  --shadow-glow: 0 18px 50px -34px rgb(47 111 88 / 0.7);
-  --shadow-cyan: 0 18px 50px -34px rgb(47 111 88 / 0.7);
-  --shadow-accent: 0 18px 50px -34px rgb(47 111 88 / 0.7);
+  --shadow-sm: 0 1px 3px 0 rgba(18, 21, 18, 0.04);
+  --shadow-md: 0 16px 36px -12px rgba(18, 21, 18, 0.08), 0 4px 12px -4px rgba(18, 21, 18, 0.03);
+  --shadow-lg: 0 32px 64px -24px rgba(18, 21, 18, 0.12), 0 8px 24px -8px rgba(18, 21, 18, 0.04);
+  --shadow-xl: 0 40px 96px -32px rgba(18, 21, 18, 0.16);
+  --shadow-glow: 0 12px 30px -8px rgba(34, 74, 49, 0.25);
+  --shadow-accent: 0 12px 30px -8px rgba(34, 74, 49, 0.2);
 
-  --duration-fast: 160ms;
-  --duration-normal: 260ms;
-  --duration-slow: 420ms;
-  --duration-slower: 700ms;
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+  --duration-slower: 650ms;
   --ease-tech: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -79,16 +79,35 @@ body::before {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--color-jung-surface-alt) 62%, transparent) 0%, transparent 26rem),
+  background: 
+    radial-gradient(circle at 50% 20%, rgba(34, 74, 49, 0.04) 0%, transparent 65%),
+    radial-gradient(circle at 0% 0%, rgba(140, 104, 39, 0.025) 0%, transparent 45%),
     repeating-linear-gradient(
       0deg,
-      color-mix(in srgb, var(--color-jung-border-light) 34%, transparent) 0,
-      color-mix(in srgb, var(--color-jung-border-light) 34%, transparent) 1px,
+      rgba(34, 74, 49, 0.02) 0,
+      rgba(34, 74, 49, 0.02) 1px,
       transparent 1px,
-      transparent 42px
+      transparent 48px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(34, 74, 49, 0.02) 0,
+      rgba(34, 74, 49, 0.02) 1px,
+      transparent 1px,
+      transparent 48px
     );
-  opacity: 0.55;
+  opacity: 0.85;
+}
+
+/* Subtle luxurious analog paper noise filter */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0.038;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
 button,
@@ -190,9 +209,10 @@ select {
 
 .card-premium,
 .card-elevated {
-  background: color-mix(in srgb, var(--color-jung-surface-elevated) 96%, transparent);
+  position: relative;
+  background: color-mix(in srgb, var(--color-jung-surface-elevated) 97%, transparent);
   border: 1px solid var(--color-jung-border);
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow: var(--shadow-sm);
   transition:
     transform var(--duration-normal) var(--ease-tech),
@@ -201,7 +221,48 @@ select {
     background-color var(--duration-normal) var(--ease-tech);
 }
 
-.card-premium:hover,
+/* Beautiful corner technical brackets that elevate the design from standard web elements */
+.card-premium::before,
+.card-premium::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid var(--color-jung-accent-muted);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--duration-normal) var(--ease-tech), transform var(--duration-normal) var(--ease-tech);
+}
+
+.card-premium::before {
+  top: 8px;
+  left: 8px;
+  border-right: none;
+  border-bottom: none;
+  transform: translate(-3px, -3px);
+}
+
+.card-premium::after {
+  bottom: 8px;
+  right: 8px;
+  border-left: none;
+  border-top: none;
+  transform: translate(3px, 3px);
+}
+
+.card-premium:hover {
+  border-color: var(--color-jung-accent);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+  background: var(--color-jung-surface);
+}
+
+.card-premium:hover::before,
+.card-premium:hover::after {
+  opacity: 0.85;
+  transform: translate(0, 0);
+}
+
 .card-elevated:hover {
   border-color: var(--color-jung-accent-muted);
   box-shadow: var(--shadow-md);

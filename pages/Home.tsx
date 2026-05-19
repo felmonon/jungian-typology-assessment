@@ -145,34 +145,54 @@ export const Home: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <div className="overflow-hidden">
-        <section className="lab-container grid items-center gap-10 py-12 lg:min-h-[calc(100vh-4.75rem)] lg:grid-cols-[0.92fr_1.08fr] lg:py-14">
+      <div className="relative overflow-hidden">
+        {/* Cinematic Laboratory HUD Accents */}
+        <div className="absolute top-10 left-10 hidden xl:flex flex-col gap-1 text-[10px] font-mono text-jung-muted/70 tracking-widest select-none">
+          <div>[ SYS.LOC // BASELINE_DIAGNOSTIC ]</div>
+          <div>DYNAMICS: ACTIVE</div>
+        </div>
+        <div className="absolute top-10 right-10 hidden xl:flex flex-col gap-1 text-[10px] font-mono text-jung-muted/70 tracking-widest text-right select-none">
+          <div>LATENCY: 0.12ms</div>
+          <div>MATRIX: 42_SCENARIOS</div>
+        </div>
+
+        <section className="lab-container grid items-center gap-12 py-16 lg:min-h-[calc(100vh-4.75rem)] lg:grid-cols-[0.92fr_1.08fr] lg:py-20 relative">
+          {/* Asymmetrical Floating Background Blur */}
+          <div className="absolute top-1/4 -left-1/4 w-96 h-96 bg-jung-accent/5 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute bottom-1/4 -right-1/4 w-96 h-96 bg-jung-gold/5 rounded-full blur-[100px] pointer-events-none" />
+
           <motion.div
             initial={false}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-2xl"
+            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+            className="max-w-2xl relative z-10"
           >
-            <div className="mb-6 inline-flex items-center gap-2 rounded-lg border border-jung-border bg-jung-surface px-3 py-2 text-sm font-semibold text-jung-secondary shadow-sm">
+            <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-jung-border/80 bg-jung-surface/80 backdrop-blur-md px-4 py-2 text-xs font-semibold text-jung-secondary shadow-sm">
               <TypeJungMark size="xs" />
-              Depth-based Jungian typology assessment
+              <span className="uppercase tracking-widest text-[9px] font-bold text-jung-muted">Academic Archetype Diagnostics</span>
             </div>
 
-            <h1 className="max-w-[21rem] text-display text-5xl text-jung-dark sm:max-w-none sm:text-7xl lg:text-8xl">
+            <h1 className="text-display text-6xl text-jung-dark sm:text-8xl lg:text-9xl tracking-tight">
               TypeJung
             </h1>
 
-            <p className="mt-5 max-w-[21rem] break-words text-heading text-2xl leading-tight text-jung-dark sm:mt-6 sm:max-w-xl sm:text-4xl">
-              Find the pattern beneath your personality type.
+            <p className="mt-6 max-w-[21rem] break-words text-heading text-3xl leading-tight text-jung-dark sm:mt-7 sm:max-w-xl sm:text-5xl font-serif font-medium">
+              Map the <span className="text-jung-accent font-serif italic font-normal">subconscious architecture</span> beneath your personality.
             </p>
 
-            <p className="mt-5 max-w-[21rem] text-body-lg text-jung-secondary sm:max-w-xl">
-              Take a free 42-question Jungian assessment that maps where your energy flows, where stress distorts it, and what your next growth edge looks like.
+            <p className="mt-6 max-w-[21rem] text-body-lg text-jung-secondary leading-relaxed sm:max-w-xl">
+              Initiate a sophisticated 42-scenario analytical instrument built to chart your cognitive function hierarchy, primary/inferior tension axes, and somatic response curves.
             </p>
 
-            <div className="mt-7 flex max-w-[21rem] flex-col gap-3 sm:max-w-xl sm:flex-row">
-              <Button variant="accent" size="lg" onClick={() => startAssessment('home_hero')} rightIcon={<ArrowRight className="h-5 w-5" />}>
-                Start free assessment
+            <div className="mt-8 flex max-w-[21rem] flex-col gap-3.5 sm:max-w-xl sm:flex-row">
+              <Button 
+                variant="accent" 
+                size="lg" 
+                onClick={() => startAssessment('home_hero')} 
+                rightIcon={<ArrowRight className="h-5 w-5" />}
+                className="shadow-glow hover:shadow-xl transition-all"
+              >
+                Initiate Free Diagnostic
               </Button>
               <Button
                 variant="outline"
@@ -181,20 +201,21 @@ export const Home: React.FC = () => {
                   AnalyticsEvents.ctaClicked('learn_method', 'home_hero');
                   navigate('/learn');
                 }}
+                className="backdrop-blur-sm border-jung-border/90 hover:bg-jung-accent/5 transition-all"
               >
-                Learn the method
+                Explore Scientific Theory
               </Button>
             </div>
 
-            <div className="mt-7 grid max-w-[21rem] gap-3 sm:max-w-xl sm:grid-cols-3">
+            <div className="mt-10 grid max-w-[21rem] gap-4 sm:max-w-xl sm:grid-cols-3">
               {[
-                ['12-16 min', 'one sitting'],
-                ['42 questions', 'four evidence layers'],
-                ['Pay later', 'see value first'],
+                ['12-16 Min', 'Diagnostic Window'],
+                ['42 Scenarios', 'Depth Evidence Layers'],
+                ['Verifiable Result', 'Pay Only to Unlock Dossier'],
               ].map(([value, label]) => (
-                <div key={value} className="rounded-lg border border-jung-border bg-jung-surface p-4 shadow-sm">
-                  <p className="text-lg font-semibold text-jung-dark">{value}</p>
-                  <p className="mt-1 text-sm text-jung-muted">{label}</p>
+                <div key={value} className="card-premium p-5 transition-all bg-jung-surface/60 backdrop-blur-sm border-jung-border/60 hover:border-jung-accent/40 rounded-xl">
+                  <p className="text-sm font-mono font-bold uppercase tracking-wider text-jung-accent-muted">{label}</p>
+                  <p className="mt-2 text-xl font-serif font-semibold text-jung-dark tracking-tight">{value}</p>
                 </div>
               ))}
             </div>
@@ -203,51 +224,62 @@ export const Home: React.FC = () => {
           <motion.div
             initial={false}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="relative"
+            transition={{ duration: 0.55, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+            className="relative z-10"
           >
-            <div className="card-premium p-3 sm:p-4">
-              <div className="rounded-lg border border-jung-border bg-jung-base p-5 sm:p-7">
+            {/* Laboratory HUD Frame Corner Details */}
+            <div className="absolute -top-3 -left-3 text-jung-subtle/65 select-none font-mono text-[10px] font-light">+</div >
+            <div className="absolute -top-3 -right-3 text-jung-subtle/65 select-none font-mono text-[10px] font-light">+</div >
+            <div className="absolute -bottom-3 -left-3 text-jung-subtle/65 select-none font-mono text-[10px] font-light">+</div >
+            <div className="absolute -bottom-3 -right-3 text-jung-subtle/65 select-none font-mono text-[10px] font-light">+</div >
+
+            <div className="card-premium p-4 sm:p-5 rounded-2xl bg-jung-surface/85 backdrop-blur-md shadow-lg border-jung-border/80 relative">
+              {/* Internal technical readouts */}
+              <div className="absolute top-4 right-6 text-[9px] font-mono text-jung-muted/50 uppercase tracking-widest">[ LAB_SAMPLE_0412 ]</div>
+
+              <div className="rounded-xl border border-jung-border/50 bg-jung-base/55 p-6 sm:p-8">
                 <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row">
                   <div>
-                    <p className="text-label">Sample result</p>
-                    <h2 className="mt-2 text-heading text-3xl text-jung-dark">Energy map</h2>
-                    <p className="mt-2 text-sm leading-6 text-jung-secondary">
-                      A readable map of the pattern behind your result.
+                    <span className="text-[10px] font-mono font-bold tracking-widest text-jung-accent/80 uppercase px-2.5 py-1 bg-jung-accent-light border border-jung-accent/20 rounded-full inline-block mb-3">Diagnostic Render</span>
+                    <h2 className="text-heading text-3xl font-serif text-jung-dark tracking-tight">Psychic Energy Map</h2>
+                    <p className="mt-2 text-xs leading-5 text-jung-secondary font-serif">
+                      A visual distribution of conscious orientation across functional spheres.
                     </p>
                   </div>
-                  <div className="rounded-lg bg-jung-accent-light px-3 py-2 text-sm font-semibold text-jung-accent shadow-sm">
-                    87% consistency
+                  <div className="rounded-lg bg-jung-accent/15 px-3 py-1.5 text-xs font-mono font-bold text-jung-accent border border-jung-accent/20 shadow-sm self-start">
+                    87.4% Reliability
                   </div>
                 </div>
 
-                <div className="space-y-5">
+                <div className="space-y-6">
                   {sampleEnergy.map(([label, value]) => (
                     <div key={label}>
                       <div className="mb-2 flex items-center justify-between gap-4">
-                        <span className="font-semibold text-jung-dark">{label}</span>
-                        <span className="font-mono text-sm font-semibold text-jung-muted">{value}%</span>
+                        <span className="text-sm font-semibold tracking-tight text-jung-dark font-sans">{label}</span>
+                        <span className="font-mono text-xs font-semibold text-jung-muted">{value}%</span>
                       </div>
-                      <div className="h-3 overflow-hidden rounded-full bg-jung-border-light">
+                      <div className="h-2.5 overflow-hidden rounded-full bg-jung-border-light/75 border border-jung-border/30">
                         <motion.div
                           initial={{ width: 0 }}
                           animate={{ width: `${value}%` }}
-                          transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-                          className="h-full rounded-full bg-jung-accent"
+                          transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+                          className="h-full rounded-full bg-gradient-to-right from-jung-accent to-jung-accent-muted shadow-sm"
                         />
                       </div>
                     </div>
                   ))}
                 </div>
 
-                <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-lg border border-jung-border bg-jung-surface p-4">
-                    <p className="text-sm font-semibold text-jung-dark">Dominant channel</p>
-                    <p className="mt-1 text-sm text-jung-secondary">Introverted thinking builds the internal frame.</p>
+                <div className="mt-8 grid gap-4 sm:grid-cols-2">
+                  <div className="rounded-xl border border-jung-border/60 bg-jung-surface/85 p-5 shadow-sm">
+                    <p className="text-xs font-mono font-bold text-jung-accent-muted uppercase tracking-wider">Dominant Channel</p>
+                    <p className="mt-2 text-sm font-serif font-medium text-jung-dark">Introverted Thinking</p>
+                    <p className="mt-1 text-[11px] leading-relaxed text-jung-secondary">Constructs dense internal frameworks of structured consistency.</p>
                   </div>
-                  <div className="rounded-lg border border-jung-border bg-jung-surface p-4">
-                    <p className="text-sm font-semibold text-jung-dark">Inferior channel</p>
-                    <p className="mt-1 text-sm text-jung-secondary">Feeling is where value, shame, and growth gather.</p>
+                  <div className="rounded-xl border border-jung-border/60 bg-jung-surface/85 p-5 shadow-sm">
+                    <p className="text-xs font-mono font-bold text-jung-gold uppercase tracking-wider">Inferior Edge</p>
+                    <p className="mt-2 text-sm font-serif font-medium text-jung-dark">Extraverted Feeling</p>
+                    <p className="mt-1 text-[11px] leading-relaxed text-jung-secondary">Site of psychic friction, unconscious projections, and somatic growth.</p>
                   </div>
                 </div>
               </div>

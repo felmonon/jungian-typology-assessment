@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
 import { getSessionUser } from './_lib/auth.js';
+import { getSupabaseAdminClient } from './_lib/supabase.js';
 
 function generateShareSlug(): string {
   return crypto.randomBytes(8).toString('base64url');
@@ -16,11 +16,7 @@ function cleanResultId(value: string | string[] | undefined): string | null {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const user = await getSessionUser(req.headers.cookie);
-    // Use service role key for server-side operations (bypasses RLS)
-    const supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY!
-    );
+    const supabase = getSupabaseAdminClient();
 
     if (req.method === 'POST') {
       if (!user?.id) {

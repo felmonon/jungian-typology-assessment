@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
 import { buildRequestUrl, shouldUseSecureCookie } from '../../_lib/auth-utils.js';
+import { getSupabaseAdminClient } from '../../_lib/supabase.js';
 
 // Generate a random session ID
 function generateSessionId(): string {
@@ -93,11 +93,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.redirect(302, '/auth?error=no_email');
     }
 
-    // Initialize Supabase client
-    const supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY!
-    );
+    const supabase = getSupabaseAdminClient();
 
     // Find or create user
     let { data: existingUsers } = await supabase

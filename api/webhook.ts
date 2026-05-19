@@ -1,7 +1,7 @@
 import Stripe from 'stripe';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createClient } from '@supabase/supabase-js';
 import { recordCheckoutPurchase } from './_lib/purchases.js';
+import { getSupabaseAdminClient, hasSupabaseAdminConfig } from './_lib/supabase.js';
 import { getStripeSecretKey, getStripeWebhookSecret } from '../server/checkout.js';
 
 // Disable body parsing, need raw body for webhook signature
@@ -31,15 +31,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(500).json({ error: 'Stripe not configured' });
   }
 
-  if (!process.env.SUPABASE_URL || !(process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY)) {
+  if (!hasSupabaseAdminConfig()) {
     return res.status(500).json({ error: 'Database not configured' });
   }
 
   const stripe = new Stripe(stripeSecretKey);
-  const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY!,
-  );
+  const supabase = getSupabaseAdminClient();
   const buf = await buffer(req);
   const sig = req.headers['stripe-signature'] as string;
 

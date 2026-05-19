@@ -1,9 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import { buildRequestUrl, getSessionUserFromCookie, getVerifiedSessionId, parseCookies, shouldUseSecureCookie } from '../_lib/auth-utils.js';
 import { enforceRateLimit } from '../_lib/rate-limit.js';
+import { getSupabaseAdminClient, hasSupabaseAdminConfig } from '../_lib/supabase.js';
 import { EMAIL_CAPTURE_OFFER } from '../../data/discount.js';
 import { resolveCheckoutBaseUrl } from '../../server/checkout.js';
 import { sendDiscountLeadEmail, sendLifecycleEmail, type LifecycleEmailKind } from '../../server/resend.js';
@@ -59,10 +60,7 @@ async function verifyPassword(password: string, storedHash: string | null): Prom
 }
 
 function getSupabase() {
-  return createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY!
-  );
+  return getSupabaseAdminClient();
 }
 
 function cleanString(value: unknown, maxLength: number): string | undefined {
@@ -138,7 +136,7 @@ async function hasPremiumAccess(supabase: SupabaseClient, userId: string): Promi
 }
 
 async function captureDiscountEmail(email: string) {
-  if (!process.env.SUPABASE_URL || !(process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY)) {
+  if (!hasSupabaseAdminConfig()) {
     return { captured: false, reason: 'supabase_not_configured' };
   }
 
@@ -488,7 +486,7 @@ async function handleProfile(req: VercelRequest, res: VercelResponse) {
 }
 
 async function handleLifecycleEmail(req: VercelRequest, res: VercelResponse) {
-  if (!process.env.SUPABASE_URL || !(process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY)) {
+  if (!hasSupabaseAdminConfig()) {
     return res.status(200).json({ sent: false, skipped: true, reason: 'auth_not_configured' });
   }
 

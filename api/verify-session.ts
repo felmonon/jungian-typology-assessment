@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createClient } from '@supabase/supabase-js';
 import { getSessionUserFromCookie } from './_lib/auth-utils.js';
 import { recordCheckoutPurchase, resolveCheckoutTransactionId, resolveTierFromCheckoutSession } from './_lib/purchases.js';
 import { enforceRateLimit } from './_lib/rate-limit.js';
+import { getSupabaseAdminClient, hasSupabaseAdminConfig } from './_lib/supabase.js';
 import { getStripeSecretKey } from '../server/checkout.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -54,11 +54,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (session.payment_status === 'paid') {
       const tier = resolveTierFromCheckoutSession(session);
       const transactionId = resolveCheckoutTransactionId(session);
-      if (process.env.SUPABASE_URL && (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY)) {
-        const supabase = createClient(
-          process.env.SUPABASE_URL,
-          process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY!,
-        );
+      if (hasSupabaseAdminConfig()) {
+        const supabase = getSupabaseAdminClient();
         const user = await getSessionUserFromCookie(req.headers.cookie, supabase);
         await recordCheckoutPurchase(supabase, session, user?.id || null);
       }

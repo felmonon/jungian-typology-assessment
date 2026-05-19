@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createClient } from '@supabase/supabase-js';
 import { getSessionUserFromCookie } from './_lib/auth-utils.js';
 import { enforceRateLimit } from './_lib/rate-limit.js';
+import { getSupabaseAdminClient, hasSupabaseAdminConfig } from './_lib/supabase.js';
 import { getStripeSecretKey, parsePaidTier, resolveCheckoutBaseUrl } from '../server/checkout.js';
 import { PRICING } from '../data/pricing.js';
 import type { PaidTierId } from '../data/pricing.js';
@@ -24,14 +24,11 @@ function cleanCheckoutSource(source: unknown): string {
 }
 
 async function getCheckoutCustomerEmail(req: VercelRequest): Promise<string | null> {
-  if (!process.env.SUPABASE_URL || !(process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY)) {
+  if (!hasSupabaseAdminConfig()) {
     return null;
   }
 
-  const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY!,
-  );
+  const supabase = getSupabaseAdminClient();
   const user = await getSessionUserFromCookie(req.headers.cookie, supabase);
   return user?.email || null;
 }

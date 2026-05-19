@@ -14,15 +14,15 @@ export const PRICING = {
   insight: {
     id: 'insight',
     name: 'Insight',
-    price: 'CA$19',
-    amount: 19,
+    price: 'CA$10',
+    amount: 10,
     currency: 'CAD',
   },
   mastery: {
     id: 'mastery',
     name: 'Mastery',
-    price: 'CA$39',
-    amount: 39,
+    price: 'CA$29',
+    amount: 29,
     currency: 'CAD',
   },
 } as const;

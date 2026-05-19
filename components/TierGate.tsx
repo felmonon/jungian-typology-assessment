@@ -15,21 +15,23 @@ interface TierGateProps {
 const TIER_INFO = {
   insight: {
     name: 'Insight',
-    price: PRICING.insight.price,
+    price: '$10',
+    priceId: import.meta.env.VITE_STRIPE_INSIGHT_PRICE_ID || import.meta.env.VITE_STRIPE_PRICE_ID,
     icon: Sparkles,
     gradient: 'from-jung-accent to-jung-accent/80',
     bgLight: 'bg-jung-accent/10',
     textColor: 'text-jung-accent',
-    features: ['Depth report', 'Energy hierarchy', 'Developmental edge', 'Stress patterns', 'Relationships', 'Career', 'Somatic practices']
+    features: ['Analytical Dossier', 'Shadow Integration', 'Inferior Practice Paths', 'Somatic Grounding', 'PDF Export']
   },
   mastery: {
     name: 'Mastery',
-    price: PRICING.mastery.price,
+    price: '$29',
+    priceId: import.meta.env.VITE_STRIPE_MASTERY_PRICE_ID,
     icon: Crown,
     gradient: 'from-jung-dark to-jung-secondary',
     bgLight: 'bg-jung-dark/10',
     textColor: 'text-jung-dark',
-    features: ['AI Type Coach', 'Individuation roadmap', 'Reassessment tracking', 'Practice library', 'Shadow work exercises']
+    features: ['Saved Dossiers', 'Temporal Curves', 'Comparative Engine', 'Growth Library']
   }
 };
 

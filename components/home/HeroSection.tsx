@@ -1,169 +1,164 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { Activity } from 'lucide-react';
 import { Button } from '../ui/Button';
-import { TypeJungMark } from '../brand/TypeJungMark';
+import { FunctionRadial } from './FunctionRadial';
 
 interface HeroSectionProps {
   onStartAssessment: () => void;
   onLearnMore: () => void;
 }
 
+const sample = [
+  { name: 'Ni', label: 'Introverted Intuition', value: 82 },
+  { name: 'Ne', label: 'Extraverted Intuition', value: 45 },
+  { name: 'Si', label: 'Introverted Sensing', value: 38 },
+  { name: 'Se', label: 'Extraverted Sensing', value: 51 },
+  { name: 'Ti', label: 'Introverted Thinking', value: 76 },
+  { name: 'Te', label: 'Extraverted Thinking', value: 63 },
+  { name: 'Fi', label: 'Introverted Feeling', value: 55 },
+  { name: 'Fe', label: 'Extraverted Feeling', value: 42 },
+];
+
+const stats: Array<[string, string]> = [
+  ['15–20', 'min'],
+  ['42', 'prompts'],
+  ['8', 'functions'],
+  ['0', 'signup'],
+];
+
+const ease = [0.22, 1, 0.36, 1] as const;
+
 export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onLearnMore }) => {
-  const [initStage, setInitStage] = useState(0);
-
-  useEffect(() => {
-    const timer1 = setTimeout(() => setInitStage(1), 500);
-    const timer2 = setTimeout(() => setInitStage(2), 1200);
-    const timer3 = setTimeout(() => setInitStage(3), 2000);
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      clearTimeout(timer3);
-    };
-  }, []);
-
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-      {/* Background Grid */}
-      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none bg-[size:50px_50px] [background-image:linear-gradient(to_right,#333_1px,transparent_1px),linear-gradient(to_bottom,#333_1px,transparent_1px)]" />
+    <section className="relative pt-24 lg:pt-32 pb-20 lg:pb-32 overflow-hidden">
+      <div className="pointer-events-none absolute -top-32 -right-32 w-[520px] h-[520px] rounded-full blur-3xl bg-jung-accent/10" />
 
-      {/* Center Interface */}
-      <div className="relative z-10 w-full max-w-5xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-
-        {/* Left Column: Product Narrative */}
-        <div className="lg:col-span-7 space-y-8">
-          {/* Status Line */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-3 text-xs font-mono text-jung-accent"
-          >
-            <div className="w-2 h-2 bg-jung-accent animate-pulse" />
-            <span>FUNCTION MAP /// 8-POINT PROFILE</span>
-          </motion.div>
-
-          {/* Main Headline */}
-          <div className="relative">
-            <motion.h1
-              initial={{ clipPath: 'inset(0 100% 0 0)' }}
-              animate={{ clipPath: 'inset(0 0% 0 0)' }}
-              transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-              className="text-display text-6xl md:text-8xl text-jung-dark leading-[0.9] mix-blend-difference"
+      <div className="lab-container relative">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          <div className="lg:col-span-7">
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, ease }}
+              className="flex items-center gap-3 mb-8"
             >
-              The Architecture <br />
-              <span className="text-jung-accent opacity-90">of the Psyche.</span>
+              <span className="h-px w-10 bg-jung-border-light" />
+              <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted">
+                A cognitive assessment · No. 01
+              </span>
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, ease }}
+              className="text-display text-[44px] sm:text-6xl md:text-7xl lg:text-[80px] leading-[0.98] tracking-tight text-jung-dark mb-6"
+            >
+              Understand your{' '}
+              <span className="italic text-jung-accent">cognitive&nbsp;functions</span>{' '}
+              without the noise.
             </motion.h1>
 
-            {/* Brand Mark */}
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.15, ease }}
+              className="text-lg md:text-xl text-jung-secondary leading-relaxed max-w-xl mb-10 font-light"
+            >
+              TypeJung measures all eight Jungian cognitive functions independently —
+              no forced types, no MBTI stereotypes. Clear, data-driven insight into
+              how your mind actually works.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3, ease }}
+              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-12"
+            >
+              <Button onClick={onStartAssessment} className="btn-premium group">
+                <span className="font-mono text-[11px] tracking-[0.18em] uppercase">
+                  Start free assessment
+                </span>
+                <span className="ml-2 inline-block transition-transform group-hover:translate-x-1">
+                  ↗
+                </span>
+              </Button>
+              <Button
+                onClick={onLearnMore}
+                variant="outline"
+                className="border-jung-border text-jung-secondary hover:text-jung-dark hover:border-jung-accent"
+              >
+                <span className="font-mono text-[11px] tracking-[0.18em] uppercase">
+                  Read the method
+                </span>
+              </Button>
+            </motion.div>
+
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 1 }}
-              className="absolute -right-10 top-0 hidden lg:block opacity-25"
+              transition={{ duration: 0.8, delay: 0.5, ease }}
+              className="flex flex-wrap items-center gap-x-8 gap-y-3"
             >
-              <TypeJungMark size="lg" />
+              {stats.map(([n, l]) => (
+                <div key={l} className="flex items-baseline gap-2">
+                  <span className="text-display text-2xl text-jung-dark leading-none">{n}</span>
+                  <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-jung-muted">
+                    {l}
+                  </span>
+                </div>
+              ))}
             </motion.div>
           </div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="text-lg md:text-xl text-jung-secondary font-light max-w-xl leading-relaxed font-sans"
-          >
-            Explore your cognitive stack with a function-first assessment.
-            <span className="text-jung-dark border-b border-jung-accent/30 mx-1">Measure all 8 functions</span>
-            independently—moving beyond binary typologies.
-          </motion.p>
-
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-            className="flex flex-col sm:flex-row gap-5 pt-4"
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.2, ease }}
+            className="lg:col-span-5 relative"
           >
-            <Button
-              onClick={onStartAssessment}
-              className="btn-premium group"
-            >
-              <Activity className="w-4 h-4 mr-2" />
-              Start the Assessment
-            </Button>
-
-            <Button
-              onClick={onLearnMore}
-              variant="outline"
-              className="border-jung-border text-jung-secondary hover:text-jung-dark hover:border-jung-accent font-mono text-xs uppercase tracking-widest px-8"
-            >
-              Review Method
-            </Button>
-          </motion.div>
-
-          {/* Data Readout */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.5 }}
-            className="pt-12 grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-jung-border/30"
-          >
-            {[
-              { label: 'Time', value: '15m 00s' },
-              { label: 'Questions', value: '42' },
-              { label: 'Functions', value: '08' },
-              { label: 'Status', value: 'Private' }
-            ].map((stat, i) => (
-              <div key={i} className="space-y-1">
-                <p className="text-[10px] font-mono uppercase tracking-widest text-jung-muted">{stat.label}</p>
-                <p className="text-sm font-mono text-jung-dark">{stat.value}</p>
+            <CornerTicks />
+            <div className="relative bg-jung-surface border border-jung-border rounded-2xl p-6 md:p-8 shadow-md">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted mb-1">
+                    Specimen profile
+                  </p>
+                  <h3 className="text-display text-xl text-jung-dark">Subject 14·B</h3>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-jung-accent animate-pulse" />
+                  <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted">
+                    Live
+                  </span>
+                </div>
               </div>
-            ))}
-          </motion.div>
-        </div>
-
-        {/* Right Column: Visualizer */}
-        <div className="lg:col-span-5 relative h-[500px] flex items-center justify-center">
-          {/* Energy Map */}
-          <div className="relative w-full aspect-square max-w-md">
-            {/* Spinning Rings */}
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-0 border border-jung-border/30 rounded-full"
-            />
-            <motion.div
-              animate={{ rotate: -360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-[20px] border border-jung-border/20 rounded-full border-dashed"
-            />
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-[60px] border border-jung-accent/20 rounded-full"
-            />
-
-            {/* Core */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-36 h-36 bg-jung-accent/5 backdrop-blur-md rounded-full border border-jung-accent/30 flex items-center justify-center shadow-[0_0_50px_rgba(212,175,55,0.1)]">
-                <TypeJungMark size="lg" />
+              <FunctionRadial data={sample} />
+              <div className="mt-4 pt-4 border-t border-jung-border flex items-center justify-between">
+                <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-jung-muted">
+                  Dominant
+                </span>
+                <span className="text-display italic text-base text-jung-accent">
+                  Ni — Introverted Intuition
+                </span>
               </div>
             </div>
-
-            {/* Orbiting Points */}
-            {[0, 45, 90, 135, 180, 225, 270, 315].map((deg, i) => (
-              <motion.div
-                key={i}
-                className="absolute inset-0"
-                initial={{ rotate: deg }}
-                animate={{ rotate: deg + 360 }}
-                transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-              >
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -mt-1 w-2 h-2 bg-jung-dark rounded-full" />
-              </motion.div>
-            ))}
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
+  );
+};
+
+const CornerTicks: React.FC = () => {
+  const tick = 'absolute w-3 h-3 border-jung-accent/40';
+  return (
+    <>
+      <span className={`${tick} -top-2 -left-2 border-t border-l`} />
+      <span className={`${tick} -top-2 -right-2 border-t border-r`} />
+      <span className={`${tick} -bottom-2 -left-2 border-b border-l`} />
+      <span className={`${tick} -bottom-2 -right-2 border-b border-r`} />
+    </>
   );
 };

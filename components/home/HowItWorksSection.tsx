@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion, type Variants } from 'framer-motion';
-import { ArrowRight, ChevronRight } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { HOW_IT_WORKS_STEPS, AnalyticsEvents } from './data';
 
@@ -8,124 +7,104 @@ interface HowItWorksSectionProps {
   onStartAssessment: () => void;
 }
 
+const numerals = ['I', 'II', 'III', 'IV', 'V'];
+const ease = [0.22, 1, 0.36, 1] as const;
+
+const container: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.12 },
+  },
+};
+
+const item: Variants = {
+  hidden: { opacity: 0, y: 18 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease } },
+};
+
 export const HowItWorksSection: React.FC<HowItWorksSectionProps> = ({ onStartAssessment }) => {
   const handleStart = () => {
     AnalyticsEvents.ctaClicked('start_assessment', 'how_it_works');
     onStartAssessment();
   };
 
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, scale: 0.95 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const },
-    },
-  };
-
   return (
-    <section className="py-24 lg:py-32 bg-jung-base dark:bg-dark-base relative overflow-hidden">
-      {/* Decorative line connecting steps */}
-      <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-jung-border dark:via-dark-border to-transparent -translate-y-1/2 hidden lg:block z-0" />
-
-      <div className="editorial-container relative z-10">
+    <section id="method" className="relative py-24 lg:py-32 bg-jung-surface-alt border-y border-jung-border">
+      <div className="lab-container">
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={containerVariants}
-          className="text-center mb-20"
+          viewport={{ once: true, margin: '-80px' }}
+          variants={container}
+          className="flex flex-col md:flex-row md:items-end md:justify-between mb-16 gap-6"
         >
-          <motion.h2
-            variants={itemVariants}
-            className="text-display text-4xl sm:text-5xl text-jung-dark mb-4 tracking-tight"
+          <motion.div variants={item}>
+            <div className="flex items-center gap-3 mb-6">
+              <span className="h-px w-10 bg-jung-border-light" />
+              <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted">
+                Procedure
+              </span>
+            </div>
+            <h2 className="text-display text-4xl md:text-5xl leading-[1.02] tracking-tight text-jung-dark max-w-2xl">
+              Three steps from <span className="italic text-jung-accent">curiosity</span> to clarity.
+            </h2>
+          </motion.div>
+          <motion.p
+            variants={item}
+            className="text-jung-secondary max-w-sm font-light leading-relaxed"
           >
-            Actual understanding, <span className="italic">simplified.</span>
-          </motion.h2>
-          <motion.p variants={itemVariants} className="text-body-lg text-jung-secondary dark:text-jung-muted max-w-2xl mx-auto">
-            Not a quick label quiz. A practical map you can test against real patterns.
+            Not a personality quiz dressed in lab coats. A straightforward measurement,
+            interpreted carefully.
           </motion.p>
         </motion.div>
 
-        <motion.div
+        <motion.ol
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={containerVariants}
-          className="grid lg:grid-cols-3 gap-8 lg:gap-12 relative"
+          viewport={{ once: true, margin: '-80px' }}
+          variants={container}
+          className="grid md:grid-cols-3 gap-px bg-jung-border rounded-2xl overflow-hidden border border-jung-border"
         >
-          {HOW_IT_WORKS_STEPS.map((item, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              whileHover={{ y: -8 }}
-              className="group"
+          {HOW_IT_WORKS_STEPS.map((s, i) => (
+            <motion.li
+              key={s.step}
+              variants={item}
+              className="group bg-jung-base p-8 md:p-10 hover:bg-jung-surface transition-colors"
             >
-              <div className="card-premium h-full p-8 lg:p-10 bg-white dark:bg-dark-surface border-jung-border dark:border-dark-border flex flex-col">
-                <div className="relative mb-8">
-                  <span className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-jung-dark text-white text-xl font-display font-bold relative z-10 shadow-lg group-hover:bg-jung-accent transition-colors duration-300">
-                    {item.step}
-                  </span>
-                  <div className="absolute -top-4 -left-4 w-20 h-20 bg-jung-accent/5 rounded-full blur-xl group-hover:bg-jung-accent/15 transition-colors duration-300" />
-                </div>
-
-                <h3 className="text-display text-2xl text-jung-dark mb-4 mt-2">
-                  {item.title}
-                </h3>
-
-                <p className="text-body text-jung-secondary dark:text-jung-muted leading-relaxed mb-6 flex-grow">
-                  {item.description}
-                </p>
-
-                <div className="flex items-center gap-2 text-jung-accent font-bold text-sm group-hover:gap-3 transition-all duration-300">
-                  <span className="uppercase tracking-widest">What you get</span>
-                  <ChevronRight className="w-4 h-4" />
-                </div>
+              <div className="flex items-baseline justify-between mb-8">
+                <span className="text-display text-6xl italic text-jung-accent leading-none">
+                  {numerals[i]}
+                </span>
+                <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted">
+                  Step {i + 1} / {HOW_IT_WORKS_STEPS.length}
+                </span>
               </div>
-            </motion.div>
+              <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted mb-3">
+                {s.step}
+              </p>
+              <h3 className="text-display text-2xl text-jung-dark mb-3 leading-tight">
+                {s.title}
+              </h3>
+              <p className="text-jung-secondary text-sm leading-relaxed font-light">
+                {s.description}
+              </p>
+            </motion.li>
           ))}
-        </motion.div>
+        </motion.ol>
 
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          variants={itemVariants}
-          className="text-center mt-20"
+          variants={item}
+          className="mt-12 flex justify-center"
         >
-          <div className="inline-block p-1 rounded-2xl bg-gradient-to-r from-jung-accent/50 via-jung-gold/50 to-jung-accent/50 shadow-xl shadow-jung-accent/10">
-            <Button
-              size="lg"
-              onClick={handleStart}
-              variant="accent"
-              className="px-10 py-5 text-xl rounded-xl shadow-none hover:shadow-none"
-            >
-              Start Free Assessment <ArrowRight className="ml-3 w-6 h-6 group-hover:translate-x-1 transition-transform" />
-            </Button>
-          </div>
-          <div className="mt-8 flex flex-col items-center gap-2">
-            <div className="flex -space-x-2">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="w-8 h-8 rounded-full border-2 border-jung-base bg-jung-surface-alt dark:bg-dark-surface-elevated" />
-              ))}
-              <div className="w-8 h-8 rounded-full border-2 border-jung-base bg-jung-accent flex items-center justify-center text-[10px] text-white font-bold">
-                +12k
-              </div>
-            </div>
-            <p className="text-xs font-bold uppercase tracking-widest text-jung-muted">
-              Free to start. Upgrade only after you see your map.
-            </p>
-          </div>
+          <Button onClick={handleStart} className="btn-premium">
+            <span className="font-mono text-[11px] tracking-[0.18em] uppercase">
+              Begin assessment
+            </span>
+          </Button>
         </motion.div>
       </div>
     </section>

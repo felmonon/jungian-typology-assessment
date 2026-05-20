@@ -36,6 +36,7 @@
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth20": "^2.0.17",
     "@types/passport-local": "^1.0.38",
+    "@vercel/analytics": "^2.0.1",
     "autoprefixer": "^10.4.23",
     "bcryptjs": "^3.0.3",
     "connect-pg-simple": "^10.0.0",

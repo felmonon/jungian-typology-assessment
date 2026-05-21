@@ -45,6 +45,11 @@ const breadcrumbSchema = (items: Array<{ name: string; path: string }>) => ({
 
 const coreClusterLinks = [
   {
+    href: '/jungian-cognitive-functions-test',
+    label: 'Jungian cognitive functions test',
+    description: 'Map the full function-attitude pattern behind a likely type result.',
+  },
+  {
     href: '/jungian-test',
     label: 'Jungian test',
     description: 'Start with the broad Jungian assessment page and compare type, function, and stress evidence.',
@@ -63,11 +68,6 @@ const coreClusterLinks = [
     href: '/inferior-function-test',
     label: 'Inferior function test',
     description: 'Use the dominant-inferior axis to understand stress, grip patterns, and development.',
-  },
-  {
-    href: '/jungian-cognitive-functions-test',
-    label: 'Jungian cognitive functions test',
-    description: 'Map the full stack and the function-attitude pattern behind a likely type result.',
   },
 ];
 

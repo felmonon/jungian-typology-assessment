@@ -130,8 +130,10 @@ const faqs = [
 ];
 
 const seoGuideLinks = [
+  ['Jungian cognitive functions test', '/jungian-cognitive-functions-test'],
   ['Jungian test', '/jungian-test'],
   ['Cognitive function test', '/cognitive-function-test'],
+  ['Jungian cognitive functions', '/cognitive-functions'],
   ['MBTI alternative', '/mbti-alternative'],
   ['Inferior function test', '/inferior-function-test'],
   ['Shadow work test', '/shadow-work-test'],
@@ -163,7 +165,7 @@ export const Home: React.FC = () => {
             <motion.div initial="hidden" animate="visible" variants={stagger}>
               <motion.div variants={fadeUp} className="mb-7 flex flex-wrap items-center gap-3">
                 <span className="rounded-full border border-jung-border bg-white px-3 py-1 text-xs font-semibold text-jung-secondary shadow-sm">
-                  Free Jungian cognitive function assessment
+                  Free Jungian cognitive functions test
                 </span>
                 <span className="rounded-full bg-jung-accent-light px-3 py-1 text-xs font-semibold text-jung-accent">
                   12-16 minutes
@@ -181,8 +183,9 @@ export const Home: React.FC = () => {
                 variants={fadeUp}
                 className="mt-7 max-w-2xl text-lg leading-8 text-jung-secondary md:text-xl"
               >
-                TypeJung maps your cognitive functions, stress edge, and dominant-inferior
-                tension without forcing you into a shallow four-letter result.
+                TypeJung maps your Jungian cognitive functions, stress edge, and
+                dominant-inferior tension without forcing you into a shallow four-letter
+                result.
               </motion.p>
 
               <motion.div variants={fadeUp} className="mt-9 flex flex-col gap-3 sm:flex-row">

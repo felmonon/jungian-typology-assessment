@@ -67,6 +67,7 @@ const style = `
     .cta h2 { color: #fff; border: 0; margin: 0 0 8px; padding: 0; }
     .cta p { color: rgba(255,255,255,.82); margin-bottom: 20px; }
     .btn { display: inline-block; padding: 12px 22px; background: #f59e0b; color: #1c1917; text-decoration: none; border-radius: 5px; font-weight: bold; }
+    .secondary-link { display: inline-block; margin-left: 14px; color: #fff; font-weight: 700; }
     nav { background: #f5f5f4; padding: 18px; border-radius: 8px; margin-bottom: 30px; }
     nav a { color: #b45309; text-decoration: none; margin-right: 18px; font-weight: 500; }
     .related { background: #fff; border: 1px solid #e7e5e4; border-radius: 8px; padding: 22px; margin-top: 38px; }
@@ -78,6 +79,7 @@ const renderNav = () => `
   <nav>
     <a href="/">Home</a>
     <a href="/assessment">Take Assessment</a>
+    <a href="/jungian-cognitive-functions-test">Jungian Cognitive Functions Test</a>
     <a href="/jungian-test">Jungian Test</a>
     <a href="/mbti-alternative">MBTI Alternative</a>
     <a href="/blog/">Blog</a>
@@ -117,6 +119,7 @@ ${renderNav()}
       <h2>See your own Jungian energy map</h2>
       <p>Take the free 42-question TypeJung assessment before you keep comparing type descriptions. The result shows your dominant pattern, inferior-function pressure, and growth edge.</p>
       <a class="btn" href="/assessment">Take the free assessment</a>
+      <a class="secondary-link" href="/jungian-cognitive-functions-test">Read the Jungian cognitive functions test guide</a>
     </section>
 
     ${article.sections.map((section) => `
@@ -129,6 +132,7 @@ ${renderNav()}
   <aside class="related">
     <h2>Related TypeJung guides</h2>
     <ul>
+      <li><a href="/jungian-cognitive-functions-test">Jungian cognitive functions test</a></li>
       ${article.related.map(([href, label]) => `<li><a href="${href}">${escapeHtml(label)}</a></li>`).join('\n      ')}
     </ul>
   </aside>
@@ -175,6 +179,7 @@ ${renderNav()}
     <h2>Start with your own map</h2>
     <p>The articles are more useful when you can compare them to your own dominant-inferior pattern.</p>
     <a class="btn" href="/assessment">Take the free assessment</a>
+    <a class="secondary-link" href="/jungian-cognitive-functions-test">Read the Jungian cognitive functions test guide</a>
   </section>
 
   <div class="blog-grid">

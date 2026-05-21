@@ -16,8 +16,8 @@ const SITE_NAME = 'TypeJung';
 // SEO configurations for each page
 export const PAGE_SEO: Record<string, SEOConfig> = {
   home: {
-    title: 'TypeJung - Jungian Energy Map Assessment',
-    description: 'Take a depth-based Jungian assessment that maps where your energy flows and where it gets stuck through behavioral evidence, inferior-function triggers, somatic indicators, and attitude direction.',
+    title: 'TypeJung - Free Jungian Cognitive Functions Test',
+    description: 'Take a free Jungian cognitive functions test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, then explains your dominant-inferior pattern.',
   },
   assessment: {
     title: 'Take the Free Jungian Cognitive Function Assessment | TypeJung',
@@ -38,7 +38,7 @@ export const PAGE_SEO: Record<string, SEOConfig> = {
   },
   pricing: {
     title: 'Pricing | TypeJung',
-    description: 'Start with the free TypeJung assessment, then unlock Insight for CA$19 or Mastery for CA$39 with one-time CAD pricing.',
+    description: 'Start with the free TypeJung assessment, then unlock Insight for CA$10 or Mastery for CA$29 with one-time CAD pricing.',
   },
   privacy: {
     title: 'Privacy Policy | TypeJung',

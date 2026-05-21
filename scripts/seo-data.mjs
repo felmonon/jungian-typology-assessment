@@ -432,8 +432,8 @@ export const typeData = {
 
 export const pageData = {
   '/': {
-    title: 'TypeJung - Jungian Energy Map Assessment',
-    description: 'Take a free depth-based Jungian assessment that maps cognitive functions, energy flow, and inferior-function stress for educational self-reflection.',
+    title: 'TypeJung - Free Jungian Cognitive Functions Test',
+    description: 'Take a free Jungian cognitive functions test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, then explains your dominant-inferior pattern.',
   },
   '/assessment': {
     title: 'Take the Free Jungian Cognitive Function Assessment | TypeJung',
@@ -474,6 +474,10 @@ export const pageData = {
   '/cognitive-function-test': {
     title: 'Cognitive Function Test - Measure All 8 Functions | TypeJung',
     description: 'Take a cognitive function test that scores Ni, Ne, Si, Se, Ti, Te, Fi, and Fe independently and maps your full Jungian profile.',
+  },
+  '/jungian-cognitive-functions-test': {
+    title: 'Jungian Cognitive Functions Test - Free Ni Ne Si Se Ti Te Fi Fe Map | TypeJung',
+    description: 'Take a free Jungian cognitive functions test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, then explains your dominant-inferior pattern.',
   },
 };
 
@@ -851,6 +855,7 @@ export const seoLandingPages = [
         ],
         links: [
           { href: '/assessment', label: 'Start the free cognitive function test' },
+          { href: '/jungian-cognitive-functions-test', label: 'Compare the Jungian cognitive functions test' },
           { href: '/jungian-typology', label: 'Read the Jungian typology guide' },
           { href: '/inferior-function-test', label: 'Find your inferior-function pattern' },
         ],
@@ -872,6 +877,7 @@ export const seoLandingPages = [
     ],
     relatedLinks: [
       { href: '/assessment', label: 'Start the test' },
+      { href: '/jungian-cognitive-functions-test', label: 'Jungian cognitive functions test' },
       { href: '/cognitive-functions', label: 'Cognitive functions guide' },
       { href: '/functions/ni', label: 'Introverted Intuition' },
       { href: '/functions/ti', label: 'Introverted Thinking' },
@@ -1071,49 +1077,68 @@ export const seoLandingPages = [
   {
     slug: 'jungian-cognitive-functions-test',
     query: 'Jungian cognitive functions test',
-    title: 'Jungian Cognitive Functions Test - Map Ni Ne Si Se Ti Te Fi Fe | TypeJung',
-    description: 'Take a Jungian cognitive functions test that maps all 8 function-attitudes and explains your dominant-inferior pattern.',
-    keywords: ['Jungian cognitive functions test', 'Jung functions test', 'Ni Ne Si Se Ti Te Fi Fe test', 'Jungian function stack test'],
+    title: 'Jungian Cognitive Functions Test - Free Ni Ne Si Se Ti Te Fi Fe Map | TypeJung',
+    description: 'Take a free Jungian cognitive functions test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, then explains your dominant-inferior pattern.',
+    keywords: ['Jungian cognitive functions test', 'free Jungian cognitive functions test', 'Jung functions test', 'Ni Ne Si Se Ti Te Fi Fe test', 'Jungian function stack test', 'cognitive function test'],
     eyebrow: 'Jungian functions test',
-    h1: 'A Jungian cognitive functions test for the full stack',
+    h1: 'Free Jungian cognitive functions test for Ni Ne Si Se Ti Te Fi Fe',
     intro: [
-      'A serious Jungian cognitive functions test should do more than hand you a four-letter label. It should show how the function pattern is built.',
-      'TypeJung maps all 8 function-attitudes, then explains the dominant-inferior axis that often carries the clearest growth tension.',
+      'A serious Jungian cognitive functions test should do more than hand you a four-letter label. It should show how your pattern is built across Ni, Ne, Si, Se, Ti, Te, Fi, and Fe.',
+      'TypeJung starts with a free 42-question assessment, maps all 8 function-attitudes, then explains the dominant-inferior axis that often carries the clearest growth tension.',
     ],
     intent: {
-      bestFor: 'People searching specifically for Jungian functions, function stacks, and a full Ni Ne Si Se Ti Te Fi Fe assessment.',
-      measures: 'Introverted and extraverted attitudes across thinking, feeling, sensation, and intuition, plus dominant-inferior interpretation.',
+      bestFor: 'People searching specifically for a Jungian cognitive functions test, function stack test, or full Ni Ne Si Se Ti Te Fi Fe assessment.',
+      measures: 'Introverted and extraverted attitudes across intuition, sensing, thinking, and feeling, plus likely type pattern and dominant-inferior interpretation.',
       privacy: 'Use the free core map first. Paid interpretation is optional and should only be used if the map feels accurate.',
     },
     sections: [
       {
-        heading: 'What makes it Jungian',
+        heading: 'Take a Jungian cognitive functions test, not a label quiz',
         body: [
-          'TypeJung begins with Jung\'s core distinction between attitude direction and psychological function. It then measures introverted and extraverted versions of thinking, feeling, sensation, and intuition.',
-          'That gives you a practical map of attention, judgment, stress, and development instead of a flat type label.',
+          'Most personality quizzes rush toward a type code. A Jungian cognitive functions test should first ask how attention gathers information and how judgment makes decisions.',
+          'TypeJung uses scenario evidence to map the function pattern before interpreting type. That gives you a practical profile of attention, judgment, stress, and development instead of a flat label.',
         ],
         bullets: [
-          'Introverted and extraverted attitude direction',
+          'All 8 function-attitudes: Ni, Ne, Si, Se, Ti, Te, Fi, and Fe',
           'Thinking and feeling as judging functions',
           'Sensation and intuition as perceiving functions',
-          'Dominant, auxiliary, tertiary, and inferior pattern interpretation',
+          'Likely dominant, auxiliary, tertiary, and inferior pattern interpretation',
+          'Free core result before any optional paid report',
         ],
         links: [
+          { href: '/assessment', label: 'Start the free Jungian cognitive functions test' },
           { href: '/jungian-typology', label: 'Read the Jungian typology guide' },
-          { href: '/cognitive-functions', label: 'Read the 8 cognitive functions guide' },
+          { href: '/cognitive-functions', label: 'Read the guide to all 8 Jungian cognitive functions' },
         ],
       },
       {
         heading: 'What the free result includes',
         body: [
           'The free result gives you the main energy map and likely function pattern. It is enough to start comparing your type hypothesis against real self-observation.',
-          'Paid reports are optional and add deeper interpretation only after you have seen the core map.',
+          'Paid reports are optional and add deeper interpretation only after you have seen the core map and decided that the result is useful.',
         ],
         bullets: [
           'Relative scores for all 8 function-attitudes',
           'A likely type pattern with room for close alternatives',
           'A dominant-inferior axis for growth and stress reflection',
-          'Clear next links into function and type guides',
+          'Clear next links into function, type, and stress-pattern guides',
+        ],
+      },
+      {
+        heading: 'The 8 Jungian functions covered by the test',
+        body: [
+          'The test separates perceiving functions from judging functions and keeps introverted and extraverted attitudes distinct. This is the part many short type quizzes blur.',
+        ],
+        bullets: [
+          'Ni and Ne: pattern insight, future meaning, and possibility scanning',
+          'Si and Se: memory, continuity, present contact, and concrete experience',
+          'Ti and Te: internal logic, precision, execution, and external structure',
+          'Fi and Fe: personal values, authenticity, relational tone, and shared values',
+        ],
+        links: [
+          { href: '/cognitive-function-test', label: 'Compare the broader cognitive function test page' },
+          { href: '/functions/ni', label: 'Read the Introverted Intuition guide' },
+          { href: '/functions/ti', label: 'Read the Introverted Thinking guide' },
         ],
       },
       {
@@ -1135,6 +1160,7 @@ export const seoLandingPages = [
         heading: 'How to use the output',
         body: [
           'Read the highest function as a hypothesis about what your ego trusts. Read the lowest or inferior signal as a place to observe stress, reaction, attraction, and developmental tension. Then retake later to see whether the map becomes more flexible.',
+          'If two type patterns are close, compare the function evidence rather than forcing certainty. The goal is a useful self-observation map, not a rigid identity.',
         ],
         links: [
           { href: '/assessment', label: 'Take the free Jungian cognitive functions test' },
@@ -1145,6 +1171,10 @@ export const seoLandingPages = [
     ],
     faqs: [
       {
+        question: 'What is a Jungian cognitive functions test?',
+        answer: 'A Jungian cognitive functions test measures the function-attitudes behind type: Ni, Ne, Si, Se, Ti, Te, Fi, and Fe. The goal is to show a pattern, not only a type code.',
+      },
+      {
         question: 'Does TypeJung test all 8 Jungian cognitive functions?',
         answer: 'Yes. It measures Ni, Ne, Si, Se, Ti, Te, Fi, and Fe as a profile rather than relying only on broad dichotomies.',
       },
@@ -1153,13 +1183,14 @@ export const seoLandingPages = [
         answer: 'Yes. TypeJung can support a likely type pattern, but the function map is the main output.',
       },
       {
-        question: 'Can I take it without paying?',
+        question: 'Can I take the Jungian cognitive functions test without paying?',
         answer: 'Yes. The 42-question assessment and core energy map are free. Insight and Mastery are optional one-time CAD upgrades.',
       },
     ],
     relatedLinks: [
-      { href: '/assessment', label: 'Take the free assessment' },
-      { href: '/cognitive-functions', label: 'Cognitive functions guide' },
+      { href: '/assessment', label: 'Take the free Jungian cognitive functions test' },
+      { href: '/cognitive-function-test', label: 'Cognitive function test' },
+      { href: '/cognitive-functions', label: 'Jungian cognitive functions guide' },
       { href: '/jungian-typology', label: 'Jungian typology guide' },
       { href: '/inferior-function-test', label: 'Inferior function test' },
     ],
@@ -1285,6 +1316,7 @@ export const seoLandingPages = [
     ],
     relatedLinks: [
       { href: '/cognitive-function-test', label: 'Take the cognitive function test' },
+      { href: '/jungian-cognitive-functions-test', label: 'Jungian cognitive functions test' },
       { href: '/functions/ni', label: 'Introverted Intuition' },
       { href: '/functions/fe', label: 'Extraverted Feeling' },
       { href: '/jungian-typology', label: 'Jungian typology guide' },

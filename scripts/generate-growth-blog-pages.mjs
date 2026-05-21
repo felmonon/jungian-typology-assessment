@@ -8,6 +8,7 @@ import { growthBlogArticles } from './growth-blog-data.mjs';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const publicBlogDir = join(__dirname, '..', 'public', 'blog');
 const baseUrl = 'https://typejung.com';
+const buildDate = new Date().toISOString().split('T')[0];
 
 const escapeHtml = (value) =>
   String(value)
@@ -24,7 +25,7 @@ const articleSchema = (article) => JSON.stringify({
       headline: article.title,
       description: article.description,
       datePublished: article.date,
-      dateModified: '2026-05-18',
+      dateModified: buildDate,
       author: {
         '@type': 'Organization',
         name: 'TypeJung',

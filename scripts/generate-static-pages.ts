@@ -17,6 +17,7 @@ const siteConfig = {
   name: 'TypeJung',
   description: 'Free Jungian self-assessment that maps cognitive functions, energy flow, and stress patterns for educational self-reflection',
 };
+const buildDate = new Date().toISOString().split('T')[0];
 
 const escapeHtml = (value: unknown): string =>
   String(value)
@@ -268,7 +269,7 @@ function generateLandingPage(page: any) {
     description: page.description,
     url: `${siteConfig.url}${path}`,
     inLanguage: 'en',
-    dateModified: '2026-05-18',
+    dateModified: buildDate,
     isPartOf: {
       '@type': 'WebSite',
       name: siteConfig.name,
@@ -384,7 +385,7 @@ ${getHead(seo.title, seo.description, path)}
   "headline": "${seo.name}",
   "description": "${seo.description}",
   "url": "${siteConfig.url}${path}",
-  "dateModified": "2026-05-18",
+  "dateModified": "${buildDate}",
   "author": { "@type": "Organization", "name": "TypeJung" },
   "publisher": { "@type": "Organization", "name": "TypeJung", "logo": { "@type": "ImageObject", "url": "${siteConfig.url}/logo.png" } },
   "mainEntityOfPage": { "@type": "WebPage", "@id": "${siteConfig.url}${path}" }
@@ -505,7 +506,7 @@ ${getHead(seo.title, seo.description, path)}
   "headline": "${data.code} - ${data.name}",
   "description": "${seo.description}",
   "url": "${siteConfig.url}${path}",
-  "dateModified": "2026-05-18",
+  "dateModified": "${buildDate}",
   "author": { "@type": "Organization", "name": "TypeJung" },
   "publisher": { "@type": "Organization", "name": "TypeJung", "logo": { "@type": "ImageObject", "url": "${siteConfig.url}/logo.png" } },
   "mainEntityOfPage": { "@type": "WebPage", "@id": "${siteConfig.url}${path}" }

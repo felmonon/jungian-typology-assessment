@@ -90,12 +90,12 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       >
         <div className="lab-container flex items-center justify-between gap-4">
           <Link to="/" className="flex min-h-11 items-center gap-3" aria-label="TypeJung home">
-            <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-jung-border bg-jung-surface shadow-sm">
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-jung-border bg-jung-surface shadow-sm sm:h-10 sm:w-10">
               <TypeJungMark size="sm" />
             </span>
             <span className="flex flex-col">
-              <span className="font-display text-2xl leading-none text-jung-dark">TypeJung</span>
-              <span className="text-xs font-medium text-jung-muted">Energy map assessment</span>
+              <span className="font-display text-xl leading-none text-jung-dark sm:text-2xl">TypeJung</span>
+              <span className="text-[11px] font-medium text-jung-muted sm:text-xs">Jungian function assessment</span>
             </span>
           </Link>
 
@@ -215,7 +215,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               <span className="font-display text-2xl text-jung-dark">TypeJung</span>
             </Link>
             <p className="max-w-sm text-sm leading-6 text-jung-secondary">
-              A depth-based Jungian assessment for mapping where psychic energy flows and where it gets stuck.
+              A Jungian cognitive function assessment for mapping strengths, stress edges, and growth patterns.
             </p>
           </div>
 

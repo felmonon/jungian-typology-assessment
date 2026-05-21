@@ -1,7 +1,16 @@
 import React, { useState } from 'react';
 import { motion, type Variants } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, BarChart3, Brain, Compass, HeartPulse, Minus, Plus } from 'lucide-react';
+import {
+  ArrowRight,
+  Brain,
+  Check,
+  ChevronDown,
+  Compass,
+  Lock,
+  MessageCircle,
+  Sparkles,
+} from 'lucide-react';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { DiscountCaptureCard } from '../components/discount/DiscountCaptureCard';
 import { Button } from '../components/ui/Button';
@@ -12,226 +21,122 @@ import { PAGE_SEO, useSEO } from '../hooks/useSEO';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-const container: Variants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 18 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease } },
 };
 
-const item: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease } },
+const stagger: Variants = {
+  hidden: { opacity: 1 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
 };
 
 const sampleProfile = [
-  { name: 'Ti', label: 'Introverted Thinking', value: 82, role: 'Dominant' },
-  { name: 'Ne', label: 'Extraverted Intuition', value: 71, role: 'Auxiliary' },
-  { name: 'Si', label: 'Introverted Sensing', value: 58, role: 'Tertiary' },
-  { name: 'Te', label: 'Extraverted Thinking', value: 54, role: '' },
-  { name: 'Ni', label: 'Introverted Intuition', value: 49, role: '' },
-  { name: 'Se', label: 'Extraverted Sensing', value: 44, role: '' },
-  { name: 'Fi', label: 'Introverted Feeling', value: 38, role: '' },
-  { name: 'Fe', label: 'Extraverted Feeling', value: 24, role: 'Inferior' },
+  { name: 'Ti', label: 'Thinking inward', value: 82, role: 'Dominant' },
+  { name: 'Ne', label: 'Possibility scanning', value: 71, role: 'Auxiliary' },
+  { name: 'Si', label: 'Memory and pattern recall', value: 58, role: 'Support' },
+  { name: 'Te', label: 'External structure', value: 54, role: 'Available' },
+  { name: 'Ni', label: 'Long-range synthesis', value: 49, role: 'Available' },
+  { name: 'Se', label: 'Present contact', value: 44, role: 'Pressure' },
+  { name: 'Fi', label: 'Personal value signal', value: 38, role: 'Quiet' },
+  { name: 'Fe', label: 'Interpersonal attunement', value: 24, role: 'Inferior' },
 ];
 
-const heroStats: Array<[string, string]> = [
-  ['12–16', 'min'],
-  ['42', 'scenarios'],
-  ['8', 'functions'],
-  ['0', 'signup'],
+const trustPoints = [
+  'No account required for the free map',
+  '42 scenario-based questions',
+  'Paid upgrade only after your result',
 ];
 
-const methodLayers = [
-  {
-    icon: Brain,
-    label: 'Behavioral evidence',
-    title: 'What you actually do',
-    description:
-      'Scenario questions look for repeated patterns in work, conflict, learning, relationships, solitude, and pressure.',
-  },
-  {
-    icon: HeartPulse,
-    label: 'Inferior detection',
-    title: 'Where stress takes over',
-    description:
-      'Stress and attraction triggers reveal the function you are least able to control cleanly, so they carry extra weight.',
-  },
+const valueCards = [
   {
     icon: Compass,
-    label: 'Somatic indicators',
-    title: 'What your body signals',
+    title: 'A readable map, not a vague label',
     description:
-      'Engagement, anxiety, grounding, and threat responses add evidence beyond what your self-image can explain.',
+      'See all eight cognitive functions at once, including which functions lead, which support, and which create stress.',
   },
   {
-    icon: BarChart3,
-    label: 'Attitude',
-    title: 'Where energy moves',
+    icon: Brain,
+    title: 'Built around actual patterns',
     description:
-      'Introversion and extraversion are measured as subject-object energy direction, not social loudness.',
+      'Questions focus on attention, stress, conflict, body signals, decisions, and relationships instead of simple identity claims.',
+  },
+  {
+    icon: MessageCircle,
+    title: 'Depth only when you want it',
+    description:
+      'Start free. Upgrade to Insight or Mastery only if the map earns your trust and you want deeper interpretation.',
   },
 ];
 
-const procedureSteps = [
-  {
-    numeral: 'I',
-    label: 'Respond',
-    title: 'Answer 42 questions honestly',
-    description:
-      'Each prompt asks about concrete attention, decision, stress, body, and relationship patterns instead of forcing you into a simple either-or.',
-    duration: '12–16 min',
-  },
-  {
-    numeral: 'II',
-    label: 'Analyze',
-    title: 'See your function pattern',
-    description:
-      'Your result shows how the functions appear in your answers, with the dominant-inferior axis and answer consistency signal made visible.',
-    duration: 'Instant',
-  },
-  {
-    numeral: 'III',
-    label: 'Reveal',
-    title: 'Understand what it means',
-    description:
-      'Turn the map into plain-language insight about your stress edge, relationship patterns, and practical next steps.',
-    duration: 'Yours forever',
-  },
-];
-
-const seoGuideLinks = [
-  {
-    href: '/jungian-test',
-    label: 'Jungian test',
-    description: 'Start here if you want a broad Jungian assessment with function evidence and a free first result.',
-  },
-  {
-    href: '/cognitive-function-test',
-    label: 'Cognitive function test',
-    description: 'See how TypeJung scores Ni, Ne, Si, Se, Ti, Te, Fi, and Fe independently.',
-  },
-  {
-    href: '/mbti-alternative',
-    label: 'MBTI alternative',
-    description: 'Compare TypeJung with label-first MBTI-style quizzes and changing four-letter results.',
-  },
-  {
-    href: '/inferior-function-test',
-    label: 'Inferior function test',
-    description: 'Understand stress reactions, grip patterns, and the growth edge behind the result.',
-  },
-  {
-    href: '/jungian-cognitive-functions-test',
-    label: 'Jungian cognitive functions test',
-    description: 'Map the full function stack and the dominant-inferior axis behind a likely type.',
-  },
-  {
-    href: '/shadow-work-test',
-    label: 'Shadow work test',
-    description: 'Use Jungian self-observation prompts without turning the result into a diagnosis.',
-  },
+const steps = [
+  ['01', 'Answer the assessment', 'Move through 42 prompts about attention, stress, decisions, and relationships.'],
+  ['02', 'Read the free map', 'Get your function pattern, dominant-inferior axis, and a plain-language summary.'],
+  ['03', 'Upgrade for depth', 'Unlock guided interpretation, growth practices, and the AI Type Coach when useful.'],
 ];
 
 const pricingTiers = [
   {
     id: 'free',
     name: 'Free',
-    volume: 'Vol. I',
     price: PRICING.free.price,
     amount: PRICING.free.amount,
-    cadence: 'forever',
-    description: 'Take the full assessment and see whether the map feels accurate before paying.',
-    features: [
-      '42-question assessment',
-      'Energy map of eight functions',
-      'Dominant–inferior axis',
-      'No signup required',
-    ],
-    cta: 'Begin free assessment',
+    description: 'Take the full assessment and see the core map.',
+    features: ['42 questions', 'Function map', 'Dominant-inferior axis', 'No signup required'],
+    cta: 'Start free',
   },
   {
     id: 'insight',
     name: PRICING.insight.name,
-    volume: 'Vol. II',
     price: PRICING.insight.price,
     amount: PRICING.insight.amount,
-    cadence: 'one-time',
-    description: 'Unlock the deeper report when you want the meaning behind your free map.',
-    features: [
-      'Developmental edge report',
-      'Stress pattern analysis',
-      'Somatic grounding practices',
-      'Lifetime result access',
-    ],
-    cta: 'Choose Insight',
+    description: 'Understand the meaning behind your map.',
+    features: ['Deeper written report', 'Stress pattern analysis', 'Relationship triggers', 'Grounding practices'],
+    cta: 'View Insight',
     highlighted: true,
   },
   {
     id: 'mastery',
     name: PRICING.mastery.name,
-    volume: 'Vol. III',
     price: PRICING.mastery.price,
     amount: PRICING.mastery.amount,
-    cadence: 'one-time',
-    description: 'Add the AI Type Coach when you want follow-up guidance and practice support.',
-    features: [
-      'Everything in Insight',
-      'AI Type Coach',
-      'Individuation roadmap',
-      'Practice library',
-    ],
-    cta: 'Choose Mastery',
+    description: 'Use your map with guided follow-up support.',
+    features: ['Everything in Insight', 'AI Type Coach', 'Growth exercises', 'Practice roadmap'],
+    cta: 'View Mastery',
   },
 ];
 
 const faqs = [
   {
-    question: 'Is this another MBTI test?',
+    question: 'Is this just another MBTI test?',
     answer:
-      'No. TypeJung does not stop at a four-letter label. It maps energy distribution, inferior-function tension, body signals, and an answer consistency signal.',
+      'No. TypeJung does not stop at a four-letter label. It maps all eight functions and shows the tension between dominant strengths and inferior-function pressure.',
   },
   {
-    question: 'Why only 42 questions?',
+    question: 'Do I need to pay first?',
     answer:
-      'It is long enough to catch patterns, but short enough to finish in one sitting. The questions are targeted instead of repeating the same self-report prompt many ways.',
+      'No. The full assessment starts free. Paid reports are optional upgrades after you have seen whether the free map feels useful.',
   },
   {
-    question: 'Why weight the inferior function?',
+    question: 'Is this clinical or diagnostic?',
     answer:
-      'People can describe their strengths too cleanly. Stress and trigger patterns show where control gets weaker, so those answers reveal the growth edge more clearly.',
+      'No. TypeJung is an educational self-reflection tool. It is meant to help you observe patterns, not diagnose a condition.',
   },
   {
-    question: 'Do I need an account?',
+    question: 'How long does it take?',
     answer:
-      'No. You can take the free assessment without creating an account. An account is only useful for saved history and paid access.',
+      'Most people finish in about 12 to 16 minutes. The best results come from answering quickly and honestly instead of trying to optimize the outcome.',
   },
 ];
 
-const trustSignals = [
-  'Scenario-based, not forced binary choice',
-  'Inferior function weighted more heavily',
-  'Private by default',
+const seoGuideLinks = [
+  ['Jungian test', '/jungian-test'],
+  ['Cognitive function test', '/cognitive-function-test'],
+  ['MBTI alternative', '/mbti-alternative'],
+  ['Inferior function test', '/inferior-function-test'],
+  ['Shadow work test', '/shadow-work-test'],
+  ['Why MBTI changes', '/mbti-keeps-changing'],
 ];
-
-const CornerTicks: React.FC = () => {
-  const t = 'absolute w-3 h-3 border-jung-accent/40';
-  return (
-    <>
-      <span className={`${t} -top-2 -left-2 border-t border-l`} />
-      <span className={`${t} -top-2 -right-2 border-t border-r`} />
-      <span className={`${t} -bottom-2 -left-2 border-b border-l`} />
-      <span className={`${t} -bottom-2 -right-2 border-b border-r`} />
-    </>
-  );
-};
-
-const Eyebrow: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <div className="flex items-center gap-3 mb-6">
-    <span className="h-px w-10 bg-jung-border-light" />
-    <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted">
-      {children}
-    </span>
-  </div>
-);
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -252,676 +157,328 @@ export const Home: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <div className="relative">
-        {/* HERO */}
-        <section className="relative overflow-hidden pt-12 lg:pt-20 pb-20 lg:pb-28">
-          <div className="pointer-events-none absolute -top-32 -right-32 w-[520px] h-[520px] rounded-full blur-3xl bg-jung-accent/10" />
-          <div className="pointer-events-none absolute -bottom-20 -left-20 w-[400px] h-[400px] rounded-full blur-3xl bg-jung-gold/[0.06]" />
+      <div className="relative overflow-hidden">
+        <section className="relative border-b border-jung-border-light bg-[linear-gradient(180deg,#fbfaf6_0%,#f3efe5_100%)]">
+          <div className="lab-container grid gap-12 py-14 md:py-20 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:py-24">
+            <motion.div initial="hidden" animate="visible" variants={stagger}>
+              <motion.div variants={fadeUp} className="mb-7 flex flex-wrap items-center gap-3">
+                <span className="rounded-full border border-jung-border bg-white px-3 py-1 text-xs font-semibold text-jung-secondary shadow-sm">
+                  Free Jungian cognitive function assessment
+                </span>
+                <span className="rounded-full bg-jung-accent-light px-3 py-1 text-xs font-semibold text-jung-accent">
+                  12-16 minutes
+                </span>
+              </motion.div>
 
-          <div className="lab-container relative">
-            <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-              <motion.div
-                initial="hidden"
-                animate="visible"
-                variants={container}
-                className="lg:col-span-7"
+              <motion.h1
+                variants={fadeUp}
+                className="max-w-4xl text-balance font-display text-[44px] font-semibold leading-[0.98] text-jung-dark sm:text-6xl lg:text-[74px]"
               >
-                <motion.div variants={item}>
-                  <Eyebrow>An assessment of cognitive functions · No. 01</Eyebrow>
-                </motion.div>
+                See the pattern behind your personality.
+              </motion.h1>
 
-                <motion.h1
-                  variants={item}
-                  className="text-display text-[40px] sm:text-5xl md:text-[56px] lg:text-[60px] xl:text-[68px] leading-[1.02] tracking-tight text-jung-dark mb-6"
-                >
-                  Map the{' '}
-                  <span className="italic text-jung-accent">subconscious architecture</span>{' '}
-                  beneath your personality.
-                </motion.h1>
-
-                <motion.p
-                  variants={item}
-                  className="text-lg md:text-xl text-jung-secondary leading-relaxed max-w-xl mb-10 font-light"
-                >
-                  A scenario-based 42-question instrument that charts your cognitive function
-                  hierarchy, dominant–inferior tension, and somatic response curves — without
-                  forcing a four-letter label.
-                </motion.p>
-
-                <motion.div
-                  variants={item}
-                  className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-12"
-                >
-                  <Button
-                    onClick={() => startAssessment('home_hero')}
-                    variant="accent"
-                    size="lg"
-                    rightIcon={<ArrowRight className="h-4 w-4" />}
-                  >
-                    <span className="font-mono text-[11px] tracking-[0.18em] uppercase">
-                      Start free assessment
-                    </span>
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      AnalyticsEvents.ctaClicked('learn_method', 'home_hero');
-                      navigate('/learn');
-                    }}
-                    variant="outline"
-                    size="lg"
-                    className="border-jung-border hover:border-jung-accent"
-                  >
-                    <span className="font-mono text-[11px] tracking-[0.18em] uppercase">
-                      Read the method
-                    </span>
-                  </Button>
-                </motion.div>
-
-                <motion.div variants={item} className="flex flex-wrap items-center gap-x-8 gap-y-3">
-                  {heroStats.map(([n, l]) => (
-                    <div key={l} className="flex items-baseline gap-2">
-                      <span className="text-display text-2xl text-jung-dark leading-none">{n}</span>
-                      <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted">
-                        {l}
-                      </span>
-                    </div>
-                  ))}
-                </motion.div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1, delay: 0.2, ease }}
-                className="lg:col-span-5 relative"
-              >
-                <CornerTicks />
-                <div className="relative bg-jung-surface border border-jung-border rounded-2xl p-6 md:p-8 shadow-md">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted mb-1">
-                        Specimen profile
-                      </p>
-                      <h3 className="text-display text-xl text-jung-dark">Subject 14·B</h3>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-jung-accent animate-pulse" />
-                      <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted">
-                        Live
-                      </span>
-                    </div>
-                  </div>
-                  <FunctionRadial
-                    data={sampleProfile.map((p) => ({
-                      name: p.name,
-                      label: p.label,
-                      value: p.value,
-                    }))}
-                  />
-                  <div className="mt-4 pt-4 border-t border-jung-border flex items-center justify-between">
-                    <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-jung-muted">
-                      Dominant
-                    </span>
-                    <span className="text-display italic text-base text-jung-accent">
-                      Ti — Introverted Thinking
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        {/* TRUST STRIP */}
-        <section className="border-y border-jung-border bg-jung-surface-alt">
-          <div className="lab-container py-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            {trustSignals.map((t) => (
-              <span
-                key={t}
-                className="inline-flex items-center gap-3 text-sm text-jung-secondary"
-              >
-                <span className="h-1 w-1 rounded-full bg-jung-accent" />
-                {t}
-              </span>
-            ))}
-          </div>
-        </section>
-
-        {/* PROFILE PREVIEW (FUNCTION LIST) */}
-        <section id="profile" className="py-24 lg:py-32">
-          <div className="lab-container">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-80px' }}
-              variants={container}
-              className="grid lg:grid-cols-12 gap-12 lg:gap-16"
-            >
-              <motion.div variants={item} className="lg:col-span-4">
-                <div className="lg:sticky lg:top-32">
-                  <Eyebrow>The method</Eyebrow>
-                  <h2 className="text-display text-4xl md:text-5xl leading-[1.02] tracking-tight text-jung-dark mb-6">
-                    Eight functions,{' '}
-                    <span className="italic text-jung-accent">measured&nbsp;independently.</span>
-                  </h2>
-                  <p className="text-jung-secondary leading-relaxed font-light">
-                    Every prompt isolates a single cognitive process. We don't ask which type
-                    you are — we measure how each function appears in your responses, then show
-                    you the full topology.
-                  </p>
-                  <div className="mt-8 pt-8 border-t border-jung-border space-y-3">
-                    <Stat k="Reliability" v="α = 0.91" />
-                    <Stat k="Validation cohort" v="n = 12,438" />
-                    <Stat k="Last calibration" v="Q1 2026" />
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.div variants={item} className="lg:col-span-8">
-                <div className="bg-jung-surface border border-jung-border rounded-2xl overflow-hidden shadow-sm">
-                  <div className="px-6 md:px-8 py-5 border-b border-jung-border flex items-center justify-between">
-                    <div>
-                      <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted mb-1">
-                        Sample cognitive profile
-                      </p>
-                      <h3 className="text-display text-xl text-jung-dark italic">Subject 14·B</h3>
-                    </div>
-                    <div className="hidden sm:flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-jung-accent animate-pulse" />
-                      <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted">
-                        Calibrated
-                      </span>
-                    </div>
-                  </div>
-
-                  <ol className="divide-y divide-jung-border">
-                    {sampleProfile.map((fn, i) => (
-                      <li
-                        key={fn.name}
-                        className="group px-6 md:px-8 py-4 hover:bg-jung-surface-alt transition-colors"
-                      >
-                        <div className="grid grid-cols-12 items-center gap-4">
-                          <span className="col-span-1 font-mono text-[10px] text-jung-muted tabular-nums">
-                            {String(i + 1).padStart(2, '0')}
-                          </span>
-                          <span className="col-span-2 sm:col-span-1 text-display text-2xl italic text-jung-accent leading-none">
-                            {fn.name}
-                          </span>
-                          <span className="col-span-5 sm:col-span-4 text-sm text-jung-dark">
-                            {fn.label}
-                          </span>
-                          <span className="hidden sm:block col-span-2 font-mono text-[10px] tracking-[0.18em] uppercase text-jung-muted">
-                            {fn.role}
-                          </span>
-                          <div className="col-span-3 sm:col-span-3 h-[3px] bg-jung-border-light rounded-full overflow-hidden">
-                            <motion.div
-                              initial={{ width: 0 }}
-                              whileInView={{ width: `${fn.value}%` }}
-                              viewport={{ once: true }}
-                              transition={{ duration: 0.9, ease, delay: i * 0.05 }}
-                              className="h-full bg-jung-accent group-hover:bg-jung-gold transition-colors"
-                            />
-                          </div>
-                          <span className="col-span-1 text-right font-mono text-sm tabular-nums text-jung-dark">
-                            {fn.value}
-                          </span>
-                        </div>
-                      </li>
-                    ))}
-                  </ol>
-
-                  <div className="px-6 md:px-8 py-5 border-t border-jung-border bg-jung-surface-alt flex items-center justify-between">
-                    <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted">
-                      Stack hypothesis
-                    </span>
-                    <span className="text-display italic text-base text-jung-dark">
-                      Ti · Ne · Si · Fe
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* METHOD — FOUR EVIDENCE LAYERS */}
-        <section id="method" className="py-24 lg:py-32 bg-jung-surface-alt border-y border-jung-border">
-          <div className="lab-container">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-80px' }}
-              variants={container}
-              className="max-w-2xl mb-16"
-            >
-              <motion.div variants={item}>
-                <Eyebrow>Assessment architecture</Eyebrow>
-              </motion.div>
-              <motion.h2
-                variants={item}
-                className="text-display text-4xl md:text-5xl leading-[1.02] tracking-tight text-jung-dark"
-              >
-                Four evidence layers.{' '}
-                <span className="italic text-jung-accent">One&nbsp;practical</span> result.
-              </motion.h2>
-            </motion.div>
-
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-80px' }}
-              variants={container}
-              className="grid md:grid-cols-2 gap-px bg-jung-border rounded-2xl overflow-hidden border border-jung-border"
-            >
-              {methodLayers.map((layer, i) => (
-                <motion.div
-                  key={layer.title}
-                  variants={item}
-                  className="group bg-jung-base p-8 md:p-10 hover:bg-jung-surface transition-colors"
-                >
-                  <div className="flex items-baseline justify-between mb-8">
-                    <span className="text-display text-5xl italic text-jung-accent leading-none">
-                      {['I', 'II', 'III', 'IV'][i]}
-                    </span>
-                    <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted">
-                      Layer {i + 1} / 4
-                    </span>
-                  </div>
-                  <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted mb-3">
-                    {layer.label}
-                  </p>
-                  <h3 className="text-display text-2xl text-jung-dark mb-3 leading-tight">
-                    {layer.title}
-                  </h3>
-                  <p className="text-jung-secondary text-sm leading-relaxed font-light">
-                    {layer.description}
-                  </p>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-        </section>
-
-        {/* HOW IT WORKS */}
-        <section id="how-it-works" className="py-24 lg:py-32">
-          <div className="lab-container">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-80px' }}
-              variants={container}
-              className="flex flex-col md:flex-row md:items-end md:justify-between mb-16 gap-6"
-            >
-              <motion.div variants={item}>
-                <Eyebrow>Procedure</Eyebrow>
-                <h2 className="text-display text-4xl md:text-5xl leading-[1.02] tracking-tight text-jung-dark max-w-2xl">
-                  Three steps from{' '}
-                  <span className="italic text-jung-accent">curiosity</span> to clarity.
-                </h2>
-              </motion.div>
               <motion.p
-                variants={item}
-                className="text-jung-secondary max-w-sm font-light leading-relaxed"
+                variants={fadeUp}
+                className="mt-7 max-w-2xl text-lg leading-8 text-jung-secondary md:text-xl"
               >
-                Not a personality quiz dressed in lab coats. A straightforward measurement,
-                interpreted carefully.
+                TypeJung maps your cognitive functions, stress edge, and dominant-inferior
+                tension without forcing you into a shallow four-letter result.
               </motion.p>
+
+              <motion.div variants={fadeUp} className="mt-9 flex flex-col gap-3 sm:flex-row">
+                <Button
+                  onClick={() => startAssessment('home_hero')}
+                  variant="accent"
+                  size="lg"
+                  rightIcon={<ArrowRight className="h-4 w-4" />}
+                  className="rounded-full"
+                >
+                  Start free assessment
+                </Button>
+                <Button
+                  onClick={() => navigate('/learn')}
+                  variant="inverted"
+                  size="lg"
+                  className="rounded-full border border-jung-border"
+                >
+                  See how it works
+                </Button>
+              </motion.div>
+
+              <motion.div variants={fadeUp} className="mt-9 grid gap-3 sm:grid-cols-3">
+                {trustPoints.map((point) => (
+                  <div key={point} className="flex items-start gap-2 text-sm text-jung-secondary">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-jung-accent" />
+                    <span>{point}</span>
+                  </div>
+                ))}
+              </motion.div>
             </motion.div>
 
-            <motion.ol
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-80px' }}
-              variants={container}
-              className="grid md:grid-cols-3 gap-px bg-jung-border rounded-2xl overflow-hidden border border-jung-border"
+            <motion.div
+              initial={{ opacity: 0, y: 24, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.7, ease }}
+              className="relative"
             >
-              {procedureSteps.map((s, i) => (
-                <motion.li
-                  key={s.numeral}
-                  variants={item}
-                  className="group bg-jung-base p-8 md:p-10 hover:bg-jung-surface transition-colors"
-                >
-                  <div className="flex items-baseline justify-between mb-8">
-                    <span className="text-display text-6xl italic text-jung-accent leading-none">
-                      {s.numeral}
-                    </span>
-                    <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted">
-                      Step {i + 1} / 3
-                    </span>
+              <div className="rounded-[28px] border border-jung-border bg-white p-4 shadow-xl shadow-jung-dark/10 md:p-5">
+                <div className="rounded-3xl border border-jung-border-light bg-jung-base p-5 md:p-6">
+                  <div className="mb-5 flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-xs font-semibold uppercase text-jung-muted">
+                        Sample result
+                      </p>
+                      <h2 className="mt-1 font-display text-3xl font-semibold text-jung-dark">
+                        Ti-Ne profile
+                      </h2>
+                    </div>
+                    <div className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-jung-accent shadow-sm">
+                      Free map
+                    </div>
                   </div>
-                  <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted mb-3">
-                    {s.label}
-                  </p>
-                  <h3 className="text-display text-2xl text-jung-dark mb-3 leading-tight">
-                    {s.title}
-                  </h3>
-                  <p className="text-jung-secondary text-sm leading-relaxed mb-8 font-light">
-                    {s.description}
-                  </p>
-                  <div className="pt-5 border-t border-jung-border flex items-center justify-between">
-                    <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted">
-                      Duration
-                    </span>
-                    <span className="text-display italic text-jung-dark">{s.duration}</span>
+
+                  <div className="grid gap-5 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
+                    <div className="mx-auto w-full max-w-[260px]">
+                      <FunctionRadial
+                        data={sampleProfile.map(({ name, label, value }) => ({ name, label, value }))}
+                        size={300}
+                      />
+                    </div>
+
+                    <div className="space-y-3">
+                      {sampleProfile.slice(0, 5).map((fn) => (
+                        <div key={fn.name} className="rounded-2xl bg-white p-3 shadow-sm">
+                          <div className="mb-2 flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-3">
+                              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-jung-accent-light font-display text-lg italic text-jung-accent">
+                                {fn.name}
+                              </span>
+                              <div>
+                                <p className="text-sm font-semibold text-jung-dark">{fn.label}</p>
+                                <p className="text-xs text-jung-muted">{fn.role}</p>
+                              </div>
+                            </div>
+                            <span className="font-mono text-sm text-jung-dark">{fn.value}</span>
+                          </div>
+                          <div className="h-2 overflow-hidden rounded-full bg-jung-surface-alt">
+                            <div className="h-full rounded-full bg-jung-accent" style={{ width: `${fn.value}%` }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </motion.li>
-              ))}
-            </motion.ol>
+
+                  <div className="mt-5 rounded-2xl border border-jung-border-light bg-white p-4">
+                    <p className="text-sm font-semibold text-jung-dark">What the report explains</p>
+                    <p className="mt-1 text-sm leading-6 text-jung-secondary">
+                      Why the Ti-Ne pattern seeks precision first, explores possibilities second,
+                      and may experience Fe as social pressure under stress.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </section>
 
-        {/* SEO GUIDES */}
-        <section className="py-24 bg-jung-surface-alt border-y border-jung-border">
+        <section className="border-b border-jung-border-light bg-white">
+          <div className="lab-container grid gap-px bg-jung-border-light md:grid-cols-3">
+            {valueCards.map((card) => {
+              const Icon = card.icon;
+              return (
+                <div key={card.title} className="bg-white px-6 py-8 md:px-8">
+                  <Icon className="h-6 w-6 text-jung-accent" />
+                  <h3 className="mt-5 font-display text-2xl font-semibold text-jung-dark">
+                    {card.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-7 text-jung-secondary">{card.description}</p>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="bg-jung-base py-20 lg:py-28">
           <div className="lab-container">
-            <div className="mb-10 max-w-3xl">
-              <Eyebrow>Popular guides</Eyebrow>
-              <h2 className="text-display text-4xl md:text-5xl leading-[1.02] tracking-tight text-jung-dark mb-4">
-                Compare the test{' '}
-                <span className="italic text-jung-accent">before</span> you take it.
-              </h2>
-              <p className="text-jung-secondary font-light leading-relaxed">
-                Crawlable guides that answer the searches people usually make before choosing a
-                Jungian or cognitive-function test.
+            <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+              <div>
+                <p className="text-xs font-semibold uppercase text-jung-muted">
+                  How it works
+                </p>
+                <h2 className="mt-4 max-w-xl font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
+                  A clearer path from curiosity to usable insight.
+                </h2>
+              </div>
+              <div className="grid gap-4">
+                {steps.map(([number, title, description]) => (
+                  <div key={number} className="rounded-3xl border border-jung-border bg-white p-6 shadow-sm">
+                    <div className="flex gap-5">
+                      <span className="font-mono text-xs font-semibold text-jung-accent">{number}</span>
+                      <div>
+                        <h3 className="font-display text-2xl font-semibold text-jung-dark">{title}</h3>
+                        <p className="mt-2 text-sm leading-7 text-jung-secondary">{description}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="pricing" className="border-y border-jung-border-light bg-white py-20 lg:py-28">
+          <div className="lab-container">
+            <div className="mb-12 max-w-2xl">
+              <p className="text-xs font-semibold uppercase text-jung-muted">
+                Pricing
               </p>
+              <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
+                Start free. Upgrade only when the map is useful.
+              </h2>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {seoGuideLinks.map((guide, i) => (
-                <a
-                  key={guide.href}
-                  href={guide.href}
-                  className="group block p-6 bg-jung-surface border border-jung-border rounded-2xl hover:border-jung-accent/50 transition-colors no-underline"
-                >
-                  <div className="flex items-baseline justify-between mb-4">
-                    <span className="font-mono text-[10px] tabular-nums text-jung-muted">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted opacity-0 group-hover:opacity-100 transition-opacity">
-                      Read →
-                    </span>
+            <div className="grid gap-4 lg:grid-cols-3">
+              {pricingTiers.map((tier) => {
+                const highlighted = tier.highlighted;
+                return (
+                  <div
+                    key={tier.id}
+                    className={`relative flex flex-col rounded-3xl border p-6 shadow-sm ${
+                      highlighted
+                        ? 'border-jung-accent bg-jung-accent text-white shadow-jung-accent/20'
+                        : 'border-jung-border bg-jung-base text-jung-dark'
+                    }`}
+                  >
+                    {highlighted && (
+                      <span className="absolute right-5 top-5 rounded-full bg-white/14 px-3 py-1 text-xs font-semibold">
+                        Recommended
+                      </span>
+                    )}
+                    <h3 className="font-display text-3xl font-semibold">{tier.name}</h3>
+                    <p className={`mt-2 text-sm ${highlighted ? 'text-white/76' : 'text-jung-secondary'}`}>
+                      {tier.description}
+                    </p>
+                    <div className="mt-7 flex items-end gap-2">
+                      <span className="font-display text-5xl font-semibold">{tier.price}</span>
+                      <span className={`mb-2 text-xs font-semibold ${highlighted ? 'text-white/60' : 'text-jung-muted'}`}>
+                        {tier.id === 'free' ? 'to start' : 'one-time'}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        tier.id === 'free'
+                          ? startAssessment('home_pricing_free')
+                          : goPricing(tier.name, tier.amount)
+                      }
+                      className={`mt-7 inline-flex min-h-12 items-center justify-center rounded-full px-5 text-sm font-semibold transition-all ${
+                        highlighted
+                          ? 'bg-white text-jung-accent hover:bg-white/92'
+                          : 'bg-jung-dark text-white hover:bg-jung-accent'
+                      }`}
+                    >
+                      {tier.cta}
+                    </button>
+                    <ul className={`mt-7 space-y-3 border-t pt-6 ${highlighted ? 'border-white/16' : 'border-jung-border'}`}>
+                      {tier.features.map((feature) => (
+                        <li key={feature} className="flex items-start gap-3 text-sm">
+                          <Check className={`mt-0.5 h-4 w-4 shrink-0 ${highlighted ? 'text-white' : 'text-jung-accent'}`} />
+                          <span className={highlighted ? 'text-white/90' : 'text-jung-secondary'}>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <h3 className="text-display text-xl text-jung-dark mb-3 group-hover:text-jung-accent transition-colors">
-                    {guide.label}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-jung-secondary font-light">
-                    {guide.description}
-                  </p>
+                );
+              })}
+            </div>
+
+            <DiscountCaptureCard source="home_pricing_section" compact className="mx-auto mt-10 max-w-3xl" />
+          </div>
+        </section>
+
+        <section className="bg-jung-base py-20 lg:py-28">
+          <div className="lab-container grid gap-10 lg:grid-cols-[0.88fr_1.12fr]">
+            <div>
+              <p className="text-xs font-semibold uppercase text-jung-muted">
+                Before you start
+              </p>
+              <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
+                Straight answers, no personality-test hype.
+              </h2>
+            </div>
+            <div className="divide-y divide-jung-border overflow-hidden rounded-3xl border border-jung-border bg-white">
+              {faqs.map((faq, index) => {
+                const open = openFaq === index;
+                return (
+                  <div key={faq.question}>
+                    <button
+                      type="button"
+                      onClick={() => setOpenFaq(open ? null : index)}
+                      className="flex w-full items-start justify-between gap-5 px-6 py-5 text-left transition-colors hover:bg-jung-surface-alt"
+                      aria-expanded={open}
+                    >
+                      <span className="font-display text-xl font-semibold text-jung-dark">{faq.question}</span>
+                      <ChevronDown className={`mt-1 h-5 w-5 shrink-0 text-jung-muted transition-transform ${open ? 'rotate-180' : ''}`} />
+                    </button>
+                    {open && (
+                      <div className="px-6 pb-6">
+                        <p className="max-w-2xl text-sm leading-7 text-jung-secondary">{faq.answer}</p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        <section className="border-y border-jung-border-light bg-white py-16">
+          <div className="lab-container">
+            <div className="mb-7 flex items-center gap-3">
+              <Sparkles className="h-5 w-5 text-jung-accent" />
+              <h2 className="font-display text-2xl font-semibold text-jung-dark">Useful guides</h2>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              {seoGuideLinks.map(([label, href]) => (
+                <a
+                  key={href}
+                  href={href}
+                  className="rounded-full border border-jung-border bg-jung-base px-4 py-2 text-sm font-semibold text-jung-secondary transition-colors hover:border-jung-accent hover:text-jung-accent"
+                >
+                  {label}
                 </a>
               ))}
             </div>
           </div>
         </section>
 
-        {/* PRICING */}
-        <section id="pricing" className="py-24 lg:py-32">
-          <div className="lab-container">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-80px' }}
-              variants={container}
-              className="max-w-2xl mb-16"
-            >
-              <motion.div variants={item}>
-                <Eyebrow>Editions</Eyebrow>
-              </motion.div>
-              <motion.h2
-                variants={item}
-                className="text-display text-4xl md:text-5xl leading-[1.02] tracking-tight text-jung-dark mb-4"
-              >
-                One assessment.{' '}
-                <span className="italic text-jung-accent">Three&nbsp;depths</span> of insight.
-              </motion.h2>
-              <motion.p variants={item} className="text-jung-secondary font-light">
-                Start free. Upgrade only after the result earns it. No subscriptions.
-              </motion.p>
-            </motion.div>
-
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-80px' }}
-              variants={container}
-              className="grid md:grid-cols-3 gap-5"
-            >
-              {pricingTiers.map((p) => {
-                const highlighted = p.highlighted;
-                return (
-                  <motion.div
-                    key={p.id}
-                    variants={item}
-                    className={`relative flex flex-col rounded-2xl p-8 transition-all ${
-                      highlighted
-                        ? 'bg-jung-accent text-jung-base border border-jung-accent shadow-glow'
-                        : 'bg-jung-surface border border-jung-border hover:border-jung-accent/40 shadow-sm'
-                    }`}
-                  >
-                    {highlighted && (
-                      <div className="absolute -top-3 left-8 px-3 py-1 bg-jung-gold text-jung-base rounded-full">
-                        <span className="font-mono text-[10px] tracking-[0.22em] uppercase">
-                          Recommended
-                        </span>
-                      </div>
-                    )}
-
-                    <div className="flex items-baseline justify-between mb-6">
-                      <h3
-                        className={`text-display italic text-2xl ${
-                          highlighted ? 'text-jung-base' : 'text-jung-dark'
-                        }`}
-                      >
-                        {p.name}
-                      </h3>
-                      <span
-                        className={`font-mono text-[10px] tracking-[0.22em] uppercase ${
-                          highlighted ? 'text-jung-base/60' : 'text-jung-muted'
-                        }`}
-                      >
-                        {p.volume}
-                      </span>
-                    </div>
-
-                    <div className="flex items-baseline gap-1 mb-3">
-                      <span
-                        className={`text-display text-5xl leading-none ${
-                          highlighted ? 'text-jung-base' : 'text-jung-dark'
-                        }`}
-                      >
-                        {p.price}
-                      </span>
-                      <span
-                        className={`font-mono text-[10px] tracking-[0.22em] uppercase ml-2 ${
-                          highlighted ? 'text-jung-base/60' : 'text-jung-muted'
-                        }`}
-                      >
-                        {p.cadence}
-                      </span>
-                    </div>
-
-                    <p
-                      className={`text-sm leading-relaxed mb-8 font-light ${
-                        highlighted ? 'text-jung-base/80' : 'text-jung-secondary'
-                      }`}
-                    >
-                      {p.description}
-                    </p>
-
-                    <button
-                      onClick={() =>
-                        p.id === 'free'
-                          ? startAssessment('home_pricing_free')
-                          : goPricing(p.name, p.amount)
-                      }
-                      className={`w-full py-3 rounded-full mb-8 transition-all ${
-                        highlighted
-                          ? 'bg-jung-base text-jung-accent hover:bg-jung-base/95'
-                          : 'bg-jung-dark text-jung-base hover:bg-jung-dark/90'
-                      }`}
-                    >
-                      <span className="font-mono text-[11px] tracking-[0.18em] uppercase">
-                        {p.cta}
-                      </span>
-                    </button>
-
-                    <ul
-                      className={`space-y-3 pt-6 border-t ${
-                        highlighted ? 'border-jung-base/15' : 'border-jung-border'
-                      }`}
-                    >
-                      {p.features.map((f, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm">
-                          <span
-                            className={`font-mono text-[10px] tabular-nums mt-1 ${
-                              highlighted ? 'text-jung-base/55' : 'text-jung-muted'
-                            }`}
-                          >
-                            {String(i + 1).padStart(2, '0')}
-                          </span>
-                          <span className={highlighted ? 'text-jung-base' : 'text-jung-dark'}>
-                            {f}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
-
-            <DiscountCaptureCard
-              source="home_pricing_section"
-              compact
-              className="mx-auto mt-10 max-w-3xl"
-            />
-          </div>
-        </section>
-
-        {/* FAQ */}
-        <section id="faq" className="py-24 lg:py-32 bg-jung-surface-alt border-y border-jung-border">
-          <div className="lab-container">
-            <div className="grid lg:grid-cols-12 gap-12">
-              <div className="lg:col-span-4">
-                <div className="lg:sticky lg:top-32">
-                  <Eyebrow>Inquiries</Eyebrow>
-                  <h2 className="text-display text-4xl md:text-5xl leading-[1.02] tracking-tight text-jung-dark mb-6">
-                    Questions,{' '}
-                    <span className="italic text-jung-accent">answered</span>.
-                  </h2>
-                  <p className="text-jung-secondary font-light leading-relaxed">
-                    Straight answers to the questions people usually ask before they start.
-                  </p>
+        <section className="bg-jung-accent px-4 py-16 text-white sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-5xl rounded-[32px] border border-white/15 bg-white/8 p-8 md:p-12">
+            <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+              <div>
+                <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/12 px-3 py-1 text-xs font-semibold">
+                  <Lock className="h-3.5 w-3.5" />
+                  Private by default
                 </div>
-              </div>
-
-              <ol className="lg:col-span-8 divide-y divide-jung-border border-t border-b border-jung-border">
-                {faqs.map((f, i) => {
-                  const open = openFaq === i;
-                  return (
-                    <li key={i}>
-                      <button
-                        onClick={() => setOpenFaq(open ? null : i)}
-                        className="w-full py-6 flex items-start gap-6 text-left group"
-                        aria-expanded={open}
-                      >
-                        <span className="font-mono text-[10px] tabular-nums text-jung-muted pt-1 w-8 shrink-0">
-                          {String(i + 1).padStart(2, '0')}
-                        </span>
-                        <span className="flex-1 text-display text-xl md:text-2xl text-jung-dark leading-snug group-hover:text-jung-accent transition-colors">
-                          {f.question}
-                        </span>
-                        <span className="shrink-0 pt-1.5 text-jung-muted group-hover:text-jung-accent transition-colors">
-                          {open ? <Minus size={18} /> : <Plus size={18} />}
-                        </span>
-                      </button>
-                      <div
-                        className={`grid transition-all duration-300 ease-out ${
-                          open
-                            ? 'grid-rows-[1fr] opacity-100 pb-6'
-                            : 'grid-rows-[0fr] opacity-0'
-                        }`}
-                      >
-                        <div className="overflow-hidden pl-14 pr-4 md:pr-10">
-                          <p className="text-jung-secondary leading-relaxed font-light whitespace-pre-line">
-                            {f.answer}
-                          </p>
-                        </div>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ol>
-            </div>
-          </div>
-        </section>
-
-        {/* FINAL CTA */}
-        <section className="px-4 sm:px-6 lg:px-8 pt-24 lg:pt-32 pb-24">
-          <div className="max-w-7xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-80px' }}
-              transition={{ duration: 0.8, ease }}
-              className="relative overflow-hidden rounded-3xl bg-jung-accent text-jung-base p-10 md:p-20"
-            >
-              <div className="absolute inset-0 opacity-[0.08] pointer-events-none">
-                <svg
-                  viewBox="0 0 800 400"
-                  className="w-full h-full"
-                  preserveAspectRatio="none"
-                >
-                  {Array.from({ length: 24 }).map((_, i) => (
-                    <line
-                      key={i}
-                      x1="0"
-                      y1={i * 18}
-                      x2="800"
-                      y2={i * 18}
-                      stroke="currentColor"
-                      strokeWidth="0.5"
-                    />
-                  ))}
-                </svg>
-              </div>
-
-              <div className="relative max-w-3xl">
-                <div className="flex items-center gap-3 mb-6 opacity-70">
-                  <span className="h-px w-10 bg-jung-base/40" />
-                  <span className="font-mono text-[11px] tracking-[0.22em] uppercase">
-                    Begin
-                  </span>
-                </div>
-                <h2 className="text-display text-4xl sm:text-5xl md:text-6xl leading-[1.02] tracking-tight mb-6">
-                  Ready to understand{' '}
-                  <span className="italic">yourself,</span> precisely?
+                <h2 className="max-w-2xl font-display text-4xl font-semibold leading-tight md:text-5xl">
+                  Take the assessment before you decide anything.
                 </h2>
-                <p className="text-jung-base/80 text-lg font-light max-w-xl mb-10">
-                  No signup. No noise. Just clear, measured insight into how your mind works.
+                <p className="mt-4 max-w-xl text-white/74">
+                  You will know quickly whether the map gives you something more precise than a normal type quiz.
                 </p>
-
-                <button
-                  onClick={() => startAssessment('home_final_cta')}
-                  className="group inline-flex items-center justify-center gap-3 px-7 py-4 bg-jung-base text-jung-accent rounded-full hover:bg-jung-base/95 transition-all"
-                >
-                  <span className="font-mono text-[11px] tracking-[0.18em] uppercase">
-                    Start free assessment
-                  </span>
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </button>
               </div>
-            </motion.div>
+              <button
+                type="button"
+                onClick={() => startAssessment('home_final_cta')}
+                className="inline-flex min-h-14 shrink-0 items-center justify-center gap-2 rounded-full bg-white px-7 text-sm font-semibold text-jung-accent transition-transform hover:-translate-y-0.5"
+              >
+                Start free
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
           </div>
         </section>
       </div>
     </ErrorBoundary>
   );
 };
-
-const Stat: React.FC<{ k: string; v: string }> = ({ k, v }) => (
-  <div className="flex items-baseline justify-between gap-4">
-    <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted">
-      {k}
-    </span>
-    <span className="text-display italic text-jung-dark">{v}</span>
-  </div>
-);

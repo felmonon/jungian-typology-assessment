@@ -79,35 +79,15 @@ body::before {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: 
-    radial-gradient(circle at 50% 20%, rgba(34, 74, 49, 0.04) 0%, transparent 65%),
-    radial-gradient(circle at 0% 0%, rgba(140, 104, 39, 0.025) 0%, transparent 45%),
-    repeating-linear-gradient(
-      0deg,
-      rgba(34, 74, 49, 0.02) 0,
-      rgba(34, 74, 49, 0.02) 1px,
-      transparent 1px,
-      transparent 48px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      rgba(34, 74, 49, 0.02) 0,
-      rgba(34, 74, 49, 0.02) 1px,
-      transparent 1px,
-      transparent 48px
-    );
-  opacity: 0.85;
+  background:
+    radial-gradient(circle at 84% 12%, rgba(34, 74, 49, 0.08) 0, transparent 32rem),
+    radial-gradient(circle at 8% 0%, rgba(140, 104, 39, 0.045) 0, transparent 26rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(250, 250, 248, 0));
+  opacity: 1;
 }
 
-/* Subtle luxurious analog paper noise filter */
 body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 999;
-  pointer-events: none;
-  opacity: 0.038;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  display: none;
 }
 
 button,
@@ -188,14 +168,18 @@ select {
   font-family: var(--font-sans);
   font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: var(--color-jung-muted);
 }
 
+.text-balance {
+  text-wrap: balance;
+}
+
 .lab-container,
 .editorial-container {
-  width: min(100% - 2rem, 1160px);
+  width: min(100% - 2rem, 1180px);
   margin-inline: auto;
   position: relative;
 }
@@ -203,7 +187,7 @@ select {
 @media (min-width: 768px) {
   .lab-container,
   .editorial-container {
-    width: min(100% - 4rem, 1160px);
+    width: min(100% - 4rem, 1180px);
   }
 }
 

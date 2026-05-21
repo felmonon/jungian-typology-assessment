@@ -49,7 +49,13 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://www.googletagmanager.com"],
+      scriptSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        "'unsafe-eval'",
+        "https://www.googletagmanager.com",
+        "https://va.vercel-scripts.com",
+      ],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "data:", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "data:", "https:"],
@@ -61,6 +67,8 @@ app.use(helmet({
         "https://*.google-analytics.com",
         "https://analytics.google.com",
         "https://www.google.com",
+        "https://va.vercel-scripts.com",
+        "https://vitals.vercel-insights.com",
         ...(isProduction ? [] : ["ws://localhost:*", "ws://127.0.0.1:*"]),
       ],
     },

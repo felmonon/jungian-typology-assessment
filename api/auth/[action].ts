@@ -135,16 +135,25 @@ async function hasPremiumAccess(supabase: SupabaseClient, userId: string): Promi
   return !!data?.length;
 }
 
-async function captureDiscountEmail(email: string) {
+type DiscountLeadCaptureInput = {
+  email: string;
+  source: string;
+  discountCode: string;
+  percentOff: number;
+  dominantLabel?: string;
+  inferiorLabel?: string;
+};
+
+async function captureDiscountLead(input: DiscountLeadCaptureInput) {
   if (!hasSupabaseAdminConfig()) {
     return { captured: false, reason: 'supabase_not_configured' };
   }
 
   const supabase = getSupabase();
-  const { data: existingUsers, error: lookupError } = await supabase
+  const { data: users, error: lookupError } = await supabase
     .from('users')
     .select('id')
-    .eq('email', email)
+    .eq('email', input.email)
     .limit(1);
 
   if (lookupError) {
@@ -152,20 +161,54 @@ async function captureDiscountEmail(email: string) {
     return { captured: false, reason: 'lookup_failed' };
   }
 
-  if (existingUsers?.length) {
-    return { captured: true, reason: 'existing_email' };
-  }
+  const userId = users?.[0]?.id || null;
 
-  const { error: insertError } = await supabase
-    .from('users')
-    .insert({ email });
+  const { data: lead, error: insertError } = await supabase
+    .from('discount_leads')
+    .insert({
+      email: input.email,
+      user_id: userId,
+      source: input.source,
+      discount_code: input.discountCode,
+      percent_off: input.percentOff,
+      dominant_label: input.dominantLabel || null,
+      inferior_label: input.inferiorLabel || null,
+    })
+    .select('id')
+    .single();
 
   if (insertError) {
     console.error('Discount lead capture failed:', insertError);
     return { captured: false, reason: 'insert_failed' };
   }
 
-  return { captured: true, reason: 'created_email_lead' };
+  return {
+    captured: true,
+    leadId: lead?.id as string | undefined,
+    reason: userId ? 'existing_user_lead_created' : 'anonymous_lead_created',
+  };
+}
+
+async function updateDiscountLeadSendStatus(
+  leadId: string | undefined,
+  status: { sent: boolean; emailSentId?: string; emailError?: string },
+) {
+  if (!leadId || !hasSupabaseAdminConfig()) return;
+
+  const supabase = getSupabase();
+  const { error } = await supabase
+    .from('discount_leads')
+    .update({
+      email_sent: status.sent,
+      email_sent_id: status.emailSentId || null,
+      email_error: status.emailError || null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', leadId);
+
+  if (error) {
+    console.error('Discount lead send-status update failed:', error);
+  }
 }
 
 async function createSession(userId: string, req: VercelRequest, res: VercelResponse, extraCookies: string[] = []) {
@@ -541,22 +584,48 @@ async function handleDiscountLead(req: VercelRequest, res: VercelResponse) {
   }
 
   const source = cleanSource(req.body?.source);
-  const capture = await captureDiscountEmail(email);
-  const baseUrl = resolveCheckoutBaseUrl(req.headers.origin, req.headers.host);
-  const pricingUrl = `${baseUrl}/pricing?source=${encodeURIComponent(source)}`;
-  const sendResult = await sendDiscountLeadEmail({
-    toEmail: email,
+  const dominantLabel = cleanString(req.body?.dominantLabel, 120);
+  const inferiorLabel = cleanString(req.body?.inferiorLabel, 120);
+  const capture = await captureDiscountLead({
+    email,
+    source,
     discountCode: EMAIL_CAPTURE_DISCOUNT_CODE,
     percentOff: EMAIL_CAPTURE_OFFER.percentOff,
-    pricingUrl,
-    dominantLabel: cleanString(req.body?.dominantLabel, 120),
-    inferiorLabel: cleanString(req.body?.inferiorLabel, 120),
-    idempotencyKey: cleanIdempotencyKey(`discount-${email}-${source}`),
+    dominantLabel,
+    inferiorLabel,
+  });
+  const baseUrl = resolveCheckoutBaseUrl(req.headers.origin, req.headers.host);
+  const pricingUrl = `${baseUrl}/pricing?source=${encodeURIComponent(source)}`;
+
+  let sendResult: Awaited<ReturnType<typeof sendDiscountLeadEmail>>;
+  try {
+    sendResult = await sendDiscountLeadEmail({
+      toEmail: email,
+      discountCode: EMAIL_CAPTURE_DISCOUNT_CODE,
+      percentOff: EMAIL_CAPTURE_OFFER.percentOff,
+      pricingUrl,
+      dominantLabel,
+      inferiorLabel,
+      idempotencyKey: cleanIdempotencyKey(`discount-${email}-${source}`),
+    });
+  } catch (error) {
+    await updateDiscountLeadSendStatus(capture.leadId, {
+      sent: false,
+      emailError: error instanceof Error ? error.message : 'Unknown email send error',
+    });
+    throw error;
+  }
+
+  await updateDiscountLeadSendStatus(capture.leadId, {
+    sent: sendResult.sent,
+    emailSentId: 'id' in sendResult ? sendResult.id : undefined,
+    emailError: 'reason' in sendResult ? sendResult.reason : undefined,
   });
 
   return res.status(200).json({
     ...sendResult,
     captured: capture.captured,
+    captureReason: capture.reason,
     percentOff: EMAIL_CAPTURE_OFFER.percentOff,
   });
 }

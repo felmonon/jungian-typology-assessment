@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import { Analytics } from '@vercel/analytics/react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
 
 const Home = lazy(() => import('./pages/Home').then(({ Home }) => ({ default: Home })));
@@ -29,6 +29,13 @@ const RouteFallback: React.FC = () => (
   </div>
 );
 
+const VercelAnalyticsRouter: React.FC = () => {
+  const location = useLocation();
+  const path = `${location.pathname}${location.search}${location.hash}`;
+
+  return <Analytics route={location.pathname} path={path} />;
+};
+
 const App: React.FC = () => {
   return (
     <BrowserRouter>
@@ -56,7 +63,7 @@ const App: React.FC = () => {
           </Routes>
         </Suspense>
       </Layout>
-      <Analytics />
+      <VercelAnalyticsRouter />
     </BrowserRouter>
   );
 };

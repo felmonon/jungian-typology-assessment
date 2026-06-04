@@ -1,4 +1,5 @@
 // Google Analytics 4 integration with validation
+import { track as trackVercelEvent } from '@vercel/analytics';
 import { z } from 'zod';
 
 declare global {
@@ -103,32 +104,98 @@ const CheckoutReviewEventSchema = z.object({
   location: z.string().min(1).max(100).optional(),
 });
 
+const VERCEL_FUNNEL_EVENTS = new Set([
+  'assessment_started',
+  'assessment_first_question_completed',
+  'assessment_progress_milestone',
+  'assessment_completed',
+  'results_viewed',
+  'paid_report_preview_viewed',
+  'upgrade_clicked',
+  'checkout_review_viewed',
+  'begin_checkout',
+  'checkout_started',
+  'stripe_redirect_started',
+  'purchase',
+  'purchase_completed',
+  'discount_lead_submit',
+  'discount_lead_captured',
+]);
+
+type VercelEventValue = string | number | boolean | null;
+
+function sanitizeVercelEventProperties(params?: Record<string, any>): Record<string, VercelEventValue> | undefined {
+  if (!params) return undefined;
+
+  const properties: Record<string, VercelEventValue> = {};
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (typeof value === 'string') {
+      properties[key] = value.substring(0, 200);
+      return;
+    }
+
+    if (typeof value === 'number' && Number.isFinite(value)) {
+      properties[key] = value;
+      return;
+    }
+
+    if (typeof value === 'boolean' || value === null) {
+      properties[key] = value;
+    }
+  });
+
+  return Object.keys(properties).length > 0 ? properties : undefined;
+}
+
+function trackVercelFunnelEvent(eventName: string, params?: Record<string, any>): boolean {
+  if (!VERCEL_FUNNEL_EVENTS.has(eventName) || typeof window === 'undefined') return false;
+
+  try {
+    trackVercelEvent(eventName.substring(0, 64), sanitizeVercelEventProperties(params));
+    return true;
+  } catch (error) {
+    console.warn(`Analytics: Failed to track Vercel event "${eventName}":`, error);
+    analyticsState.errors.push(error instanceof Error ? error.message : String(error));
+    return false;
+  }
+}
+
 // Safe tracking helper with validation
 function safeTrackEvent(
   eventName: string,
   params?: Record<string, any>,
   schema?: z.ZodSchema<any>
 ): boolean {
-  if (!analyticsEnabled || !canTrackEvent() || !GA_MEASUREMENT_ID || typeof window === 'undefined' || !window.gtag) {
+  if (!analyticsEnabled || !canTrackEvent() || typeof window === 'undefined') {
     return false;
   }
 
   try {
+    let eventParams = params || {};
+
     // Validate params if schema provided
     if (schema && params) {
       const result = schema.safeParse(params);
       if (!result.success) {
         console.warn(`Analytics: Invalid params for event "${eventName}":`, result.error.format());
-        // Still track the event, but without invalid params
-        window.gtag('event', eventName, {});
-        return true;
+        eventParams = {};
       }
     }
 
-    window.gtag('event', eventName, params || {});
-    analyticsState.lastEventTime = Date.now();
-    analyticsState.eventCount += 1;
-    return true;
+    const gaTracked = Boolean(GA_MEASUREMENT_ID && window.gtag);
+    if (gaTracked) {
+      window.gtag('event', eventName, eventParams);
+    }
+    const vercelTracked = trackVercelFunnelEvent(eventName, eventParams);
+
+    if (gaTracked || vercelTracked) {
+      analyticsState.lastEventTime = Date.now();
+      analyticsState.eventCount += 1;
+      return true;
+    }
+
+    return false;
   } catch (error) {
     console.error(`Analytics: Failed to track event "${eventName}":`, error);
     analyticsState.errors.push(error instanceof Error ? error.message : String(error));

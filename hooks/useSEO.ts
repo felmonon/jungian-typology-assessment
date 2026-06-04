@@ -40,6 +40,10 @@ export const PAGE_SEO: Record<string, SEOConfig> = {
     title: 'Pricing | TypeJung',
     description: 'Start with the free TypeJung assessment, then unlock Insight for CA$10 or Mastery for CA$29 with one-time CAD pricing.',
   },
+  sampleReport: {
+    title: 'Sample Paid Report | TypeJung',
+    description: 'Preview what TypeJung Insight and Mastery add after the free Jungian cognitive function assessment, including deeper report sections and AI Type Guide examples.',
+  },
   privacy: {
     title: 'Privacy Policy | TypeJung',
     description: 'How TypeJung handles assessment data, account data, payments, and privacy controls.',

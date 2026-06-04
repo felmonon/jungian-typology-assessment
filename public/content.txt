@@ -13,6 +13,9 @@ Unlike simplified 4-letter type indicators, this assessment combines behavioral
 evidence, inferior-function triggers, somatic signals, and attitude direction to
 map where energy flows and where it gets stuck.
 
+Primary conversion action:
+Take the free 42-question assessment, review the all-8-function map, then optionally buy Insight or Mastery only if the result feels worth keeping.
+
 ================================================================================
 THE 8 COGNITIVE FUNCTIONS
 ================================================================================
@@ -98,13 +101,17 @@ FREE TIER:
 - Shareable results page
 - Type distribution leaderboard
 
-INSIGHT TIER (CA$19):
+INSIGHT TIER:
+- CA$10 base one-time CAD price
+- CA$7 with TYPEJUNG30 on Stripe
 - Developmental edge report
 - Stress pattern map
 - Relationship trigger interpretation
 - Somatic practice guidance
 
-MASTERY TIER (CA$39):
+MASTERY TIER:
+- CA$29 base one-time CAD price
+- CA$20.30 with TYPEJUNG30 on Stripe
 - AI Type Coach chat
 - Individuation roadmap
 - Tailored growth exercises
@@ -119,7 +126,7 @@ HOW IT WORKS
 2. View your Jungian energy map
 3. Read the synthesis of your dominant-inferior pattern
 4. Explore detailed function breakdowns
-5. Optionally upgrade for deeper analysis
+5. Optionally upgrade for deeper analysis only after seeing the free map
 
 ================================================================================
 HIGH-INTENT GUIDES
@@ -196,6 +203,7 @@ Website: https://typejung.com
 Assessment: https://typejung.com/assessment
 Theory: https://typejung.com/learn
 Pricing: https://typejung.com/pricing
+Sample paid report: https://typejung.com/sample-report
 About: https://typejung.com/about
 
 (c) 2026 TypeJung

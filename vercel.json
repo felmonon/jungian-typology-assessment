@@ -27,6 +27,10 @@
       "destination": "/pricing/index.html"
     },
     {
+      "source": "/sample-report",
+      "destination": "/sample-report/index.html"
+    },
+    {
       "source": "/checkout/insight",
       "destination": "/checkout/insight/index.html"
     },

@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, CheckCircle2, Circle, Info, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
+import { ASSESSMENT_TIME_RANGE } from '../data/pricing';
 import { DepthLayer, depthLayerMeta, depthQuestions } from '../data/depthAssessment';
 import { PAGE_SEO, useSEO } from '../hooks/useSEO';
 import { useAssessmentTracking } from '../hooks/useAnalytics';
@@ -88,6 +89,7 @@ export const Assessment: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [showCompletion, setShowCompletion] = useState(false);
+  const [resumedProgress, setResumedProgress] = useState(false);
   const hasLoadedProgressRef = useRef(false);
   const hasTrackedStartRef = useRef(false);
   const { trackStart, trackProgress, trackComplete } = useAssessmentTracking();
@@ -120,6 +122,7 @@ export const Assessment: React.FC = () => {
     if (saved) {
       setAnswers(saved.answers);
       setCurrentPage(Math.max(0, Math.min(saved.currentPage, totalPages - 1)));
+      setResumedProgress(countAnswered(saved.answers) > 0);
     }
     hasLoadedProgressRef.current = true;
   }, [totalPages]);
@@ -261,7 +264,10 @@ export const Assessment: React.FC = () => {
               <p className="text-sm font-semibold text-jung-accent">Questions {pageRange} of {depthQuestions.length}</p>
               <h1 className="mt-1 text-heading text-2xl text-jung-dark sm:text-3xl">{currentLayerMeta.label}</h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-jung-secondary">{currentLayerMeta.description}</p>
-              <p className="mt-2 text-xs font-medium text-jung-muted">Progress saves on this device as you answer.</p>
+              <p className="mt-2 text-xs font-medium text-jung-muted">
+                Free assessment. No card required. Progress saves on this device as you answer.
+                {resumedProgress ? ' Resumed from your saved progress.' : ''}
+              </p>
             </div>
             <div className="min-w-[10rem] text-left lg:text-right">
               <p className="text-3xl font-semibold text-jung-dark">{overallProgress}%</p>
@@ -308,7 +314,7 @@ export const Assessment: React.FC = () => {
           <div className="flex items-start gap-3 text-sm text-jung-secondary">
             <Info className="mt-0.5 h-4 w-4 flex-none text-jung-accent" />
             <p>
-              Answer from the first pattern that actually happens, not the version you think you should have. The "none" option is valid when the question misses you.
+              Answer from the first pattern that actually happens, not the version you think you should have. The "none" option is valid when the question misses you. This takes about {ASSESSMENT_TIME_RANGE}; the free map appears before any paid upgrade decision.
             </p>
           </div>
         </div>

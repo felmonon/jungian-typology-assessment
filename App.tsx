@@ -19,6 +19,7 @@ const History = lazy(() => import('./pages/History').then(({ History }) => ({ de
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy').then(({ PrivacyPolicy }) => ({ default: PrivacyPolicy })));
 const TermsOfService = lazy(() => import('./pages/TermsOfService').then(({ TermsOfService }) => ({ default: TermsOfService })));
 const Pricing = lazy(() => import('./pages/Pricing').then(({ Pricing }) => ({ default: Pricing })));
+const SampleReport = lazy(() => import('./pages/SampleReport').then(({ SampleReport }) => ({ default: SampleReport })));
 
 const RouteFallback: React.FC = () => (
   <div className="lab-container flex min-h-[48vh] items-center justify-center py-16" aria-live="polite" aria-busy="true">
@@ -59,6 +60,7 @@ const App: React.FC = () => {
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/sample-report" element={<SampleReport />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>

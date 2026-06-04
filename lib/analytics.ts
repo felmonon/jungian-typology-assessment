@@ -269,6 +269,24 @@ export const AnalyticsEvents = {
     return safeTrackEvent('question_answered', params, AssessmentEventSchema);
   },
 
+  assessmentFirstQuestionCompleted: (entryPage?: string) => {
+    const params = {
+      question_number: 1,
+      progress_percent: 1,
+      source: 'assessment_page',
+      ...(entryPage ? { entry_page: String(entryPage).substring(0, 500) } : {}),
+    };
+    return safeTrackEvent('assessment_first_question_completed', params, AssessmentEventSchema);
+  },
+
+  assessmentProgressMilestone: (progressPercent: number, source = 'assessment_page') => {
+    const params = {
+      progress_percent: Math.min(100, Math.max(0, Math.round(progressPercent))),
+      source: String(source).substring(0, 100),
+    };
+    return safeTrackEvent('assessment_progress_milestone', params, AssessmentEventSchema);
+  },
+
   // Results
   resultsViewed: (dominantFunction: string) => {
     const validFunctions = ['Te', 'Ti', 'Fe', 'Fi', 'Se', 'Si', 'Ne', 'Ni'];

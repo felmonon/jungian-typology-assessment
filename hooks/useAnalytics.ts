@@ -28,6 +28,7 @@ interface AssessmentTrackingState {
   startTime: number;
   questionStartTimes: Map<number, number>;
   answeredQuestions: Set<number>;
+  trackedMilestones: Set<number>;
   isTracking: boolean;
 }
 
@@ -39,6 +40,7 @@ export function useAssessmentTracking() {
     startTime: Date.now(),
     questionStartTimes: new Map(),
     answeredQuestions: new Set(),
+    trackedMilestones: new Set(),
     isTracking: false,
   });
 
@@ -50,6 +52,7 @@ export function useAssessmentTracking() {
       state.current.isTracking = true;
       state.current.answeredQuestions.clear();
       state.current.questionStartTimes.clear();
+      state.current.trackedMilestones.clear();
       
       AnalyticsEvents.assessmentStarted('assessment_page', window.location.pathname);
     } catch (error) {
@@ -76,6 +79,21 @@ export function useAssessmentTracking() {
       state.current.questionStartTimes.set(questionNumber, now);
 
       AnalyticsEvents.questionAnswered(questionNumber, totalQuestions);
+
+      if (questionNumber === 1) {
+        AnalyticsEvents.assessmentFirstQuestionCompleted(window.location.pathname);
+      }
+
+      const progressPercent = totalQuestions > 0
+        ? Math.round((state.current.answeredQuestions.size / totalQuestions) * 100)
+        : 0;
+
+      [25, 50, 75, 100].forEach((milestone) => {
+        if (progressPercent >= milestone && !state.current.trackedMilestones.has(milestone)) {
+          state.current.trackedMilestones.add(milestone);
+          AnalyticsEvents.assessmentProgressMilestone(milestone, 'assessment_page');
+        }
+      });
     } catch (error) {
       console.warn('Analytics: Failed to track question progress:', error);
     }

@@ -185,15 +185,29 @@ export const Pricing: React.FC = () => {
             <h1 className="mt-4 text-display text-5xl text-jung-dark sm:text-6xl">
               Take the test first. Pay only if the result is worth keeping.
             </h1>
-            <Button
-              variant="accent"
-              size="lg"
-              className="mt-7"
-              onClick={() => startAssessment('pricing_hero')}
-              rightIcon={<ArrowRight className="h-5 w-5" />}
-            >
-              Start with the free assessment
-            </Button>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <Button
+                variant="accent"
+                size="lg"
+                onClick={() => startAssessment('pricing_hero')}
+                rightIcon={<ArrowRight className="h-5 w-5" />}
+              >
+                Start with the free assessment
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => {
+                  AnalyticsEvents.ctaClicked('preview_sample_report', 'pricing_hero', {
+                    buttonText: 'Preview sample report',
+                    destination: '/sample-report',
+                  });
+                  navigate('/sample-report');
+                }}
+              >
+                Preview sample report
+              </Button>
+            </div>
           </div>
           <div className="max-w-2xl lg:justify-self-end">
             <p className="text-body-lg text-jung-secondary">

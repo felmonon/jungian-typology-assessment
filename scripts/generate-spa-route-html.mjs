@@ -39,6 +39,18 @@ const routePages = [
     cta: 'Compare plans',
   },
   {
+    path: '/sample-report',
+    title: 'Sample Paid Report - TypeJung Insight and Mastery Preview',
+    description:
+      'Preview what TypeJung Insight and Mastery add after the free Jungian cognitive function assessment, including deeper report sections and AI Type Guide examples.',
+    h1: 'Sample TypeJung paid report',
+    cta: 'Start the free assessment',
+    body: [
+      'The sample report shows the structure and tone of the paid interpretation before checkout.',
+      'TypeJung keeps the free energy map first, then lets you decide whether Insight or Mastery is useful enough to unlock.',
+    ],
+  },
+  {
     path: '/checkout/insight',
     title: 'Checkout - TypeJung Insight Package',
     description:

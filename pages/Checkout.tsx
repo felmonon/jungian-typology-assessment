@@ -7,7 +7,8 @@ import { Button } from '../components/ui/Button';
 import { useAuth } from '../hooks/use-auth';
 import { useSEO } from '../hooks/useSEO';
 import { AnalyticsEvents, trackEvent } from '../lib/analytics';
-import { isPaidTierId, PRICING } from '../data/pricing';
+import { EMAIL_CAPTURE_OFFER } from '../data/discount';
+import { EMAIL_OFFER_PRICES, isPaidTierId, PRICING } from '../data/pricing';
 import type { PaidTierId } from '../data/pricing';
 
 type CheckoutTierDetails = {
@@ -91,14 +92,14 @@ export const Checkout: React.FC = () => {
   }, [navigate, paidTier]);
 
   const orderRows = useMemo(() => {
-    if (!tierPrice || !checkoutDetails) return [];
+    if (!paidTier || !tierPrice || !checkoutDetails) return [];
 
     return [
-      ['Subtotal', tierPrice.price],
-      ['Email offer', 'Enter on Stripe'],
+      ['Base price', tierPrice.price],
+      [EMAIL_CAPTURE_OFFER.code, `${EMAIL_OFFER_PRICES[paidTier]} if applied`],
       ['Total due today', tierPrice.price],
     ];
-  }, [checkoutDetails, tierPrice]);
+  }, [checkoutDetails, paidTier, tierPrice]);
 
   const startStripeCheckout = useCallback(async () => {
     if (!paidTier || !tierPrice) return;
@@ -250,7 +251,7 @@ export const Checkout: React.FC = () => {
               <div className="flex gap-3">
                 <Tag className="mt-0.5 h-4 w-4 flex-none text-jung-accent" />
                 <p className="text-xs leading-5 text-jung-secondary">
-                  Promotion codes are entered on the secure Stripe step before payment is confirmed.
+                  Enter {EMAIL_CAPTURE_OFFER.code} on the secure Stripe step to reduce this order to {EMAIL_OFFER_PRICES[paidTier]} before payment is confirmed.
                 </p>
               </div>
             </div>

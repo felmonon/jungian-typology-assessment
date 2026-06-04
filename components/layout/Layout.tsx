@@ -225,6 +225,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               <Link to="/assessment" className="inline-flex min-h-10 items-center hover:text-jung-accent">Assessment</Link>
               <Link to="/learn" className="inline-flex min-h-10 items-center hover:text-jung-accent">Learn the theory</Link>
               <Link to="/pricing" className="inline-flex min-h-10 items-center hover:text-jung-accent">Pricing</Link>
+              <Link to="/sample-report" className="inline-flex min-h-10 items-center hover:text-jung-accent">Sample report</Link>
               <Link to="/about" className="inline-flex min-h-10 items-center hover:text-jung-accent">About</Link>
             </div>
           </div>

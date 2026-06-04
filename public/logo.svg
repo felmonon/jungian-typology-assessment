@@ -1,38 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
-  <defs>
-    <!-- Teal accent matching site design -->
-    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#2dd4bf;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#14b8a6;stop-opacity:1" />
-    </linearGradient>
-    <!-- Dark charcoal matching site text -->
-    <linearGradient id="darkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#1f2937;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#111827;stop-opacity:1" />
-    </linearGradient>
-  </defs>
-
-  <!-- Outer ring - the Self -->
-  <circle cx="100" cy="100" r="90" fill="none" stroke="#1f2937" stroke-width="4"/>
-
-  <!-- Four quadrants representing Jung's four functions -->
-  <circle cx="100" cy="50" r="26" fill="none" stroke="#14b8a6" stroke-width="3"/>
-  <circle cx="150" cy="100" r="26" fill="none" stroke="#14b8a6" stroke-width="3"/>
-  <circle cx="100" cy="150" r="26" fill="none" stroke="#14b8a6" stroke-width="3"/>
-  <circle cx="50" cy="100" r="26" fill="none" stroke="#14b8a6" stroke-width="3"/>
-
-  <!-- Center circle - the Ego -->
-  <circle cx="100" cy="100" r="20" fill="#14b8a6"/>
-
-  <!-- Cross connecting the functions -->
-  <line x1="100" y1="24" x2="100" y2="80" stroke="#1f2937" stroke-width="2.5"/>
-  <line x1="100" y1="120" x2="100" y2="176" stroke="#1f2937" stroke-width="2.5"/>
-  <line x1="24" y1="100" x2="80" y2="100" stroke="#1f2937" stroke-width="2.5"/>
-  <line x1="120" y1="100" x2="176" y2="100" stroke="#1f2937" stroke-width="2.5"/>
-
-  <!-- Cardinal dots -->
-  <circle cx="100" cy="24" r="5" fill="#1f2937"/>
-  <circle cx="176" cy="100" r="5" fill="#1f2937"/>
-  <circle cx="100" cy="176" r="5" fill="#1f2937"/>
-  <circle cx="24" cy="100" r="5" fill="#1f2937"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" fill="none">
+  <title>TypeJung energy map mark</title>
+  <circle cx="50" cy="50" r="38" stroke="#d4d4d2" stroke-width="1.2"/>
+  <circle cx="50" cy="50" r="22" stroke="#d4d4d2" stroke-opacity="0.7" stroke-width="0.9" stroke-dasharray="3 4"/>
+  <path d="M22 78L78 22" stroke="#2d5a3d" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M50 10V90M10 50H90" stroke="#d4d4d2" stroke-opacity="0.6" stroke-width="0.8" stroke-linecap="round"/>
+  <circle cx="50" cy="50" r="5" fill="#ffffff" stroke="#2d5a3d" stroke-width="1.4"/>
+  <circle cx="50" cy="10" r="3.3" fill="#1a1a1a"/>
+  <circle cx="78" cy="22" r="2.4" fill="#2d5a3d"/>
+  <circle cx="90" cy="50" r="2.8" fill="#1a1a1a"/>
+  <circle cx="78" cy="78" r="2.2" fill="#1a1a1a"/>
+  <circle cx="50" cy="90" r="3.3" fill="#1a1a1a"/>
+  <circle cx="22" cy="78" r="2.4" fill="#2d5a3d"/>
+  <circle cx="10" cy="50" r="2.8" fill="#1a1a1a"/>
+  <circle cx="22" cy="22" r="2.2" fill="#1a1a1a"/>
+  <path d="M70 18L82 18L82 30" stroke="#2d5a3d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M30 82L18 82L18 70" stroke="#2d5a3d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

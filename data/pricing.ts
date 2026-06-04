@@ -1,4 +1,4 @@
-import { EMAIL_CAPTURE_OFFER } from './discount';
+import { EMAIL_CAPTURE_OFFER } from './discount.js';
 
 export const PAID_TIER_IDS = ['insight', 'mastery'] as const;
 

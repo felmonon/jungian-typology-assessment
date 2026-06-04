@@ -9,11 +9,11 @@ import type { PaidTierId } from '../data/pricing.js';
 const CHECKOUT_PRODUCT_COPY: Record<PaidTierId, { name: string; description: string }> = {
   insight: {
     name: 'TypeJung Insight Package',
-    description: 'Deep TypeJung report with developmental edge analysis, stress patterns, relationship triggers, and somatic practice guidance.',
+    description: 'Full 8-function personal ranking with confidence read, developmental edge analysis, stress patterns, relationship triggers, and practice guidance.',
   },
   mastery: {
     name: 'TypeJung Mastery Package',
-    description: 'Complete TypeJung experience with the deep report, AI Type Coach, tailored growth exercises, and individuation practice support.',
+    description: 'Full TypeJung ranking and deep report with AI Type Coach, tailored growth exercises, and individuation practice support.',
   },
 };
 

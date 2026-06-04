@@ -1,7 +1,24 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from './use-auth';
+import { STORAGE_KEYS } from '../lib/validation';
 
 export type PremiumTier = 'free' | 'insight' | 'mastery';
+
+function isPaidTier(value: string | null): value is Exclude<PremiumTier, 'free'> {
+  return value === 'insight' || value === 'mastery';
+}
+
+function readLocalPaidTier(userId?: string): Exclude<PremiumTier, 'free'> | null {
+  const localTier = localStorage.getItem(STORAGE_KEYS.TIER);
+  const localUnlocked = localStorage.getItem(STORAGE_KEYS.UNLOCKED) === 'true';
+  const localUnlockUserId = localStorage.getItem(STORAGE_KEYS.UNLOCK_USER_ID);
+  const checkoutSessionId = localStorage.getItem(STORAGE_KEYS.CHECKOUT_SESSION_ID);
+
+  if (!localUnlocked || !isPaidTier(localTier)) return null;
+  if (checkoutSessionId) return localTier;
+  if (userId && localUnlockUserId === userId) return localTier;
+  return null;
+}
 
 export function usePremiumStatus() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
@@ -11,13 +28,9 @@ export function usePremiumStatus() {
   useEffect(() => {
     async function checkStatus() {
       const userId = user?.id;
-      
-      const localTier = localStorage.getItem('jungian_assessment_tier') as PremiumTier | null;
-      const localUnlocked = localStorage.getItem('jungian_assessment_unlocked') === 'true';
-      const localUnlockUserId = localStorage.getItem('jungian_assessment_unlock_user_id');
-      const unlockDate = localStorage.getItem('jungian_assessment_unlock_date');
-      
-      const isLocalUnlockForCurrentUser = Boolean(userId && (localTier || localUnlocked) && localUnlockUserId === userId);
+      const localPaidTier = readLocalPaidTier(userId);
+
+      setIsLoading(true);
 
       if (isAuthenticated && userId) {
         try {
@@ -25,41 +38,26 @@ export function usePremiumStatus() {
           const data = await response.json();
           if (data.tier && data.tier !== 'free') {
             setTier(data.tier as PremiumTier);
-            localStorage.setItem('jungian_assessment_tier', data.tier);
-            localStorage.setItem('jungian_assessment_unlocked', 'true');
-            localStorage.setItem('jungian_assessment_unlock_user_id', userId);
+            localStorage.setItem(STORAGE_KEYS.TIER, data.tier);
+            localStorage.setItem(STORAGE_KEYS.UNLOCKED, 'true');
+            localStorage.setItem(STORAGE_KEYS.UNLOCK_USER_ID, userId);
           } else if (data.isPremium) {
-            const resolvedTier = localTier || 'insight';
+            const resolvedTier = localPaidTier || 'insight';
             setTier(resolvedTier);
-            localStorage.setItem('jungian_assessment_tier', resolvedTier);
-            localStorage.setItem('jungian_assessment_unlocked', 'true');
-            localStorage.setItem('jungian_assessment_unlock_user_id', userId);
+            localStorage.setItem(STORAGE_KEYS.TIER, resolvedTier);
+            localStorage.setItem(STORAGE_KEYS.UNLOCKED, 'true');
+            localStorage.setItem(STORAGE_KEYS.UNLOCK_USER_ID, userId);
+          } else if (localPaidTier) {
+            setTier(localPaidTier);
           } else {
-            if (unlockDate && isLocalUnlockForCurrentUser) {
-              const hoursSinceUnlock = (Date.now() - new Date(unlockDate).getTime()) / (1000 * 60 * 60);
-              if (hoursSinceUnlock < 24) {
-                const resolvedTier = localTier || 'insight';
-                setTier(resolvedTier);
-              } else {
-                setTier('free');
-                localStorage.removeItem('jungian_assessment_tier');
-                localStorage.removeItem('jungian_assessment_unlocked');
-                localStorage.removeItem('jungian_assessment_unlock_user_id');
-                localStorage.removeItem('jungian_assessment_unlock_date');
-              }
-            } else {
-              setTier('free');
-            }
+            setTier('free');
           }
         } catch (error) {
           console.error('Failed to check premium status:', error);
-          if (isLocalUnlockForCurrentUser) {
-            const resolvedTier = localTier || 'insight';
-            setTier(resolvedTier);
-          }
+          setTier(localPaidTier || 'free');
         }
       } else if (!isAuthenticated) {
-        setTier('free');
+        setTier(localPaidTier || 'free');
       }
       setIsLoading(false);
     }

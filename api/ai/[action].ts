@@ -2,7 +2,9 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSessionUser } from '../_lib/auth.js';
 import { generateGeminiText } from '../_lib/gemini.js';
 import { enforceRateLimit } from '../_lib/rate-limit.js';
-import { getSupabaseAdminClient } from '../_lib/supabase.js';
+import { resolveTierFromCheckoutSession } from '../_lib/purchases.js';
+import { getSupabaseAdminClient, hasSupabaseAdminConfig } from '../_lib/supabase.js';
+import { getStripeSecretKey } from '../../server/checkout.js';
 
 interface FunctionScore {
   function: string;
@@ -28,7 +30,12 @@ interface AnalysisInput {
   isUndifferentiated?: boolean;
   resultVersion?: string;
   depthResult?: any;
+  checkoutSessionId?: unknown;
 }
+
+type PremiumAccessResult =
+  | { hasAccess: true; source: 'stripe_session' | 'account_purchase' }
+  | { hasAccess: false; status: 401 | 403; message: string };
 
 const FUNCTION_NAMES: Record<string, string> = {
   Te: 'Extraverted Thinking',
@@ -123,6 +130,72 @@ function getDepth(input: AnalysisInput): any {
   return input.depthResult || input.stack?.depthResult || null;
 }
 
+function cleanCheckoutSessionId(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  if (!trimmed || trimmed.length > 200) return null;
+  return trimmed.startsWith('cs_') ? trimmed : null;
+}
+
+async function verifyPaidCheckoutSession(sessionId: unknown): Promise<boolean> {
+  const cleanedSessionId = cleanCheckoutSessionId(sessionId);
+  if (!cleanedSessionId) return false;
+
+  const stripeSecretKey = getStripeSecretKey();
+  if (!stripeSecretKey) {
+    throw new Error('Stripe not configured');
+  }
+
+  const query = new URLSearchParams({
+    'expand[]': 'line_items.data.price',
+  });
+  const response = await fetch(`https://api.stripe.com/v1/checkout/sessions/${cleanedSessionId}?${query.toString()}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${stripeSecretKey}`,
+    },
+  });
+  const session = await response.json();
+
+  if (!response.ok) {
+    console.error('Stripe premium session verification failed:', session);
+    return false;
+  }
+
+  if (session.payment_status !== 'paid' || session.metadata?.product !== 'typejung_premium') return false;
+  resolveTierFromCheckoutSession(session);
+  return true;
+}
+
+async function resolvePremiumAccess(req: VercelRequest): Promise<PremiumAccessResult> {
+  if (await verifyPaidCheckoutSession(req.body?.checkoutSessionId)) {
+    return { hasAccess: true, source: 'stripe_session' };
+  }
+
+  const user = await getSessionUser(req.headers.cookie);
+  if (!user?.id) {
+    return { hasAccess: false, status: 401, message: 'Authentication or verified payment required' };
+  }
+
+  if (!hasSupabaseAdminConfig()) {
+    return { hasAccess: false, status: 403, message: 'Premium access required' };
+  }
+
+  const supabase = getSupabaseAdminClient();
+  const { data: purchases } = await supabase
+    .from('purchases')
+    .select('id, status, tier')
+    .eq('user_id', user.id)
+    .eq('status', 'completed')
+    .limit(1);
+
+  if (purchases && purchases.length > 0) {
+    return { hasAccess: true, source: 'account_purchase' };
+  }
+
+  return { hasAccess: false, status: 403, message: 'Premium access required' };
+}
+
 function fallbackFreeAnalysis(input: AnalysisInput): string {
   const depth = getDepth(input);
   const dominant = depth?.dominant ? CHANNEL_NAMES[depth.dominant] || depth.dominant : FUNCTION_NAMES[input.stack.dominant.function] || input.stack.dominant.function;
@@ -132,6 +205,10 @@ function fallbackFreeAnalysis(input: AnalysisInput): string {
   const vulnerability = depth?.narrative?.complexVulnerability || 'Stress is most likely to pull attention into the inferior channel before you can respond from your stronger functions.';
 
   return `Your energy map is led by ${dominant}, supported by ${auxiliary}. This means your strongest movement is not a fixed personality label but a repeated channel of attention, judgment, and effort. The important tension is the opposite pole: ${inferior}. ${edge} ${vulnerability} Use the result as a practice map. When stress rises, notice whether you are trying to solve the situation only through the dominant channel. The useful move is to give the inferior function a small, concrete role before it takes over in a primitive form.`;
+}
+
+function isThinFreeAnalysis(text: string): boolean {
+  return text.trim().split(/\s+/).filter(Boolean).length < 90;
 }
 
 function fallbackPremiumAnalysis(input: AnalysisInput): Record<SectionKey, string> {
@@ -163,6 +240,8 @@ async function handleFreeAnalysis(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'Invalid assessment data format' });
   }
 
+  const input = { scores, stack, attitudeScore, isUndifferentiated, resultVersion, depthResult };
+
   const prompt = `Write as an educational Jungian typology guide. Based on the following TypeJung self-reflection results, provide a brief but insightful personalized analysis.
 
 ${formatScoresForPrompt({ scores, stack, attitudeScore: attitudeScore || 0, isUndifferentiated: isUndifferentiated || false, resultVersion, depthResult })}
@@ -172,43 +251,39 @@ Write a personalized analysis in 150-200 words that:
 2. Names the inferior-function developmental edge without reducing them to a four-letter label
 3. Offers one practical observation about how they likely experience stress, the body, or value
 
-Keep the tone direct, psychologically grounded, and useful. Use second person ("you"). Clearly treat the result as educational self-reflection, not diagnosis, therapy, or a clinical assessment. Avoid certainty, treatment advice, and claims of scientific validation. Do not mention that this is a free or limited analysis. Do not use bullet points, headers, or any markdown formatting like asterisks. Write in plain flowing paragraphs only.`;
+Keep the tone direct, psychologically grounded, and useful. Use second person ("you"). Clearly treat the result as educational self-reflection, not diagnosis, therapy, or a clinical assessment. Avoid certainty, treatment advice, and claims of scientific validation. Do not mention that this is a free or limited analysis. Do not use bullet points, headers, or any markdown formatting like asterisks. Write in plain flowing paragraphs only. Do not stop after one sentence.`;
 
-  const analysis = await generateGeminiText(prompt, {
+  let analysis = await generateGeminiText(prompt, {
     temperature: 0.7,
     maxOutputTokens: 500,
   }).catch((error) => {
     console.error('Using fallback free analysis:', error?.message || error);
-    return fallbackFreeAnalysis({ scores, stack, attitudeScore, isUndifferentiated, resultVersion, depthResult });
+    return fallbackFreeAnalysis(input);
   });
+
+  if (isThinFreeAnalysis(analysis)) {
+    analysis = await generateGeminiText(`${prompt}\n\nThe previous response was too short. Rewrite it as two complete paragraphs totaling 150-200 words.`, {
+      temperature: 0.7,
+      maxOutputTokens: 700,
+    }).catch((error) => {
+      console.error('Using short free analysis after retry failed:', error?.message || error);
+      return analysis;
+    });
+  }
+
+  if (isThinFreeAnalysis(analysis)) {
+    analysis = fallbackFreeAnalysis(input);
+  }
 
   return res.status(200).json({ analysis });
 }
 
 async function handlePremiumAnalysis(req: VercelRequest, res: VercelResponse) {
-  const user = await getSessionUser(req.headers.cookie);
-  if (!user?.id) {
-    return res.status(401).json({ error: 'Authentication required' });
-  }
-
-  const supabase = getSupabaseAdminClient();
-
-  let hasPremiumAccess = false;
-  const { data: purchases } = await supabase
-    .from('purchases')
-    .select('id, status, tier')
-    .eq('user_id', user.id)
-    .eq('status', 'completed')
-    .limit(1);
-
-  if (purchases && purchases.length > 0) {
-    hasPremiumAccess = true;
-  }
-
   const { scores, stack, attitudeScore, isUndifferentiated, depthResult } = req.body || {};
 
-  if (!hasPremiumAccess) {
-    return res.status(403).json({ error: 'Premium access required' });
+  const premiumAccess = await resolvePremiumAccess(req);
+  if (premiumAccess.hasAccess === false) {
+    return res.status(premiumAccess.status).json({ error: premiumAccess.message });
   }
 
   if (!scores || !stack) {

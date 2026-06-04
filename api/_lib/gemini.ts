@@ -1,4 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
+import { cleanEnvValue } from '../../server/env.js';
 
 interface GenerateTextOptions {
   model?: string;
@@ -11,8 +12,8 @@ let integrationClient: GoogleGenAI | null = null;
 let directClient: GoogleGenAI | null = null;
 
 function getIntegrationClient(): GoogleGenAI | null {
-  const apiKey = process.env.AI_INTEGRATIONS_GEMINI_API_KEY;
-  const baseUrl = process.env.AI_INTEGRATIONS_GEMINI_BASE_URL;
+  const apiKey = cleanEnvValue(process.env.AI_INTEGRATIONS_GEMINI_API_KEY);
+  const baseUrl = cleanEnvValue(process.env.AI_INTEGRATIONS_GEMINI_BASE_URL);
   if (!apiKey || !baseUrl) return null;
 
   if (!integrationClient) {
@@ -29,7 +30,7 @@ function getIntegrationClient(): GoogleGenAI | null {
 }
 
 function getDirectClient(): GoogleGenAI | null {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = cleanEnvValue(process.env.GEMINI_API_KEY);
   if (!apiKey) return null;
 
   if (!directClient) {

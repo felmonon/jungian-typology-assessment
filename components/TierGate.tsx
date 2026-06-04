@@ -15,23 +15,23 @@ interface TierGateProps {
 const TIER_INFO = {
   insight: {
     name: 'Insight',
-    price: '$10',
+    price: PRICING.insight.price,
     priceId: import.meta.env.VITE_STRIPE_INSIGHT_PRICE_ID || import.meta.env.VITE_STRIPE_PRICE_ID,
     icon: Sparkles,
     gradient: 'from-jung-accent to-jung-accent/80',
     bgLight: 'bg-jung-accent/10',
     textColor: 'text-jung-accent',
-    features: ['Analytical Dossier', 'Shadow Integration', 'Inferior Practice Paths', 'Somatic Grounding', 'PDF Export']
+    features: ['Full 8-function ranking', 'Stress analysis', 'Practice guidance', 'Somatic grounding', 'Result archive']
   },
   mastery: {
     name: 'Mastery',
-    price: '$29',
+    price: PRICING.mastery.price,
     priceId: import.meta.env.VITE_STRIPE_MASTERY_PRICE_ID,
     icon: Crown,
     gradient: 'from-jung-dark to-jung-secondary',
     bgLight: 'bg-jung-dark/10',
     textColor: 'text-jung-dark',
-    features: ['Saved Dossiers', 'Temporal Curves', 'Comparative Engine', 'Growth Library']
+    features: ['Everything in Insight', 'AI Type Coach', 'Practice roadmap', 'Growth library']
   }
 };
 
@@ -96,7 +96,7 @@ export const TierGate: React.FC<TierGateProps> = ({
           <p className="text-jung-muted text-sm mb-5 leading-relaxed">
             {isUpgrade
               ? 'Add the coach and long-term practice tools to your existing report.'
-              : 'Unlock the deeper explanation behind this part of your result.'
+              : 'Unlock the full ranking and deeper explanation behind this result.'
             }
           </p>
 

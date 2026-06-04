@@ -426,26 +426,26 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ results, onClear, forma
             <div className="h-[300px] sm:h-[350px]">
               <ResponsiveContainer width="100%" height="100%">
                 <RadarChart cx="50%" cy="50%" outerRadius="75%" data={chartData}>
-                  <PolarGrid stroke="#E8E4DE" />
+                  <PolarGrid stroke="#d4d4d2" />
                   <PolarAngleAxis
                     dataKey="subject"
-                    tick={{ fill: '#3D2914', fontSize: 12, fontWeight: 'bold' }}
+                    tick={{ fill: '#1a1a1a', fontSize: 12, fontWeight: 'bold' }}
                   />
                   <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
                   <Radar
                     name="Earlier"
                     dataKey="Result1"
-                    stroke="#B87333"
+                    stroke="#2d5a3d"
                     strokeWidth={2}
-                    fill="#B87333"
+                    fill="#2d5a3d"
                     fillOpacity={0.3}
                   />
                   <Radar
                     name="Later"
                     dataKey="Result2"
-                    stroke="#3D2914"
+                    stroke="#a17932"
                     strokeWidth={2}
-                    fill="#3D2914"
+                    fill="#a17932"
                     fillOpacity={0.3}
                   />
                   <Legend />

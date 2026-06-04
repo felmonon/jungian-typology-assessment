@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { STORAGE_KEYS } from '../lib/validation';
 
 export interface PremiumAnalysis {
   overview: string;
@@ -35,6 +36,11 @@ export interface AnalysisInput {
   isUndifferentiated: boolean;
   resultVersion?: string;
   depthResult?: unknown;
+}
+
+function readVerifiedCheckoutSessionId(): string | null {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem(STORAGE_KEYS.CHECKOUT_SESSION_ID);
 }
 
 export function useAiAnalysis() {
@@ -82,7 +88,10 @@ export function useAiAnalysis() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify(input),
+        body: JSON.stringify({
+          ...input,
+          checkoutSessionId: readVerifiedCheckoutSessionId(),
+        }),
       });
 
       if (!response.ok) {

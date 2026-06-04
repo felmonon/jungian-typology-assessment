@@ -102,5 +102,7 @@ export const STORAGE_KEYS = {
   UNLOCKED: 'jungian_assessment_unlocked',
   UNLOCK_USER_ID: 'jungian_assessment_unlock_user_id',
   UNLOCK_DATE: 'jungian_assessment_unlock_date',
+  CHECKOUT_SESSION_ID: 'jungian_assessment_checkout_session_id',
+  TRANSACTION_ID: 'jungian_assessment_transaction_id',
   SEND_EMAIL: 'jungian_assessment_send_email',
 } as const;

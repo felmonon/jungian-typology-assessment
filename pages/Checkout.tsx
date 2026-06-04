@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Check, CreditCard, Loader2, Lock, Mail, RefreshCcw, ShieldCheck, Tag } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, CreditCard, Loader2, Lock, Mail, RefreshCcw, ShieldCheck } from 'lucide-react';
+import { OfferCodeCallout } from '../components/OfferCodeCallout';
 import { TypeJungMark } from '../components/brand/TypeJungMark';
-import { DiscountCaptureCard } from '../components/discount/DiscountCaptureCard';
 import { Button } from '../components/ui/Button';
 import { useAuth } from '../hooks/use-auth';
 import { useSEO } from '../hooks/useSEO';
-import { AnalyticsEvents, trackEvent } from '../lib/analytics';
+import { AnalyticsEvents } from '../lib/analytics';
 import { EMAIL_CAPTURE_OFFER } from '../data/discount';
-import { EMAIL_OFFER_PRICES, isPaidTierId, PRICING } from '../data/pricing';
+import { isPaidTierId, PRICING } from '../data/pricing';
 import type { PaidTierId } from '../data/pricing';
 
 type CheckoutTierDetails = {
@@ -23,41 +23,42 @@ type CheckoutTierDetails = {
 const CHECKOUT_DETAILS: Record<PaidTierId, CheckoutTierDetails> = {
   insight: {
     packageName: 'Insight Package',
-    headline: 'Go deeper on the result you already saw.',
+    headline: 'Unlock the full ranking and analysis behind the result you already saw.',
     description:
-      'Insight turns your free TypeJung map into a deeper report with your developmental edge, stress patterns, relationship triggers, and practical somatic guidance.',
+      'Insight turns your free TypeJung map into a complete paid report with your 8-function personal ranking, confidence read, developmental edge, stress patterns, relationship triggers, and practical guidance.',
     includes: [
+      'Full 8-function personal ranking',
       'Complete TypeJung depth report',
       'Developmental edge and inferior-function analysis',
       'Stress, relationship, and work-pattern interpretation',
       'Somatic grounding practices',
-      'Lifetime access to this unlocked result',
+      'Instant access after Stripe returns you to TypeJung',
     ],
     previewModules: [
-      { title: 'Developmental edge', body: 'A deeper read on what your inferior function may be asking you to build, tolerate, or integrate.' },
+      { title: 'Personal ranking', body: 'All 8 functions ordered with score interpretation, confidence signal, and dominant-inferior axis.' },
       { title: 'Stress pattern map', body: 'Concrete ways the axis can show up in conflict, pressure, avoidance, and relationship triggers.' },
       { title: 'Practice guidance', body: 'Somatic and reflective practices matched to the pattern in your free map.' },
     ],
-    nextStep: 'Stripe handles payment securely. After checkout, return to TypeJung and sign in with the purchase email if prompted so the unlocked report can be attached to your account.',
+    nextStep: 'Stripe handles payment securely. After checkout, TypeJung verifies the session and opens your full report immediately. Sign-in is optional for saving access across devices.',
   },
   mastery: {
     packageName: 'Mastery Package',
-    headline: 'Turn your result into an ongoing practice plan.',
+    headline: 'Unlock the full ranking, deep analysis, and AI Type Coach.',
     description:
-      'Mastery includes everything in Insight plus the AI Type Coach, tailored growth exercises, reassessment tracking, and ongoing support for working with your cognitive stack.',
+      'Mastery includes everything in Insight plus the AI Type Coach, tailored growth exercises, reassessment tracking, and ongoing support for working with your ranking over time.',
     includes: [
       'Everything in Insight',
       'AI Type Coach for follow-up questions',
       'Individuation roadmap and practice library',
       'Growth exercises tailored to your cognitive stack',
-      'Priority support and reassessment tracking',
+      'Instant report access after Stripe plus account restore when signed in',
     ],
     previewModules: [
+      { title: 'Full ranking', body: 'The complete 8-function profile stays available as the base for every follow-up prompt.' },
       { title: 'AI Type Coach', body: 'Follow-up questions about the result, with coaching prompts grounded in your mapped stack.' },
       { title: 'Individuation roadmap', body: 'A practice sequence for using the report after the first read-through.' },
-      { title: 'Tracking over time', body: 'Reassessment context so later maps can be compared against the current one.' },
     ],
-    nextStep: 'Stripe handles payment securely. After checkout, return to TypeJung and sign in with the purchase email if prompted so Mastery features can be enabled on your account.',
+    nextStep: 'Stripe handles payment securely. After checkout, the full report opens immediately. Sign in with the purchase email when you want account-based coach access and cross-device restore.',
   },
 };
 
@@ -84,20 +85,16 @@ export const Checkout: React.FC = () => {
       return;
     }
 
-    trackEvent('checkout_review_viewed', {
-      tier: paidTier,
-      value: PRICING[paidTier].amount,
-      currency: PRICING[paidTier].currency,
-    });
+    AnalyticsEvents.checkoutReviewViewed(paidTier, PRICING[paidTier].amount);
   }, [navigate, paidTier]);
 
   const orderRows = useMemo(() => {
     if (!paidTier || !tierPrice || !checkoutDetails) return [];
 
     return [
-      ['Base price', tierPrice.price],
-      [EMAIL_CAPTURE_OFFER.code, `${EMAIL_OFFER_PRICES[paidTier]} if applied`],
-      ['Total due today', tierPrice.price],
+      ['Base price before code', tierPrice.price],
+      [EMAIL_CAPTURE_OFFER.code, 'Optional on Stripe'],
+      ['Final total', 'Confirmed on Stripe'],
     ];
   }, [checkoutDetails, paidTier, tierPrice]);
 
@@ -108,7 +105,7 @@ export const Checkout: React.FC = () => {
     setError(null);
     AnalyticsEvents.purchaseStarted(paidTier, tierPrice.amount);
     AnalyticsEvents.ctaClicked('continue_to_secure_payment', 'checkout_review', {
-      buttonText: `Pay ${tierPrice.price}`,
+      buttonText: `Continue to Stripe - ${tierPrice.price}`,
       destination: 'stripe_checkout',
     });
 
@@ -132,8 +129,10 @@ export const Checkout: React.FC = () => {
         throw new Error('Stripe did not return a checkout URL');
       }
 
+      AnalyticsEvents.stripeRedirectStarted(paidTier, tierPrice.amount);
       window.location.href = data.url;
     } catch (err: any) {
+      AnalyticsEvents.checkoutStartFailed(paidTier, err?.message);
       setError(err.message || 'Something went wrong. Please try again.');
       setIsOpeningStripe(false);
     }
@@ -179,7 +178,7 @@ export const Checkout: React.FC = () => {
               {[
                 { icon: CreditCard, label: 'One-time CAD', body: 'No subscription or renewal.' },
                 { icon: ShieldCheck, label: 'Secure Stripe step', body: 'You confirm payment on Stripe next.' },
-                { icon: Lock, label: 'Private by default', body: 'Your result stays tied to your TypeJung access.' },
+                { icon: Lock, label: 'Instant unlock', body: 'The full report opens after payment verification.' },
                 { icon: RefreshCcw, label: '30-day refund', body: 'Contact support if the paid report is not useful.' },
               ].map(({ icon: Icon, label, body }) => (
                 <div key={label} className="rounded-lg border border-jung-border bg-jung-base p-4">
@@ -226,7 +225,7 @@ export const Checkout: React.FC = () => {
               <div>
                 <h2 className="text-heading text-2xl text-jung-dark">{checkoutDetails.packageName}</h2>
                 <p className="mt-2 text-sm leading-6 text-jung-secondary">
-                  One-time TypeJung upgrade
+                  Full personal ranking and analysis
                 </p>
               </div>
               <p className="text-lg font-semibold text-jung-dark">{tierPrice.price}</p>
@@ -235,26 +234,17 @@ export const Checkout: React.FC = () => {
             <div className="mt-5 grid gap-3 border-b border-jung-border pb-5">
               {orderRows.map(([label, value]) => (
                 <div key={label} className="flex items-center justify-between gap-4 text-sm">
-                  <span className={label === 'Total due today' ? 'font-semibold text-jung-dark' : 'text-jung-secondary'}>
+                  <span className={label === 'Final total' ? 'font-semibold text-jung-dark' : 'text-jung-secondary'}>
                     {label}
                   </span>
-                  <span className={label === 'Total due today' ? 'font-semibold text-jung-dark' : 'text-jung-secondary'}>
+                  <span className={label === 'Final total' ? 'font-semibold text-jung-dark' : 'text-jung-secondary'}>
                     {value}
                   </span>
                 </div>
               ))}
             </div>
 
-            <DiscountCaptureCard source={`checkout_${paidTier}`} compact showCheckoutButtons={false} className="mt-5" />
-
-            <div className="mt-5 rounded-lg border border-jung-border bg-jung-base p-4">
-              <div className="flex gap-3">
-                <Tag className="mt-0.5 h-4 w-4 flex-none text-jung-accent" />
-                <p className="text-xs leading-5 text-jung-secondary">
-                  Enter {EMAIL_CAPTURE_OFFER.code} on the secure Stripe step to reduce this order to {EMAIL_OFFER_PRICES[paidTier]} before payment is confirmed.
-                </p>
-              </div>
-            </div>
+            <OfferCodeCallout location="checkout_review" tier={paidTier} compact className="mt-5" />
 
             <div className="mt-4 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-4">
               <div className="flex gap-3">

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, Brain, Compass, Layers, AlertTriangle, ChevronDown, ArrowRight, Sparkles, Zap, HelpCircle, Quote, ExternalLink } from 'lucide-react';
 import { FUNCTION_DESCRIPTIONS, STACK_POSITIONS, THE_GRIP } from '../data/questions';
+import { TypeJungMark } from '../components/brand/TypeJungMark';
 import { Button } from '../components/ui/Button';
 import { useSEO, PAGE_SEO } from '../hooks/useSEO';
 import { AnalyticsEvents } from '../lib/analytics';
@@ -612,7 +613,7 @@ export const LearnTheory: React.FC = () => {
 
           {/* Footer */}
           <footer className="pt-12 border-t border-jung-border text-center">
-            <img src="/logo.svg" alt="TypeJung" className="w-12 h-12 mx-auto mb-3" />
+            <TypeJungMark size="sm" className="mb-3 justify-center" />
             <p className="font-serif text-jung-dark mb-2">TypeJung</p>
             <p className="text-sm text-jung-muted mb-4 font-serif">
               A self-exploration tool based on Jung's <em>Psychological Types</em> (1921). Not diagnostic—just reflection.

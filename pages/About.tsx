@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { AlertTriangle, FileText, Users, BookOpen, ArrowRight, Target, Lightbulb, Scale } from 'lucide-react';
+import { TypeJungMark } from '../components/brand/TypeJungMark';
 import { useSEO, PAGE_SEO } from '../hooks/useSEO';
 
 export const About: React.FC = () => {
@@ -11,7 +12,7 @@ export const About: React.FC = () => {
       {/* Hero Header */}
       <header className="mb-16 md:mb-20 text-center">
         <div className="inline-flex items-center gap-3 mb-6">
-          <img src="/logo.svg" alt="TypeJung" className="w-12 h-12" />
+          <TypeJungMark size="sm" />
         </div>
         <h1 className="text-display text-4xl sm:text-5xl md:text-6xl mb-6 max-w-3xl mx-auto font-serif">
           About This Assessment
@@ -377,7 +378,7 @@ export const About: React.FC = () => {
 
       {/* Footer */}
       <footer className="mt-12 pt-10 border-t border-jung-border text-center">
-        <img src="/logo.svg" alt="TypeJung" className="w-12 h-12 mx-auto mb-4" />
+        <TypeJungMark size="sm" className="mb-4 justify-center" />
         <p className="text-ui font-semibold text-jung-dark mb-2 font-serif">TypeJung</p>
         <p className="text-body text-sm text-jung-muted mb-4 max-w-md mx-auto font-serif">
           A self-exploration tool based on Jung's <em>Psychological Types</em> (1921). Mirror for reflection—not fixed label.

@@ -170,11 +170,11 @@ function buildLifecycleEmail(input: LifecycleEmailInput): LifecycleEmailTemplate
     const preview = 'You are close to seeing the map behind your type.';
     const body = `
       <h1 style="margin: 0 0 16px; color: #2f2a25; font-size: 28px; line-height: 1.2;">Finish the map behind your type</h1>
-      <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
+      <p style="color: #555d56; font-size: 16px; line-height: 1.7;">
         You started the TypeJung assessment and stopped before the pattern could resolve.${progressCopy}
         If you return on the same device, your progress should still be saved.
       </p>
-      <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
+      <p style="color: #555d56; font-size: 16px; line-height: 1.7;">
         Come back when you have a clear few minutes. The free result gives you the core energy map first, so you can decide from the result itself whether a deeper report is worth it.
       </p>
       ${buildActionLink(assessmentUrl, 'Finish the assessment')}
@@ -195,10 +195,10 @@ function buildLifecycleEmail(input: LifecycleEmailInput): LifecycleEmailTemplate
     const preview = 'Turn your free map into a deeper read when it feels worth keeping.';
     const body = `
       <h1 style="margin: 0 0 16px; color: #2f2a25; font-size: 28px; line-height: 1.2;">Keep the result only if it earned it</h1>
-      <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
+      <p style="color: #555d56; font-size: 16px; line-height: 1.7;">
         Your free TypeJung map is the test. If it felt accurate enough to keep, the paid report turns that map into a practical read.${axisCopy}
       </p>
-      <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
+      <p style="color: #555d56; font-size: 16px; line-height: 1.7;">
         Insight gives you the developmental edge, stress pattern, relationship triggers, and practice guidance. Mastery adds the AI Type Coach and a practice roadmap. Both are one-time CAD purchases with no subscription.
       </p>
       ${buildActionLink(upgradeUrl, 'Compare report options')}
@@ -219,10 +219,10 @@ function buildLifecycleEmail(input: LifecycleEmailInput): LifecycleEmailTemplate
   const preview = 'Your TypeJung map is ready to review.';
   const body = `
     <h1 style="margin: 0 0 16px; color: #2f2a25; font-size: 28px; line-height: 1.2;">Your energy map is ready</h1>
-    <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
+    <p style="color: #555d56; font-size: 16px; line-height: 1.7;">
       Your TypeJung assessment was completed ${escapeHtml(completedCopy)}.${axisCopy}
     </p>
-    <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
+    <p style="color: #555d56; font-size: 16px; line-height: 1.7;">
       Open the result while the answers are still fresh. Start with the free map, then decide whether you want the deeper report after you have read the pattern.
     </p>
     ${buildActionLink(resultUrl, 'Read your map')}
@@ -283,14 +283,14 @@ export async function sendDiscountLeadEmail(input: DiscountLeadEmailInput): Prom
   const preview = `Your private ${input.percentOff}% TypeJung upgrade code is inside.`;
   const body = `
     <h1 style="margin: 0 0 16px; color: #2f2a25; font-size: 28px; line-height: 1.2;">Your private TypeJung upgrade code</h1>
-    <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
+    <p style="color: #555d56; font-size: 16px; line-height: 1.7;">
       If your free map felt accurate enough to keep, this gives you ${input.percentOff}% off a one-time Insight or Mastery upgrade.${axisCopy}
     </p>
-    <div style="margin: 24px 0; border: 1px solid #d6ccc2; border-radius: 10px; background: #fbfaf8; padding: 18px;">
+    <div style="margin: 24px 0; border: 1px solid #d6ccc2; border-radius: 10px; background: #fafaf8; padding: 18px;">
       <p style="margin: 0 0 8px; color: #8a8177; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">Promotion code</p>
       <p style="margin: 0; color: #2f2a25; font-family: 'SFMono-Regular', Consolas, monospace; font-size: 26px; font-weight: 800; letter-spacing: 0.08em;">${safeCode}</p>
     </div>
-    <p style="color: #57534e; font-size: 16px; line-height: 1.7;">
+    <p style="color: #555d56; font-size: 16px; line-height: 1.7;">
       Copy the code from this email and enter it on the secure Stripe checkout step before payment. Paid access is a one-time CAD purchase, not a subscription.
     </p>
     ${buildActionLink(pricingUrl, 'Choose your report')}
@@ -326,23 +326,23 @@ export async function sendPdfEmail(
     subject: 'Your TypeJung Results',
     html: `
       <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <h1 style="color: #44403c; border-bottom: 2px solid #d4a574; padding-bottom: 10px;">
+        <h1 style="color: #44403c; border-bottom: 2px solid #2d5a3d; padding-bottom: 10px;">
           Your TypeJung Results
         </h1>
         
-        <p style="color: #57534e; font-size: 16px; line-height: 1.6;">
+        <p style="color: #555d56; font-size: 16px; line-height: 1.6;">
           Dear ${userName || 'Explorer'},
         </p>
         
-        <p style="color: #57534e; font-size: 16px; line-height: 1.6;">
+        <p style="color: #555d56; font-size: 16px; line-height: 1.6;">
           Thank you for completing TypeJung. Your dominant cognitive function appears to be <strong>${dominantFunction}</strong>.
         </p>
         
-        <p style="color: #57534e; font-size: 16px; line-height: 1.6;">
+        <p style="color: #555d56; font-size: 16px; line-height: 1.6;">
           Your complete 25+ page premium analysis is attached as a PDF. This report includes:
         </p>
         
-        <ul style="color: #57534e; font-size: 16px; line-height: 1.8;">
+        <ul style="color: #555d56; font-size: 16px; line-height: 1.8;">
           <li>Deep analysis of all 8 cognitive functions</li>
           <li>Your archetypal stack with detailed descriptions</li>
           <li>The Grip: Your stress patterns and recovery paths</li>
@@ -353,13 +353,13 @@ export async function sendPdfEmail(
           <li>Dream journaling guide</li>
         </ul>
         
-        <p style="color: #57534e; font-size: 16px; line-height: 1.6;">
+        <p style="color: #555d56; font-size: 16px; line-height: 1.6;">
           Remember: Your type is a starting point for self-reflection, not a fixed label. As Jung wrote, 
           <em>"The classification of individuals means nothing, nothing at all."</em>
         </p>
         
-        <div style="margin-top: 30px; padding: 15px; background-color: #fafaf9; border-left: 4px solid #d4a574;">
-          <p style="color: #78716c; font-size: 14px; margin: 0;">
+        <div style="margin-top: 30px; padding: 15px; background-color: #fafaf8; border-left: 4px solid #2d5a3d;">
+          <p style="color: #666666; font-size: 14px; margin: 0;">
             <strong>Next Steps:</strong> Visit your results page to explore interactive features, 
             compare with past results, or share with others.
           </p>

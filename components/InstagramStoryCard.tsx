@@ -1,5 +1,6 @@
 import React from 'react';
 import { FUNCTION_DESCRIPTIONS } from '../data/questions';
+import { TypeJungMark } from './brand/TypeJungMark';
 
 interface InstagramStoryCardProps {
   dominantFunction: string;
@@ -26,33 +27,22 @@ export const InstagramStoryCard: React.FC<InstagramStoryCardProps> = ({
       style={{
         width: '1080px',
         height: '1920px',
-        background: 'linear-gradient(165deg, #3D2914 0%, #4A3520 30%, #5C4033 60%, #6B4D3B 100%)',
-        fontFamily: '"DM Sans", sans-serif'
+        background: 'linear-gradient(165deg, #121712 0%, #192019 45%, #234832 100%)',
+        fontFamily: '"Space Grotesk", sans-serif'
       }}
     >
-      {/* Decorative background elements */}
-      <div
-        className="absolute inset-0 opacity-10"
-        style={{
-          backgroundImage: `radial-gradient(circle at 20% 80%, #B87333 0%, transparent 50%),
-                            radial-gradient(circle at 80% 20%, #3D2914 0%, transparent 40%),
-                            radial-gradient(circle at 50% 50%, #B87333 0%, transparent 60%)`
-        }}
-      />
-
       {/* Top accent line */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-jung-accent via-[#C48542] to-jung-accent" />
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-jung-accent via-jung-gold to-jung-accent" />
 
-      {/* Decorative circles */}
-      <div className="absolute top-20 left-12 w-32 h-32 border border-[#B87333]/20 rounded-full" />
-      <div className="absolute top-32 left-20 w-16 h-16 border border-[#B87333]/15 rounded-full" />
-      <div className="absolute bottom-40 right-12 w-24 h-24 border border-[#B87333]/20 rounded-full" />
-      <div className="absolute bottom-52 right-20 w-12 h-12 border border-[#B87333]/15 rounded-full" />
+      {/* Subtle energy-map linework */}
+      <div className="absolute inset-x-16 top-32 h-px bg-white/10" />
+      <div className="absolute inset-y-24 left-16 w-px bg-white/10" />
+      <div className="absolute inset-y-24 right-16 w-px bg-white/10" />
 
       {/* Psi symbol watermark */}
       <div
         className="absolute top-64 right-16 text-9xl font-bold select-none"
-        style={{ color: 'rgba(184, 115, 51, 0.08)', fontFamily: '"Playfair Display", serif' }}
+        style={{ color: 'rgba(232, 241, 234, 0.08)', fontFamily: '"Fraunces", Georgia, serif' }}
       >
         ψ
       </div>
@@ -62,12 +52,15 @@ export const InstagramStoryCard: React.FC<InstagramStoryCardProps> = ({
         {/* Header */}
         <div className="mb-16">
           <div className="flex items-center gap-4 mb-2">
-            <div className="w-12 h-0.5 bg-gradient-to-r from-[#B87333] to-transparent" />
+            <div className="w-12 h-0.5 bg-gradient-to-r from-jung-accent-light to-transparent" />
+            <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-white">
+              <TypeJungMark size="sm" />
+            </div>
             <span
               className="text-lg tracking-[0.3em] uppercase font-medium"
-              style={{ color: '#B87333' }}
+              style={{ color: '#e8f1ea' }}
             >
-              Jungian Profile
+              TypeJung Profile
             </span>
           </div>
         </div>
@@ -77,7 +70,7 @@ export const InstagramStoryCard: React.FC<InstagramStoryCardProps> = ({
           <div className="mb-4">
             <span
               className="text-2xl tracking-[0.2em] uppercase font-light"
-              style={{ color: 'rgba(184, 115, 51, 0.8)' }}
+              style={{ color: 'rgba(232, 241, 234, 0.8)' }}
             >
               Dominant Function
             </span>
@@ -86,11 +79,11 @@ export const InstagramStoryCard: React.FC<InstagramStoryCardProps> = ({
           <h1
             className="leading-none mb-6"
             style={{
-              fontFamily: '"Playfair Display", serif',
+              fontFamily: '"Fraunces", Georgia, serif',
               fontSize: '120px',
               fontWeight: 700,
               color: '#FAF9F7',
-              textShadow: '0 4px 30px rgba(184, 115, 51, 0.3)'
+              textShadow: '0 4px 30px rgba(45, 90, 61, 0.42)'
             }}
           >
             {funcDescription?.title || dominantFunction}
@@ -99,49 +92,49 @@ export const InstagramStoryCard: React.FC<InstagramStoryCardProps> = ({
           <div className="inline-flex items-center gap-4 mb-16">
             <span
               className="text-6xl font-bold"
-              style={{ color: '#B87333' }}
+              style={{ color: '#e8f1ea' }}
             >
               {dominantFunction}
             </span>
-            <div className="w-16 h-0.5" style={{ backgroundColor: 'rgba(184, 115, 51, 0.5)' }} />
-            <span style={{ color: '#A39585', fontSize: '24px' }}>
+            <div className="w-16 h-0.5" style={{ backgroundColor: 'rgba(232, 241, 234, 0.5)' }} />
+            <span style={{ color: '#b9c4ba', fontSize: '24px' }}>
               Score: {stack.dominant.score}
             </span>
           </div>
 
           <div
             className="text-3xl italic leading-relaxed max-w-3xl mb-20"
-            style={{ fontFamily: '"Playfair Display", serif', color: '#E8E4DE' }}
+            style={{ fontFamily: '"Source Serif 4", Georgia, serif', color: '#f4f1ea' }}
           >
             "{funcDescription?.quote}"
           </div>
 
           {/* Function Stack Card */}
           <div
-            className="p-10 rounded-3xl mb-16"
+            className="p-10 rounded-lg mb-16"
             style={{
               background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)',
               backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(184, 115, 51, 0.2)'
+              border: '1px solid rgba(127, 160, 133, 0.3)'
             }}
           >
             <h3
               className="text-xl tracking-[0.2em] uppercase mb-8 font-medium"
-              style={{ color: '#B87333' }}
+              style={{ color: '#e8f1ea' }}
             >
               Function Stack
             </h3>
             <div className="space-y-6">
               {[
-                { label: 'Dominant', func: stack.dominant, color: '#B87333' },
-                { label: 'Auxiliary', func: stack.auxiliary, color: '#C48542' },
-                { label: 'Tertiary', func: stack.tertiary, color: '#8B7355' },
-                { label: 'Inferior', func: stack.inferior, color: '#6B5B50' },
+                { label: 'Dominant', func: stack.dominant, color: '#2d5a3d' },
+                { label: 'Auxiliary', func: stack.auxiliary, color: '#2f6f58' },
+                { label: 'Tertiary', func: stack.tertiary, color: '#7fa085' },
+                { label: 'Inferior', func: stack.inferior, color: '#a17932' },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-6">
                   <span
                     className="text-lg w-32 uppercase tracking-wider"
-                    style={{ color: '#8B7355' }}
+                    style={{ color: '#b9c4ba' }}
                   >
                     {item.label}
                   </span>
@@ -176,13 +169,13 @@ export const InstagramStoryCard: React.FC<InstagramStoryCardProps> = ({
                 <div
                   className="w-20 h-20 rounded-full flex items-center justify-center text-white text-2xl font-bold mb-2"
                   style={{
-                    background: i === 0 ? '#B87333' : i === 1 ? '#C48542' : 'rgba(255,255,255,0.1)',
-                    border: i > 1 ? '2px solid rgba(184, 115, 51, 0.3)' : 'none'
+                    background: i === 0 ? '#2d5a3d' : i === 1 ? '#2f6f58' : 'rgba(255,255,255,0.1)',
+                    border: i > 1 ? '2px solid rgba(127, 160, 133, 0.35)' : 'none'
                   }}
                 >
                   {score.function}
                 </div>
-                <span style={{ color: '#8B7355', fontSize: '18px' }}>{score.score}</span>
+                <span style={{ color: '#b9c4ba', fontSize: '18px' }}>{score.score}</span>
               </div>
             ))}
           </div>
@@ -195,26 +188,16 @@ export const InstagramStoryCard: React.FC<InstagramStoryCardProps> = ({
               <div>
                 <div
                   className="text-2xl font-medium mb-2"
-                  style={{ fontFamily: '"Playfair Display", serif', color: '#FAF9F7' }}
+                  style={{ fontFamily: '"Fraunces", Georgia, serif', color: '#FAF9F7' }}
                 >
-                  Discover Your Type
+                  Map Your Energy
                 </div>
-                <div className="text-xl tracking-wider" style={{ color: '#B87333' }}>
-                  jungiandevelopment.com
+                <div className="text-xl tracking-wider" style={{ color: '#e8f1ea' }}>
+                  typejung.com
                 </div>
               </div>
-              <div
-                className="w-20 h-20 rounded-2xl flex items-center justify-center"
-                style={{
-                  background: 'linear-gradient(135deg, #B87333 0%, #3D2914 100%)'
-                }}
-              >
-                <span
-                  className="text-white text-4xl"
-                  style={{ fontFamily: '"Playfair Display", serif' }}
-                >
-                  ψ
-                </span>
+              <div className="flex h-32 w-32 items-center justify-center rounded-lg bg-white">
+                <TypeJungMark size="lg" />
               </div>
             </div>
           </div>
@@ -222,7 +205,7 @@ export const InstagramStoryCard: React.FC<InstagramStoryCardProps> = ({
       </div>
 
       {/* Bottom accent line */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-jung-accent via-[#C48542] to-jung-accent" />
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-jung-accent via-jung-gold to-jung-accent" />
     </div>
   );
 };

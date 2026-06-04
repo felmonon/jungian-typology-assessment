@@ -18,6 +18,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   const { user, isLoading, isAuthenticated, logout, isLoggingOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const isAssessmentFlow = location.pathname === '/assessment';
 
   usePageTracking();
 
@@ -205,7 +206,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
       <main>{children}</main>
 
-      <footer className="border-t border-jung-border bg-jung-surface/70 py-12">
+      {!isAssessmentFlow && <footer className="border-t border-jung-border bg-jung-surface/70 py-12">
         <div className="lab-container grid gap-10 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
           <div>
             <Link to="/" className="mb-4 inline-flex min-h-11 items-center gap-3">
@@ -265,7 +266,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             Not a four-letter label
           </span>
         </div>
-      </footer>
+      </footer>}
     </div>
   );
 };

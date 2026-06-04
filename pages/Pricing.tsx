@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Check, ChevronDown, Clock, FileText, RefreshCcw, ShieldCheck, Sparkles, X, Brain, Shield } from 'lucide-react';
-import { DiscountCaptureCard } from '../components/discount/DiscountCaptureCard';
+import { ArrowRight, Check, ChevronDown, Clock, FileText, RefreshCcw, ShieldCheck, Sparkles, X, Shield } from 'lucide-react';
+import { OfferCodeCallout } from '../components/OfferCodeCallout';
 import { Button } from '../components/ui/Button';
 import { PRICING } from '../data/pricing';
 import type { PaidTierId, PricingTierId } from '../data/pricing';
@@ -26,48 +26,48 @@ const TIERS: Tier[] = [
   {
     name: 'Core Map',
     price: PRICING.free.price,
-    eyebrow: 'Baseline Diagnostic',
-    summary: 'An initial diagnostic mapping your cognitive function hierarchy and primary/inferior tension axes.',
-    bestFor: 'Sovereign clinical baseline capturing cognitive function hierarchy and primary/inferior tension axes.',
+    eyebrow: 'Free map',
+    summary: 'Answer 42 scenarios and get your core energy map before deciding anything.',
+    bestFor: 'Seeing whether the TypeJung map feels accurate enough to keep.',
     features: [
       '42-scenario assessment',
       'Primary function hierarchy',
-      'Visceral reliability score',
+      'Consistency signal',
       'Private, no signup required',
     ],
-    buttonText: 'Initiate Diagnostic Map',
+    buttonText: 'Start free assessment',
     tier: 'free',
   },
   {
-    name: 'Premium Depth Report',
+    name: 'Insight',
     price: PRICING.insight.price,
-    eyebrow: 'Clinical Dossier Integration',
-    summary: 'Unlock the full 10-section analytical dossier covering your Shadow, Archetypes, Career, and Individuation.',
-    bestFor: 'Depth analysis detailing unconscious shadow, dynamic archetype projection, and somatic grounding paths.',
+    eyebrow: 'Recommended report',
+    summary: 'Unlock the complete 8-function ranking, stress patterns, relationship triggers, and practical guidance behind your free map.',
+    bestFor: 'People whose free map feels accurate and who want the deeper explanation.',
     features: [
-      '10 AI-generated premium sections',
-      'Shadow integration guide',
-      'Inferior-function practice paths',
-      'Somatic grounding routines',
-      'High-fidelity PDF export',
+      'Full 8-function personal ranking',
+      'Stress pattern map',
+      'Relationship trigger interpretation',
+      'Somatic practice guidance',
+      'Instant access after Stripe',
     ],
-    buttonText: `Generate Premium Depth Report`,
+    buttonText: 'Unlock Insight',
     tier: 'insight',
     highlighted: true,
   },
   {
-    name: 'Individuation Tracker',
+    name: 'Mastery',
     price: PRICING.mastery.price,
-    eyebrow: 'Temporal Calibration',
-    summary: 'Monitor your psychic evolution over time, tracking function differentiation and developmental curves.',
-    bestFor: 'Ongoing longitudinal development, comparative diagnostics, and interactive coaching synthesis.',
+    eyebrow: 'Report plus AI coach',
+    summary: 'Get the full report plus AI Type Coach support and practice tools for working with the result over time.',
+    bestFor: 'Ongoing questions, reflection prompts, and practice support after the first report.',
     features: [
-      'Saved session dossier',
-      'Temporal development curves',
-      'Comparative analysis engine',
-      'Ongoing growth library',
+      'Everything in Insight',
+      'AI Type Coach',
+      'Practice roadmap',
+      'Saved account restore when signed in',
     ],
-    buttonText: 'Planned temporal system integration',
+    buttonText: 'Add AI coach',
     tier: 'mastery',
   },
 ];
@@ -222,7 +222,7 @@ export const Pricing: React.FC = () => {
                 </div>
               ))}
             </div>
-            <DiscountCaptureCard source="pricing_hero" compact className="mt-5" />
+            <OfferCodeCallout location="pricing_hero" compact className="mt-5" />
           </div>
         </div>
       </section>
@@ -406,7 +406,7 @@ export const Pricing: React.FC = () => {
         </div>
       </section>
 
-      {/* Baseline Diagnostic Needed Modal */}
+      {/* Free Assessment Needed Modal */}
       <AnimatePresence>
         {showAssessmentPrompt && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 lg:p-8">
@@ -425,51 +425,50 @@ export const Pricing: React.FC = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-              className="relative w-full max-w-lg bg-jung-dark border border-white/10 rounded-[2rem] shadow-2xl overflow-hidden p-8 sm:p-10 flex flex-col gap-6"
+              className="relative flex w-full max-w-lg flex-col gap-6 overflow-hidden rounded-lg border border-white/10 bg-jung-dark p-8 shadow-2xl sm:p-10"
             >
               <div className="flex items-start justify-between">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-jung-accent/20 rounded-full text-jung-accent text-[9px] font-bold uppercase tracking-widest">
-                  <Brain className="w-3.5 h-3.5" /> Baseline Capture Required
+                <div className="inline-flex items-center gap-2 rounded-lg bg-jung-accent/20 px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest text-jung-accent">
+                  <Sparkles className="h-3.5 w-3.5" /> Free map needed
                 </div>
                 <button
                   onClick={() => setShowAssessmentPrompt(false)}
-                  className="p-1 text-white/40 hover:text-white transition-colors rounded-full hover:bg-white/10"
+                  className="rounded-lg p-1 text-white/40 transition-colors hover:bg-white/10 hover:text-white"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="h-5 w-5" />
                 </button>
               </div>
 
               <div className="space-y-4">
-                <h3 className="text-display text-2xl sm:text-3xl text-white font-serif tracking-tight leading-snug text-left">
-                  Psychometric Baseline <br />
-                  <span className="text-jung-accent-muted italic font-normal text-left">Data Capture Required.</span>
+                <h3 className="text-left text-display text-2xl leading-snug tracking-tight text-white sm:text-3xl">
+                  Start with your free map.
                 </h3>
-                <p className="text-sm sm:text-base text-jung-subtle leading-relaxed font-serif text-left">
-                  To construct your high-fidelity depth dossier, we must first capture your baseline psychometric data. Let us begin the 42-scenario diagnostic instrument.
+                <p className="text-left text-sm leading-relaxed text-jung-subtle sm:text-base">
+                  The paid report is built from your own TypeJung result. Answer the 42 scenarios first, then come back to choose Insight or Mastery.
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-3 mt-4">
+              <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                 <button
                   onClick={() => {
                     setShowAssessmentPrompt(false);
-                    startAssessment('pricing_dossier_modal');
+                    startAssessment('pricing_assessment_required_modal');
                   }}
-                  className="flex-1 flex items-center justify-center gap-3 py-4 bg-jung-accent text-white rounded-xl font-bold uppercase tracking-widest text-xs shadow-lg shadow-jung-accent/25 hover:bg-jung-accent-hover hover:-translate-y-0.5 transition-all font-sans"
+                  className="flex flex-1 items-center justify-center gap-3 rounded-lg bg-jung-accent py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg shadow-jung-accent/25 transition-all hover:-translate-y-0.5 hover:bg-jung-accent-hover"
                 >
-                  Initiate Diagnostic <ArrowRight className="w-4 h-4" />
+                  Start free assessment <ArrowRight className="h-4 w-4" />
                 </button>
                 <button
                   onClick={() => setShowAssessmentPrompt(false)}
-                  className="px-6 py-4 bg-white/5 hover:bg-white/10 text-jung-subtle rounded-xl font-bold uppercase tracking-widest text-xs transition-all border border-white/5 font-sans"
+                  className="rounded-lg border border-white/5 bg-white/5 px-6 py-4 text-xs font-bold uppercase tracking-widest text-jung-subtle transition-all hover:bg-white/10"
                 >
                   Dismiss
                 </button>
               </div>
 
-              <div className="flex items-center gap-3 pt-6 border-t border-white/5 text-[10px] uppercase tracking-widest text-jung-muted text-left">
-                <Shield className="w-4 h-4 text-jung-accent/70" />
-                <span>Local Storage Architecture • 100% Confidential</span>
+              <div className="flex items-center gap-3 border-t border-white/5 pt-6 text-left text-[10px] uppercase tracking-widest text-jung-muted">
+                <Shield className="h-4 w-4 text-jung-accent/70" />
+                <span>Private by default • No account required</span>
               </div>
             </motion.div>
           </div>

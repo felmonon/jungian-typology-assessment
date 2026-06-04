@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 import { FUNCTION_DESCRIPTIONS } from '../data/questions';
 import { ATTITUDE_LABELS, FUNCTION_LABELS } from '../data/depthAssessment';
+import { TypeJungMark } from '../components/brand/TypeJungMark';
 import { Button } from '../components/ui/Button';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import { extractDepthResult } from '../utils/depthCompatibility';
@@ -88,7 +89,7 @@ export const SharePage: React.FC = () => {
       <div className="editorial-container py-8 md:py-12">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <img src="/logo.svg" alt="TypeJung" className="w-10 h-10" />
+            <TypeJungMark size="sm" />
             <span className="text-xs md:text-sm font-data font-bold tracking-widest uppercase text-jung-secondary">
               TypeJung Energy Map
             </span>
@@ -168,7 +169,7 @@ export const SharePage: React.FC = () => {
       {/* Header */}
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-3 mb-4">
-          <img src="/logo.svg" alt="TypeJung" className="w-10 h-10" />
+          <TypeJungMark size="sm" />
           <span className="text-xs md:text-sm font-data font-bold tracking-widest uppercase text-jung-secondary">
             TypeJung Shared Result
           </span>
@@ -199,18 +200,18 @@ export const SharePage: React.FC = () => {
           <div className="w-full h-[280px] md:h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart cx="50%" cy="50%" outerRadius="75%" data={chartData}>
-                <PolarGrid stroke="#D8D5CE" />
+                <PolarGrid stroke="#d4d4d2" />
                 <PolarAngleAxis
                   dataKey="subject"
-                  tick={{ fill: '#1B1B3A', fontSize: 11, fontWeight: 'bold' }}
+                  tick={{ fill: '#1a1a1a', fontSize: 11, fontWeight: 'bold' }}
                 />
                 <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
                 <Radar
                   name="Score"
                   dataKey="A"
-                  stroke="#1F7A67"
+                  stroke="#2d5a3d"
                   strokeWidth={2}
-                  fill="#1F7A67"
+                  fill="#2d5a3d"
                   fillOpacity={0.3}
                 />
               </RadarChart>

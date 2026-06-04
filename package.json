@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "npx tsx server.ts",
     "build": "npm run generate:blog && npm run generate:static && vite build && npm run generate:spa-routes && npm run generate:sitemap",
@@ -79,7 +82,7 @@
     "@types/node": "^22.14.0",
     "@types/react": "^19.2.10",
     "@types/react-dom": "^19.2.3",
-    "@vercel/node": "^5.5.16",
+    "@vercel/node": "^5.8.12",
     "@vitejs/plugin-react": "^5.0.0",
     "drizzle-kit": "^0.31.10",
     "jsdom": "^24.0.0",

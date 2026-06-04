@@ -26,7 +26,7 @@ function signSessionId(sessionId: string, secret: string): string {
 
 const SALT_ROUNDS = 10;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const EMAIL_CAPTURE_DISCOUNT_CODE = process.env.EMAIL_CAPTURE_DISCOUNT_CODE || 'TYPEJUNG30';
+const EMAIL_CAPTURE_DISCOUNT_CODE = process.env.EMAIL_CAPTURE_DISCOUNT_CODE || EMAIL_CAPTURE_OFFER.code;
 const lifecycleKinds = new Set<LifecycleEmailKind>([
   'abandoned-assessment',
   'result-ready',
@@ -586,14 +586,6 @@ async function handleDiscountLead(req: VercelRequest, res: VercelResponse) {
   const source = cleanSource(req.body?.source);
   const dominantLabel = cleanString(req.body?.dominantLabel, 120);
   const inferiorLabel = cleanString(req.body?.inferiorLabel, 120);
-  const capture = await captureDiscountLead({
-    email,
-    source,
-    discountCode: EMAIL_CAPTURE_DISCOUNT_CODE,
-    percentOff: EMAIL_CAPTURE_OFFER.percentOff,
-    dominantLabel,
-    inferiorLabel,
-  });
   const baseUrl = resolveCheckoutBaseUrl(req.headers.origin, req.headers.host);
   const pricingUrl = `${baseUrl}/pricing?source=${encodeURIComponent(source)}`;
 
@@ -609,21 +601,34 @@ async function handleDiscountLead(req: VercelRequest, res: VercelResponse) {
       idempotencyKey: cleanIdempotencyKey(`discount-${email}-${source}`),
     });
   } catch (error) {
-    await updateDiscountLeadSendStatus(capture.leadId, {
-      sent: false,
-      emailError: error instanceof Error ? error.message : 'Unknown email send error',
-    });
-    throw error;
+    console.error('Discount lead email failed:', error);
+    return res.status(502).json({ error: 'Could not send the code. Please try again.' });
   }
 
+  if (!sendResult.sent) {
+    const reason = 'reason' in sendResult ? sendResult.reason : 'unknown';
+    const message = reason === 'resend_not_configured'
+      ? 'Email sending is not available right now. Please try again later.'
+      : 'Could not send the code. Please try again.';
+    return res.status(503).json({ error: message, reason });
+  }
+
+  const capture = await captureDiscountLead({
+    email,
+    source,
+    discountCode: EMAIL_CAPTURE_DISCOUNT_CODE,
+    percentOff: EMAIL_CAPTURE_OFFER.percentOff,
+    dominantLabel,
+    inferiorLabel,
+  });
+
   await updateDiscountLeadSendStatus(capture.leadId, {
-    sent: sendResult.sent,
+    sent: true,
     emailSentId: 'id' in sendResult ? sendResult.id : undefined,
-    emailError: 'reason' in sendResult ? sendResult.reason : undefined,
   });
 
   return res.status(200).json({
-    ...sendResult,
+    sent: true,
     captured: capture.captured,
     captureReason: capture.reason,
     percentOff: EMAIL_CAPTURE_OFFER.percentOff,

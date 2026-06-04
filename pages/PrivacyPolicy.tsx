@@ -150,7 +150,7 @@ export const PrivacyPolicy: React.FC = () => {
               We retain your account information and assessment data for as long as your account is active. You may request deletion of your account and all associated data at any time through your profile settings or by contacting us.
             </p>
             <p className="mt-3">
-              Logging out clears TypeJung's local assessment result, premium cache, lifecycle email markers, and in-progress assessment data from that browser. Account deletion removes your personal information, saved assessment data, and purchase-access records from our active databases. Some data may be retained in backup systems for a limited period and for legal compliance purposes.
+              Logging out clears TypeJung's local assessment result, premium cache, lifecycle and discount email markers, and in-progress assessment data from that browser. Account deletion removes your personal information, saved assessment data, and purchase-access records from our active databases. Some data may be retained in backup systems for a limited period and for legal compliance purposes.
             </p>
           </div>
         </section>

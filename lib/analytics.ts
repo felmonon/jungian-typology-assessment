@@ -34,7 +34,12 @@ const AssessmentEventSchema = z.object({
 
 const ResultsEventSchema = z.object({
   dominant_function: z.string().min(1).max(20).optional(),
+  inferior_function: z.string().min(1).max(20).optional(),
   share_method: z.string().min(1).max(50).optional(),
+  tier: z.string().min(1).max(50).optional(),
+  location: z.string().min(1).max(100).optional(),
+  module: z.string().min(1).max(100).optional(),
+  result_age_minutes: z.number().min(0).max(525600).optional(),
 });
 
 const ResultSaveEventSchema = z.object({
@@ -83,6 +88,19 @@ const CTAEventSchema = z.object({
   location: z.string().min(1).max(100),
   button_text: z.string().min(1).max(150).optional(),
   destination: z.string().min(1).max(500).optional(),
+});
+
+const OfferCodeEventSchema = z.object({
+  offer_code: z.string().min(1).max(50),
+  location: z.string().min(1).max(100),
+  tier: z.string().min(1).max(50).optional(),
+});
+
+const CheckoutReviewEventSchema = z.object({
+  tier: z.string().min(1).max(50),
+  value: z.number().min(0).max(10000),
+  currency: z.string().length(3).default('CAD'),
+  location: z.string().min(1).max(100).optional(),
 });
 
 // Safe tracking helper with validation
@@ -294,6 +312,46 @@ export const AnalyticsEvents = {
     const params = { dominant_function: func };
     return safeTrackEvent('results_viewed', params, ResultsEventSchema);
   },
+
+  paidReportPreviewViewed: (options: {
+    tier: string;
+    location: string;
+    dominantFunction?: string;
+    inferiorFunction?: string;
+    resultAgeMinutes?: number;
+  }) => {
+    const params = {
+      tier: String(options.tier).substring(0, 50),
+      location: String(options.location).substring(0, 100),
+      ...(options.dominantFunction ? { dominant_function: String(options.dominantFunction).substring(0, 20) } : {}),
+      ...(options.inferiorFunction ? { inferior_function: String(options.inferiorFunction).substring(0, 20) } : {}),
+      ...(typeof options.resultAgeMinutes === 'number'
+        ? { result_age_minutes: Math.max(0, Math.round(options.resultAgeMinutes)) }
+        : {}),
+    };
+    return safeTrackEvent('paid_report_preview_viewed', params, ResultsEventSchema);
+  },
+
+  paidReportModuleExpanded: (options: {
+    module: string;
+    tier: string;
+    location: string;
+    dominantFunction?: string;
+    inferiorFunction?: string;
+    resultAgeMinutes?: number;
+  }) => {
+    const params = {
+      module: String(options.module).substring(0, 100),
+      tier: String(options.tier).substring(0, 50),
+      location: String(options.location).substring(0, 100),
+      ...(options.dominantFunction ? { dominant_function: String(options.dominantFunction).substring(0, 20) } : {}),
+      ...(options.inferiorFunction ? { inferior_function: String(options.inferiorFunction).substring(0, 20) } : {}),
+      ...(typeof options.resultAgeMinutes === 'number'
+        ? { result_age_minutes: Math.max(0, Math.round(options.resultAgeMinutes)) }
+        : {}),
+    };
+    return safeTrackEvent('paid_report_module_expanded', params, ResultsEventSchema);
+  },
   
   resultsShared: (method: 'link' | 'twitter' | 'facebook' | 'linkedin') => {
     const validMethods = ['link', 'twitter', 'facebook', 'linkedin'];
@@ -360,6 +418,36 @@ export const AnalyticsEvents = {
     const customEventTracked = safeTrackEvent('checkout_started', params, PurchaseEventSchema);
     return recommendedEventTracked || customEventTracked;
   },
+
+  checkoutReviewViewed: (tier: string, value: number, location = 'checkout_review') => {
+    const params = {
+      tier: String(tier).substring(0, 50),
+      value: Math.max(0, Number(value)),
+      currency: 'CAD',
+      location: String(location).substring(0, 100),
+    };
+    return safeTrackEvent('checkout_review_viewed', params, CheckoutReviewEventSchema);
+  },
+
+  stripeRedirectStarted: (tier: string, price: number) => {
+    const params = {
+      plan: String(tier).substring(0, 50),
+      tier: String(tier).substring(0, 50),
+      value: Math.max(0, Number(price)),
+      price: Math.max(0, Number(price)),
+      currency: 'CAD',
+      items: buildEcommerceItems(tier, price),
+    };
+    return safeTrackEvent('stripe_redirect_started', params, PurchaseEventSchema);
+  },
+
+  checkoutStartFailed: (tier: string, errorMessage?: string) => {
+    const params = {
+      error_type: `checkout_start_${String(tier).substring(0, 30)}`,
+      error_message: errorMessage ? String(errorMessage).substring(0, 150) : undefined,
+    };
+    return safeTrackEvent('checkout_start_failed', params);
+  },
   
   purchaseCompleted: (plan: string, price: number, transactionId?: string | null) => {
     const cleanedTransactionId = typeof transactionId === 'string'
@@ -385,6 +473,15 @@ export const AnalyticsEvents = {
       tier: String(tier).substring(0, 50),
     };
     return safeTrackEvent('upgrade_clicked', params, UpgradeEventSchema);
+  },
+
+  offerCodeCopied: (offerCode: string, location: string, tier?: string) => {
+    const params = {
+      offer_code: String(offerCode).substring(0, 50),
+      location: String(location).substring(0, 100),
+      ...(tier ? { tier: String(tier).substring(0, 50) } : {}),
+    };
+    return safeTrackEvent('offer_code_copied', params, OfferCodeEventSchema);
   },
 
   // Engagement

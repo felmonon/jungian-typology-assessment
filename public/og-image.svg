@@ -1,52 +1,43 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <!-- Background -->
-  <rect width="1200" height="630" fill="#FAF8F5"/>
-
-  <!-- Subtle pattern -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" fill="none">
   <defs>
-    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#E8E4DE" stroke-width="0.5"/>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" stroke="#d4d4d2" stroke-width="0.75" opacity="0.45"/>
     </pattern>
+    <linearGradient id="accentBand" x1="0" y1="0" x2="1200" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2d5a3d"/>
+      <stop offset="0.56" stop-color="#a17932"/>
+      <stop offset="1" stop-color="#2d5a3d"/>
+    </linearGradient>
   </defs>
-  <rect width="1200" height="630" fill="url(#grid)" opacity="0.5"/>
+  <rect width="1200" height="630" fill="#fafaf8"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect x="88" y="92" width="1024" height="446" rx="8" fill="#ffffff" stroke="#e8e8e6"/>
 
-  <!-- Logo (scaled mandala) -->
-  <g transform="translate(100, 215)">
-    <circle cx="100" cy="100" r="90" fill="none" stroke="#1f2937" stroke-width="4"/>
-    <circle cx="100" cy="50" r="26" fill="none" stroke="#14b8a6" stroke-width="3"/>
-    <circle cx="150" cy="100" r="26" fill="none" stroke="#14b8a6" stroke-width="3"/>
-    <circle cx="100" cy="150" r="26" fill="none" stroke="#14b8a6" stroke-width="3"/>
-    <circle cx="50" cy="100" r="26" fill="none" stroke="#14b8a6" stroke-width="3"/>
-    <circle cx="100" cy="100" r="20" fill="#14b8a6"/>
-    <line x1="100" y1="20" x2="100" y2="180" stroke="#1f2937" stroke-width="2"/>
-    <line x1="20" y1="100" x2="180" y2="100" stroke="#1f2937" stroke-width="2"/>
-    <circle cx="100" cy="20" r="6" fill="#1f2937"/>
-    <circle cx="100" cy="180" r="6" fill="#1f2937"/>
-    <circle cx="20" cy="100" r="6" fill="#1f2937"/>
-    <circle cx="180" cy="100" r="6" fill="#1f2937"/>
+  <g transform="translate(130 178) scale(2.72)">
+    <circle cx="50" cy="50" r="38" stroke="#d4d4d2" stroke-width="1.2"/>
+    <circle cx="50" cy="50" r="22" stroke="#d4d4d2" stroke-opacity="0.7" stroke-width="0.9" stroke-dasharray="3 4"/>
+    <path d="M22 78L78 22" stroke="#2d5a3d" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M50 10V90M10 50H90" stroke="#d4d4d2" stroke-opacity="0.6" stroke-width="0.8" stroke-linecap="round"/>
+    <circle cx="50" cy="50" r="5" fill="#ffffff" stroke="#2d5a3d" stroke-width="1.4"/>
+    <circle cx="50" cy="10" r="3.3" fill="#1a1a1a"/>
+    <circle cx="78" cy="22" r="2.4" fill="#2d5a3d"/>
+    <circle cx="90" cy="50" r="2.8" fill="#1a1a1a"/>
+    <circle cx="78" cy="78" r="2.2" fill="#1a1a1a"/>
+    <circle cx="50" cy="90" r="3.3" fill="#1a1a1a"/>
+    <circle cx="22" cy="78" r="2.4" fill="#2d5a3d"/>
+    <circle cx="10" cy="50" r="2.8" fill="#1a1a1a"/>
+    <circle cx="22" cy="22" r="2.2" fill="#1a1a1a"/>
+    <path d="M70 18L82 18L82 30" stroke="#2d5a3d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M30 82L18 82L18 70" stroke="#2d5a3d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
 
-  <!-- Text content -->
-  <text x="340" y="260" font-family="Georgia, serif" font-size="56" font-weight="bold" fill="#1f2937">
-    TypeJung
-  </text>
-  <text x="340" y="330" font-family="Georgia, serif" font-size="56" font-weight="bold" fill="#1f2937">
-    Energy Map
-  </text>
+  <text x="458" y="220" font-family="Fraunces, Georgia, serif" font-size="70" font-weight="700" fill="#1a1a1a">TypeJung</text>
+  <text x="458" y="288" font-family="Fraunces, Georgia, serif" font-size="42" font-weight="600" fill="#1a1a1a">Jungian Energy Map Assessment</text>
+  <text x="458" y="354" font-family="Space Grotesk, Arial, sans-serif" font-size="27" fill="#555d56">Map where your energy flows and where it gets stuck.</text>
+  <text x="458" y="396" font-family="Space Grotesk, Arial, sans-serif" font-size="23" fill="#666666">Free 42-question Jungian assessment.</text>
+  <text x="458" y="432" font-family="Space Grotesk, Arial, sans-serif" font-size="23" fill="#666666">Cognitive functions, stress patterns, and growth edges.</text>
 
-  <text x="340" y="400" font-family="system-ui, sans-serif" font-size="28" fill="#6B7280">
-    Map dominant energy and inferior pressure
-  </text>
-  <text x="340" y="440" font-family="system-ui, sans-serif" font-size="28" fill="#6B7280">
-    with a depth-based Jungian assessment
-  </text>
-
-  <!-- CTA badge -->
-  <rect x="340" y="480" width="200" height="50" rx="25" fill="#14b8a6"/>
-  <text x="440" y="513" font-family="system-ui, sans-serif" font-size="20" font-weight="600" fill="white" text-anchor="middle">
-    Free Assessment
-  </text>
-
-  <!-- Bottom accent line -->
-  <rect x="0" y="610" width="1200" height="20" fill="#14b8a6"/>
+  <rect x="458" y="458" width="268" height="52" rx="8" fill="#2d5a3d"/>
+  <text x="592" y="492" font-family="Space Grotesk, Arial, sans-serif" font-size="20" font-weight="700" fill="#ffffff" text-anchor="middle">Free Assessment</text>
+  <rect y="610" width="1200" height="20" fill="url(#accentBand)"/>
 </svg>

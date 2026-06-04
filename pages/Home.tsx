@@ -12,7 +12,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { ErrorBoundary } from '../components/ErrorBoundary';
-import { DiscountCaptureCard } from '../components/discount/DiscountCaptureCard';
+import { OfferCodeCallout } from '../components/OfferCodeCallout';
 import { Button } from '../components/ui/Button';
 import { FunctionRadial } from '../components/home/FunctionRadial';
 import { PRICING } from '../data/pricing';
@@ -395,7 +395,7 @@ export const Home: React.FC = () => {
               })}
             </div>
 
-            <DiscountCaptureCard source="home_pricing_section" compact className="mx-auto mt-10 max-w-3xl" />
+            <OfferCodeCallout location="home_pricing_section" compact className="mx-auto mt-10 max-w-3xl" />
           </div>
         </section>
 

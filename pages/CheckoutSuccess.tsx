@@ -7,12 +7,14 @@ import { PRICING } from '../data/pricing';
 import { FUNCTION_DESCRIPTIONS } from '../data/questions';
 import { FUNCTION_LABELS } from '../data/depthAssessment';
 import { AnalyticsEvents } from '../lib/analytics';
+import { STORAGE_KEYS } from '../lib/validation';
 import { extractDepthResult } from '../utils/depthCompatibility';
 import { useAuth } from '../hooks/use-auth';
 
 const UNLOCKED_FEATURES = [
+  { icon: Layers, text: 'Full 8-function personal ranking' },
   { icon: FileText, text: 'Detailed TypeJung depth report' },
-  { icon: Layers, text: 'Energy hierarchy and dominant-inferior axis' },
+  { icon: Shield, text: 'Confidence and reliability interpretation' },
   { icon: AlertTriangle, text: 'Stress and complex vulnerability patterns' },
   { icon: Heart, text: 'Relationship trigger interpretation' },
   { icon: Briefcase, text: 'Work and decision-making guidance' },
@@ -96,12 +98,14 @@ export const CheckoutSuccess: React.FC = () => {
         if (data.paid) {
           const tier = data.tier || data.metadata?.tier || 'insight';
           const transactionId = data.transactionId || verifiedSessionId;
-          localStorage.setItem('jungian_assessment_tier', tier);
-          localStorage.setItem('jungian_assessment_unlocked', 'true');
-          localStorage.setItem('jungian_assessment_unlock_date', new Date().toISOString());
-          localStorage.setItem('jungian_assessment_send_email', 'true');
+          localStorage.setItem(STORAGE_KEYS.TIER, tier);
+          localStorage.setItem(STORAGE_KEYS.UNLOCKED, 'true');
+          localStorage.setItem(STORAGE_KEYS.UNLOCK_DATE, new Date().toISOString());
+          localStorage.setItem(STORAGE_KEYS.CHECKOUT_SESSION_ID, verifiedSessionId);
+          localStorage.setItem(STORAGE_KEYS.TRANSACTION_ID, transactionId);
+          localStorage.setItem(STORAGE_KEYS.SEND_EMAIL, 'true');
           if (user?.id) {
-            localStorage.setItem('jungian_assessment_unlock_user_id', user.id);
+            localStorage.setItem(STORAGE_KEYS.UNLOCK_USER_ID, user.id);
           }
           if (data.customerEmail) {
             localStorage.setItem('jungian_assessment_customer_email', data.customerEmail);
@@ -174,7 +178,7 @@ export const CheckoutSuccess: React.FC = () => {
           </div>
 
           <h1 className="mb-4 text-heading text-4xl text-jung-dark">
-            Your report is unlocked
+            Your full ranking and analysis are unlocked
           </h1>
 
           {dominantFunction && funcTitle && (
@@ -189,7 +193,7 @@ export const CheckoutSuccess: React.FC = () => {
           </div>
 
           <p className="text-sm text-jung-muted">
-            You can return to this unlocked result from this browser. Sign in with the purchase email to restore access across devices and use account-based premium features.
+            You can open the complete report from this browser now. Sign in later with the purchase email to restore access across devices.
           </p>
         </div>
 
@@ -197,7 +201,7 @@ export const CheckoutSuccess: React.FC = () => {
           <div className="mb-8 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-5">
             <h2 className="text-lg font-semibold text-jung-dark">Save the unlock to your account</h2>
             <p className="mt-2 text-sm leading-6 text-jung-secondary">
-              Your Stripe receipt verifies the purchase in this browser. To keep access in history, restore it later, or use the AI Type Coach, sign in with the same email used at checkout.
+              This purchase is already active here. Sign in with the same email when you want saved history, cross-device restore, or account-based coach access.
             </p>
             <Button
               onClick={() => navigate('/auth')}
@@ -238,7 +242,7 @@ export const CheckoutSuccess: React.FC = () => {
             className="flex-1"
           >
             <Compass className="mr-2 h-5 w-5" />
-            View Your Complete Analysis
+            View Full Ranking and Analysis
           </Button>
         </div>
 

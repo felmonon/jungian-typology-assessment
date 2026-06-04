@@ -18,7 +18,7 @@ Set:
 Upload:
 
 - Icon: TypeJung green icon
-- Logo: TypeJung wordmark or icon + wordmark
+- Logo: TypeJung energy-map mark from `public/logo.png`
 - Brand color: `#2d5a3d`
 - Accent color: `#2d5a3d`
 

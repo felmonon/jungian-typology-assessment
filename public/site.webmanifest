@@ -4,11 +4,11 @@
   "description": "A depth-based Jungian assessment that maps energy flow, stress patterns, and growth edges",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#faf9f6",
-  "theme_color": "#451a03",
+  "background_color": "#fafaf8",
+  "theme_color": "#2d5a3d",
   "icons": [
     {
-      "src": "/logo.svg",
+      "src": "/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"

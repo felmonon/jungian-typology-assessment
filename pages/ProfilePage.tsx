@@ -415,7 +415,7 @@ export const ProfilePage: React.FC = () => {
               </div>
               <div className="rounded-lg border border-jung-border bg-jung-base p-4">
                 <p className="font-semibold text-jung-dark">Local browser data</p>
-                <p className="mt-1 leading-6 text-jung-muted">Current result, premium cache, lifecycle email markers, and progress are cleared on logout.</p>
+                <p className="mt-1 leading-6 text-jung-muted">Current result, premium cache, lifecycle and discount email markers, and progress are cleared on logout.</p>
               </div>
               <div className="rounded-lg border border-jung-border bg-jung-base p-4">
                 <p className="font-semibold text-jung-dark">Session retention</p>

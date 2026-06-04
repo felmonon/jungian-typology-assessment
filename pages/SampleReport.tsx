@@ -16,9 +16,9 @@ const reportSections = [
   },
   {
     label: 'Insight',
-    title: 'Developmental edge report',
-    body: 'Insight turns the free map into a deeper read on the inferior function, stress pressure, relationship triggers, and practical reflection prompts.',
-    included: ['Stress pattern map', 'Relationship trigger interpretation', 'Somatic practice guidance'],
+    title: 'Full ranking and developmental report',
+    body: 'Insight turns the free map into a full 8-function personal ranking plus a deeper read on inferior-function stress, relationship triggers, and practical reflection prompts.',
+    included: ['8-function personal ranking', 'Stress pattern map', 'Relationship trigger interpretation', 'Somatic practice guidance'],
   },
   {
     label: 'Mastery',

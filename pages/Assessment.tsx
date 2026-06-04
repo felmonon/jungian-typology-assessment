@@ -1,16 +1,17 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, CheckCircle2, Circle, Info, Loader2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BarChart3, CheckCircle2, Compass, Info, Keyboard, Loader2, ShieldCheck, Target } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
-import { ASSESSMENT_TIME_RANGE } from '../data/pricing';
 import { DepthLayer, depthLayerMeta, depthQuestions } from '../data/depthAssessment';
 import { PAGE_SEO, useSEO } from '../hooks/useSEO';
 import { useAssessmentTracking } from '../hooks/useAnalytics';
 import { useAuth } from '../hooks/use-auth';
+import { AnalyticsEvents } from '../lib/analytics';
 import { calculateDepthResults } from '../utils/depthScoring';
 
-const QUESTIONS_PER_PAGE = 3;
+const QUESTIONS_PER_PAGE = 1;
+const QUESTIONS_PER_MINUTE_ESTIMATE = 7;
 const PROGRESS_KEY = 'jungian_depth_assessment_progress';
 const HISTORY_KEY = 'jungian_depth_results_history';
 const RESULTS_KEY = 'jungian_assessment_results';
@@ -26,6 +27,40 @@ type SavedProgress = {
 };
 
 const layerOrder: DepthLayer[] = ['behavioral', 'inferior', 'somatic', 'attitude'];
+
+type LayerPayoff = {
+  icon: React.ComponentType<{ className?: string }>;
+  eyebrow: string;
+  title: string;
+  body: string;
+};
+
+const layerPayoffs: Record<DepthLayer, LayerPayoff> = {
+  behavioral: {
+    icon: Compass,
+    eyebrow: 'Section payoff',
+    title: 'This block builds the base map.',
+    body: 'These scenarios identify what your attention reaches for first when there is no obvious right answer.',
+  },
+  inferior: {
+    icon: Target,
+    eyebrow: 'Section payoff',
+    title: 'This block finds the charged edge.',
+    body: 'Stress and relationship patterns make the inferior function easier to detect than ordinary preference questions.',
+  },
+  somatic: {
+    icon: ShieldCheck,
+    eyebrow: 'Section payoff',
+    title: 'This block checks the body signal.',
+    body: 'Somatic cues help separate a real pattern from an answer style, especially when two functions look close.',
+  },
+  attitude: {
+    icon: BarChart3,
+    eyebrow: 'Final section',
+    title: 'This block sets the direction.',
+    body: 'The last answers separate Jungian introversion and extraversion from social stereotypes before the free map is generated.',
+  },
+};
 
 const layerProgress = (answers: Record<string, string>) => layerOrder.map((layer) => {
   const layerQuestions = depthQuestions.filter((question) => question.layer === layer);
@@ -68,6 +103,12 @@ const writeProgress = (answers: Record<string, string>, currentPage: number) => 
 
 const countAnswered = (answers: Record<string, string>) => Object.keys(answers).filter((key) => answers[key]).length;
 
+const isTypingTarget = (target: EventTarget | null) => {
+  if (!(target instanceof HTMLElement)) return false;
+  const tagName = target.tagName.toLowerCase();
+  return target.isContentEditable || ['input', 'textarea', 'select'].includes(tagName);
+};
+
 const postLifecycleEmail = async (body: Record<string, unknown>) => {
   try {
     const response = await fetch(LIFECYCLE_EMAIL_ENDPOINT, {
@@ -92,6 +133,7 @@ export const Assessment: React.FC = () => {
   const [resumedProgress, setResumedProgress] = useState(false);
   const hasLoadedProgressRef = useRef(false);
   const hasTrackedStartRef = useRef(false);
+  const autoAdvanceTimerRef = useRef<number | null>(null);
   const { trackStart, trackProgress, trackComplete } = useAssessmentTracking();
   const { user, isLoading: authLoading } = useAuth();
 
@@ -108,12 +150,36 @@ export const Assessment: React.FC = () => {
   const isPageComplete = currentQuestions.every((question) => answers[question.id]);
   const currentLayer = currentQuestions[0]?.layer ?? 'behavioral';
   const currentLayerMeta = depthLayerMeta[currentLayer];
+  const currentLayerPayoff = layerPayoffs[currentLayer];
+  const CurrentLayerIcon = currentLayerPayoff.icon;
   const currentLayerProgress = useMemo(() => layerProgress(answers), [answers]);
+  const currentLayerStatus = currentLayerProgress.find((item) => item.layer === currentLayer) ?? {
+    layer: currentLayer,
+    answered: 0,
+    total: currentQuestions.length,
+    complete: false,
+  };
+  const questionsRemaining = Math.max(0, depthQuestions.length - totalAnswered);
+  const estimatedMinutesRemaining = Math.max(1, Math.ceil(questionsRemaining / QUESTIONS_PER_MINUTE_ESTIMATE));
+  const timeRemainingCopy = questionsRemaining === 0
+    ? 'Ready now'
+    : questionsRemaining <= 3
+      ? 'Under 1 min left'
+      : `About ${estimatedMinutesRemaining} min left`;
+  const isFinalPage = currentPage === totalPages - 1;
+  const nextLayer = depthQuestions[(currentPage + 1) * QUESTIONS_PER_PAGE]?.layer;
+  const nextStepCopy = !isPageComplete
+    ? 'Choose the answer that fits best. Progress saves on this device.'
+    : isFinalPage
+      ? 'Ready to generate your free map. The full ranking unlock appears after you see it.'
+      : `Saved. ${timeRemainingCopy}. Moving to ${nextLayer ? depthLayerMeta[nextLayer].shortLabel.toLowerCase() : 'the next question'}.`;
+  const firstQuestionInLayerIndex = depthQuestions.findIndex((question) => question.layer === currentLayer);
+  const isLayerIntroPage = currentPage === firstQuestionInLayerIndex && currentPage > 0;
 
   const pageRange = useMemo(() => {
     const start = currentPage * QUESTIONS_PER_PAGE + 1;
     const end = Math.min((currentPage + 1) * QUESTIONS_PER_PAGE, depthQuestions.length);
-    return `${start}-${end}`;
+      return start === end ? `${start}` : `${start}-${end}`;
   }, [currentPage]);
 
   useEffect(() => {
@@ -121,11 +187,24 @@ export const Assessment: React.FC = () => {
     const saved = readProgress();
     if (saved) {
       setAnswers(saved.answers);
-      setCurrentPage(Math.max(0, Math.min(saved.currentPage, totalPages - 1)));
+      const savedPage = Math.max(0, Math.min(saved.currentPage, totalPages - 1));
+      const firstUnansweredPage = depthQuestions.findIndex((question) => !saved.answers[question.id]);
+      const resumePage = firstUnansweredPage === -1
+        ? totalPages - 1
+        : saved.answers[depthQuestions[savedPage]?.id]
+          ? firstUnansweredPage
+          : savedPage;
+      setCurrentPage(Math.max(0, Math.min(resumePage, totalPages - 1)));
       setResumedProgress(countAnswered(saved.answers) > 0);
     }
     hasLoadedProgressRef.current = true;
   }, [totalPages]);
+
+  useEffect(() => () => {
+    if (autoAdvanceTimerRef.current) {
+      window.clearTimeout(autoAdvanceTimerRef.current);
+    }
+  }, []);
 
   useEffect(() => {
     if (!hasTrackedStartRef.current) {
@@ -182,18 +261,41 @@ export const Assessment: React.FC = () => {
     writeProgress(nextAnswers, nextPage);
   }, [currentPage]);
 
+  const clearAutoAdvanceTimer = useCallback(() => {
+    if (autoAdvanceTimerRef.current) {
+      window.clearTimeout(autoAdvanceTimerRef.current);
+      autoAdvanceTimerRef.current = null;
+    }
+  }, []);
+
   const handleAnswer = useCallback((questionId: string, answerId: string, questionNumber: number) => {
     setAnswers((prev) => {
       const nextAnswers = { ...prev, [questionId]: answerId };
       persist(nextAnswers);
+
+      if (currentPage < totalPages - 1) {
+        clearAutoAdvanceTimer();
+        autoAdvanceTimerRef.current = window.setTimeout(() => {
+          const nextPage = currentPage + 1;
+          setCurrentPage(nextPage);
+          persist(nextAnswers, nextPage);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          autoAdvanceTimerRef.current = null;
+        }, 260);
+      }
+
       return nextAnswers;
     });
     trackProgress(questionNumber, depthQuestions.length);
-  }, [persist, trackProgress]);
+  }, [clearAutoAdvanceTimer, currentPage, persist, totalPages, trackProgress]);
 
   const completeAssessment = useCallback(() => {
     setShowCompletion(true);
     trackComplete();
+    AnalyticsEvents.ctaClicked('generate_free_map', 'assessment_final_page', {
+      buttonText: 'Generate free map',
+      destination: '/results',
+    });
 
     window.setTimeout(() => {
       const results = calculateDepthResults(answers);
@@ -214,6 +316,8 @@ export const Assessment: React.FC = () => {
   }, [answers, navigate, trackComplete]);
 
   const handleNext = useCallback(() => {
+    clearAutoAdvanceTimer();
+
     if (currentPage < totalPages - 1) {
       const nextPage = currentPage + 1;
       setCurrentPage(nextPage);
@@ -223,16 +327,53 @@ export const Assessment: React.FC = () => {
     }
 
     completeAssessment();
-  }, [answers, completeAssessment, currentPage, persist, totalPages]);
+  }, [answers, clearAutoAdvanceTimer, completeAssessment, currentPage, persist, totalPages]);
 
   const handleBack = useCallback(() => {
+    clearAutoAdvanceTimer();
+
     if (currentPage > 0) {
       const nextPage = currentPage - 1;
       setCurrentPage(nextPage);
       persist(answers, nextPage);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [answers, currentPage, persist]);
+  }, [answers, clearAutoAdvanceTimer, currentPage, persist]);
+
+  const answerCurrentQuestionByIndex = useCallback((optionIndex: number) => {
+    const question = currentQuestions[0];
+    const option = question?.options[optionIndex];
+    if (!question || !option || showCompletion) return;
+
+    handleAnswer(question.id, option.id, currentPage + 1);
+  }, [currentPage, currentQuestions, handleAnswer, showCompletion]);
+
+  useEffect(() => {
+    const handleKeyboard = (event: KeyboardEvent) => {
+      if (event.altKey || event.ctrlKey || event.metaKey || isTypingTarget(event.target)) return;
+
+      const numericShortcut = Number(event.key);
+      if (Number.isInteger(numericShortcut) && numericShortcut >= 1 && numericShortcut <= (currentQuestions[0]?.options.length ?? 0)) {
+        event.preventDefault();
+        answerCurrentQuestionByIndex(numericShortcut - 1);
+        return;
+      }
+
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        handleBack();
+        return;
+      }
+
+      if ((event.key === 'Enter' || event.key === 'ArrowRight') && isFinalPage && isPageComplete) {
+        event.preventDefault();
+        handleNext();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyboard);
+    return () => window.removeEventListener('keydown', handleKeyboard);
+  }, [answerCurrentQuestionByIndex, currentQuestions, handleBack, handleNext, isFinalPage, isPageComplete]);
 
   return (
     <div className="min-h-screen bg-jung-base">
@@ -248,34 +389,35 @@ export const Assessment: React.FC = () => {
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
                 <Loader2 className="h-6 w-6 animate-spin" />
               </div>
-              <h2 className="mt-6 text-heading text-3xl text-jung-dark">Mapping your energy</h2>
+              <h2 className="mt-6 text-heading text-3xl text-jung-dark">Generating your free map</h2>
               <p className="mt-3 text-sm leading-6 text-jung-secondary">
-                Behavioral, inferior, somatic, and attitude signals are being combined now.
+                Next you will see the core axis, consistency signal, and the paid full-ranking preview. Payment is optional after the result is visible.
               </p>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <header className="sticky top-[69px] z-40 border-b border-jung-border bg-jung-base/94 py-4 shadow-sm backdrop-blur lg:top-[73px]">
+      <header className="sticky top-[69px] z-40 border-b border-jung-border bg-jung-base/94 py-2.5 shadow-sm backdrop-blur sm:py-4 lg:top-[73px]">
         <div className="mx-auto w-full max-w-5xl px-4 sm:px-6">
-          <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
-            <div>
-              <p className="text-sm font-semibold text-jung-accent">Questions {pageRange} of {depthQuestions.length}</p>
-              <h1 className="mt-1 text-heading text-2xl text-jung-dark sm:text-3xl">{currentLayerMeta.label}</h1>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-jung-secondary">{currentLayerMeta.description}</p>
-              <p className="mt-2 text-xs font-medium text-jung-muted">
-                Free assessment. No card required. Progress saves on this device as you answer.
+          <div className="flex items-end justify-between gap-3 sm:grid sm:gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
+            <div className="min-w-0">
+              <p className="text-xs font-semibold text-jung-accent sm:text-sm">Question {pageRange} of {depthQuestions.length}</p>
+              <h1 className="mt-0.5 truncate text-heading text-xl text-jung-dark sm:mt-1 sm:text-3xl">{currentLayerMeta.label}</h1>
+              <p className="mt-2 hidden max-w-2xl text-sm leading-6 text-jung-secondary sm:block">{currentLayerMeta.description}</p>
+              <p className="mt-2 hidden text-xs font-medium text-jung-muted sm:block">
+                Free map first. Full ranking and analysis unlock only after you see your result.
                 {resumedProgress ? ' Resumed from your saved progress.' : ''}
               </p>
             </div>
-            <div className="min-w-[10rem] text-left lg:text-right">
-              <p className="text-3xl font-semibold text-jung-dark">{overallProgress}%</p>
-              <p className="text-sm text-jung-muted">{totalAnswered} of {depthQuestions.length} answered</p>
+            <div className="flex-none text-right">
+              <p className="text-xl font-semibold text-jung-dark sm:text-3xl">{overallProgress}%</p>
+              <p className="hidden text-sm text-jung-muted sm:block">{totalAnswered} of {depthQuestions.length} answered / {timeRemainingCopy}</p>
+              <p className="text-xs text-jung-muted sm:hidden">{timeRemainingCopy}</p>
             </div>
           </div>
 
-          <div className="mt-4 h-2 overflow-hidden rounded-full bg-jung-border-light">
+          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-jung-border-light sm:mt-4 sm:h-2">
             <motion.div
               className="h-full rounded-full bg-jung-accent"
               initial={{ width: 0 }}
@@ -284,7 +426,12 @@ export const Assessment: React.FC = () => {
             />
           </div>
 
-          <div className="mt-4 grid gap-2 sm:grid-cols-4">
+          <div className="mt-2 flex items-center justify-between rounded-lg border border-jung-accent-muted bg-jung-accent-light px-3 py-1.5 text-xs text-jung-accent sm:hidden">
+            <span className="font-semibold">{currentLayerMeta.shortLabel}</span>
+            <span>{currentLayerStatus.answered}/{currentLayerStatus.total} in this section</span>
+          </div>
+
+          <div className="mt-3 hidden grid-cols-4 gap-2 sm:mt-4 sm:grid">
             {currentLayerProgress.map((item) => {
               const meta = depthLayerMeta[item.layer];
               const active = item.layer === currentLayer;
@@ -292,7 +439,7 @@ export const Assessment: React.FC = () => {
               return (
                 <div
                   key={item.layer}
-                  className={`rounded-lg border px-3 py-2 text-xs ${
+                  className={`rounded-lg border px-3 py-1.5 text-xs sm:py-2 ${
                     active
                       ? 'border-jung-accent-muted bg-jung-accent-light text-jung-accent'
                       : item.complete
@@ -309,12 +456,31 @@ export const Assessment: React.FC = () => {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 lg:py-14">
-        <div className="mb-8 rounded-lg border border-jung-border bg-jung-surface p-4">
-          <div className="flex items-start gap-3 text-sm text-jung-secondary">
-            <Info className="mt-0.5 h-4 w-4 flex-none text-jung-accent" />
+      <main className={`mx-auto w-full max-w-3xl px-4 pt-4 sm:px-6 sm:py-8 lg:py-10 ${isFinalPage ? 'pb-[calc(6.25rem+env(safe-area-inset-bottom))]' : 'pb-[calc(5rem+env(safe-area-inset-bottom))]'}`}>
+        {isLayerIntroPage && (
+          <section className="mb-5 border-b border-jung-border pb-5">
+            <div className="flex gap-4">
+              <span className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
+                <CurrentLayerIcon className="h-5 w-5" />
+              </span>
+              <div>
+                <p className="text-label">{currentLayerPayoff.eyebrow}</p>
+                <h2 className="mt-1 text-heading text-2xl text-jung-dark">{currentLayerPayoff.title}</h2>
+                <p className="mt-2 text-sm leading-6 text-jung-secondary">{currentLayerPayoff.body}</p>
+              </div>
+            </div>
+          </section>
+        )}
+
+        <div className="mb-5 hidden items-start gap-3 border-b border-jung-border pb-4 text-sm text-jung-secondary sm:flex">
+          <Info className="mt-0.5 h-4 w-4 flex-none text-jung-accent" />
+          <div className="grid gap-2">
             <p>
-              Answer from the first pattern that actually happens, not the version you think you should have. The "none" option is valid when the question misses you. This takes about {ASSESSMENT_TIME_RANGE}; the free map appears before any paid upgrade decision.
+              Answer from the first pattern that actually happens. The "none" option is valid when the question misses you. Progress saves automatically.
+            </p>
+            <p className="inline-flex items-center gap-2 text-xs font-semibold text-jung-muted">
+              <Keyboard className="h-3.5 w-3.5 text-jung-accent" />
+              Use keys 1-5 to answer, left arrow to go back, and Enter to generate the final map.
             </p>
           </div>
         </div>
@@ -361,30 +527,41 @@ export const Assessment: React.FC = () => {
                       )}
 
                       <div className="mt-6 grid gap-2">
-                        {question.options.map((option) => {
+                        {question.options.map((option, optionIndex) => {
                           const isActive = selectedAnswer === option.id;
+                          const shortcut = optionIndex + 1;
 
                           return (
-                            <button
+                            <motion.button
                               key={option.id}
                               type="button"
                               aria-pressed={isActive}
                               onClick={() => handleAnswer(question.id, option.id, questionNumber)}
+                              whileTap={{ scale: 0.985 }}
+                              animate={isActive ? { scale: [1, 1.012, 1] } : { scale: 1 }}
+                              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                               className={`group flex min-h-14 w-full items-start gap-3 rounded-lg border px-4 py-3 text-left transition-all ${
                                 isActive
                                   ? 'border-jung-accent bg-jung-accent text-white shadow-md'
                                   : 'border-jung-border bg-jung-surface shadow-sm hover:-translate-y-px hover:border-jung-accent-muted hover:bg-jung-accent-light hover:shadow-md'
                               }`}
                             >
-                              <span className={`mt-0.5 flex h-5 w-5 flex-none items-center justify-center rounded-full ${
-                                isActive ? 'text-white' : 'text-jung-muted group-hover:text-jung-accent'
+                              <span className={`mt-0.5 flex h-7 w-7 flex-none items-center justify-center rounded-full border text-xs font-semibold ${
+                                isActive
+                                  ? 'border-white/60 bg-white/20 text-white'
+                                  : 'border-jung-border bg-jung-base text-jung-muted group-hover:border-jung-accent-muted group-hover:text-jung-accent'
                               }`}>
-                                {isActive ? <CheckCircle2 className="h-5 w-5" /> : <Circle className="h-4 w-4" />}
+                                {isActive ? <CheckCircle2 className="h-4 w-4" /> : shortcut}
                               </span>
-                              <span className={`text-sm leading-6 sm:text-base ${isActive ? 'text-white' : 'text-jung-dark'}`}>
-                                {option.label}
+                              <span className="min-w-0 flex-1">
+                                <span className={`block text-sm leading-6 sm:text-base ${isActive ? 'text-white' : 'text-jung-dark'}`}>
+                                  {option.label}
+                                </span>
+                                <span className={`mt-1 hidden text-xs font-semibold sm:inline-flex ${isActive ? 'text-white/70' : 'text-jung-muted'}`}>
+                                  Press {shortcut}
+                                </span>
                               </span>
-                            </button>
+                            </motion.button>
                           );
                         })}
                       </div>
@@ -396,32 +573,98 @@ export const Assessment: React.FC = () => {
           </motion.div>
         </AnimatePresence>
 
-        <div className="sticky bottom-0 z-30 -mx-4 mt-10 grid gap-4 border-t border-jung-border bg-jung-base/94 px-4 pb-4 pt-4 shadow-[0_-14px_30px_-28px_rgb(29_38_32_/_0.65)] backdrop-blur sm:-mx-6 sm:grid-cols-[auto_1fr_auto] sm:items-center sm:px-6 lg:static lg:mx-0 lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-6 lg:shadow-none lg:backdrop-blur-0">
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={handleBack}
-            disabled={currentPage === 0}
-            leftIcon={<ArrowLeft className="h-5 w-5" />}
-            className="w-full sm:w-auto"
-          >
-            Back
-          </Button>
+        <div className="fixed inset-x-0 bottom-0 z-50 border-t border-jung-border bg-jung-base/96 px-4 pb-[calc(0.55rem+env(safe-area-inset-bottom))] pt-2 shadow-[0_-14px_30px_-28px_rgb(29_38_32_/_0.65)] backdrop-blur sm:px-6 sm:pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:pt-3 lg:static lg:mt-8 lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-4 lg:shadow-none lg:backdrop-blur-0">
+          <div className="mx-auto w-full max-w-3xl sm:hidden">
+            {!isFinalPage ? (
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="outline"
+                  size="md"
+                  onClick={handleBack}
+                  disabled={currentPage === 0}
+                  aria-label="Back to previous question"
+                  leftIcon={<ArrowLeft className="h-4 w-4" />}
+                  className="h-11 w-11 flex-none px-0"
+                >
+                  <span className="sr-only">Back</span>
+                </Button>
 
-          <div className="text-center text-sm text-jung-muted">
-            {!isPageComplete ? 'Choose one answer for each question on this page.' : `Section ${currentPage + 1} of ${totalPages} complete.`}
+                <div className="min-w-0 flex-1 rounded-lg border border-jung-border bg-jung-surface-alt px-3 py-2">
+                  <div className="flex items-center justify-between gap-2 text-xs leading-5 text-jung-muted" aria-live="polite">
+                    <span className="font-semibold text-jung-secondary">Question {pageRange}/{depthQuestions.length}</span>
+                    <span className="flex-none">{timeRemainingCopy}</span>
+                  </div>
+                  <p className="truncate text-sm font-semibold text-jung-dark">
+                    {isPageComplete ? 'Saved. Moving...' : 'Tap answer or press 1-5'}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="mb-1.5 flex items-center justify-between gap-3 text-xs leading-5 text-jung-muted" aria-live="polite">
+                  <span className="font-semibold text-jung-secondary">Question {pageRange}/{depthQuestions.length}</span>
+                  <span className="text-right">{isPageComplete ? 'Ready' : 'Choose one'}</span>
+                </div>
+                <div className="grid grid-cols-[0.52fr_1fr] gap-2">
+                  <Button
+                    variant="outline"
+                    size="md"
+                    onClick={handleBack}
+                    disabled={currentPage === 0}
+                    leftIcon={<ArrowLeft className="h-4 w-4" />}
+                    className="w-full px-3"
+                  >
+                    Back
+                  </Button>
+
+                  <Button
+                    variant={isPageComplete ? 'accent' : 'secondary'}
+                    size="md"
+                    onClick={handleNext}
+                    disabled={!isPageComplete}
+                    rightIcon={<ArrowRight className="h-4 w-4" />}
+                    className="w-full px-3"
+                  >
+                    {isPageComplete ? 'Generate free map' : 'Choose one'}
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
 
-          <Button
-            variant={isPageComplete ? 'accent' : 'secondary'}
-            size="lg"
-            onClick={handleNext}
-            disabled={!isPageComplete}
-            rightIcon={<ArrowRight className="h-5 w-5" />}
-            className="w-full sm:w-auto"
-          >
-            {currentPage === totalPages - 1 ? 'See energy map' : 'Continue'}
-          </Button>
+          <div className="mx-auto hidden w-full max-w-3xl sm:block">
+            <div className="mb-1.5 flex items-center justify-between gap-3 text-xs leading-5 text-jung-muted sm:mb-2" aria-live="polite">
+              <span className="font-semibold text-jung-secondary">Question {pageRange}/{depthQuestions.length}</span>
+              <span className="text-right">{nextStepCopy}</span>
+            </div>
+            <div className="grid gap-2 sm:grid-cols-[auto_1fr]">
+              <Button
+                variant="outline"
+                size="md"
+                onClick={handleBack}
+                disabled={currentPage === 0}
+                leftIcon={<ArrowLeft className="h-4 w-4 lg:h-5 lg:w-5" />}
+                className="w-full px-3 sm:px-6"
+              >
+                Back
+              </Button>
+
+              <Button
+                variant={isPageComplete ? 'accent' : 'secondary'}
+                size="md"
+                onClick={handleNext}
+                disabled={!isPageComplete}
+                rightIcon={<ArrowRight className="h-4 w-4 lg:h-5 lg:w-5" />}
+                className="w-full px-3 sm:px-8"
+              >
+                {!isPageComplete ? (
+                  <>
+                    <span>Choose an answer</span>
+                  </>
+                ) : isFinalPage ? 'Generate free map' : 'Next question'}
+              </Button>
+            </div>
+          </div>
         </div>
       </main>
     </div>

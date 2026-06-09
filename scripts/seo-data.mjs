@@ -432,16 +432,16 @@ export const typeData = {
 
 export const pageData = {
   '/': {
-    title: 'TypeJung - Free Jungian Cognitive Functions Test',
-    description: 'Take a free Jungian cognitive functions test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, then explains your dominant-inferior pattern.',
+    title: 'Free Cognitive Function Test - MBTI Test Alternative | TypeJung',
+    description: 'Take a free 42-question Jungian cognitive functions test for people comparing MBTI tests, Sakinorva, and 16Personalities. See the function-stack map first.',
   },
   '/assessment': {
     title: 'Take the Free Jungian Cognitive Function Assessment | TypeJung',
-    description: 'Start your free 42-question Jungian cognitive function assessment. Measures all 8 functions, inferior-function pressure, somatic signals, and attitude direction.',
+    description: 'Start your free 42-question Jungian cognitive function assessment. Map self-reported patterns across all 8 functions, inferior-function pressure, somatic signals, and attitude direction.',
   },
   '/results': {
-    title: 'Your Results | TypeJung',
-    description: 'View your Jungian energy map with function scores, dominant-inferior axis, stress-edge context, and growth guidance.',
+    title: 'Your Function-Stack Map | TypeJung',
+    description: 'View your Jungian function-stack map with function scores, dominant-inferior axis, stress-edge context, and reflection prompts.',
   },
   '/learn': {
     title: 'Learn Jungian Typology | TypeJung',
@@ -449,7 +449,7 @@ export const pageData = {
   },
   '/pricing': {
     title: 'Pricing Plans | TypeJung',
-    description: 'Choose your TypeJung plan: Free, Insight (CA$10), or Mastery (CA$29). One-time CAD upgrades add deeper interpretation, practice guidance, and coaching support.',
+    description: 'Choose your TypeJung plan: Free, Insight (CA$7 with TYPEJUNG30), or Mastery (CA$20.30 with TYPEJUNG30). One-time CAD upgrades add deeper interpretation, practice prompts, and guided follow-up support.',
   },
   '/privacy': {
     title: 'Privacy Policy | TypeJung',
@@ -460,20 +460,20 @@ export const pageData = {
     description: 'Terms and conditions for using the TypeJung cognitive function assessment platform.',
   },
   '/jungian-test': {
-    title: 'Jungian Test - Measure Your Cognitive Functions | TypeJung',
+    title: 'Jungian Test - Map Your Cognitive Functions | TypeJung',
     description: 'Take a Jungian test that maps all 8 cognitive functions, shows your likely type pattern, and supports educational self-reflection.',
   },
   '/mbti-alternative': {
-    title: 'MBTI Alternative - Function-Based Personality Test | TypeJung',
-    description: 'Looking for an MBTI alternative? TypeJung measures all 8 Jungian cognitive functions instead of forcing binary personality letters.',
+    title: 'MBTI Alternative - Function-Based Typology Map | TypeJung',
+    description: 'Compare TypeJung as an MBTI alternative for people who want Jungian function evidence, a free function-stack map, and optional paid interpretation after the result.',
   },
   '/inferior-function-test': {
     title: 'Inferior Function Test - Find Your Stress Pattern | TypeJung',
     description: 'Find your likely inferior function and understand how it can show up under stress with TypeJung\'s cognitive function assessment.',
   },
   '/cognitive-function-test': {
-    title: 'Cognitive Function Test - Measure All 8 Functions | TypeJung',
-    description: 'Take a cognitive function test that scores Ni, Ne, Si, Se, Ti, Te, Fi, and Fe independently and maps your full Jungian profile.',
+    title: 'Cognitive Function Test - Map All 8 Functions | TypeJung',
+    description: 'Take a cognitive function test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe in one Jungian function-stack profile.',
   },
   '/jungian-cognitive-functions-test': {
     title: 'Jungian Cognitive Functions Test - Free Ni Ne Si Se Ti Te Fi Fe Map | TypeJung',
@@ -481,7 +481,1476 @@ export const pageData = {
   },
 };
 
+const typeComparisonLandingPages = [
+  {
+    left: 'INFJ',
+    right: 'INTJ',
+    slug: 'infj-vs-intj-test',
+    leftPattern: 'Ni-Fe',
+    rightPattern: 'Ni-Te',
+    shared: 'Both patterns can lead with introverted intuition, so both may look private, future-focused, and pattern-driven.',
+    difference: 'The useful question is usually what supports the insight: relational calibration and shared values for INFJ-like patterns, or external structure and execution for INTJ-like patterns.',
+    leftStress: 'inferior Se can show up as sensory overwhelm, urgency, or difficulty staying grounded',
+    rightStress: 'inferior Se can show up as pressure around concrete limits, appetite, timing, or immediate action',
+    leftType: 'infj',
+    rightType: 'intj',
+    leftFunction: 'fe',
+    rightFunction: 'te',
+  },
+  {
+    left: 'ENFP',
+    right: 'INFP',
+    slug: 'enfp-vs-infp-test',
+    leftPattern: 'Ne-Fi',
+    rightPattern: 'Fi-Ne',
+    shared: 'Both patterns can feel imaginative, values-aware, and possibility-oriented, which is why quick quizzes often blur them.',
+    difference: 'The useful question is what starts the process: outward possibility scanning for ENFP-like patterns, or inner value alignment for INFP-like patterns.',
+    leftStress: 'inferior Si can show up as anxiety around memory, details, routine, or past precedent',
+    rightStress: 'inferior Te can show up as pressure around execution, measurement, systems, or external demands',
+    leftType: 'enfp',
+    rightType: 'infp',
+    leftFunction: 'ne',
+    rightFunction: 'fi',
+  },
+  {
+    left: 'ENTP',
+    right: 'INTP',
+    slug: 'entp-vs-intp-test',
+    leftPattern: 'Ne-Ti',
+    rightPattern: 'Ti-Ne',
+    shared: 'Both patterns can be analytical, skeptical, idea-rich, and drawn to debate or model-building.',
+    difference: 'The useful question is whether possibility generation comes first and logic refines it, or whether internal logic comes first and possibilities test the model.',
+    leftStress: 'inferior Si can show up as resistance to routine, details, and repeated obligations',
+    rightStress: 'inferior Fe can show up as tension around social feedback, harmony, or being emotionally legible',
+    leftType: 'entp',
+    rightType: 'intp',
+    leftFunction: 'ne',
+    rightFunction: 'ti',
+  },
+  {
+    left: 'INTJ',
+    right: 'ENTJ',
+    slug: 'intj-vs-entj-test',
+    leftPattern: 'Ni-Te',
+    rightPattern: 'Te-Ni',
+    shared: 'Both patterns can look strategic, decisive, systems-oriented, and impatient with vague execution.',
+    difference: 'The useful question is what leads: an internal strategic image that later gets organized, or external organizing pressure that uses insight to choose direction.',
+    leftStress: 'inferior Se can show up as sensory pressure, impatience with the present, or impulsive overcorrection',
+    rightStress: 'inferior Fi can show up as difficulty naming personal values, emotional cost, or inner consent',
+    leftType: 'intj',
+    rightType: 'entj',
+    leftFunction: 'ni',
+    rightFunction: 'te',
+  },
+  {
+    left: 'INFJ',
+    right: 'ENFJ',
+    slug: 'infj-vs-enfj-test',
+    leftPattern: 'Ni-Fe',
+    rightPattern: 'Fe-Ni',
+    shared: 'Both patterns can be people-aware, meaning-focused, and tuned to relational atmosphere.',
+    difference: 'The useful question is whether private pattern synthesis leads and then becomes relational, or whether relational needs lead and intuition organizes the longer arc.',
+    leftStress: 'inferior Se can show up as sensory overwhelm, avoidance of direct action, or sudden urgency',
+    rightStress: 'inferior Ti can show up as tension around detached analysis, precision, or being challenged on logic',
+    leftType: 'infj',
+    rightType: 'enfj',
+    leftFunction: 'ni',
+    rightFunction: 'fe',
+  },
+  {
+    left: 'INFP',
+    right: 'ISFP',
+    slug: 'infp-vs-isfp-test',
+    leftPattern: 'Fi-Ne',
+    rightPattern: 'Fi-Se',
+    shared: 'Both patterns can lead with introverted feeling, so both may look private, values-driven, sensitive to authenticity, and resistant to being pushed into false agreement.',
+    difference: 'The useful question is what supports the value signal: possibility, language, and alternate meanings for INFP-like patterns, or direct sensory contact, aesthetics, and present action for ISFP-like patterns.',
+    leftStress: 'inferior Te can show up as pressure around execution, metrics, systems, or being forced to prove value externally',
+    rightStress: 'inferior Te can show up as sudden rigidity, harsh efficiency, or pressure to organize what had been handled through direct feel',
+    leftType: 'infp',
+    rightType: 'isfp',
+    leftFunction: 'ne',
+    rightFunction: 'se',
+  },
+  {
+    left: 'INTP',
+    right: 'ISTP',
+    slug: 'intp-vs-istp-test',
+    leftPattern: 'Ti-Ne',
+    rightPattern: 'Ti-Se',
+    shared: 'Both patterns can lead with introverted thinking, so both may look detached, precise, skeptical, and more interested in how something works than how it is socially received.',
+    difference: 'The useful question is how the thinking gets tested: alternate models and theoretical possibility for INTP-like patterns, or hands-on contact with what works now for ISTP-like patterns.',
+    leftStress: 'inferior Fe can show up as tension around social feedback, group expectation, or being emotionally readable',
+    rightStress: 'inferior Fe can show up as pressure around relational atmosphere, being misunderstood, or needing to explain feelings cleanly',
+    leftType: 'intp',
+    rightType: 'istp',
+    leftFunction: 'ne',
+    rightFunction: 'se',
+  },
+  {
+    left: 'ENFP',
+    right: 'ENTP',
+    slug: 'enfp-vs-entp-test',
+    leftPattern: 'Ne-Fi',
+    rightPattern: 'Ne-Ti',
+    shared: 'Both patterns can lead with extraverted intuition, so both may look idea-rich, quick, curious, playful, and hard to pin down with routine personality questions.',
+    difference: 'The useful question is what evaluates the possibilities: inner value and personal meaning for ENFP-like patterns, or internal logic and precision for ENTP-like patterns.',
+    leftStress: 'inferior Si can show up as anxiety around routine, memory, bodily maintenance, or repeating details',
+    rightStress: 'inferior Si can show up as resistance to precedent, maintenance, repeated obligations, or the limits of what has already happened',
+    leftType: 'enfp',
+    rightType: 'entp',
+    leftFunction: 'fi',
+    rightFunction: 'ti',
+  },
+  {
+    left: 'ENTJ',
+    right: 'ESTJ',
+    slug: 'entj-vs-estj-test',
+    leftPattern: 'Te-Ni',
+    rightPattern: 'Te-Si',
+    shared: 'Both patterns can lead with extraverted thinking, so both may look decisive, structured, outcome-focused, and impatient with vague follow-through.',
+    difference: 'The useful question is what informs the external structure: long-range pattern and strategic implication for ENTJ-like patterns, or tested precedent, reliability, and procedural memory for ESTJ-like patterns.',
+    leftStress: 'inferior Fi can show up as difficulty naming personal cost, inner consent, or the value beneath the goal',
+    rightStress: 'inferior Fi can show up as pressure around personal preference, emotional ownership, or whether the efficient path still feels right',
+    leftType: 'entj',
+    rightType: 'estj',
+    leftFunction: 'ni',
+    rightFunction: 'si',
+  },
+  {
+    left: 'ISFJ',
+    right: 'INFJ',
+    slug: 'isfj-vs-infj-test',
+    leftPattern: 'Si-Fe',
+    rightPattern: 'Ni-Fe',
+    shared: 'Both patterns can support themselves with extraverted feeling, so both may look considerate, relationally aware, careful with tone, and responsible toward people.',
+    difference: 'The useful question is what comes before the relational calibration: memory, continuity, and concrete precedent for ISFJ-like patterns, or symbolic pattern and future implication for INFJ-like patterns.',
+    leftStress: 'inferior Ne can show up as anxious possibility, scattered what-ifs, or fear that one change will unravel stability',
+    rightStress: 'inferior Se can show up as sensory overwhelm, urgency, or difficulty staying grounded in direct reality',
+    leftType: 'isfj',
+    rightType: 'infj',
+    leftFunction: 'si',
+    rightFunction: 'ni',
+  },
+  {
+    left: 'ISTJ',
+    right: 'INTJ',
+    slug: 'istj-vs-intj-test',
+    leftPattern: 'Si-Te',
+    rightPattern: 'Ni-Te',
+    shared: 'Both patterns can use extraverted thinking as a strong support, so both may look organized, private, competent, and serious about reliable execution.',
+    difference: 'The useful question is what leads the execution: experience-based comparison and procedural memory for ISTJ-like patterns, or long-range pattern synthesis for INTJ-like patterns.',
+    leftStress: 'inferior Ne can show up as spiraling possibilities, worry about what could go wrong, or discomfort with open-ended novelty',
+    rightStress: 'inferior Se can show up as pressure around immediate limits, appetite, timing, sensory overwhelm, or sudden impulsive correction',
+    leftType: 'istj',
+    rightType: 'intj',
+    leftFunction: 'si',
+    rightFunction: 'ni',
+  },
+  {
+    left: 'ESFP',
+    right: 'ENFP',
+    slug: 'esfp-vs-enfp-test',
+    leftPattern: 'Se-Fi',
+    rightPattern: 'Ne-Fi',
+    shared: 'Both patterns can support themselves with introverted feeling, so both may look expressive, values-aware, people-responsive, and allergic to lifeless rules.',
+    difference: 'The useful question is how attention opens first: direct sensory contact and present opportunity for ESFP-like patterns, or possibility, association, and imaginative branching for ENFP-like patterns.',
+    leftStress: 'inferior Ni can show up as ominous meanings, future dread, or sudden fixation on one hidden implication',
+    rightStress: 'inferior Si can show up as pressure around routine, health maintenance, details, memory, or past precedent',
+    leftType: 'esfp',
+    rightType: 'enfp',
+    leftFunction: 'se',
+    rightFunction: 'ne',
+  },
+  {
+    left: 'ESTP',
+    right: 'ENTP',
+    slug: 'estp-vs-entp-test',
+    leftPattern: 'Se-Ti',
+    rightPattern: 'Ne-Ti',
+    shared: 'Both patterns can support themselves with introverted thinking, so both may look quick, skeptical, adaptive, and energized by testing limits.',
+    difference: 'The useful question is where the testing starts: direct contact with the situation, body, and immediate leverage for ESTP-like patterns, or idea generation and alternate possibilities for ENTP-like patterns.',
+    leftStress: 'inferior Ni can show up as dark future projections, hidden-meaning fixation, or pressure to find one inevitable outcome',
+    rightStress: 'inferior Si can show up as resistance to maintenance, repetition, past precedent, or the limits imposed by accumulated details',
+    leftType: 'estp',
+    rightType: 'entp',
+    leftFunction: 'se',
+    rightFunction: 'ne',
+  },
+].map((page) => {
+  const leftName = typeData[page.leftType].name;
+  const rightName = typeData[page.rightType].name;
+
+  return {
+    slug: page.slug,
+    query: `${page.left} vs ${page.right} test`,
+    title: `${page.left} vs ${page.right} Test - Compare ${page.leftPattern} and ${page.rightPattern} | TypeJung`,
+    description: `Use TypeJung as an ${page.left} vs ${page.right} test by comparing ${page.leftPattern} and ${page.rightPattern} function evidence before choosing a label.`,
+    keywords: [
+      `${page.left} vs ${page.right} test`,
+      `${page.left} or ${page.right}`,
+      `${page.leftPattern} vs ${page.rightPattern}`,
+      `${page.left} ${page.right} cognitive functions`,
+    ],
+    eyebrow: `${page.left} vs ${page.right} test`,
+    h1: `${page.left} vs ${page.right}: compare the function pattern`,
+    intro: [
+      `${page.left} and ${page.right} can overlap enough that behavior-based personality quizzes may not settle the question.`,
+      `TypeJung helps you compare the process behind the labels: ${page.leftPattern} for ${page.left}-like patterns and ${page.rightPattern} for ${page.right}-like patterns.`,
+    ],
+    intent: {
+      bestFor: `People deciding between ${page.left} and ${page.right} who want function evidence instead of another stereotype list.`,
+      measures: 'All 8 cognitive functions, likely type pattern, dominant-inferior axis, attitude direction, and stress-edge signals.',
+      privacy: 'Start with the free 42-question map. Paid reports are optional after you see whether the result feels accurate.',
+    },
+    sections: [
+      {
+        heading: `Why ${page.left} and ${page.right} get confused`,
+        body: [
+          page.shared,
+          page.difference,
+        ],
+        table: {
+          headers: ['Question', `${page.left}-like ${page.leftPattern}`, `${page.right}-like ${page.rightPattern}`],
+          rows: [
+            ['First filter', `The pattern usually starts through ${page.leftPattern.split('-')[0]}`, `The pattern usually starts through ${page.rightPattern.split('-')[0]}`],
+            ['Support function', `The next stabilizer is ${page.leftPattern.split('-')[1]}`, `The next stabilizer is ${page.rightPattern.split('-')[1]}`],
+            ['Stress edge', page.leftStress, page.rightStress],
+          ],
+        },
+      },
+      {
+        heading: 'Why a normal type description may not be enough',
+        body: [
+          `A description of ${leftName} or ${rightName} can feel partly true even when the function order is not right. Type descriptions compress many signals into one story.`,
+          'A stronger test checks what your attention does first, which support function appears next, and what becomes awkward or reactive under pressure.',
+        ],
+        bullets: [
+          'Look for the order of cognition, not just familiar traits',
+          'Compare dominant and auxiliary evidence together',
+          'Check the inferior-function signal instead of ignoring stress data',
+          'Treat the result as a map to inspect, not a permanent identity stamp',
+        ],
+      },
+      {
+        heading: 'Use TypeJung as the next check',
+        body: [
+          `Take the free assessment, then compare your ${page.leftPattern} and ${page.rightPattern} evidence in the full map. If the result is useful, the optional Insight report explains the stress edge, relationship-pattern reflection, and practical next steps behind your pattern.`,
+        ],
+        links: [
+          { href: '/assessment', label: `Take the free ${page.left} vs ${page.right} assessment` },
+          { href: '/sample-report', label: 'Preview the optional Insight report' },
+          { href: '/pricing', label: 'Compare Free, Insight, and Mastery' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: `Can TypeJung tell me if I am ${page.left} or ${page.right}?`,
+        answer: `TypeJung gives a likely type pattern and the function evidence behind it. Use it to compare ${page.leftPattern} and ${page.rightPattern} rather than treating any test as a final verdict.`,
+      },
+      {
+        question: `Why do ${page.left} and ${page.right} get mistyped?`,
+        answer: 'Nearby types can share visible behaviors. The difference usually sits in the function order and the stress edge, not in a single stereotype.',
+      },
+      {
+        question: `Is this ${page.left} vs ${page.right} test free?`,
+        answer: 'The core 42-question TypeJung assessment is free. Optional paid reports add deeper interpretation after you see the map.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: `/types/${page.leftType}`, label: `${page.left} type guide` },
+      { href: `/types/${page.rightType}`, label: `${page.right} type guide` },
+      { href: `/functions/${page.leftFunction}`, label: `${page.leftPattern.split('-')[0]} function guide` },
+      { href: `/functions/${page.rightFunction}`, label: `${page.rightPattern.split('-')[0]} function guide` },
+      { href: '/cognitive-function-test', label: 'Cognitive function test' },
+    ],
+  };
+});
+
+const competitorLandingPages = [
+  {
+    slug: 'mbti-test-alternative',
+    query: 'MBTI test alternative',
+    title: 'MBTI Test Alternative - Free Cognitive Function Map | TypeJung',
+    description: 'Looking for an MBTI test alternative? TypeJung maps all 8 Jungian cognitive functions before any paid report, so you can inspect the pattern behind the label.',
+    keywords: ['MBTI test alternative', 'free MBTI alternative', 'cognitive functions test', 'Jungian function test'],
+    eyebrow: 'MBTI test alternative',
+    h1: 'An MBTI test alternative for people whose type keeps changing',
+    intro: [
+      'If an MBTI test or 16Personalities-style quiz gives you a quick four-letter result, it can still leave the function pattern hidden.',
+      'TypeJung is not an official MBTI instrument. It is a free Jungian cognitive-functions test that shows all 8 scores and the dominant-inferior axis before any optional paid report.',
+    ],
+    intent: {
+      bestFor: 'People who want a serious second opinion after changing MBTI results or broad personality labels.',
+      measures: 'Ni, Ne, Si, Se, Ti, Te, Fi, Fe, likely function stack, inferior-function pressure, attitude direction, and reliability signal.',
+      privacy: 'Start with the free 42-question map. Signup and paid reports are optional after you see the result.',
+    },
+    sections: [
+      {
+        heading: 'Why an MBTI test alternative can be more useful',
+        body: [
+          'Four-letter type results can be helpful shorthand, but they often hide the evidence behind the label.',
+          'TypeJung starts with the function pattern: which function leads, which function supports it, and which opposite function tends to tighten under stress.',
+        ],
+        bullets: [
+          'Use function evidence before deciding on a label',
+          'Compare nearby type patterns instead of forcing one answer too early',
+          'See the stress edge and body signal that many quick quizzes miss',
+          'Read the free map before deciding whether paid interpretation is worth it',
+        ],
+        links: [
+          { href: '/assessment', label: 'Take the free TypeJung assessment' },
+          { href: '/sample-report', label: 'Preview the optional Insight report' },
+        ],
+      },
+      {
+        heading: 'How TypeJung differs from label-first tests',
+        body: [
+          'TypeJung is independent and educational. It does not claim to be an official MBTI instrument.',
+          'The practical difference is the order of value: you get the function-stack map first, then optional depth only after the result feels useful.',
+        ],
+        table: {
+          headers: ['Need', 'Label-first test', 'TypeJung'],
+          rows: [
+            ['First output', 'A four-letter result', 'Function-stack map plus likely pattern'],
+            ['Stress evidence', 'Often generic', 'Dominant-inferior axis and pressure signals'],
+            ['Payment timing', 'Varies by tool', 'Free map before paid interpretation'],
+            ['Best use', 'Quick type hypothesis', 'Inspectable second opinion'],
+          ],
+        },
+      },
+      {
+        heading: 'Start with the map',
+        body: [
+          'If your result keeps changing, treat the next test as evidence gathering, not a verdict. Take TypeJung, read the free map, and compare the axis against real stress patterns.',
+        ],
+        links: [
+          { href: '/assessment', label: 'Start the free assessment' },
+          { href: '/mbti-keeps-changing', label: 'Why MBTI results keep changing' },
+          { href: '/cognitive-function-test', label: 'Cognitive function test' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is TypeJung an official MBTI test?',
+        answer: 'No. TypeJung is an independent Jungian cognitive-functions assessment for educational self-reflection, not an official MBTI instrument.',
+      },
+      {
+        question: 'Is the TypeJung assessment free?',
+        answer: 'Yes. The core 42-question assessment and function-stack map are free. Insight and Mastery are optional one-time upgrades after you see the map.',
+      },
+      {
+        question: 'Why use cognitive functions instead of only four letters?',
+        answer: 'Cognitive functions make the result easier to inspect. They show which processes lead, support, and create pressure under stress.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/16personalities-alternative', label: '16Personalities alternative' },
+      { href: '/sakinorva-alternative', label: 'Sakinorva alternative' },
+      { href: '/best-cognitive-functions-test', label: 'Best cognitive functions test' },
+      { href: '/sample-report', label: 'View sample report' },
+    ],
+  },
+  {
+    slug: '16personalities-alternative',
+    query: '16Personalities alternative',
+    title: '16Personalities Alternative - Free Function Map First | TypeJung',
+    description: 'Looking for a 16Personalities alternative? TypeJung maps all 8 Jungian cognitive functions, shows a free result first, and avoids forcing a final label too early.',
+    keywords: ['16Personalities alternative', '16 personalities alternative', 'MBTI test alternative', 'cognitive functions test'],
+    eyebrow: '16Personalities alternative',
+    h1: 'A 16Personalities alternative when four letters are not enough',
+    intro: [
+      'If a 16Personalities-style result felt too broad, the next useful step is not always another label. It is seeing the function evidence behind the label.',
+      'TypeJung is not affiliated with 16Personalities. It gives a free function-stack map first, then optional paid interpretation only after you can judge the result.',
+    ],
+    intent: {
+      bestFor: 'People who liked the accessibility of a quick type result but want a deeper function-based map.',
+      measures: 'All 8 Jungian functions, dominant-inferior axis, stress-edge signal, attitude direction, and answer consistency.',
+      privacy: 'No card required for the core map. Paid reports are optional one-time upgrades.',
+    },
+    sections: [
+      {
+        heading: 'Why people outgrow broad type summaries',
+        body: [
+          'A polished type description can feel validating while still leaving you unsure why the type fits.',
+          'TypeJung focuses on the underlying function pattern so you can compare the evidence instead of relying only on a broad personality summary.',
+        ],
+        bullets: [
+          'See all 8 function signals',
+          'Compare close type possibilities',
+          'Use stress patterns as evidence',
+          'Preview the paid report before checkout',
+        ],
+        links: [
+          { href: '/assessment', label: 'Start the free TypeJung assessment' },
+          { href: 'https://www.16personalities.com/', label: 'Visit 16Personalities directly' },
+        ],
+      },
+      {
+        heading: 'What TypeJung gives you first',
+        body: [
+          'The free result gives a function-stack map, dominant-inferior axis, reliability signal, and plain-language interpretation. Paid reports add deeper stress-pattern reflection, relationship-pattern reflection, and practice prompts.',
+        ],
+        table: {
+          headers: ['Question', '16Personalities-style path', 'TypeJung path'],
+          rows: [
+            ['Main output', 'Accessible type profile', 'Inspectable function-stack map'],
+            ['Depth layer', 'Broad trait summary', 'Function order, stress edge, and body signal'],
+            ['Upgrade decision', 'Depends on product path', 'Decide after seeing the free map'],
+          ],
+        },
+      },
+      {
+        heading: 'Use it as a second opinion',
+        body: [
+          'If you already have a four-letter result, use TypeJung to test the cognitive pattern behind it. A useful second opinion should make the type easier to inspect, not just hand you another label.',
+        ],
+        links: [
+          { href: '/assessment', label: 'Take the free assessment' },
+          { href: '/mbti-test-alternative', label: 'MBTI test alternative' },
+          { href: '/cognitive-function-test', label: 'Cognitive function test' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is TypeJung affiliated with 16Personalities?',
+        answer: 'No. TypeJung is independent and not affiliated with 16Personalities.',
+      },
+      {
+        question: 'Will TypeJung give me a four-letter type?',
+        answer: 'TypeJung can suggest a likely type pattern, but the main result is the function-stack map and dominant-inferior axis.',
+      },
+      {
+        question: 'Do I need to pay before seeing the result?',
+        answer: 'No. The core TypeJung map is free. Paid reports are optional after you see whether the map is useful.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/mbti-test-alternative', label: 'MBTI test alternative' },
+      { href: '/sakinorva-alternative', label: 'Sakinorva alternative' },
+      { href: '/sample-report', label: 'View sample report' },
+      { href: '/pricing', label: 'Pricing' },
+    ],
+  },
+  {
+    slug: 'sakinorva-alternative',
+    query: 'Sakinorva alternative',
+    title: 'Sakinorva Alternative - Free Cognitive Function Map First | TypeJung',
+    description: 'Looking for a Sakinorva alternative? TypeJung maps all 8 Jungian functions, shows a free result first, and offers optional deeper reports only after you see the map.',
+    keywords: ['Sakinorva alternative', 'Sakinorva cognitive functions test alternative', 'cognitive functions test', 'MBTI function test alternative'],
+    eyebrow: 'Sakinorva alternative',
+    h1: 'A Sakinorva alternative when you want the map before the label',
+    intro: [
+      'Sakinorva is a familiar name for people exploring cognitive functions. Many searchers arrive there because they want something deeper than a four-letter MBTI-style result.',
+      'TypeJung is built for the same search moment, but with a different path: finish a 42-question free map first, inspect all 8 function signals, then decide whether a paid interpretation is useful.',
+    ],
+    intent: {
+      bestFor: 'People comparing cognitive-function tests who want an inspectable free map and optional paid depth after the result.',
+      measures: 'All 8 function-attitudes, likely dominant-inferior axis, attitude direction, answer consistency, stress-edge signals, and type-pattern evidence.',
+      privacy: 'Start free before checkout. Signup is optional for saved history and restored paid access.',
+    },
+    sections: [
+      {
+        heading: 'Why people search for a Sakinorva alternative',
+        body: [
+          'A search for a Sakinorva alternative usually means the person already knows the phrase cognitive functions and wants a better way to interpret the result.',
+          'The problem is rarely just taking another test. The real need is a result that is readable enough to compare against lived patterns: attention, decisions, conflict, stress, and recovery.',
+        ],
+        bullets: [
+          'You want all 8 functions visible, not only a final type code',
+          'You want a shorter assessment path than very long-form function batteries',
+          'You want the stress edge and inferior-function pattern explained',
+          'You want to see value before paying for deeper interpretation',
+        ],
+        links: [
+          { href: '/assessment', label: 'Start the free TypeJung assessment' },
+          { href: 'https://sakinorva.net/functions?lang=en', label: 'Visit Sakinorva directly' },
+        ],
+      },
+      {
+        heading: 'TypeJung and Sakinorva solve different parts of the problem',
+        body: [
+          'Sakinorva is widely known among typology communities and offers cognitive-function testing routes, including long-form formats. TypeJung focuses on a free-first product path that is easier to judge before paying.',
+          'Use TypeJung when you want a clear map, a sample paid report before checkout, and upgrade copy tied to the result you already saw.',
+        ],
+        table: {
+          headers: ['Need', 'Sakinorva-style search', 'TypeJung path'],
+          rows: [
+            ['Core intent', 'Explore cognitive-function scores', 'Map functions, stress edge, and development path'],
+            ['Result decision', 'Compare scores and formulas', 'Read the free map, then decide whether depth is worth it'],
+            ['Upgrade pressure', 'Varies by tool path', 'No payment before the core TypeJung map'],
+            ['Best next action', 'Use if you want another function-test reference point', 'Use if you want the result interpreted after the map feels accurate'],
+          ],
+        },
+      },
+      {
+        heading: 'What TypeJung adds after the free result',
+        body: [
+          'The free TypeJung result shows the function-stack map and dominant-inferior axis. Insight adds a deeper read of the developmental edge, stress-pattern reflection, relationship patterns, and practice prompts. Mastery adds the AI Type Guide and follow-up tools.',
+          'That makes TypeJung strongest for searchers who are tired of collecting screenshots of test scores and want a next-step interpretation tied to their exact pattern.',
+        ],
+        links: [
+          { href: '/sample-report', label: 'View the sample Insight report' },
+          { href: '/pricing', label: 'Compare Free, Insight, and Mastery' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is TypeJung the same as Sakinorva?',
+        answer: 'No. Both live in the cognitive-functions search category, but TypeJung emphasizes a free 42-question map, result-first upgrade path, and optional paid interpretation after the result.',
+      },
+      {
+        question: 'Should I retake a test if Sakinorva confused me?',
+        answer: 'A second test can help, but compare the result against real patterns. TypeJung is designed to make the map easier to inspect before you commit to a label.',
+      },
+      {
+        question: 'Is TypeJung free?',
+        answer: 'The core TypeJung assessment and map are free. Insight and Mastery are optional one-time CAD upgrades.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/cognitive-function-test', label: 'Cognitive function test' },
+      { href: '/free-cognitive-function-test', label: 'Free cognitive function test' },
+      { href: '/sample-report', label: 'View sample report' },
+      { href: '/pricing', label: 'Pricing' },
+    ],
+  },
+  {
+    slug: 'keys2cognition-alternative',
+    query: 'Keys2Cognition alternative',
+    title: 'Keys2Cognition Alternative - Free Jungian Function Map | TypeJung',
+    description: 'Compare TypeJung as a Keys2Cognition alternative for mapping all 8 Jungian functions, stress edges, and optional deeper reports after a free result.',
+    keywords: ['Keys2Cognition alternative', 'Keys2Cognition cognitive processes alternative', 'cognitive processes test', 'Jungian functions test'],
+    eyebrow: 'Keys2Cognition alternative',
+    h1: 'A Keys2Cognition alternative with a free-first result path',
+    intro: [
+      'Keys2Cognition is one of the older cognitive-process resources in the Jungian type space. People who search for alternatives usually want another way to understand all 8 function-attitudes.',
+      'TypeJung keeps the function-level focus, but makes the commercial path explicit: take the free assessment, inspect the result, then upgrade only if the map is useful.',
+    ],
+    intent: {
+      bestFor: 'Searchers who know cognitive-process language and want a modern result page with an optional deeper report.',
+      measures: 'Ni, Ne, Si, Se, Ti, Te, Fi, Fe, likely hierarchy, dominant-inferior tension, answer consistency, and stress cues.',
+      privacy: 'No payment is required to see the function-stack map. Account use is optional unless you want saved history or restored paid access.',
+    },
+    sections: [
+      {
+        heading: 'What to compare',
+        body: [
+          'Keys2Cognition describes cognition through eight mental processes. TypeJung also centers the eight function-attitudes, but turns the result into a guided map with a clearer upgrade decision.',
+          'The useful question is not which tool can give a label fastest. It is which result helps you understand what leads, what supports, and what becomes pressured or less conscious.',
+        ],
+        table: {
+          headers: ['Question', 'Keys2Cognition-style need', 'TypeJung path'],
+          rows: [
+            ['Do I see all 8 processes?', 'Yes, this is the core reason people search for it', 'Yes, TypeJung maps all 8 function-attitudes'],
+            ['Do I get a free first result?', 'Users look for cognitive-process scoring', 'The free TypeJung map appears before paid reports'],
+            ['Do I get deeper interpretation?', 'Depends on what the user studies afterward', 'Insight and Mastery add paid interpretation after the map'],
+            ['Do I get stress-edge context?', 'Not always the main product promise', 'Dominant-inferior and stress pattern are central to TypeJung'],
+          ],
+        },
+        links: [
+          { href: 'https://www.keys2cognition.com/index.htm', label: 'Visit Keys2Cognition directly' },
+          { href: '/assessment', label: 'Start TypeJung free' },
+        ],
+      },
+      {
+        heading: 'When TypeJung is the better next test',
+        body: [
+          'Choose TypeJung if you already know function terms but want a cleaner path from scores to practical interpretation.',
+          'The result is written around attention, judgment, stress, relationships, and practice rather than treating the type code as the only outcome.',
+        ],
+        bullets: [
+          'You want the dominant-inferior axis made explicit',
+          'You want sample paid-report content before checkout',
+          'You want source-tracked links back to the exact assessment path',
+          'You want one-time pricing rather than a subscription model',
+        ],
+      },
+      {
+        heading: 'Start with the free map',
+        body: [
+          'Take the free assessment first. If your map feels accurate, the optional Insight report explains the developmental edge and stress pattern behind it.',
+        ],
+        links: [
+          { href: '/sample-report', label: 'Preview the optional report' },
+          { href: '/pricing', label: 'Compare the report options' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does TypeJung replace Keys2Cognition?',
+        answer: 'No single test should be treated as final. TypeJung is a useful alternative when you want a modern free-first map and optional interpretation after seeing the result.',
+      },
+      {
+        question: 'Does TypeJung measure cognitive processes?',
+        answer: 'TypeJung maps self-reported patterns across the eight Jungian function-attitudes and presents them as a function-stack map with likely hierarchy and stress-edge context.',
+      },
+      {
+        question: 'Do I need to know theory first?',
+        answer: 'No. The result and Learn pages explain the relevant functions after you finish the assessment.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/jungian-cognitive-functions-test', label: 'Jungian cognitive functions test' },
+      { href: '/function-stack-test', label: 'Function stack test' },
+      { href: '/cognitive-functions', label: 'Cognitive functions guide' },
+      { href: '/pricing', label: 'Pricing' },
+    ],
+  },
+  {
+    slug: 'mistype-investigator-alternative',
+    query: 'Mistype Investigator alternative',
+    title: 'Mistype Investigator Alternative - Function Evidence Before Type | TypeJung',
+    description: 'Use TypeJung as a Mistype Investigator alternative when you want a free cognitive-function map, stress-edge context, and optional deeper interpretation.',
+    keywords: ['Mistype Investigator alternative', 'mistype investigator cognitive functions test', 'mistype test alternative', 'MBTI mistype test'],
+    eyebrow: 'Mistype Investigator alternative',
+    h1: 'A Mistype Investigator alternative for checking the pattern behind a mistype',
+    intro: [
+      'Mistype Investigator attracts people who suspect their type result is wrong or incomplete. That is the right instinct: mistypes usually need function evidence, not another personality stereotype.',
+      'TypeJung approaches that question through a free 42-question map of all 8 functions, then shows the dominant-inferior axis and stress edge before any paid report.',
+    ],
+    intent: {
+      bestFor: 'People trying to resolve a suspected MBTI mistype through function evidence instead of more type descriptions.',
+      measures: 'All 8 functions, likely type pattern, dominant-inferior axis, stress signals, and answer consistency.',
+      privacy: 'The map is free first. Paid interpretation is optional and one-time.',
+    },
+    sections: [
+      {
+        heading: 'What a mistype check needs',
+        body: [
+          'A mistype check should explain why two or three labels are competing. The answer often sits in function order, support function evidence, and the less conscious stress edge.',
+          'TypeJung helps by showing the profile first, then linking the result to type and function pages so you can compare competing hypotheses.',
+        ],
+        bullets: [
+          'Compare functions, not only type stereotypes',
+          'Check whether stress behavior points toward an inferior function',
+          'Treat close results as hypotheses instead of forcing certainty',
+          'Use the result as a self-observation map over time',
+        ],
+        links: [
+          { href: 'https://mistypeinvestigator.com/', label: 'Visit Mistype Investigator directly' },
+          { href: '/assessment', label: 'Start the TypeJung map' },
+        ],
+      },
+      {
+        heading: 'TypeJung versus a mistype-only workflow',
+        body: [
+          'If your main question is "what type am I really?", a mistype-focused test can be useful. If your next question is "what does this pattern mean in stress, relationships, and practice?", TypeJung is designed to carry the result further.',
+        ],
+        table: {
+          headers: ['Need', 'Mistype search intent', 'TypeJung path'],
+          rows: [
+            ['Resolve confusion', 'Compare possible type outcomes', 'Show function evidence and axis tension'],
+            ['Understand stress', 'Often discussed after the result', 'Built into the map and optional report'],
+            ['Keep learning', 'User studies theory and examples', 'Result links into function, type, and sample-report paths'],
+            ['Pay only after value', 'Depends on the tool path', 'Core TypeJung map is free before checkout'],
+          ],
+        },
+      },
+      {
+        heading: 'Use TypeJung after conflicting test results',
+        body: [
+          'If Sakinorva, Keys2Cognition, Mistype Investigator, or IDRlabs gave you conflicting results, do not just average the labels. Look for repeated function signals and repeated stress patterns.',
+          'TypeJung is useful as another structured check because it gives you a result you can read as a map, not a verdict.',
+        ],
+        links: [
+          { href: '/infj-vs-infp-test', label: 'Example: INFJ vs INFP' },
+          { href: '/intj-vs-intp-test', label: 'Example: INTJ vs INTP' },
+          { href: '/entp-vs-intp-test', label: 'Example: ENTP vs INTP' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Can TypeJung tell me if I was mistyped?',
+        answer: 'TypeJung can give another function-evidence map and likely type pattern. Use it to inspect competing hypotheses rather than treating any test as final.',
+      },
+      {
+        question: 'What if TypeJung gives a different result?',
+        answer: 'Compare the function evidence and stress edge. A different result is useful if it explains repeated real-life patterns better.',
+      },
+      {
+        question: 'Is TypeJung free to try?',
+        answer: 'Yes. The core assessment and map are free; paid reports are optional after you see the result.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/mbti-keeps-changing', label: 'Why MBTI results change' },
+      { href: '/infj-vs-infp-test', label: 'INFJ vs INFP test' },
+      { href: '/intj-vs-intp-test', label: 'INTJ vs INTP test' },
+      { href: '/sample-report', label: 'View sample report' },
+    ],
+  },
+  {
+    slug: 'michael-caloz-alternative',
+    query: 'Michael Caloz alternative',
+    title: 'Michael Caloz Alternative - Free Jungian Function Map First | TypeJung',
+    description: 'Looking for a Michael Caloz alternative? TypeJung maps all 8 functions, shows a free result first, and offers optional paid depth after the map.',
+    keywords: ['Michael Caloz alternative', 'Michael Caloz cognitive functions test alternative', 'cognitive functions test alternative', 'MBTI function test'],
+    eyebrow: 'Michael Caloz alternative',
+    h1: 'A Michael Caloz alternative when you want the map before the coaching path',
+    intro: [
+      'The Michael Caloz Cognitive Functions Test is a familiar option for people who already know that type is more than four letters.',
+      'TypeJung is useful as the next comparison point when you want a free 42-question function map first, a visible dominant-inferior axis, and optional paid interpretation only after you can inspect the result.',
+    ],
+    intent: {
+      bestFor: 'People who like function-pair comparison tests but want a result-first upgrade path and a clear sample report before checkout.',
+      measures: 'All 8 function-attitudes, likely hierarchy, dominant-inferior tension, stress-edge signals, answer consistency, and type-pattern evidence.',
+      privacy: 'Start free before checkout. Paid access is optional and one-time, with account sign-in used only for saved history or restored access.',
+    },
+    sections: [
+      {
+        heading: 'Why people search for a Michael Caloz alternative',
+        body: [
+          'People usually search for a Michael Caloz alternative because they want another structured read on cognitive functions, not a shallow type quiz.',
+          'A second test is most useful when it gives you a different lens on the same question: which function leads, which support function stabilizes it, and what gets pressured under stress.',
+        ],
+        bullets: [
+          'You want to compare another function-map result against your current type hypothesis',
+          'You want all 8 functions visible before making a paid decision',
+          'You want the stress edge and inferior-function pattern surfaced in the result',
+          'You want an optional report preview before Stripe checkout',
+        ],
+        links: [
+          { href: 'https://www.michaelcaloz.com/personality/', label: 'Visit the Michael Caloz test directly' },
+          { href: '/assessment', label: 'Start the TypeJung map' },
+        ],
+      },
+      {
+        heading: 'TypeJung and Michael Caloz answer different next questions',
+        body: [
+          'Michael Caloz uses educational function comparisons and type-fit interpretation. TypeJung focuses on turning a free map into a clear upgrade decision after the result is already visible.',
+          'Use TypeJung when the question has shifted from "which type fits?" to "what does this dominant-inferior pattern mean in stress, relationships, and practice?"',
+        ],
+        table: {
+          headers: ['Need', 'Michael Caloz-style search', 'TypeJung path'],
+          rows: [
+            ['Function evidence', 'Compare cognitive-function preferences and type fit', 'Read all 8 function signals in a free function-stack map'],
+            ['Result interpretation', 'Study the result and type explanations', 'Use the map, then optionally unlock deeper stress and practice interpretation'],
+            ['Payment timing', 'External coaching and resources may be available after the test', 'No payment before the core TypeJung result'],
+            ['Best next action', 'Use if you want another established function test reference', 'Use if you want a result-first path with one-time report pricing'],
+          ],
+        },
+      },
+      {
+        heading: 'How to compare your results',
+        body: [
+          'Do not average type labels from different tests. Compare repeated signals: which functions appear near the top, which functions feel effortful, and whether the stress edge explains real pressure patterns.',
+          'If the TypeJung map feels accurate, the optional Insight report adds the developmental edge, relationship-pattern reflection, and practice prompts tied to your exact axis.',
+        ],
+        links: [
+          { href: '/sample-report', label: 'View the sample Insight report' },
+          { href: '/pricing', label: 'Compare Free, Insight, and Mastery' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is TypeJung better than the Michael Caloz test?',
+        answer: 'TypeJung is different rather than universally better. It is built for a free-first function map and optional paid interpretation after you inspect the result.',
+      },
+      {
+        question: 'Should I take both tests?',
+        answer: 'You can, as long as you compare the function evidence instead of treating either result as a final verdict.',
+      },
+      {
+        question: 'Does TypeJung require payment?',
+        answer: 'No. The core TypeJung assessment and map are free. Insight and Mastery are optional one-time CAD upgrades.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/best-cognitive-functions-test', label: 'Best cognitive functions test' },
+      { href: '/function-stack-test', label: 'Function stack test' },
+      { href: '/dominant-function-test', label: 'Dominant function test' },
+      { href: '/sample-report', label: 'View sample report' },
+    ],
+  },
+  {
+    slug: 'idrlabs-cognitive-function-test-alternative',
+    query: 'IDRlabs cognitive function test alternative',
+    title: 'IDRlabs Cognitive Function Test Alternative - Free Function Map | TypeJung',
+    description: 'Compare TypeJung as an IDRlabs cognitive function test alternative with a free all-8-function map, stress edge, and optional paid interpretation.',
+    keywords: ['IDRlabs cognitive function test alternative', 'IDR Labs alternative', 'IDRlabs Jungian functions test', 'free cognitive function test'],
+    eyebrow: 'IDRlabs alternative',
+    h1: 'An IDRlabs cognitive function test alternative with result-first depth',
+    intro: [
+      'IDRlabs is a common stop for people searching broad personality and Jungian function tests. Its cognitive-function test is free and built around 48 questions.',
+      'TypeJung gives the same high-intent searcher a different path: take a 42-question map, see all 8 function signals and the dominant-inferior axis, then decide whether paid interpretation is worth it.',
+    ],
+    intent: {
+      bestFor: 'People who found IDRlabs useful but want a quieter Jungian map with paid depth only after seeing the free result.',
+      measures: 'Ni, Ne, Si, Se, Ti, Te, Fi, Fe, likely hierarchy, dominant-inferior axis, stress cues, and answer consistency.',
+      privacy: 'The TypeJung map appears before any payment. Signup is optional for saved history or restored paid access.',
+    },
+    sections: [
+      {
+        heading: 'What to compare after IDRlabs',
+        body: [
+          'IDRlabs positions its cognitive function test as a free way to obtain scores on the eight Jungian functions. That makes it useful for broad exploration.',
+          'TypeJung is most useful when you want the result to become a practical map: what leads, what supports, what gets pressured, and what a paid report would actually add.',
+        ],
+        table: {
+          headers: ['Question', 'IDRlabs-style need', 'TypeJung path'],
+          rows: [
+            ['Do I see all 8 functions?', 'Yes, eight-function scoring is the core category promise', 'Yes, TypeJung maps all 8 function-attitudes'],
+            ['How long is it?', 'The IDRlabs page shows 48 questions', 'TypeJung uses 42 questions before the free map'],
+            ['What does the result emphasize?', 'Function scores and type indicators', 'Energy map, hierarchy hypothesis, dominant-inferior axis, and stress edge'],
+            ['When do I pay?', 'The IDRlabs cognitive function test is free', 'The TypeJung map is free; paid reports are optional after the result'],
+          ],
+        },
+        links: [
+          { href: 'https://www.idrlabs.com/cognitive-function/test.php', label: 'Visit the IDRlabs cognitive function test directly' },
+          { href: '/assessment', label: 'Start TypeJung free' },
+        ],
+      },
+      {
+        heading: 'When TypeJung is the better next step',
+        body: [
+          'Use TypeJung after IDRlabs if you want a second function-level read that is easier to connect to stress, relationships, and practice.',
+          'The free map is designed to earn the upgrade ask. If it does not feel accurate, you do not need to buy anything.',
+        ],
+        bullets: [
+          'You want a dominant-inferior axis, not just a set of scores',
+          'You want a sample paid report before checkout',
+          'You want one-time CAD pricing rather than subscription framing',
+          'You want educational self-reflection, not a diagnostic claim',
+        ],
+      },
+      {
+        heading: 'Use both results carefully',
+        body: [
+          'If IDRlabs and TypeJung disagree, treat the difference as a prompt for observation. Look for repeated function evidence and repeated stress signals, not just the most flattering label.',
+        ],
+        links: [
+          { href: '/inferior-function-test', label: 'Inferior function test' },
+          { href: '/sample-report', label: 'Preview the optional report' },
+          { href: '/pricing', label: 'Compare the report options' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is TypeJung an IDRlabs replacement?',
+        answer: 'It is an alternative path, not a universal replacement. TypeJung is best when you want a free-first Jungian map and optional deeper report after seeing your result.',
+      },
+      {
+        question: 'Does TypeJung measure the same eight functions?',
+        answer: 'TypeJung maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe as function-attitudes, then frames the likely hierarchy and stress edge.',
+      },
+      {
+        question: 'Is TypeJung a clinical test?',
+        answer: 'No. TypeJung is for educational self-reflection and should not be used as a clinical or diagnostic assessment.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/cognitive-function-test', label: 'Cognitive function test' },
+      { href: '/jungian-cognitive-functions-test', label: 'Jungian cognitive functions test' },
+      { href: '/inferior-function-test', label: 'Inferior function test' },
+      { href: '/pricing', label: 'Pricing' },
+    ],
+  },
+  {
+    slug: '16selves-alternative',
+    query: '16Selves alternative',
+    title: '16Selves Alternative - Free Jungian Function Map First | TypeJung',
+    description: 'Looking for a 16Selves alternative? TypeJung maps all 8 Jungian function-attitudes before optional one-time paid reports.',
+    keywords: ['16Selves alternative', '16Selves Jungian cognitive functions alternative', 'Jungian cognitive functions test', 'personality test alternative'],
+    eyebrow: '16Selves alternative',
+    h1: 'A 16Selves alternative when you want paid depth after the free map',
+    intro: [
+      '16Selves is a newer Jungian cognitive-functions test that emphasizes direct measurement of the eight function-attitudes and local-first results.',
+      'TypeJung is a useful alternative when you want a similarly function-focused result, but with a clear free-first commercial path: inspect the map, view the sample report, then upgrade only if the result earns it.',
+    ],
+    intent: {
+      bestFor: 'People comparing modern Jungian function tests who want all 8 functions plus an optional paid interpretation path.',
+      measures: 'All 8 function-attitudes, likely type pattern, dominant-inferior axis, attitude direction, stress-edge cues, and answer consistency.',
+      privacy: 'The core result is free before checkout. Paid upgrades are one-time CAD purchases handled by Stripe.',
+    },
+    sections: [
+      {
+        heading: 'Why people compare 16Selves and TypeJung',
+        body: [
+          'Both tools speak to users who have outgrown four-letter-only personality quizzes and want the cognitive functions underneath the label.',
+          'The difference is the product path. 16Selves emphasizes a quick local-first assessment experience, while TypeJung emphasizes a free map that can be extended into a paid depth report if the result feels useful.',
+        ],
+        table: {
+          headers: ['Need', '16Selves-style search', 'TypeJung path'],
+          rows: [
+            ['Function focus', 'Direct measurement of eight function-attitudes', 'All 8 functions plus a dominant-inferior axis'],
+            ['Assessment length', 'The site describes a 5-minute path with core and adaptive questions', '42 questions before the free TypeJung map'],
+            ['Result philosophy', 'Best-fit hypotheses and local result exploration', 'Free map first, optional report after value is visible'],
+            ['Paid decision', 'Useful for free self-exploration', 'Sample report and one-time Stripe pricing are visible before purchase'],
+          ],
+        },
+        links: [
+          { href: 'https://16selves.com/', label: 'Visit 16Selves directly' },
+          { href: '/assessment', label: 'Start the TypeJung map' },
+        ],
+      },
+      {
+        heading: 'When TypeJung is the better next test',
+        body: [
+          'Choose TypeJung when the important question is not only "which type fits?" but "what does this map mean when I am under pressure?"',
+          'Insight and Mastery are designed to extend the free result into stress-pattern reflection, relationship-pattern reflection, and practice prompts without creating a subscription.',
+        ],
+        bullets: [
+          'You want the inferior-function edge named explicitly',
+          'You want paid report content previewed before checkout',
+          'You want one-time CAD pricing and a 30-day refund window',
+          'You want a shareable result page that can bring friends into the free assessment',
+        ],
+      },
+      {
+        heading: 'How to use TypeJung after 16Selves',
+        body: [
+          'Take the TypeJung map as a second structured lens. If the leading functions and stress edge repeat across tools, that pattern is more useful than a single label.',
+        ],
+        links: [
+          { href: '/dominant-function-test', label: 'Dominant function test' },
+          { href: '/sample-report', label: 'View the sample Insight report' },
+          { href: '/pricing', label: 'Compare Free, Insight, and Mastery' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is TypeJung the same as 16Selves?',
+        answer: 'No. Both focus on Jungian function-attitudes, but TypeJung is built around a free map followed by optional one-time paid reports.',
+      },
+      {
+        question: 'Which test should I take first?',
+        answer: 'If you are comparing tools, take whichever path feels clearer, then compare repeated function evidence rather than treating one result as final.',
+      },
+      {
+        question: 'Does TypeJung keep the core result free?',
+        answer: 'Yes. The 42-question map is free. Insight and Mastery only add deeper interpretation after you see the result.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/free-cognitive-function-test', label: 'Free cognitive function test' },
+      { href: '/dominant-function-test', label: 'Dominant function test' },
+      { href: '/sample-report', label: 'View sample report' },
+      { href: '/pricing', label: 'Pricing' },
+    ],
+  },
+  {
+    slug: 'best-cognitive-functions-test',
+    query: 'best cognitive functions test',
+    title: 'Best Cognitive Functions Test? How to Choose a Useful Function Map | TypeJung',
+    description: 'Compare what makes a cognitive functions test useful: all 8 functions, inspectable scores, stress-edge context, free-first results, and practical interpretation.',
+    keywords: ['best cognitive functions test', 'best Jungian cognitive functions test', 'Sakinorva vs Keys2Cognition', 'MBTI cognitive functions test'],
+    eyebrow: 'Best cognitive functions test',
+    h1: 'The best cognitive functions test is the one you can inspect',
+    intro: [
+      'People searching for the best cognitive functions test are usually not beginners. They often know names like Sakinorva, Keys2Cognition, Mistype Investigator, Michael Caloz, IDRlabs, 16Selves, or Typology Central and want a result they can trust more.',
+      'The better question is what makes a function test useful: visible evidence, all 8 functions, stress-edge context, and a result you can compare against real life before paying for interpretation.',
+    ],
+    intent: {
+      bestFor: 'Searchers comparing cognitive-function tests and deciding which one to take next.',
+      measures: 'All 8 function-attitudes, hierarchy hypotheses, dominant-inferior axis, stress patterns, and confidence signals.',
+      privacy: 'Use the free TypeJung map first. Upgrade only if the result earns deeper interpretation.',
+    },
+    sections: [
+      {
+        heading: 'What useful cognitive-function tests have in common',
+        body: [
+          'A useful function test does not hide everything behind one label. It shows enough of the underlying evidence that you can ask whether the result matches your actual patterns.',
+          'Look for tests that separate function scores, explain uncertainty, and help you interpret the dominant and inferior poles rather than pretending a type code is the whole answer.',
+        ],
+        bullets: [
+          'All 8 functions are visible',
+          'The result explains function order, not just strength',
+          'Stress and inferior-function data are included',
+          'The free result is useful before any paid report',
+          'Claims stay educational rather than diagnostic',
+        ],
+      },
+      {
+        heading: 'Common cognitive-functions test options',
+        body: [
+          'Sakinorva, Keys2Cognition, Mistype Investigator, IDRlabs, and other typology tools all attract people who want more than a broad MBTI-style quiz. They differ in length, scoring style, interpretation depth, and how much explanation appears after the result.',
+          'TypeJung positions itself as a free-first map plus optional interpretation path. It is not trying to be the only test you ever take. It is trying to make the next result more usable.',
+        ],
+        table: {
+          headers: ['Tool people search for', 'Typical reason people use it', 'When TypeJung is useful next'],
+          rows: [
+            ['Sakinorva', 'Function-score exploration and long-form testing routes', 'When you want a shorter free map with optional report interpretation'],
+            ['Keys2Cognition', 'Eight cognitive-process language and older theory resources', 'When you want a modern result page and stress-edge context'],
+            ['Mistype Investigator', 'Resolving suspected mistypes', 'When you want function evidence plus paid-depth preview after the free map'],
+            ['Michael Caloz', 'Function-pair explanations and type-fit comparison', 'When you want another free-first map with dominant-inferior interpretation'],
+            ['IDRlabs', 'Fast free personality-test browsing', 'When you want a Jungian-focused map with all 8 functions'],
+            ['16Selves', 'Modern function-attitude testing with best-fit hypotheses', 'When you want one-time paid depth after a free map'],
+          ],
+        },
+      },
+      {
+        heading: 'Why TypeJung may be the right next test',
+        body: [
+          'TypeJung is strongest when you want to see the whole function map before paying. The free result lets you judge whether the pattern feels accurate. The sample report shows what paid interpretation looks like before checkout.',
+          'That matters commercially too: a good paid report should not be a surprise. It should deepen a result you already found useful.',
+        ],
+        links: [
+          { href: '/assessment', label: 'Take the free TypeJung assessment' },
+          { href: '/sample-report', label: 'View the sample report' },
+          { href: '/pricing', label: 'Compare pricing' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'What is the best cognitive functions test?',
+        answer: 'There is no single final test. The best option is one that shows all 8 functions clearly and helps you inspect the result against real patterns.',
+      },
+      {
+        question: 'Is TypeJung better than Sakinorva or Keys2Cognition?',
+        answer: 'TypeJung is different rather than universally better. Use it when you want a free-first map, stress-edge context, sample report preview, and optional paid interpretation after seeing the result.',
+      },
+      {
+        question: 'Should I take multiple cognitive-function tests?',
+        answer: 'Multiple tests can help if you compare repeated patterns instead of collecting labels. Look for recurring function evidence and stress signals.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/sakinorva-alternative', label: 'Sakinorva alternative' },
+      { href: '/keys2cognition-alternative', label: 'Keys2Cognition alternative' },
+      { href: '/mistype-investigator-alternative', label: 'Mistype Investigator alternative' },
+      { href: '/michael-caloz-alternative', label: 'Michael Caloz alternative' },
+      { href: '/idrlabs-cognitive-function-test-alternative', label: 'IDRlabs alternative' },
+      { href: '/16selves-alternative', label: '16Selves alternative' },
+      { href: '/cognitive-function-test', label: 'Cognitive function test' },
+    ],
+  },
+];
+
+const inferiorFunctionByDominant = {
+  ni: 'se',
+  ne: 'si',
+  si: 'ne',
+  se: 'ni',
+  ti: 'fe',
+  te: 'fi',
+  fi: 'te',
+  fe: 'ti',
+};
+
+const dominantFunctionFocus = {
+  ni: {
+    searchNeed: 'convergent pattern insight, future implication, and the pull toward one underlying meaning',
+    falsePositive: 'a strong imagination, anxiety about the future, or learned strategy without the slower pattern-convergence process',
+    stressEdge: 'present-moment pressure, sensory overload, or impulsive overcorrection can make inferior Se visible',
+    nextObservation: 'whether your attention naturally narrows toward one symbolic pattern before you can explain it',
+  },
+  ne: {
+    searchNeed: 'rapid possibility scanning, associative thinking, and comfort keeping several interpretations open',
+    falsePositive: 'novelty-seeking, distractibility, or high creativity without the deeper pattern of external possibility generation',
+    stressEdge: 'routine, precedent, and concrete follow-through pressure can make inferior Si visible',
+    nextObservation: 'whether new external cues immediately open alternate meanings, options, and routes',
+  },
+  si: {
+    searchNeed: 'experience-based comparison, detailed recall, continuity, and trust in what has proven itself',
+    falsePositive: 'being cautious, nostalgic, or organized without the inner library of sensory precedent doing the real work',
+    stressEdge: 'open-ended possibility pressure can make inferior Ne visible as worry, scattered ideation, or unlikely scenarios',
+    nextObservation: 'whether present situations are automatically checked against remembered texture and precedent',
+  },
+  se: {
+    searchNeed: 'direct contact with the present, sensory accuracy, aesthetic response, and fast action in real conditions',
+    falsePositive: 'being social, impulsive, or athletic without the broader present-moment attunement of Se',
+    stressEdge: 'abstract future pressure can make inferior Ni visible as tunnel vision, ominous certainty, or over-interpretation',
+    nextObservation: 'whether you trust what is happening now before turning it into a theory',
+  },
+  ti: {
+    searchNeed: 'internal logic, precision, model-building, and the need for definitions that hold together',
+    falsePositive: 'being smart, detached, skeptical, or technical without the private framework-refinement process',
+    stressEdge: 'social feedback and relational expectations can make inferior Fe visible as awkward repair attempts or rejection sensitivity',
+    nextObservation: 'whether you first ask if the model is internally consistent, even before asking whether others accept it',
+  },
+  te: {
+    searchNeed: 'external structure, measurable results, prioritization, and pressure to turn decisions into workable systems',
+    falsePositive: 'being ambitious, blunt, productive, or managerial without the objective organizing process leading cognition',
+    stressEdge: 'personal value pressure can make inferior Fi visible as sudden defensiveness, emptiness, or difficulty naming inner consent',
+    nextObservation: 'whether you naturally organize facts, people, and steps toward a measurable outcome',
+  },
+  fi: {
+    searchNeed: 'inner value clarity, authenticity, emotional nuance, and a private sense of what is personally right',
+    falsePositive: 'being emotional, artistic, sensitive, or kind without the inner evaluative compass leading the pattern',
+    stressEdge: 'efficiency pressure can make inferior Te visible as harsh self-management, avoidance, or sudden controlling behavior',
+    nextObservation: 'whether your first signal is private alignment or dissonance before you can make it socially legible',
+  },
+  fe: {
+    searchNeed: 'relational attunement, shared values, emotional atmosphere, and coordination around what helps the group',
+    falsePositive: 'being nice, agreeable, extroverted, or conflict-avoidant without the real-time social calibration process',
+    stressEdge: 'detached precision pressure can make inferior Ti visible as over-explaining, self-doubt, or brittle logic',
+    nextObservation: 'whether you read the emotional field first and adjust communication around shared impact',
+  },
+};
+
+const dominantFunctionLandingPages = Object.entries(functionData).map(([functionKey, fn]) => {
+  const inferiorKey = inferiorFunctionByDominant[functionKey];
+  const inferior = functionData[inferiorKey];
+  const focus = dominantFunctionFocus[functionKey];
+  const typeLinks = fn.dominantTypes.map((type) => ({
+    href: `/types/${type.toLowerCase()}`,
+    label: `${type} type guide`,
+  }));
+  const dominantTypeNames = fn.dominantTypes
+    .map((type) => `${type} (${typeData[type.toLowerCase()].name})`)
+    .join(' and ');
+
+  return {
+    slug: `${functionKey}-dominant-test`,
+    query: `${fn.code} dominant test`,
+    title: `${fn.code} Dominant Test - Check ${fn.name} Evidence | TypeJung`,
+    description: `Use TypeJung as a ${fn.code} dominant test to compare ${fn.name} evidence, likely type pattern, and ${inferior.code} stress-edge signals.`,
+    keywords: [
+      `${fn.code} dominant test`,
+      `${fn.name} dominant`,
+      `${fn.code} dominant cognitive function`,
+      `${fn.dominantTypes.join(' ')} cognitive functions`,
+      `${fn.code} ${inferior.code} axis`,
+    ],
+    eyebrow: `${fn.code} dominant test`,
+    h1: `Check whether ${fn.code} is your dominant function`,
+    intro: [
+      `A ${fn.code} dominant test should do more than ask whether you relate to a stereotype. It should compare ${fn.name} evidence against all 8 function-attitudes, then inspect the likely inferior ${inferior.code} edge.`,
+      `TypeJung starts with a free 42-question assessment. You see the function-stack map first, then decide whether the optional report is worth using for deeper interpretation.`,
+    ],
+    intent: {
+      bestFor: `People who suspect ${fn.code} leads their type pattern, especially ${fn.dominantTypes.join(' or ')} searchers comparing function evidence.`,
+      measures: `All 8 functions, likely ${fn.code}-${inferior.code} dominant-inferior tension, attitude direction, stress signals, and nearby type hypotheses.`,
+      privacy: 'Start with the free map before checkout. Paid Insight and Mastery reports are optional one-time upgrades after the result is visible.',
+    },
+    sections: [
+      {
+        heading: `What ${fn.code} dominant usually means`,
+        body: [
+          `${fn.name} is often described as ${fn.description.charAt(0).toLowerCase()}${fn.description.slice(1)}`,
+          `When it is dominant, it tends to act like the most trusted starting point for attention or judgment. For TypeJung, the question is not whether ${fn.code} sounds flattering. The question is whether the whole answer pattern repeatedly points toward ${focus.searchNeed}.`,
+        ],
+        bullets: fn.characteristics.slice(0, 4),
+        links: [
+          { href: `/functions/${functionKey}`, label: `Read the ${fn.code} function guide` },
+          ...typeLinks,
+        ],
+      },
+      {
+        heading: `How a ${fn.code} dominant test should avoid false positives`,
+        body: [
+          `Many people identify with a function because one trait feels familiar. That can create false positives. ${fn.code} dominance is not the same as ${focus.falsePositive}.`,
+          'A better test compares function relationships: what comes first, what supports it, what becomes reactive under pressure, and whether the likely type pattern makes sense as a whole.',
+        ],
+        table: {
+          headers: ['Signal to inspect', `${fn.code} dominant evidence`, 'Could mean something else'],
+          rows: [
+            ['First response', focus.nextObservation, 'A role, skill, mood, or current life demand may be shaping the answer'],
+            ['Support pattern', `A supporting function should help ${fn.code} operate in real situations`, 'A single high score without support may need cautious interpretation'],
+            ['Stress edge', focus.stressEdge, `A different inferior-function signal may point away from ${fn.code} dominance`],
+          ],
+        },
+      },
+      {
+        heading: `The ${fn.code}-${inferior.code} axis matters`,
+        body: [
+          `${dominantTypeNames} are usually interpreted through ${fn.code} dominance, but the opposite edge is just as important. A likely ${fn.code} dominant pattern should have some recognizable tension with ${inferior.code}, especially under stress or development pressure.`,
+          `TypeJung uses the full function map to make that axis visible. The paid report is optional, but if the free map fits, it can explain the developmental edge, relationship-pattern reflection, and practice path behind the ${fn.code}-${inferior.code} pattern.`,
+        ],
+        links: [
+          { href: `/functions/${inferiorKey}`, label: `Read the ${inferior.code} function guide` },
+          { href: '/inferior-function-test', label: 'Understand inferior-function pressure' },
+          { href: '/sample-report', label: 'Preview the optional Insight report' },
+        ],
+      },
+      {
+        heading: 'Best next step',
+        body: [
+          `Take the free assessment, then compare your ${fn.code} score with the whole map instead of reading it alone. If ${fn.code}, its support function, and inferior ${inferior.code} all make sense together, the result is more useful than a one-function label.`,
+        ],
+        links: [
+          { href: '/assessment', label: `Start the free ${fn.code} dominant test` },
+          { href: '/function-stack-test', label: 'Compare the full function stack' },
+          { href: '/pricing', label: 'Compare Free, Insight, and Mastery' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: `Can TypeJung tell me if I am ${fn.code} dominant?`,
+        answer: `TypeJung gives a likely function pattern and type hypothesis. Use it to inspect ${fn.code} dominance as evidence, not as a final identity verdict.`,
+      },
+      {
+        question: `Which types are usually ${fn.code} dominant?`,
+        answer: `${fn.code} is usually associated with ${fn.dominantTypes.join(' and ')} in common function-stack interpretation, but the full pattern matters more than the label alone.`,
+      },
+      {
+        question: `Is this ${fn.code} dominant test free?`,
+        answer: 'The core 42-question TypeJung assessment is free. Paid reports are optional after you have seen the map.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: `/functions/${functionKey}`, label: `${fn.code} function guide` },
+      { href: `/functions/${inferiorKey}`, label: `${inferior.code} inferior edge` },
+      ...typeLinks,
+      { href: '/function-stack-test', label: 'Function stack test' },
+      { href: '/sample-report', label: 'View sample report' },
+    ],
+  };
+});
+
+const dominantFunctionHubPage = {
+  slug: 'dominant-function-test',
+  query: 'dominant function test',
+  title: 'Dominant Function Test - Find Your Leading Jungian Function | TypeJung',
+  description: 'Take a dominant function test that compares all 8 Jungian cognitive functions, support signals, and inferior-function pressure before naming a likely lead function.',
+  keywords: ['dominant function test', 'find my dominant function', 'Jungian dominant function', 'cognitive function test', 'function stack test'],
+  eyebrow: 'Dominant function test',
+  h1: 'Find your likely dominant function without forcing a label first',
+  intro: [
+    'A dominant function test should not ask you to choose the function that sounds most flattering. It should compare the whole pattern: what leads, what supports it, and what becomes pressured under stress.',
+    'TypeJung starts with a free 42-question map of Ni, Ne, Si, Se, Ti, Te, Fi, and Fe. You see the core result first, then decide whether optional paid interpretation is useful.',
+  ],
+  intent: {
+    bestFor: 'People who suspect a dominant function but want evidence across all 8 functions and the matching inferior-function edge.',
+    measures: 'All 8 function-attitudes, likely dominant and support signals, dominant-inferior tension, attitude direction, and stress-pattern evidence.',
+    privacy: 'Start free before checkout. Paid Insight and Mastery reports are optional one-time upgrades after the free map is visible.',
+  },
+  sections: [
+    {
+      heading: 'What is a dominant function?',
+      body: [
+        'In Jungian typology, the dominant function is the most trusted mode of attention or judgment in a type pattern. It is not simply the function you admire most or the highest trait stereotype you recognize.',
+        'A useful test looks at relationships between functions. Dominant Ni usually implies a different stress edge than dominant Fi, Te, or Se. That is why TypeJung maps the whole stack before asking you to trust a conclusion.',
+      ],
+      table: {
+        headers: ['Dominant function', 'Common type patterns', 'Inferior edge to inspect'],
+        rows: Object.entries(functionData).map(([key, fn]) => {
+          const inferior = functionData[inferiorFunctionByDominant[key]];
+          return [fn.code, fn.dominantTypes.join(' or '), `${inferior.code} (${inferior.name})`];
+        }),
+      },
+    },
+    {
+      heading: 'Why a single-function quiz can mislead you',
+      body: [
+        'Many people identify with a function because one description sounds accurate. That is risky because roles, stress, current work, relationships, and admired traits can all distort self-reporting.',
+        'TypeJung is built around a stronger question: does the full map show a coherent lead function, support function, and inferior-function pressure pattern?',
+      ],
+      bullets: [
+        'A high score does not always mean a dominant function',
+        'Stress can make an inferior function feel louder than usual',
+        'Nearby types can share visible traits while using different function order',
+        'The best result is a hypothesis you can inspect, not a permanent identity stamp',
+      ],
+    },
+    {
+      heading: 'Compare each dominant function path',
+      body: [
+        'Use these guides after the free assessment if one function looks especially likely. Each page explains the evidence to inspect, the false positives to avoid, and the likely inferior-function edge.',
+      ],
+      links: Object.entries(functionData).map(([key, fn]) => ({
+        href: `/${key}-dominant-test`,
+        label: `${fn.code} dominant test`,
+      })),
+    },
+    {
+      heading: 'Best next step',
+      body: [
+        'Take the free assessment first. Read the result as a working map, then compare your likely dominant function against its support function and inferior edge. If the map feels accurate, the optional Insight report explains the pattern in more depth.',
+      ],
+      links: [
+        { href: '/assessment', label: 'Start the free dominant function test' },
+        { href: '/function-stack-test', label: 'Compare the function stack test' },
+        { href: '/inferior-function-test', label: 'Understand inferior-function pressure' },
+        { href: '/sample-report', label: 'Preview the optional Insight report' },
+      ],
+    },
+  ],
+  faqs: [
+    {
+      question: 'Can TypeJung find my dominant function?',
+      answer: 'TypeJung gives a likely dominant-function hypothesis from the full cognitive-function map. Treat it as structured evidence for self-observation, not a final identity verdict.',
+    },
+    {
+      question: 'Is my highest score always my dominant function?',
+      answer: 'Not always. Dominance is interpreted in relationship to the support functions, inferior edge, attitude direction, and overall pattern.',
+    },
+    {
+      question: 'Is the dominant function test free?',
+      answer: 'Yes. The 42-question assessment and function-stack map are free. Paid reports are optional after you see the result.',
+    },
+  ],
+  relatedLinks: [
+    { href: '/assessment', label: 'Take the free assessment' },
+    { href: '/function-stack-test', label: 'Function stack test' },
+    { href: '/inferior-function-test', label: 'Inferior function test' },
+    { href: '/cognitive-function-test', label: 'Cognitive function test' },
+    { href: '/jungian-cognitive-functions-test', label: 'Jungian cognitive functions test' },
+    { href: '/sample-report', label: 'View sample report' },
+  ],
+};
+
 export const seoLandingPages = [
+  ...competitorLandingPages,
+  dominantFunctionHubPage,
+  ...dominantFunctionLandingPages,
+  {
+    slug: 'creator-preview',
+    query: 'TypeJung creator preview',
+    title: 'TypeJung Creator Preview - Free Function-Stack Map for Typology Audiences',
+    description: 'A review path for typology creators, newsletters, and communities evaluating TypeJung as a free-first Jungian function-stack map.',
+    keywords: ['TypeJung creator preview', 'typology creator resource', 'cognitive functions tool review', 'MBTI creator resource'],
+    eyebrow: 'Creator review page',
+    h1: 'A review path for typology creators',
+    intro: [
+      'If you teach MBTI, Jungian typology, cognitive functions, or mistype questions, TypeJung is easiest to evaluate from the same path your audience would use: the free map first.',
+      'This page gives you the product promise, safe wording, and review links in one place so you can decide privately whether TypeJung belongs in your resource list, newsletter, video, podcast, or community thread.',
+    ],
+    saveLink: {
+      title: 'Send yourself the review path',
+      body: 'Email yourself the free assessment path and TYPEJUNG30 code. Start with the free map, then review the optional report only if the result earns interest.',
+      button: 'Email the review path',
+      tier: 'mastery',
+    },
+    creatorKit: {
+      title: 'Safe mention kit after review',
+      body: 'Use these only if TypeJung feels useful for your audience. The snippets keep the free-first promise, avoid diagnosis or final-type claims, and preserve creator attribution in the public link.',
+      publicPath: '/mbti-mistype-test',
+      defaultCampaign: 'creator_outreach_2026_05',
+      snippets: [
+        {
+          label: 'Short social post',
+          copy: `I tried TypeJung for people whose MBTI result keeps changing. It maps all 8 cognitive functions and shows the free function-stack map before any paid report. It is self-reflection, not diagnosis or final type proof.\n\n{public_link}`,
+        },
+        {
+          label: 'Newsletter blurb',
+          copy: `Resource note: TypeJung is a free Jungian function-stack map for readers who want to inspect the pattern underneath changing MBTI results. The core 42-question map is free, and paid reports are optional after the result is visible. Treat it as educational self-reflection, not a typing authority.\n\n{public_link}`,
+        },
+        {
+          label: 'Video description',
+          copy: `Tool mentioned: TypeJung maps all 8 cognitive functions and the dominant-inferior tension behind a likely type pattern. Start with the free map first; use paid reports only if the result feels useful. Not clinical or guaranteed type proof.\n\n{public_link}`,
+        },
+        {
+          label: 'Community feedback note',
+          copy: `If links are allowed here, I found a free Jungian function-stack map called TypeJung. It is built for people whose MBTI result keeps changing and shows the all-8-function map before checkout. I would treat the result as a reflection hypothesis, not a final answer.\n\n{public_link}`,
+        },
+      ],
+    },
+    intent: {
+      bestFor: 'Typology creators, newsletters, coaches, and community moderators evaluating a free-first cognitive-functions tool before mentioning it publicly.',
+      measures: '42 scenario prompts, all 8 Jungian function-attitudes, likely function-stack pattern, dominant-inferior axis, stress-edge signals, and optional paid interpretation.',
+      privacy: 'No payment is required to see the free function-stack map. Paid reports are optional one-time CAD upgrades after the result is visible.',
+    },
+    sections: [
+      {
+        heading: 'What your audience gets before checkout',
+        body: [
+          'The first experience is not a paywall. Visitors answer 42 questions and see a free function-stack map before TypeJung asks them to consider Insight or Mastery.',
+          'That makes the tool easiest to share when your audience is already comparing type hypotheses, asking why results keep changing, or trying to learn the functions without starting from a paid report.',
+        ],
+        bullets: [
+          'A free all-8-function map before payment',
+          'Dominant-inferior tension written as educational self-reflection',
+          'Likely type-pattern context without claiming final proof',
+          'Shareable results for comparing maps with friends or communities',
+          'Optional Insight and Mastery reports after the free result is visible',
+        ],
+        links: [
+          { href: '/assessment', label: 'Start the free assessment path' },
+          { href: '/sample-report', label: 'Preview the optional report structure' },
+        ],
+      },
+      {
+        heading: 'Why TypeJung may be worth reviewing',
+        body: [
+          'A creator mention only works if the product has a clear reason to exist. TypeJung is positioned against label-first testing, not against thoughtful typology education.',
+          'The useful review question is simple: does the free map help people inspect the function pattern underneath a changing or confusing type result?',
+        ],
+        table: {
+          headers: ['Audience problem', 'Common test experience', 'TypeJung review angle'],
+          rows: [
+            ['Results keep changing', 'Another four-letter answer without enough context', 'Look at the function pattern underneath the label'],
+            ['Cognitive functions feel abstract', 'Theory pages without a personal map', 'Connect Ni, Ne, Si, Se, Ti, Te, Fi, and Fe to the user result'],
+            ['Paid reports create anxiety', 'Pay before knowing whether the result helps', 'Free map first, optional one-time paid depth later'],
+            ['Typology claims get too strong', 'Final-answer language or diagnostic framing', 'Educational self-reflection with clear guardrails'],
+          ],
+        },
+      },
+      {
+        heading: 'Safe language for a mention',
+        body: [
+          'The cleanest public framing is: TypeJung is a free Jungian function-stack map for people whose MBTI result keeps changing.',
+          'Please avoid describing it as a diagnosis, a clinical assessment, or proof of someone\'s final type. The product is designed as an inspectable self-reflection map, not an authority that settles every typology debate.',
+        ],
+        bullets: [
+          'Use: free map, cognitive functions, all 8 functions, function stack, stress edge, optional one-time report',
+          'Use: try the free result first and upgrade only if it feels useful',
+          'Avoid: guaranteed type, clinically proven, diagnosis, therapy replacement, permanent identity answer',
+        ],
+        links: [
+          { href: '/mbti-mistype-test', label: 'Mistype-focused public entry page' },
+          { href: '/cognitive-functions-quiz', label: 'Lighter quiz-style public entry page' },
+          { href: '/jungian-cognitive-functions-test', label: 'Function-first public entry page' },
+        ],
+      },
+      {
+        heading: 'How to test the flow privately',
+        body: [
+          'Start with the assessment link and judge the free result before looking at pricing. If the map feels too vague, too strong, or not useful for your audience, that feedback is more valuable than a public mention.',
+          'If you want to review the paid side, ask for a private Mastery access link from Felmon. The public page still keeps the normal free-first path intact for regular visitors.',
+        ],
+        bullets: [
+          'Take the free assessment from this page so creator attribution stays intact',
+          'Read the sample report to see the paid-report tone before checkout',
+          'Check whether the result avoids stereotypes and overclaiming',
+          'Send private critique before deciding whether to mention the tool publicly',
+        ],
+        links: [
+          { href: '/pricing', label: 'Check the one-time pricing page' },
+          { href: '/cognitive-function-test', label: 'Read the cognitive function test guide' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is TypeJung free for my audience to try?',
+        answer: 'Yes. The 42-question assessment and core function-stack map are free. Insight and Mastery are optional one-time CAD upgrades after the result is visible.',
+      },
+      {
+        question: 'Can I describe TypeJung as a typing authority?',
+        answer: 'No. TypeJung gives a likely function-stack map for educational self-reflection. It should not be framed as clinical, diagnostic, or guaranteed final proof of type.',
+      },
+      {
+        question: 'What should I review first?',
+        answer: 'Review the free result first, then the sample report and pricing page. That mirrors the decision path regular visitors take before any paid report.',
+      },
+      {
+        question: 'Does TypeJung have an affiliate program?',
+        answer: 'No affiliate program is documented for this review path. The current ask is private feedback or resource-fit review before any public mention.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Start the free assessment' },
+      { href: '/sample-report', label: 'View sample report' },
+      { href: '/pricing', label: 'See one-time pricing' },
+      { href: '/mbti-mistype-test', label: 'MBTI mistype test' },
+      { href: '/cognitive-functions-quiz', label: 'Cognitive functions quiz' },
+      { href: '/jungian-cognitive-functions-test', label: 'Jungian cognitive functions test' },
+    ],
+  },
   {
     slug: 'jungian-test',
     query: 'Jungian test',
@@ -491,8 +1960,8 @@ export const seoLandingPages = [
     eyebrow: 'Jungian test',
     h1: 'A Jungian test that goes beyond a four-letter label',
     intro: [
-      'TypeJung is a Jungian self-assessment for people who want more than a quick type label. It measures how you use all 8 cognitive functions, then turns that profile into an educational map of attention, decision-making, and stress patterns.',
-      'The free assessment takes about 12 to 16 minutes. Paid reports are optional one-time CAD upgrades: Insight for CA$10 and Mastery for CA$29.',
+      'TypeJung is a Jungian self-assessment for people who want more than a quick type label. It maps self-reported patterns associated with all 8 cognitive functions, then turns that profile into an educational map of attention, decision-making, and stress patterns.',
+      'The free assessment takes about 12 to 16 minutes. Paid reports are optional one-time CAD upgrades; TYPEJUNG30 currently brings Insight to CA$7 and Mastery to CA$20.30 on Stripe.',
     ],
     intent: {
       bestFor: 'Searchers who want a Jungian test with visible cognitive-function evidence, not only a fast type label.',
@@ -530,7 +1999,7 @@ export const seoLandingPages = [
             ['Result format', 'A single type code', 'Function map plus likely type pattern'],
             ['Jungian depth', 'Usually light or implied', 'Function-attitude and dominant-inferior interpretation'],
             ['Stress insight', 'Generic advice', 'Inferior-function and grip pattern context'],
-            ['Payment path', 'Often pay before depth is clear', 'Free core map first, optional one-time upgrades later'],
+            ['Payment path', 'Often pay before depth is clear', 'Free function-stack map first, optional one-time upgrades later'],
           ],
         },
       },
@@ -554,7 +2023,7 @@ export const seoLandingPages = [
       {
         heading: 'When a paid report helps',
         body: [
-          'The free assessment gives you the core map. Insight adds developmental edge analysis, a stress pattern map, relationship triggers, personalized practice guidance, and lifetime unlocked result access for a one-time CA$10 payment. Mastery adds the AI Type Coach, an individuation roadmap, reassessment tracking, a practice library, and priority support for a one-time CA$29 payment.',
+          'The free assessment gives you the function-stack map. Insight adds developmental edge analysis, a stress-pattern reflection map, relationship-pattern reflection, and practical prompts for a one-time CA$10 base price, currently CA$7 with TYPEJUNG30 on Stripe. Mastery adds the AI Type Guide, an individuation roadmap, reflection exercises, and practice support for a one-time CA$29 base price, currently CA$20.30 with the same code.',
           'The best path is to take the free test first. Upgrade only if the function map feels accurate enough to make deeper interpretation useful.',
         ],
         links: [
@@ -588,57 +2057,58 @@ export const seoLandingPages = [
   {
     slug: 'mbti-alternative',
     query: 'MBTI alternative',
-    title: 'MBTI Alternative - Function-Based Personality Test | TypeJung',
-    description: 'Looking for an MBTI alternative? TypeJung measures all 8 Jungian cognitive functions instead of forcing binary personality letters.',
-    keywords: ['MBTI alternative', 'alternative to MBTI', 'function based personality test', 'Jungian typology'],
+    title: 'MBTI Alternative - Function-Based Typology Map | TypeJung',
+    description: 'Compare TypeJung as an MBTI alternative for people who want Jungian function evidence, a free function-stack map, and optional paid interpretation after the result.',
+    keywords: ['MBTI alternative', 'alternative to MBTI', 'Jungian typology alternative', 'function based typology', 'cognitive functions MBTI'],
     eyebrow: 'MBTI alternative',
-    h1: 'An MBTI alternative built around cognitive functions',
+    h1: 'An MBTI alternative for people who want the function pattern, not only the label',
     intro: [
-      'If MBTI-style tests keep giving you different four-letter results, the problem may be the format. Many tests force binary choices, then compress your answers into a label before you can see the underlying pattern.',
-      'TypeJung is an MBTI alternative that scores all 8 Jungian cognitive functions independently. The result is a profile you can inspect, question, and use for development.',
+      'MBTI-style language is useful shorthand, but it can feel too final when the evidence behind the label is hidden.',
+      'TypeJung is an independent MBTI alternative built around Jungian cognitive functions. It shows a free function-stack map first, then lets you decide whether deeper paid interpretation is worth it.',
     ],
     intent: {
-      bestFor: 'People who like type language but want a more inspectable MBTI alternative with cognitive-function evidence.',
+      bestFor: 'People comparing MBTI as a framework with function-based Jungian typology and wanting a more inspectable map.',
       measures: 'Independent function scores, likely type pattern, inferior-function pressure, and context for why MBTI results change.',
       privacy: 'Start free without paying first. Upgrade only after the function profile feels useful.',
     },
     sections: [
       {
-        heading: 'Why people look for an alternative',
+        heading: 'Why people look for an MBTI alternative',
         body: [
-          'Four-letter personality tests can be useful shorthand, but they often hide the most important information: which functions are actually strong, weak, balanced, or under stress.',
-          'A person who receives INFP on one test and INFJ on another may not need another label. They may need to see the relative strength of Fi, Fe, Ni, Ne, Si, Se, Ti, and Te.',
+          'Four-letter type codes can help people talk about patterns, but they can also flatten the evidence. The useful question is not only which label fits, but which functions are leading, supporting, and getting pressured.',
+          'That is why TypeJung treats the type code as a hypothesis drawn from a visible function map, not as the whole result.',
         ],
         bullets: [
-          'No forced choice between intuition and sensing as if one removes the other',
-          'No assumption that everyone inside a type has the same function development',
-          'More visibility into stress patterns and inferior-function tension',
-          'A result that lets you inspect nearby type possibilities instead of hiding close scores',
+          'All 8 functions stay visible instead of disappearing behind one code',
+          'Nearby type possibilities can be compared through function evidence',
+          'Dominant-inferior tension is part of the result, not an afterthought',
+          'The free map comes before any paid report',
         ],
         links: [
           { href: '/mbti-keeps-changing', label: 'Why your MBTI result keeps changing' },
+          { href: '/mbti-test-alternative', label: 'Take the MBTI test alternative route' },
           { href: '/infj-vs-infp-test', label: 'Compare INFJ vs INFP through function evidence' },
         ],
       },
       {
-        heading: 'TypeJung versus a typical MBTI-style quiz',
+        heading: 'TypeJung versus a label-first typology path',
         body: [
-          'TypeJung still speaks the language of Jungian type, but it treats type as an interpretation of a function profile. That makes the result more useful for people who already know the basics and want a clearer self-assessment.',
-          'This matters for searchers who are deciding whether to take another personality test. If your main goal is a quick social label, a simple quiz may be enough. If your goal is to understand the pattern behind the label, function evidence is more useful.',
+          'TypeJung still speaks the language of Jungian type, but it treats type as an interpretation of a function profile. That makes the result easier to inspect if you already know the basics and want a clearer self-assessment.',
+          'If your main goal is a quick social label, a simple quiz may be enough. If your goal is to understand why a label fits or keeps changing, function evidence is more useful.',
         ],
         table: {
-          headers: ['Question', 'Typical MBTI-style quiz', 'TypeJung'],
+          headers: ['Question', 'Label-first typology', 'TypeJung alternative'],
           rows: [
-            ['What gets measured?', 'Four broad preference pairs', 'All 8 cognitive functions'],
-            ['How are results shown?', 'A four-letter type label', 'Function scores plus likely type pattern'],
-            ['What is the development angle?', 'General type advice', 'Dominant, auxiliary, inferior, stress, and development themes'],
+            ['Main model', 'Broad preferences summarized as a type code', 'A visible Jungian function-stack map'],
+            ['How results are shown', 'A final label with limited score context', 'Function scores plus likely type pattern'],
+            ['Development angle', 'General type advice', 'Dominant-inferior edge, pressure signals, and reflection prompts'],
             ['What is free?', 'Usually a basic type result', 'A free 42-question assessment and core profile'],
-            ['How are close results handled?', 'Often hidden behind a final label', 'Shown as a profile you can compare'],
+            ['Close results', 'Often hidden behind a final label', 'Shown as a pattern you can compare'],
           ],
         },
       },
       {
-        heading: 'When TypeJung is the better alternative',
+        heading: 'When TypeJung is the better MBTI alternative',
         body: [
           'TypeJung is strongest when the question is not simply "what type am I?" but "why do I keep getting this result, and what pattern does it point toward?"',
           'Use it when you want to compare function pairs, see stress-edge evidence, or understand whether a result is stable enough to build self-reflection around.',
@@ -646,12 +2116,12 @@ export const seoLandingPages = [
         bullets: [
           'You keep testing between two nearby types',
           'You want the cognitive functions behind a four-letter code',
-          'You care about growth, stress, and relationship triggers',
+          'You care about growth, stress, and relationship patterns',
           'You want a free first result before deciding whether a deeper report is worth it',
         ],
       },
       {
-        heading: 'What to do after your result',
+        heading: 'What to do after the function map',
         body: [
           'Start with the free assessment, then compare your strongest and weakest functions in the Learn section. If you want a deeper written interpretation, the Insight and Mastery reports are optional one-time CAD purchases.',
         ],
@@ -664,20 +2134,25 @@ export const seoLandingPages = [
     ],
     faqs: [
       {
+        question: 'Is TypeJung an official MBTI test?',
+        answer: 'No. TypeJung is an independent Jungian cognitive-functions assessment for educational self-reflection, not an official MBTI instrument.',
+      },
+      {
+        question: 'How is this page different from the MBTI test alternative page?',
+        answer: 'This page compares TypeJung as an alternative typology approach. The MBTI test alternative page is for people specifically looking to take another test after a changing or unclear result.',
+      },
+      {
         question: 'Is TypeJung the same as MBTI?',
-        answer: 'No. TypeJung uses Jungian type language, but it focuses on independent cognitive function scoring rather than only a four-letter result.',
+        answer: 'No. TypeJung uses Jungian type language, but it focuses on independent cognitive-function scoring and a visible function-stack map rather than only a four-letter result.',
       },
       {
-        question: 'Can TypeJung help if my MBTI result changes?',
-        answer: 'Yes. Seeing your full function profile can explain why nearby type labels may compete, especially when two functions score close together.',
-      },
-      {
-        question: 'Is the MBTI alternative free?',
+        question: 'Is this MBTI alternative free?',
         answer: 'The core TypeJung assessment is free. Deeper Insight and Mastery reports are optional one-time CAD upgrades.',
       },
     ],
     relatedLinks: [
       { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/mbti-test-alternative', label: 'MBTI test alternative' },
       { href: '/blog/singer-loomis-vs-mbti', label: 'Singer-Loomis vs MBTI' },
       { href: '/jungian-typology', label: 'Jungian typology guide' },
       { href: '/learn', label: 'Explore all 8 functions' },
@@ -781,14 +2256,14 @@ export const seoLandingPages = [
   {
     slug: 'cognitive-function-test',
     query: 'cognitive function test',
-    title: 'Cognitive Function Test - Measure All 8 Functions | TypeJung',
-    description: 'Take a cognitive function test that scores Ni, Ne, Si, Se, Ti, Te, Fi, and Fe independently and maps your full Jungian profile.',
+    title: 'Cognitive Function Test - Map All 8 Functions | TypeJung',
+    description: 'Take a cognitive function test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe in one Jungian function-stack profile.',
     keywords: ['cognitive function test', '8 cognitive functions test', 'Jungian cognitive functions', 'Ni Ne Si Se Ti Te Fi Fe test'],
     eyebrow: 'Cognitive function test',
     h1: 'A cognitive function test for all 8 Jungian functions',
     intro: [
-      'TypeJung measures Ni, Ne, Si, Se, Ti, Te, Fi, and Fe independently so you can see the shape of your cognitive profile instead of guessing from a type description.',
-      'The free assessment gives you a function map and likely type pattern. Optional paid reports add deeper analysis with one-time CAD pricing: CA$10 for Insight and CA$29 for Mastery.',
+      'TypeJung maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe so you can see the shape of your cognitive profile instead of guessing from a type description.',
+      'The free assessment gives you a function map and likely type pattern. Optional paid reports add deeper analysis with one-time CAD pricing; TYPEJUNG30 currently brings Insight to CA$7 and Mastery to CA$20.30 on Stripe.',
     ],
     intent: {
       bestFor: 'Searchers who want a cognitive function test that shows all 8 scores and explains the pattern behind them.',
@@ -797,7 +2272,7 @@ export const seoLandingPages = [
     },
     sections: [
       {
-        heading: 'The 8 functions TypeJung measures',
+        heading: 'The 8 function-attitudes TypeJung maps',
         body: [
           'The test separates perceiving functions, which describe how information comes into awareness, from judging functions, which describe how decisions and evaluations are made.',
           'This is useful because people rarely fit cleanly into one simple trait pair. You may have strong intuition and still rely on sensing in specific contexts, or score close between two judging functions when work and relationships ask different things from you.',
@@ -829,7 +2304,7 @@ export const seoLandingPages = [
           'A free cognitive function profile',
           'A likely Jungian type pattern',
           'Educational links for each function',
-          'Optional deeper reports for stress patterns, relationship triggers, and practice guidance',
+          'Optional deeper reports for stress-pattern reflection, relationship-pattern reflection, and practice prompts',
         ],
       },
       {
@@ -863,7 +2338,7 @@ export const seoLandingPages = [
     ],
     faqs: [
       {
-        question: 'Does the cognitive function test measure all 8 functions?',
+        question: 'Does the cognitive function test map all 8 functions?',
         answer: 'Yes. TypeJung scores Ni, Ne, Si, Se, Ti, Te, Fi, and Fe rather than only asking broad type-dichotomy questions.',
       },
       {
@@ -881,6 +2356,361 @@ export const seoLandingPages = [
       { href: '/cognitive-functions', label: 'Cognitive functions guide' },
       { href: '/functions/ni', label: 'Introverted Intuition' },
       { href: '/functions/ti', label: 'Introverted Thinking' },
+    ],
+  },
+  {
+    slug: 'cognitive-functions-quiz',
+    query: 'cognitive functions quiz',
+    title: 'Cognitive Functions Quiz - Map Ni Ne Si Se Ti Te Fi Fe | TypeJung',
+    description: 'Take a cognitive functions quiz that maps all 8 Jungian functions, shows the dominant-inferior axis, and gives the free result before any paid report.',
+    keywords: ['cognitive functions quiz', 'Jungian cognitive functions quiz', '8 cognitive functions quiz', 'Ni Ne Si Se Ti Te Fi Fe quiz'],
+    eyebrow: 'Cognitive functions quiz',
+    h1: 'A cognitive functions quiz that shows the map first',
+    intro: [
+      'Most people searching for a cognitive functions quiz do not only want another label. They want to see whether Ni, Ne, Si, Se, Ti, Te, Fi, or Fe actually explains the way they notice, decide, react, and recover.',
+      'TypeJung turns the quiz into a free function-stack map before any checkout. Paid reports are optional one-time CAD upgrades only if the map gives you something worth interpreting further.',
+    ],
+    intent: {
+      bestFor: 'People who want a quiz-style route into Jungian cognitive functions without paying before the result is visible.',
+      measures: 'All 8 function-attitudes, likely stack pattern, dominant-inferior axis, stress edge, and answer-consistency signal.',
+      privacy: 'Start free without a card. An account is only needed for saved history, share links, and restored paid access across devices.',
+    },
+    sections: [
+      {
+        heading: 'What makes this different from a normal personality quiz',
+        body: [
+          'A normal personality quiz often compresses the answer into one type code. That can be useful, but it hides the shape of the result when two functions or two possible types are close.',
+          'TypeJung keeps the map visible. You can inspect the function evidence, compare the likely dominant and inferior poles, and decide whether the result explains real situations before buying anything.',
+        ],
+        bullets: [
+          '42 scenario-based prompts',
+          'Scores across all 8 Jungian function-attitudes',
+          'A likely function-stack pattern instead of only a label',
+          'Dominant-inferior axis copy for stress and growth reflection',
+          'Optional Insight and Mastery reports after the free map',
+        ],
+        links: [
+          { href: '/assessment', label: 'Start the free quiz' },
+          { href: '/cognitive-function-test', label: 'Read the cognitive function test guide' },
+          { href: '/cognitive-functions', label: 'Learn the 8 functions' },
+        ],
+      },
+      {
+        heading: 'How to read the quiz result',
+        body: [
+          'Start with the strongest function-attitude signal, then read the supporting pattern around it. A useful result should explain both what comes naturally and what becomes reactive under pressure.',
+          'If two patterns are close, treat the result as a hypothesis to inspect. The goal is educational self-reflection, not a fixed identity claim or clinical assessment.',
+        ],
+        table: {
+          headers: ['Result signal', 'What it can show', 'Where to go next'],
+          rows: [
+            ['Dominant signal', 'The mode of attention or judgment that feels most practiced', 'Read the matching function guide'],
+            ['Auxiliary support', 'The function that often helps the dominant pattern operate in real life', 'Compare the likely type stack'],
+            ['Inferior edge', 'The stress-linked opposite pole that may feel awkward or loaded', 'Read the inferior function guide'],
+            ['Close alternatives', 'A result that may need comparison instead of forced certainty', 'Use a type-vs-type page'],
+          ],
+        },
+      },
+      {
+        heading: 'Free first, upgrade only if the map earns it',
+        body: [
+          'The quiz is designed to reduce purchase anxiety. You get the function-stack map first, then choose whether a deeper paid interpretation is useful.',
+          'Insight currently shows CA$7 with TYPEJUNG30 on Stripe and adds a deeper report, stress-pattern reflection map, relationship-pattern reflection, and practice prompts. Mastery currently shows CA$20.30 with the same code and adds the AI Type Guide plus a practice roadmap.',
+        ],
+        bullets: [
+          'No card before the free result',
+          'One-time CAD pricing, not a subscription',
+          'Sample report available before checkout',
+          'Discount code is shown before payment',
+        ],
+        links: [
+          { href: '/sample-report', label: 'View the sample report' },
+          { href: '/pricing', label: 'Compare Insight and Mastery' },
+          { href: '/free-cognitive-function-test', label: 'Free cognitive function test' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is this cognitive functions quiz free?',
+        answer: 'Yes. The core 42-question TypeJung assessment and function-stack map are free. Paid reports are optional one-time upgrades after the result is visible.',
+      },
+      {
+        question: 'Does it quiz all 8 cognitive functions?',
+        answer: 'Yes. TypeJung maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe instead of stopping at one broad four-letter result.',
+      },
+      {
+        question: 'Can the quiz tell me my exact type?',
+        answer: 'It gives a likely Jungian type pattern and function-stack map for educational self-reflection. It should be inspected as a map, not treated as a guaranteed or clinical typing authority.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free quiz' },
+      { href: '/cognitive-function-test', label: 'Cognitive function test' },
+      { href: '/free-cognitive-function-test', label: 'Free cognitive function test' },
+      { href: '/function-stack-test', label: 'Function stack test' },
+      { href: '/sample-report', label: 'View sample report' },
+    ],
+  },
+  {
+    slug: 'free-cognitive-function-test',
+    query: 'free cognitive function test',
+    title: 'Free Cognitive Function Test - Map All 8 Functions | TypeJung',
+    description: 'Take a free cognitive function test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe before any optional paid report.',
+    keywords: ['free cognitive function test', 'free Jungian cognitive functions test', 'free function test', 'Ni Ne Si Se Ti Te Fi Fe test'],
+    eyebrow: 'Free cognitive function test',
+    h1: 'A free cognitive function test before any paid report',
+    intro: [
+      'TypeJung starts with the part most people need first: a free map of how your attention, judgment, stress, and energy distribute across the Jungian functions.',
+      'You do not need to pay before seeing the core result. Paid Insight and Mastery reports are optional one-time CAD upgrades if the free map feels accurate enough to keep working with.',
+    ],
+    intent: {
+      bestFor: 'Searchers who want a free cognitive function test and do not want to pay before seeing whether the result is useful.',
+      measures: 'All 8 function-attitudes, likely dominant and inferior pattern, attitude direction, stress signals, and practical self-reflection prompts.',
+      privacy: 'Start the assessment free. Signup is only needed for saved history, share links, and restored paid access across devices.',
+    },
+    sections: [
+      {
+        heading: 'What is free',
+        body: [
+          'The free assessment gives you the TypeJung function-stack map. It shows the relative pattern across thinking, feeling, sensation, and intuition, plus the introverted or extraverted direction that appears strongest.',
+          'That free result is meant to be useful on its own. You can compare your dominant-inferior axis, read the function guides, and decide whether the map matches real situations before considering an upgrade.',
+        ],
+        bullets: [
+          '42 scenario-based prompts',
+          'A function-stack map',
+          'Dominant, auxiliary, tertiary, and inferior hypotheses',
+          'Attitude direction and answer consistency signal',
+          'Free next links into the relevant function and type guides',
+        ],
+        links: [
+          { href: '/assessment', label: 'Start the free assessment' },
+          { href: '/sample-report', label: 'Preview the optional paid report' },
+        ],
+      },
+      {
+        heading: 'Why free first matters',
+        body: [
+          'Personality tests are only useful if the result feels inspectable. If a tool asks for payment before showing the map, you cannot tell whether the deeper interpretation is worth buying.',
+          'TypeJung reverses that order. The free map lets you check the pattern first. The paid report is for people who want a deeper explanation of the exact result they already saw.',
+        ],
+        table: {
+          headers: ['Step', 'What happens', 'Why it helps'],
+          rows: [
+            ['Free assessment', 'You answer the 42 questions and see the function-stack map', 'You can judge accuracy before paying'],
+            ['Free result review', 'You inspect dominant, inferior, attitude, and stress signals', 'You can compare the result against real life'],
+            ['Optional upgrade', 'Insight or Mastery adds deeper interpretation', 'You only pay if the result earned interest'],
+          ],
+        },
+      },
+      {
+        heading: 'When to upgrade after the free test',
+        body: [
+          'Upgrade only if the map gives you a useful starting point and you want help interpreting the developmental edge behind it.',
+          'Insight is currently CA$7 with TYPEJUNG30 applied on Stripe. It adds the deeper report, stress-pattern reflection map, relationship-pattern reflection, and practice prompts. Mastery adds AI Type Guide support and a practice roadmap.',
+        ],
+        bullets: [
+          'Choose Insight when you want a deeper written report',
+          'Choose Mastery when you want the report plus follow-up coaching tools',
+          'Skip the upgrade if the free map does not feel useful',
+        ],
+        links: [
+          { href: '/pricing', label: 'Compare one-time pricing' },
+          { href: '/cognitive-function-test', label: 'Read the broader cognitive function test guide' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is the cognitive function test really free?',
+        answer: 'Yes. The 42-question assessment and function-stack map are free. Insight and Mastery are optional one-time upgrades after the result is visible.',
+      },
+      {
+        question: 'Do I need an account to take the free test?',
+        answer: 'No. You can start without signup. An account helps save history, share links, and restore paid access across devices.',
+      },
+      {
+        question: 'What do paid reports add?',
+        answer: 'Paid reports add deeper interpretation of your result, including developmental edge, stress-pattern reflection, relationship-pattern reflection, practices, and for Mastery, AI Type Guide support.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/sample-report', label: 'View sample paid report' },
+      { href: '/function-stack-test', label: 'Function stack test' },
+      { href: '/jungian-cognitive-functions-test', label: 'Jungian cognitive functions test' },
+      { href: '/pricing', label: 'See one-time pricing' },
+    ],
+  },
+  {
+    slug: 'function-stack-test',
+    query: 'function stack test',
+    title: 'Function Stack Test - Find Your Jungian Stack | TypeJung',
+    description: 'Use TypeJung as a function stack test to compare dominant, auxiliary, tertiary, and inferior Jungian function signals.',
+    keywords: ['function stack test', 'cognitive function stack test', 'Jungian function stack', 'dominant auxiliary tertiary inferior test'],
+    eyebrow: 'Function stack test',
+    h1: 'A function stack test that shows the pattern behind the label',
+    intro: [
+      'A useful function stack test should not only name a four-letter type. It should show why a dominant function looks likely, what supports it, and where inferior-function pressure appears.',
+      'TypeJung starts from the full function profile, then interprets likely dominant, auxiliary, tertiary, and inferior positions as a working hypothesis.',
+    ],
+    intent: {
+      bestFor: 'People who know cognitive functions and want to test the stack pattern behind their type hypothesis.',
+      measures: 'Dominant, auxiliary, tertiary, and inferior signals across the 8 functions, with attitude direction and stress-edge evidence.',
+      privacy: 'The stack map starts free. Paid interpretation is optional after you have seen the result.',
+    },
+    sections: [
+      {
+        heading: 'What a function stack test should compare',
+        body: [
+          'A stack is a model of how functions organize together. The dominant function is usually the most trusted mode. The auxiliary often supports it from the opposite axis. The inferior marks a less conscious edge that can become visible under stress.',
+          'Because stack interpretation depends on relationships between functions, a good test needs more than one score. It needs a map.',
+        ],
+        bullets: [
+          'Dominant function: the most trusted mode of attention or judgment',
+          'Auxiliary function: the supporting channel that balances the dominant',
+          'Tertiary function: a less central but available support',
+          'Inferior function: the developmental and stress-linked edge',
+        ],
+        links: [
+          { href: '/assessment', label: 'Start the function stack assessment' },
+          { href: '/inferior-function-test', label: 'Understand the inferior-function edge' },
+        ],
+      },
+      {
+        heading: 'Why your stack result may need interpretation',
+        body: [
+          'Function stack tests can feel confusing when two functions score close together or when stress makes the inferior signal loud. That does not always mean the test failed. It may mean the pattern needs careful reading.',
+          'TypeJung treats the stack as a hypothesis. The free result gives you the map, and the optional paid report explains how that pattern may show up in development, conflict, and daily practice.',
+        ],
+        table: {
+          headers: ['Result pattern', 'What it may mean', 'Next check'],
+          rows: [
+            ['High dominant and auxiliary scores', 'A stable leading pattern may be visible', 'Read both function guides'],
+            ['Close scores across several functions', 'Context may be shaping the result', 'Compare real situations before forcing type'],
+            ['Inferior signal feels strong', 'Stress may be amplifying the edge', 'Read stress and grip material carefully'],
+            ['Type label feels close but incomplete', 'The stack may need interpretation beyond stereotypes', 'Use the sample report to inspect depth'],
+          ],
+        },
+      },
+      {
+        heading: 'From stack to practical use',
+        body: [
+          'The point of a function stack test is not to memorize a label. The point is to recognize the pattern when it appears in decisions, relationships, stress, and recovery.',
+          'After the free map, use the dominant-inferior axis as a practical self-observation tool: what do you over-trust, what do you avoid, and what brings you back into balance?',
+        ],
+        links: [
+          { href: '/sample-report', label: 'View the paid report sample' },
+          { href: '/pricing', label: 'Compare Free, Insight, and Mastery' },
+          { href: '/cognitive-functions', label: 'Review all 8 functions' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Can TypeJung find my exact function stack?',
+        answer: 'TypeJung gives a likely stack pattern and function evidence. Treat it as a structured hypothesis rather than a final identity verdict.',
+      },
+      {
+        question: 'Does the test show dominant and inferior functions?',
+        answer: 'Yes. The free result includes a likely dominant-inferior axis and a broader hierarchy of function signals.',
+      },
+      {
+        question: 'Is a function stack the same as a type label?',
+        answer: 'No. A type label summarizes a pattern, while a stack describes the functions that may be organizing that pattern.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the function stack test' },
+      { href: '/free-cognitive-function-test', label: 'Free cognitive function test' },
+      { href: '/jungian-personality-test', label: 'Jungian personality test' },
+      { href: '/inferior-function-test', label: 'Inferior function test' },
+      { href: '/sample-report', label: 'View sample report' },
+    ],
+  },
+  {
+    slug: 'jungian-personality-test',
+    query: 'Jungian personality test',
+    title: 'Jungian Personality Test - Cognitive Function Map | TypeJung',
+    description: 'Take a Jungian personality test that maps cognitive functions, likely type pattern, stress edge, and self-reflection themes.',
+    keywords: ['Jungian personality test', 'Carl Jung personality test', 'Jung personality types test', 'Jungian type test'],
+    eyebrow: 'Jungian personality test',
+    h1: 'A Jungian personality test built around cognitive functions',
+    intro: [
+      'A Jungian personality test should help you understand how attention and judgment organize themselves, not only attach a short label to your identity.',
+      'TypeJung maps the cognitive-function pattern behind a likely type result, then gives you a free map before any optional paid interpretation.',
+    ],
+    intent: {
+      bestFor: 'Searchers who want a Jungian personality test with type language, cognitive functions, and practical self-reflection.',
+      measures: 'Function energy, attitude direction, likely type pattern, dominant-inferior tension, stress signals, and developmental edge.',
+      privacy: 'Educational self-reflection only. Start free, then upgrade only if the result feels worth deeper interpretation.',
+    },
+    sections: [
+      {
+        heading: 'How Jungian personality differs from trait quizzes',
+        body: [
+          'Many personality quizzes ask whether you are organized, emotional, social, or imaginative. Jungian typology asks a different question: which psychological functions carry your most habitual energy?',
+          'That is why TypeJung maps function channels and attitude direction from your self-reported answers. The result is a map you can inspect rather than a black-box label.',
+        ],
+        bullets: [
+          'Thinking and feeling as judging patterns',
+          'Sensation and intuition as perceiving patterns',
+          'Introverted and extraverted direction',
+          'Dominant-inferior tension under stress',
+        ],
+        links: [
+          { href: '/assessment', label: 'Start the Jungian personality test' },
+          { href: '/jungian-typology', label: 'Read the Jungian typology guide' },
+        ],
+      },
+      {
+        heading: 'What your result can help you inspect',
+        body: [
+          'The free result helps you compare what feels most natural with what becomes difficult under pressure. That tension is often more useful than a quick type name.',
+          'If the map fits, the optional paid report turns the result into a deeper explanation of stress-pattern reflection, relationship-pattern reflection, and practical next steps.',
+        ],
+        table: {
+          headers: ['Question', 'Free map', 'Optional paid report'],
+          rows: [
+            ['What pattern is strongest?', 'Dominant and supporting function signals', 'A deeper written interpretation'],
+            ['What happens under stress?', 'Inferior-function edge', 'Stress trigger map and repair cues'],
+            ['How do I use this?', 'Next links and core self-reflection', 'Practices and coaching prompts'],
+          ],
+        },
+      },
+      {
+        heading: 'Best path through TypeJung',
+        body: [
+          'Take the free assessment first. Read the result as a working hypothesis. If it gives you language for a pattern you recognize, then use the sample report or pricing page to decide whether deeper interpretation is worth it.',
+        ],
+        links: [
+          { href: '/sample-report', label: 'View the sample paid report' },
+          { href: '/free-cognitive-function-test', label: 'Free cognitive function test' },
+          { href: '/function-stack-test', label: 'Function stack test' },
+          { href: '/pricing', label: 'Compare one-time upgrades' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is TypeJung based on Carl Jung?',
+        answer: 'TypeJung uses Jungian typology language and modern cognitive-function interpretation for educational self-reflection. It is not a clinical assessment.',
+      },
+      {
+        question: 'Will I get a personality type?',
+        answer: 'You get a likely type pattern, but the main output is the function map behind that interpretation.',
+      },
+      {
+        question: 'Can I take the Jungian personality test free?',
+        answer: 'Yes. The core assessment and free map are available before any optional paid report.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the Jungian personality test' },
+      { href: '/jungian-test', label: 'Jungian test' },
+      { href: '/free-cognitive-function-test', label: 'Free cognitive function test' },
+      { href: '/function-stack-test', label: 'Function stack test' },
+      { href: '/sample-report', label: 'View sample report' },
     ],
   },
   {
@@ -955,7 +2785,7 @@ export const seoLandingPages = [
     description: 'Use TypeJung as an INTJ vs INTP test by comparing Ni-Te and Ti-Ne function evidence instead of stereotypes.',
     keywords: ['INTJ vs INTP test', 'INTJ or INTP', 'Ni Te vs Ti Ne', 'INTJ INTP cognitive functions'],
     eyebrow: 'INTJ vs INTP test',
-    h1: 'INTJ vs INTP: test how your thinking actually works',
+    h1: 'INTJ vs INTP: compare your thinking pattern',
     intro: [
       'INTJ and INTP are often compared through shallow stereotypes: planner versus procrastinator, strategist versus philosopher, confident versus detached.',
       'TypeJung makes the comparison more useful by looking at the function pattern: Ni-Te for INTJ-like convergence and execution, Ti-Ne for INTP-like precision and possibility testing.',
@@ -1013,6 +2843,103 @@ export const seoLandingPages = [
       { href: '/types/intp', label: 'INTP type guide' },
     ],
   },
+  ...typeComparisonLandingPages,
+  {
+    slug: 'mbti-mistype-test',
+    query: 'MBTI mistype test',
+    title: 'MBTI Mistype Test - Check Function Evidence Before Your Type | TypeJung',
+    description: 'Use TypeJung as an MBTI mistype test when your type result keeps changing or two labels both feel partly true.',
+    keywords: ['MBTI mistype test', 'am I mistyped MBTI', 'mistyped MBTI test', 'personality type mistype test', 'cognitive functions mistype test'],
+    eyebrow: 'MBTI mistype test',
+    h1: 'Think you were mistyped? Test the function pattern underneath',
+    intro: [
+      'A mistype usually does not get solved by reading more type stereotypes. If two or three labels keep competing, the useful question is what function pattern is actually showing up.',
+      'TypeJung maps all 8 cognitive functions first, then shows a likely type pattern, dominant-inferior axis, and stress edge before any paid report.',
+    ],
+    intent: {
+      bestFor: 'People who suspect an MBTI mistype, keep getting different labels, or are comparing nearby types that both feel partly accurate.',
+      measures: 'All 8 cognitive functions, likely type pattern, dominant and support signals, answer consistency, attitude direction, and inferior-function pressure.',
+      privacy: 'The core mistype check is free. Paid Insight and Mastery reports are optional after you see whether the map feels useful.',
+    },
+    sections: [
+      {
+        heading: 'Why MBTI mistypes happen',
+        body: [
+          'Many MBTI-style tests reduce a complex pattern into four letter choices. That can work for broad sorting, but it becomes unstable when your scores are close, your role changes, or your answers come from stress.',
+          'Mistypes also happen because nearby types can look similar from the outside. INFJ and INFP can both seem introspective and idealistic; INTJ and INTP can both seem analytical and private. The difference usually sits in function order.',
+        ],
+        bullets: [
+          'A work role can make one behavior look stronger than it is',
+          'Stress can make an inferior function feel louder than usual',
+          'Close letter scores can flip the type label without changing the deeper pattern',
+          'Type descriptions can feel true because they mix traits, values, and habits together',
+        ],
+      },
+      {
+        heading: 'What a useful mistype test should compare',
+        body: [
+          'A better mistype test compares the process behind the label. It should ask what leads your attention, what supports it, what becomes awkward under pressure, and whether the result holds together as a whole map.',
+        ],
+        table: {
+          headers: ['Evidence to inspect', 'Why it matters', 'TypeJung path'],
+          rows: [
+            ['Dominant signal', 'The leading function should explain your most trusted mode of attention or judgment', 'The free map estimates the likely dominant function from scenario evidence'],
+            ['Support function', 'Many mistypes happen when the auxiliary is guessed from stereotype instead of pattern', 'The result compares the function stack instead of treating one score as the whole answer'],
+            ['Inferior edge', 'Stress often reveals the opposite pole of the pattern more clearly than normal behavior', 'TypeJung highlights the dominant-inferior axis and stress pressure'],
+            ['Answer consistency', 'A shaky result should be read as a hypothesis, not a verdict', 'The result includes a consistency signal so you know how firmly to read the map'],
+          ],
+        },
+      },
+      {
+        heading: 'Common mistype comparisons',
+        body: [
+          'If you already have two likely labels in mind, compare the specific pair after taking the free assessment. These pages explain the most common function differences behind nearby type results.',
+        ],
+        links: [
+          { href: '/infj-vs-infp-test', label: 'INFJ vs INFP mistype check' },
+          { href: '/intj-vs-intp-test', label: 'INTJ vs INTP mistype check' },
+          { href: '/enfp-vs-entp-test', label: 'ENFP vs ENTP mistype check' },
+          { href: '/isfj-vs-infj-test', label: 'ISFJ vs INFJ mistype check' },
+          { href: '/mistype-investigator-alternative', label: 'Mistype Investigator alternative' },
+        ],
+      },
+      {
+        heading: 'Start with the free function map',
+        body: [
+          'Take the free TypeJung assessment first. Use the result to compare the function evidence behind your suspected type, then decide whether a deeper report is useful after the map earns your trust.',
+        ],
+        links: [
+          { href: '/assessment', label: 'Start the free MBTI mistype test' },
+          { href: '/mbti-keeps-changing', label: 'Why your MBTI keeps changing' },
+          { href: '/sample-report', label: 'Preview the optional Insight report' },
+          { href: '/pricing', label: 'Compare Free, Insight, and Mastery' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Can TypeJung prove my true MBTI type?',
+        answer: 'No test should be treated as final proof. TypeJung gives a likely function-stack map and type pattern so you can inspect the evidence behind a possible mistype.',
+      },
+      {
+        question: 'How do I know if I was mistyped?',
+        answer: 'Look for repeated mismatch between the type label and your function pattern: what leads, what supports it, what gets pressured under stress, and which nearby type explains the whole map better.',
+      },
+      {
+        question: 'Is this MBTI mistype test free?',
+        answer: 'Yes. The 42-question TypeJung assessment and core function-stack map are free. Paid reports are optional after you see the result.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/mistype-investigator-alternative', label: 'Mistype Investigator alternative' },
+      { href: '/mbti-keeps-changing', label: 'Why your MBTI keeps changing' },
+      { href: '/infj-vs-infp-test', label: 'INFJ vs INFP test' },
+      { href: '/intj-vs-intp-test', label: 'INTJ vs INTP test' },
+      { href: '/cognitive-function-test', label: 'Cognitive function test' },
+      { href: '/sample-report', label: 'View sample report' },
+    ],
+  },
   {
     slug: 'mbti-keeps-changing',
     query: 'why does my MBTI keep changing',
@@ -1049,7 +2976,7 @@ export const seoLandingPages = [
       {
         heading: 'Use TypeJung when the label is not enough',
         body: [
-          'The free assessment shows a core energy map and likely type pattern. If the map feels accurate, optional Insight and Mastery reports add deeper stress, relationship, and growth interpretation.',
+          'The free assessment shows a function-stack map and likely type pattern. If the map feels accurate, optional Insight and Mastery reports add deeper stress, relationship, and growth interpretation.',
         ],
       },
     ],
@@ -1089,7 +3016,7 @@ export const seoLandingPages = [
     intent: {
       bestFor: 'People searching specifically for a Jungian cognitive functions test, function stack test, or full Ni Ne Si Se Ti Te Fi Fe assessment.',
       measures: 'Introverted and extraverted attitudes across intuition, sensing, thinking, and feeling, plus likely type pattern and dominant-inferior interpretation.',
-      privacy: 'Use the free core map first. Paid interpretation is optional and should only be used if the map feels accurate.',
+      privacy: 'Use the free function-stack map first. Paid interpretation is optional and should only be used if the map feels accurate.',
     },
     sections: [
       {
@@ -1114,8 +3041,8 @@ export const seoLandingPages = [
       {
         heading: 'What the free result includes',
         body: [
-          'The free result gives you the main energy map and likely function pattern. It is enough to start comparing your type hypothesis against real self-observation.',
-          'Paid reports are optional and add deeper interpretation only after you have seen the core map and decided that the result is useful.',
+          'The free result gives you the main function-stack map and likely function pattern. It is enough to start comparing your type hypothesis against real self-observation.',
+          'Paid reports are optional and add deeper interpretation only after you have seen the function-stack map and decided that the result is useful.',
         ],
         bullets: [
           'Relative scores for all 8 function-attitudes',
@@ -1172,11 +3099,11 @@ export const seoLandingPages = [
     faqs: [
       {
         question: 'What is a Jungian cognitive functions test?',
-        answer: 'A Jungian cognitive functions test measures the function-attitudes behind type: Ni, Ne, Si, Se, Ti, Te, Fi, and Fe. The goal is to show a pattern, not only a type code.',
+        answer: 'A Jungian cognitive functions test maps self-reported patterns around the function-attitudes behind type: Ni, Ne, Si, Se, Ti, Te, Fi, and Fe. The goal is to show a pattern, not only a type code.',
       },
       {
         question: 'Does TypeJung test all 8 Jungian cognitive functions?',
-        answer: 'Yes. It measures Ni, Ne, Si, Se, Ti, Te, Fi, and Fe as a profile rather than relying only on broad dichotomies.',
+        answer: 'Yes. It maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe as a self-report profile rather than relying only on broad dichotomies.',
       },
       {
         question: 'Is this different from an MBTI test?',
@@ -1184,7 +3111,7 @@ export const seoLandingPages = [
       },
       {
         question: 'Can I take the Jungian cognitive functions test without paying?',
-        answer: 'Yes. The 42-question assessment and core energy map are free. Insight and Mastery are optional one-time CAD upgrades.',
+        answer: 'Yes. The 42-question assessment and function-stack map are free. Insight and Mastery are optional one-time CAD upgrades.',
       },
     ],
     relatedLinks: [
@@ -1222,9 +3149,9 @@ export const seoLandingPages = [
         ],
       },
       {
-        heading: 'Why TypeJung starts with the energy map',
+        heading: 'Why TypeJung starts with the function-stack map',
         body: [
-          'A four-letter type can be useful shorthand, but it can also flatten the person. TypeJung starts with an energy map because the relative pattern between functions usually explains more than a single label.',
+          'A four-letter type can be useful shorthand, but it can also flatten the person. TypeJung starts with a function-stack map because the relative pattern between functions usually explains more than a single label.',
           'After the assessment, you can compare your strongest channels, likely type pattern, and inferior-function pressure before deciding whether you want a deeper paid report.',
         ],
       },
@@ -1266,7 +3193,7 @@ export const seoLandingPages = [
     h1: 'Understand the 8 Jungian cognitive functions',
     intro: [
       'The 8 cognitive functions are the working parts behind Jungian type. They describe how attention gathers information and how judgment makes decisions.',
-      'TypeJung measures these functions through a 42-question assessment, then turns the scores into an energy map, likely type pattern, and educational self-reflection.',
+      'TypeJung maps these functions through a 42-question self-report assessment, then turns the scores into a function-stack map, likely type pattern, and educational self-reflection.',
     ],
     sections: [
       {
@@ -1343,7 +3270,7 @@ export const seoLandingPages = [
         bullets: [
           'Use the result as a starting hypothesis',
           'Notice where stress creates overreaction or avoidance',
-          'Look for repeated reactions and relationship triggers',
+          'Look for repeated reactions and relationship patterns',
           'Work with a qualified professional for severe or persistent distress',
         ],
       },

@@ -1,6 +1,15 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { trackPageView, AnalyticsEvents, isAnalyticsEnabled } from '../lib/analytics';
+import { captureAcquisitionSourceFromLocation } from '../lib/acquisition-source';
+
+const analyticsAttribution = (acquisition: ReturnType<typeof captureAcquisitionSourceFromLocation>) => ({
+  utmCampaign: acquisition?.utmCampaign,
+  utmSource: acquisition?.utmSource,
+  sharedResult: acquisition?.sharedResult,
+  parentSource: acquisition?.parentSource,
+  sourceChain: acquisition?.sourceChain,
+});
 
 /**
  * Hook to track page views on route changes
@@ -11,16 +20,18 @@ export function usePageTracking() {
   const trackedPaths = useRef<Set<string>>(new Set());
 
   useEffect(() => {
+    const fullPath = `${location.pathname}${location.search}${location.hash}`;
+    const analyticsPath = location.pathname;
+    captureAcquisitionSourceFromLocation(location.search, fullPath, document.referrer);
+
     if (!isAnalyticsEnabled()) return;
 
-    const path = location.pathname + location.hash;
-    
     // Avoid duplicate tracking
-    if (trackedPaths.current.has(path)) return;
-    trackedPaths.current.add(path);
+    if (trackedPaths.current.has(analyticsPath)) return;
+    trackedPaths.current.add(analyticsPath);
 
     // Track page view when route changes
-    trackPageView(path);
+    trackPageView(analyticsPath);
   }, [location]);
 }
 
@@ -50,8 +61,11 @@ export function useAssessmentTracking() {
       state.current.isTracking = true;
       state.current.answeredQuestions.clear();
       state.current.questionStartTimes.clear();
-      
-      AnalyticsEvents.assessmentStarted('assessment_page', window.location.pathname);
+
+      const path = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+      const acquisition = captureAcquisitionSourceFromLocation(window.location.search, path, document.referrer);
+
+      AnalyticsEvents.assessmentStarted(acquisition?.source || 'assessment_page', path, analyticsAttribution(acquisition));
     } catch (error) {
       console.warn('Analytics: Failed to track assessment start:', error);
     }
@@ -95,7 +109,15 @@ export function useAssessmentTracking() {
         console.warn('Analytics: Very long completion time:', timeSpentSeconds);
       }
 
-      AnalyticsEvents.assessmentCompleted(Math.min(timeSpentSeconds, 7200));
+      const path = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+      const acquisition = captureAcquisitionSourceFromLocation(window.location.search, path, document.referrer);
+
+      AnalyticsEvents.assessmentCompleted(
+        Math.min(timeSpentSeconds, 7200),
+        acquisition?.source || 'assessment_page',
+        path,
+        analyticsAttribution(acquisition),
+      );
       state.current.isTracking = false;
     } catch (error) {
       console.warn('Analytics: Failed to track assessment completion:', error);
@@ -106,7 +128,10 @@ export function useAssessmentTracking() {
     if (!isAnalyticsEnabled() || !state.current.isTracking) return;
 
     try {
-      AnalyticsEvents.assessmentAbandoned(questionNumber);
+      const path = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+      const acquisition = captureAcquisitionSourceFromLocation(window.location.search, path, document.referrer);
+
+      AnalyticsEvents.assessmentAbandoned(questionNumber, acquisition?.source || 'assessment_page', analyticsAttribution(acquisition));
       state.current.isTracking = false;
     } catch (error) {
       console.warn('Analytics: Failed to track assessment abandon:', error);

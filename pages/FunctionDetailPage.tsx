@@ -28,6 +28,17 @@ const functionIcons: Record<FunctionCode, string> = {
   fe: 'Users',
 };
 
+const inferiorCounterpart: Record<FunctionCode, FunctionCode> = {
+  ni: 'se',
+  ne: 'si',
+  si: 'ne',
+  se: 'ni',
+  ti: 'fe',
+  te: 'fi',
+  fi: 'te',
+  fe: 'ti',
+};
+
 export const FunctionDetailPage: React.FC = () => {
   const { fn } = useParams<{ fn: string }>();
   const navigate = useNavigate();
@@ -66,6 +77,8 @@ export const FunctionDetailPage: React.FC = () => {
 
   const seo = functionSEO[fnLower];
   const data = functionData[fnLower];
+  const attitudeCounterpart = data.oppositeFunction.toLowerCase() as FunctionCode;
+  const inferior = inferiorCounterpart[fnLower];
 
   return (
     <div className="min-h-screen bg-jung-surface">
@@ -115,7 +128,7 @@ export const FunctionDetailPage: React.FC = () => {
         </section>
 
         {/* Quick Facts */}
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+        <section className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12">
           <div className="bg-white rounded-xl p-4 shadow-sm border border-jung-border">
             <span className="text-xs text-jung-muted uppercase tracking-wider">Attitude</span>
             <p className="font-semibold text-jung-dark">{data.attitude}</p>
@@ -125,9 +138,15 @@ export const FunctionDetailPage: React.FC = () => {
             <p className="font-semibold text-jung-dark">{data.category}</p>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm border border-jung-border">
-            <span className="text-xs text-jung-muted uppercase tracking-wider">Opposite</span>
-            <Link to={`/functions/${data.oppositeFunction.toLowerCase()}`} className="font-semibold text-jung-accent hover:underline">
+            <span className="text-xs text-jung-muted uppercase tracking-wider">Attitude counterpart</span>
+            <Link to={`/functions/${attitudeCounterpart}`} className="font-semibold text-jung-accent hover:underline">
               {data.oppositeFunction}
+            </Link>
+          </div>
+          <div className="bg-white rounded-xl p-4 shadow-sm border border-jung-border">
+            <span className="text-xs text-jung-muted uppercase tracking-wider">Inferior counterpart</span>
+            <Link to={`/functions/${inferior}`} className="font-semibold text-jung-accent hover:underline">
+              {functionData[inferior].code}
             </Link>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm border border-jung-border">
@@ -262,7 +281,7 @@ export const FunctionDetailPage: React.FC = () => {
             Want to know your {data.code} score?
           </h2>
           <p className="text-jung-secondary mb-8 max-w-lg mx-auto">
-            Take our free assessment to measure all 8 cognitive functions and see your educational TypeJung result.
+            Take our free assessment to map self-reported patterns across all 8 cognitive functions and see your educational TypeJung result.
           </p>
           <Button onClick={() => navigate('/assessment')} size="lg">
             Take the Free Assessment

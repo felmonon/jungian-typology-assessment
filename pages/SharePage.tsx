@@ -1,11 +1,121 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 import { FUNCTION_DESCRIPTIONS } from '../data/questions';
 import { ATTITUDE_LABELS, FUNCTION_LABELS } from '../data/depthAssessment';
 import { Button } from '../components/ui/Button';
-import { ArrowRight, Loader2 } from 'lucide-react';
+import { ArrowRight, FileText, Loader2 } from 'lucide-react';
 import { extractDepthResult } from '../utils/depthCompatibility';
+import { AnalyticsEvents, trackEvent } from '../lib/analytics';
+import { pathWithSource } from '../lib/acquisition-source';
+import { useSEO } from '../hooks/useSEO';
+
+const SHARED_RESULT_CAMPAIGN = 'shared_result_compare';
+
+const cleanShareParam = (value: string | null | undefined): string | undefined => {
+  if (!value) return undefined;
+  const cleaned = value
+    .trim()
+    .replace(/[^a-zA-Z0-9_-]/g, '_')
+    .replace(/_+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .slice(0, 80);
+
+  return cleaned || undefined;
+};
+
+const buildSharedResultHref = (
+  path: string,
+  source: string,
+  slug: string | undefined,
+  search: string,
+) => {
+  const params = new URLSearchParams(search);
+
+  return pathWithSource(path, source, {
+    ref: 'shared_result',
+    utm_campaign: cleanShareParam(params.get('utm_campaign')) || SHARED_RESULT_CAMPAIGN,
+    shared_result: cleanShareParam(slug),
+    parent_source: cleanShareParam(params.get('source')),
+  });
+};
+
+const trackSharedResultCta = (ctaName: string, buttonText: string, destination: string, sharedSlug?: string) => {
+  AnalyticsEvents.ctaClicked(ctaName, 'shared_result_page', {
+    buttonText,
+    destination,
+  });
+  trackEvent('shared_result_cta_clicked', {
+    cta_name: ctaName,
+    destination,
+    shared_result: cleanShareParam(sharedSlug) || 'unknown',
+  });
+};
+
+const SharedResultStickyCta: React.FC<{ assessmentHref: string; sharedSlug?: string }> = ({ assessmentHref, sharedSlug }) => (
+  <div className="fixed inset-x-0 bottom-0 z-40 border-t border-jung-border bg-jung-surface/95 shadow-[0_-12px_32px_rgba(41,28,18,0.14)] backdrop-blur lg:hidden">
+    <div className="mx-auto grid max-w-screen-sm grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3">
+      <div className="min-w-0">
+        <p className="truncate text-sm font-semibold text-jung-dark">Compare your own map</p>
+        <p className="mt-0.5 text-xs leading-4 text-jung-muted">Free, no card, 42 questions.</p>
+      </div>
+      <Link
+        to={assessmentHref}
+        onClick={() => trackSharedResultCta('shared_result_sticky_start_assessment', 'Start free', assessmentHref, sharedSlug)}
+      >
+        <Button variant="accent" size="sm" className="flex-none" rightIcon={<ArrowRight className="h-4 w-4" />}>
+          Start free
+        </Button>
+      </Link>
+    </div>
+  </div>
+);
+
+const ComparisonPrompt: React.FC<{
+  sharedLabel: string;
+  sharedDetail: string;
+  ctaName: string;
+  assessmentHref: string;
+  sharedSlug?: string;
+}> = ({ sharedLabel, sharedDetail, ctaName, assessmentHref, sharedSlug }) => (
+  <section className="mt-8 rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm sm:p-6">
+    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+      <div>
+        <p className="text-label">Compare maps</p>
+        <h2 className="mt-2 text-2xl font-semibold text-jung-dark">Put your pattern beside this one.</h2>
+        <p className="mt-3 max-w-3xl text-sm leading-6 text-jung-secondary">
+          This shared result gives you one side of the comparison. Take the free assessment to see your own dominant channel, developmental edge, and answer consistency before any paid report.
+        </p>
+      </div>
+      <Link
+        to={assessmentHref}
+        onClick={() => trackSharedResultCta(ctaName, 'Compare my free result', assessmentHref, sharedSlug)}
+      >
+        <Button variant="accent" size="lg" className="w-full min-h-[48px]" rightIcon={<ArrowRight className="h-5 w-5" />}>
+          Compare my free result
+        </Button>
+      </Link>
+    </div>
+
+    <div className="mt-6 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:items-stretch">
+      <div className="rounded-lg border border-jung-border bg-jung-base p-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted">Their map</p>
+        <p className="mt-3 text-xl font-semibold text-jung-dark">{sharedLabel}</p>
+        <p className="mt-2 text-sm leading-6 text-jung-secondary">{sharedDetail}</p>
+      </div>
+      <div className="hidden items-center justify-center text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted sm:flex">
+        versus
+      </div>
+      <div className="rounded-lg border border-dashed border-jung-accent-muted bg-jung-accent-light/60 p-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.08em] text-jung-accent">Your map</p>
+        <p className="mt-3 text-xl font-semibold text-jung-dark">Unknown until you answer</p>
+        <p className="mt-2 text-sm leading-6 text-jung-secondary">
+          See whether your energy concentrates in the same channel, its opposite, or a different axis entirely.
+        </p>
+      </div>
+    </div>
+  </section>
+);
 
 interface SharedResult {
   id: string;
@@ -24,9 +134,18 @@ interface SharedResult {
 
 export const SharePage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
+  const location = useLocation();
   const [result, setResult] = useState<SharedResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const assessmentHref = useMemo(
+    () => buildSharedResultHref('/assessment', 'shared_result_cta', slug, location.search),
+    [location.search, slug],
+  );
+  const sampleHref = useMemo(
+    () => buildSharedResultHref('/sample-report', 'shared_result_sample', slug, location.search),
+    [location.search, slug],
+  );
 
   useEffect(() => {
     const fetchResult = async () => {
@@ -54,6 +173,29 @@ export const SharePage: React.FC = () => {
     }
   }, [slug]);
 
+  useEffect(() => {
+    if (!result) return;
+
+    trackEvent('shared_result_viewed', {
+      result_type: extractDepthResult(result) ? 'depth_energy_map' : 'legacy_profile',
+    });
+  }, [result]);
+
+  const depthResult = result ? extractDepthResult(result) : null;
+  const sharedTitle = depthResult
+    ? `${ATTITUDE_LABELS[depthResult.attitude.dominant]} ${FUNCTION_LABELS[depthResult.dominant]} Shared TypeJung Map`
+    : result
+      ? `${result.stack.dominant.function} Shared TypeJung Result`
+      : 'Shared TypeJung Result';
+
+  useSEO({
+    title: `${sharedTitle} | TypeJung`,
+    description: 'A shared TypeJung result. Take the free Jungian cognitive functions assessment to compare your own function-stack map.',
+    type: 'article',
+    url: slug ? `/share/${slug}` : '/share',
+    noIndex: true,
+  });
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-jung-surface px-4">
@@ -74,7 +216,7 @@ export const SharePage: React.FC = () => {
           </div>
           <h1 className="text-xl md:text-2xl font-serif font-bold text-jung-dark mb-3">Result Not Found</h1>
           <p className="text-jung-secondary mb-6 text-sm md:text-base">{error || 'This shared result could not be found.'}</p>
-          <Link to="/">
+          <Link to={assessmentHref} onClick={() => trackSharedResultCta('missing_shared_result_start_assessment', 'Take Your Own Assessment', assessmentHref, slug)}>
             <Button className="w-full sm:w-auto min-h-[48px]">Take Your Own Assessment</Button>
           </Link>
         </div>
@@ -82,29 +224,73 @@ export const SharePage: React.FC = () => {
     );
   }
 
-  const depthResult = extractDepthResult(result);
   if (depthResult) {
+    const sharedLabel = `${ATTITUDE_LABELS[depthResult.attitude.dominant]} ${FUNCTION_LABELS[depthResult.dominant]}`;
+    const sharedDetail = `${FUNCTION_LABELS[depthResult.inferior]} is shown as the developmental edge with ${depthResult.reliability.score}% answer consistency.`;
+
     return (
-      <div className="editorial-container py-8 md:py-12">
+      <div className="editorial-container pb-28 pt-8 md:py-12 lg:pb-12">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
             <img src="/logo.svg" alt="TypeJung" className="w-10 h-10" />
             <span className="text-xs md:text-sm font-data font-bold tracking-widest uppercase text-jung-secondary">
-              TypeJung Energy Map
+              TypeJung Function-Stack Map
             </span>
           </div>
-          <p className="text-jung-muted text-sm md:text-base">Someone shared their Jungian energy map with you</p>
+          <p className="text-jung-muted text-sm md:text-base">Someone shared their Jungian function-stack map with you</p>
         </div>
+
+        <section className="mb-8 rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm sm:p-6">
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+            <div>
+              <p className="text-label">Shared result</p>
+              <h2 className="mt-2 text-2xl font-semibold text-jung-dark">
+                Compare this map with your own free result.
+              </h2>
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-jung-secondary">
+                Their dominant channel is {ATTITUDE_LABELS[depthResult.attitude.dominant]} {FUNCTION_LABELS[depthResult.dominant]}. Take the same 42-question assessment to see which functions lead in your own map before deciding whether any paid report is useful.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2 text-xs text-jung-muted">
+                {['Free first', 'No card needed', 'All 8 functions mapped'].map((item) => (
+                  <span key={item} className="rounded-lg border border-jung-border bg-jung-base px-3 py-1.5 font-semibold">
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2 lg:min-w-[23rem]">
+              <Link to={assessmentHref} onClick={() => trackSharedResultCta('shared_depth_start_assessment', 'Take my free assessment', assessmentHref, slug)}>
+                <Button variant="accent" size="lg" className="w-full min-h-[48px]">
+                  Take my free assessment <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+              <Link to={sampleHref} onClick={() => trackSharedResultCta('shared_depth_view_sample_report', 'View sample report', sampleHref, slug)}>
+                <Button variant="outline" size="lg" className="w-full min-h-[48px]">
+                  <FileText className="mr-2 h-5 w-5" />
+                  View sample report
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
 
         <div className="rounded-lg border border-jung-border bg-jung-dark p-7 text-white shadow-xl sm:p-10">
           <p className="text-sm font-semibold text-white/60">Dominant energy channel</p>
           <h1 className="mt-4 text-display text-5xl text-white sm:text-6xl">
-            {ATTITUDE_LABELS[depthResult.attitude.dominant]} {FUNCTION_LABELS[depthResult.dominant]}
+            {sharedLabel}
           </h1>
           <p className="mt-5 max-w-3xl text-lg leading-8 text-white/75">
             {depthResult.narrative.energyMap}
           </p>
         </div>
+
+        <ComparisonPrompt
+          sharedLabel={sharedLabel}
+          sharedDetail={sharedDetail}
+          ctaName="shared_depth_comparison_start_assessment"
+          assessmentHref={assessmentHref}
+          sharedSlug={slug}
+        />
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_0.75fr]">
           <div className="card-elevated rounded-lg p-6">
@@ -140,17 +326,18 @@ export const SharePage: React.FC = () => {
 
         <div className="mt-8 rounded-lg border border-jung-border bg-jung-surface p-6 md:p-10 text-center">
           <h2 className="text-xl md:text-2xl font-serif font-bold text-jung-dark mb-3">
-            Build your own energy map
+            Build your own function-stack map
           </h2>
           <p className="text-jung-secondary mb-6 max-w-xl mx-auto text-sm md:text-base">
-            Take the 42-question depth assessment to map where your energy flows and where it gets stuck.
+            Take the 42-question assessment to map which functions lead, support, and tighten under stress.
           </p>
-          <Link to="/assessment">
+          <Link to={assessmentHref} onClick={() => trackSharedResultCta('shared_depth_bottom_start_assessment', 'Take your own assessment', assessmentHref, slug)}>
             <Button variant="accent" size="lg" className="w-full sm:w-auto min-h-[48px]">
               Take your own assessment <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </Link>
         </div>
+        <SharedResultStickyCta assessmentHref={assessmentHref} sharedSlug={slug} />
       </div>
     );
   }
@@ -164,7 +351,7 @@ export const SharePage: React.FC = () => {
   }));
 
   return (
-    <div className="editorial-container py-8 md:py-12">
+    <div className="editorial-container pb-28 pt-8 md:py-12 lg:pb-12">
       {/* Header */}
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-3 mb-4">
@@ -175,6 +362,33 @@ export const SharePage: React.FC = () => {
         </div>
         <p className="text-jung-muted text-sm md:text-base">Someone shared their psychological type profile with you</p>
       </div>
+
+      <section className="mb-8 rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm sm:p-6">
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+          <div>
+            <p className="text-label">Shared result</p>
+            <h2 className="mt-2 text-2xl font-semibold text-jung-dark">
+              Want your own map beside this one?
+            </h2>
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-jung-secondary">
+              This shared profile shows one person&apos;s function pattern. Take the free TypeJung assessment to compare your own cognitive-function stack and see whether the result feels accurate.
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:min-w-[23rem]">
+            <Link to={assessmentHref} onClick={() => trackSharedResultCta('shared_legacy_start_assessment', 'Take my free assessment', assessmentHref, slug)}>
+              <Button variant="accent" size="lg" className="w-full min-h-[48px]">
+                Take my free assessment <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Link to={sampleHref} onClick={() => trackSharedResultCta('shared_legacy_view_sample_report', 'View sample report', sampleHref, slug)}>
+              <Button variant="outline" size="lg" className="w-full min-h-[48px]">
+                <FileText className="mr-2 h-5 w-5" />
+                View sample report
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* Hero card */}
       <div className="bg-jung-dark text-white p-6 md:p-10 rounded-2xl mb-8 shadow-xl">
@@ -189,8 +403,16 @@ export const SharePage: React.FC = () => {
         </div>
       </div>
 
+      <ComparisonPrompt
+        sharedLabel={`${funcDescription?.title || dominantFunc} (${dominantFunc})`}
+        sharedDetail={`This shared profile leads with ${dominantFunc}. Your own map may share the same lead, invert the axis, or point somewhere else.`}
+        ctaName="shared_legacy_comparison_start_assessment"
+        assessmentHref={assessmentHref}
+        sharedSlug={slug}
+      />
+
       {/* Content grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+      <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         {/* Radar chart */}
         <div className="card-elevated p-6 rounded-2xl">
           <h3 className="text-sm md:text-base font-data font-bold text-jung-secondary mb-4 tracking-widest uppercase text-center">
@@ -256,7 +478,7 @@ export const SharePage: React.FC = () => {
         <p className="text-jung-secondary mb-6 max-w-xl mx-auto text-sm md:text-base">
           Take the TypeJung assessment to uncover your dominant cognitive functions and receive a personalized analysis based on Carl Jung's theory of psychological types.
         </p>
-        <Link to="/assessment">
+        <Link to={assessmentHref} onClick={() => trackSharedResultCta('shared_legacy_bottom_start_assessment', 'Take Your Own Assessment', assessmentHref, slug)}>
           <Button variant="accent" size="lg" className="w-full sm:w-auto min-h-[48px]">
             Take Your Own Assessment <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
@@ -267,6 +489,7 @@ export const SharePage: React.FC = () => {
       <div className="text-center text-xs text-jung-muted mt-8 pt-6 border-t border-jung-border">
         <p>Based on the typological work of Carl Gustav Jung (Psychological Types, CW Vol. 6)</p>
       </div>
+      <SharedResultStickyCta assessmentHref={assessmentHref} sharedSlug={slug} />
     </div>
   );
 };

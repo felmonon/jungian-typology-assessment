@@ -44,6 +44,9 @@ export const ShareSection: React.FC<ShareSectionProps> = ({
         </div>
 
         <h3 className="text-display text-2xl text-jung-dark dark:text-white mb-8">Share Your Profile</h3>
+        <p className="mb-6 text-sm leading-6 text-jung-secondary dark:text-dark-muted">
+          Anyone with the link can view this shared result. Do not share it if you want the result kept private.
+        </p>
 
         <div className="grid grid-cols-2 gap-4 mb-8">
           <button
@@ -82,7 +85,7 @@ export const ShareSection: React.FC<ShareSectionProps> = ({
               )}
             </AnimatePresence>
             <span className={`text-xs font-bold uppercase tracking-widest ${linkCopied ? 'text-jung-accent' : 'text-jung-muted'}`}>
-              {linkCopied ? 'Link Copied!' : 'Copy Private Link'}
+              {linkCopied ? 'Link Copied!' : 'Copy Share Link'}
             </span>
           </button>
         </div>

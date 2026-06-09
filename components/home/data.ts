@@ -1,4 +1,5 @@
 import { Compass, Brain, Sparkles, FileText, Target } from 'lucide-react';
+import { discountedPriceLabel, EMAIL_CAPTURE_OFFER } from '../../data/discount';
 import { PRICING } from '../../data/pricing';
 import { AnalyticsEvents } from '../../lib/analytics';
 
@@ -30,7 +31,7 @@ export const FAQ_ITEMS = [
   },
   {
     question: "Why should I pay when other tests are free?",
-    answer: `You do not have to pay first. The free assessment gives you the core map. Insight (${PRICING.insight.price}) adds deeper interpretation and practice guidance. Mastery (${PRICING.mastery.price}) adds the AI Type Coach and ongoing growth tools.`
+    answer: `You do not have to pay first. The free assessment gives you the function-stack map. Insight is ${discountedPriceLabel(PRICING.insight.amount)} with ${EMAIL_CAPTURE_OFFER.code} applied on Stripe, and Mastery is ${discountedPriceLabel(PRICING.mastery.amount)} with the same code.`
   },
   {
     question: "What if I don't like my results?",
@@ -110,7 +111,7 @@ export const COMPARISON_ROWS = [
   { label: 'Depth', values: ['Type label', 'Motivation label', 'Trait scores', 'Function and stress map'] },
   { label: 'Personalization', values: ['Generic descriptions', 'Generic descriptions', 'Statistical placement', 'Interpretation tied to your map'] },
   { label: 'Growth path', values: ['Read about type', 'Work on "wing"', 'None', 'Individuation roadmap'] },
-  { label: 'Price', values: ['Paid report', 'Paid report', 'Free and paid reports', `Free / ${PRICING.insight.price} / ${PRICING.mastery.price}`] }
+  { label: 'Price', values: ['Paid report', 'Paid report', 'Free and paid reports', `Free / ${discountedPriceLabel(PRICING.insight.amount)} / ${discountedPriceLabel(PRICING.mastery.amount)} with ${EMAIL_CAPTURE_OFFER.code}`] }
 ];
 
 export const PRICING_TIERS = [
@@ -128,10 +129,12 @@ export const PRICING_TIERS = [
   {
     name: 'INSIGHT',
     price: PRICING.insight.price,
+    discountedPrice: discountedPriceLabel(PRICING.insight.amount),
+    priceNote: `${EMAIL_CAPTURE_OFFER.code} auto-applies on Stripe`,
     amount: PRICING.insight.amount,
     icon: Brain,
     description: 'Understand What It Means',
-    features: ['Deeper report', 'Stress pattern map', 'Relationship triggers', 'Somatic practices'],
+    features: ['Deeper report', 'Stress-pattern map', 'Relationship-pattern reflection', 'Practice prompts'],
     cta: 'Review Insight',
     popular: true,
     variant: 'accent' as const,
@@ -139,10 +142,12 @@ export const PRICING_TIERS = [
   {
     name: 'MASTERY',
     price: PRICING.mastery.price,
+    discountedPrice: discountedPriceLabel(PRICING.mastery.amount),
+    priceNote: `${EMAIL_CAPTURE_OFFER.code} auto-applies on Stripe`,
     amount: PRICING.mastery.amount,
     icon: Sparkles,
     description: 'Practice With Guidance',
-    features: ['AI Type Coach', 'Growth exercises', 'Individuation roadmap', 'Everything in Insight'],
+    features: ['AI Type Guide', 'Growth exercises', 'Individuation roadmap', 'Everything in Insight'],
     cta: 'Review Mastery',
     popular: false,
     variant: 'primary' as const,

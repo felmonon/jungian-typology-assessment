@@ -1,5 +1,6 @@
 import './server/load-env';
 import express from 'express';
+import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import { rateLimit } from 'express-rate-limit';
 import helmet from 'helmet';
@@ -7,6 +8,7 @@ import { getUncachableStripeClient } from './stripeClient';
 import { setupAuth, registerAuthRoutes } from './server/integrations/auth';
 import { registerResultsRoutes } from './server/routes/results';
 import { registerAdminRoutes } from './server/routes/admin';
+import { registerAnalyticsRoutes } from './server/routes/analytics';
 import { registerHealthRoutes } from './server/routes/health';
 import { sendPdfEmail } from './server/resend';
 import { db } from './server/db';
@@ -17,7 +19,8 @@ import { handleChatMessage } from './server/chat';
 import { z } from 'zod';
 import { requestLogger, errorLogger } from './server/middleware/logger';
 import { validate, schemas } from './server/middleware/validate';
-import { getStripePriceIdForTier, getStripeWebhookSecret, resolveCheckoutBaseUrl } from './server/checkout';
+import { findActivePromotionCodeId, getAutoPromotionCode, getStripePriceIdForTier, getStripeWebhookSecret, resolveCheckoutBaseUrl } from './server/checkout';
+import { serveGeneratedStaticPages } from './server/static-pages';
 
 const analysisInputSchema = z.object({
   scores: z.array(z.object({
@@ -215,6 +218,7 @@ async function startServer() {
   registerAuthRoutes(app);
   registerResultsRoutes(app);
   registerAdminRoutes(app);
+  registerAnalyticsRoutes(app);
   registerHealthRoutes(app);
 
   app.get('/api/premium-status', async (req: any, res) => {
@@ -277,6 +281,10 @@ async function startServer() {
       }
 
       const baseUrl = resolveCheckoutBaseUrl(req.headers.origin, req.headers.host);
+      const autoPromotionCode = getAutoPromotionCode();
+      const activePromotionCodeId = autoPromotionCode
+        ? await findActivePromotionCodeId(stripe, autoPromotionCode)
+        : null;
 
       const sessionParams: any = {
         mode: 'payment',
@@ -289,12 +297,23 @@ async function startServer() {
         ],
         success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${baseUrl}/results`,
-        allow_promotion_codes: true,
         metadata: {
           product: 'jungian_assessment_premium',
           tier: resolvedTier,
         },
       };
+
+      if (activePromotionCodeId) {
+        sessionParams.discounts = [{ promotion_code: activePromotionCodeId }];
+        sessionParams.metadata.discount_code = autoPromotionCode;
+        sessionParams.payment_intent_data = {
+          metadata: {
+            discount_code: autoPromotionCode,
+          },
+        };
+      } else {
+        sessionParams.allow_promotion_codes = true;
+      }
 
       if (req.isAuthenticated && req.isAuthenticated() && req.user?.email) {
         sessionParams.customer_email = req.user.email;
@@ -510,6 +529,15 @@ async function startServer() {
 
   // Error logging middleware (must be before Vite)
   app.use(errorLogger);
+
+  app.use((req, res, next) => {
+    if (req.path.startsWith('/share/')) {
+      res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+    }
+    next();
+  });
+
+  app.use(serveGeneratedStaticPages(path.join(process.cwd(), 'public')));
 
   const vite = await createViteServer({
     server: { 

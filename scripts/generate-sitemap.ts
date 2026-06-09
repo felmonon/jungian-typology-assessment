@@ -29,9 +29,12 @@ const entries: SitemapEntry[] = [
   { loc: '/assessment', lastmod: TODAY, changefreq: 'monthly', priority: 0.9 },
   { loc: '/learn', lastmod: TODAY, changefreq: 'monthly', priority: 0.8 },
   { loc: '/pricing', lastmod: TODAY, changefreq: 'monthly', priority: 0.7 },
+  { loc: '/sample-report', lastmod: TODAY, changefreq: 'monthly', priority: 0.7 },
   { loc: '/leaderboard', lastmod: TODAY, changefreq: 'daily', priority: 0.6 },
+  { loc: '/ai-run-store', lastmod: TODAY, changefreq: 'weekly', priority: 0.6 },
   { loc: '/about', lastmod: TODAY, changefreq: 'monthly', priority: 0.5 },
   { loc: '/content.txt', lastmod: TODAY, changefreq: 'weekly', priority: 0.4 },
+  { loc: '/llms.txt', lastmod: TODAY, changefreq: 'weekly', priority: 0.4 },
   
   // Blog pages
   { loc: '/blog/', lastmod: TODAY, changefreq: 'weekly', priority: 0.8 },
@@ -119,7 +122,7 @@ console.log('✅ Sitemap generated successfully!');
 console.log(`📄 Location: ${outputPath}`);
 console.log(`🔗 Total URLs: ${entries.length}`);
 console.log('\nBreakdown:');
-console.log(`  • Main pages: 7`);
+console.log(`  • Main pages: 10`);
 console.log(`  • Blog articles: ${growthBlogArticles.length + 2}`);
 console.log(`  • High-intent landing pages: ${seoLandingPages.length}`);
 console.log(`  • Function pages: ${functions.length}`);

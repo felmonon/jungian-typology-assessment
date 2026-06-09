@@ -1,8 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSessionUser } from '../_lib/auth.js';
 import { generateGeminiText } from '../_lib/gemini.js';
+import { findCompletedPurchaseForUser, resolveTierFromCheckoutSession } from '../_lib/purchases.js';
 import { enforceRateLimit } from '../_lib/rate-limit.js';
 import { getSupabaseAdminClient } from '../_lib/supabase.js';
+import { getStripeSecretKey } from '../../server/checkout.js';
 
 interface FunctionScore {
   function: string;
@@ -28,6 +30,7 @@ interface AnalysisInput {
   isUndifferentiated?: boolean;
   resultVersion?: string;
   depthResult?: any;
+  checkoutSessionId?: string;
 }
 
 const FUNCTION_NAMES: Record<string, string> = {
@@ -83,13 +86,13 @@ Cognitive Stack:
   const attitude = (input.attitudeScore || 0) > 0 ? 'Extraverted' : 'Introverted';
   const depth = input.depthResult || input.stack?.depthResult;
   const depthBlock = depth ? `
-Depth Energy Map:
+Depth Function-Stack Map:
 - Dominant channel: ${depth.dominant}
 - Auxiliary channel: ${depth.auxiliary}
 - Inferior channel: ${depth.inferior}
 - Answer consistency signal: ${depth.reliability?.score}% (${depth.reliability?.label})
 - Developmental edge: ${depth.narrative?.developmentalEdge}
-- Complex vulnerability: ${depth.narrative?.complexVulnerability}
+- Pressure pattern: ${depth.narrative?.complexVulnerability}
 ` : '';
 
   return `
@@ -131,7 +134,53 @@ function fallbackFreeAnalysis(input: AnalysisInput): string {
   const edge = depth?.narrative?.developmentalEdge || `Your developmental work sits around ${inferior}, the channel with the least conscious energy in this result.`;
   const vulnerability = depth?.narrative?.complexVulnerability || 'Stress is most likely to pull attention into the inferior channel before you can respond from your stronger functions.';
 
-  return `Your energy map is led by ${dominant}, supported by ${auxiliary}. This means your strongest movement is not a fixed personality label but a repeated channel of attention, judgment, and effort. The important tension is the opposite pole: ${inferior}. ${edge} ${vulnerability} Use the result as a practice map. When stress rises, notice whether you are trying to solve the situation only through the dominant channel. The useful move is to give the inferior function a small, concrete role before it takes over in a primitive form.`;
+  return `Your function-stack map is led by ${dominant}, supported by ${auxiliary}. This means your strongest movement is not a fixed personality label but a repeated channel of attention, judgment, and effort. The important tension is the opposite pole: ${inferior}. ${edge} ${vulnerability} Use the result as a practice map. When stress rises, notice whether you are trying to solve the situation only through the dominant channel. The useful move is to give the inferior function a small, concrete role before it takes over in a primitive form.`;
+}
+
+function isUsableFreeAnalysis(text: string | undefined): text is string {
+  const trimmed = text?.trim() || '';
+  const words = trimmed.split(/\s+/).filter(Boolean).length;
+
+  return (
+    words >= 80 &&
+    trimmed.length >= 350 &&
+    /[.!?]["')\]]?$/.test(trimmed) &&
+    !/unable to generate/i.test(trimmed)
+  );
+}
+
+function cleanCheckoutSessionId(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  if (!/^cs_[A-Za-z0-9_]+$/.test(trimmed)) return null;
+  return trimmed.slice(0, 200);
+}
+
+async function verifyPaidCheckoutSession(sessionId: unknown): Promise<boolean> {
+  const cleanedSessionId = cleanCheckoutSessionId(sessionId);
+  if (!cleanedSessionId) return false;
+
+  const stripeSecretKey = getStripeSecretKey();
+  if (!stripeSecretKey) return false;
+
+  const query = new URLSearchParams({
+    'expand[]': 'line_items.data.price',
+  });
+  const response = await fetch(`https://api.stripe.com/v1/checkout/sessions/${cleanedSessionId}?${query.toString()}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${stripeSecretKey}`,
+    },
+  });
+  const session = await response.json();
+
+  if (!response.ok) {
+    console.error('Stripe session unlock check failed:', session?.error?.message || response.status);
+    return false;
+  }
+
+  if (session.payment_status !== 'paid') return false;
+  return Boolean(resolveTierFromCheckoutSession(session));
 }
 
 function fallbackPremiumAnalysis(input: AnalysisInput): Record<SectionKey, string> {
@@ -147,8 +196,8 @@ function fallbackPremiumAnalysis(input: AnalysisInput): Record<SectionKey, strin
     functionAnalysis: `Your hierarchy shows ${dominant} carrying the most conscious energy while ${inferior} holds the least differentiated material. Read the stack as a tension map rather than a rank of traits. The dominant channel gives competence and identity; the auxiliary supports it; the tertiary is available but uneven; the inferior asks for slow development.`,
     archetypes: `The dominant function often behaves like the heroic stance of the ego: it is the mode you trust first. The inferior carries the counter-image. It can appear through projection, attraction, embarrassment, or sudden intensity. Development means learning to relate to that material without letting it overthrow the whole system.`,
     theGrip: `Under pressure, ${inferior} may stop being subtle and become absolute. You may overreact to signals that normally seem minor, then try to regain control through ${dominant}. Recovery starts with slowing the body, naming the trigger, and choosing one grounded action before interpreting the whole situation.`,
-    relationships: `Relationship triggers are important here because the inferior function often appears through other people. Notice where attraction, irritation, or shame has more charge than the situation deserves. That charge is usually information about the undeveloped channel, not proof that the relationship must be forced into a conclusion.`,
-    career: `Work will feel best when ${dominant} has real room to operate, but it will become brittle if the environment never asks you to develop ${inferior}. Look for roles where your strongest channel is valued while feedback, pacing, embodiment, or values are not ignored.`,
+    relationships: `Relationship-pattern reflection is useful here because the inferior function can become easier to notice around other people. Notice where attraction, irritation, or shame has more charge than the situation deserves. Treat that charge as self-observation material about the undeveloped channel, not proof that a relationship needs a forced conclusion.`,
+    career: `For work-pattern reflection, notice where ${dominant} has real room to operate and where the environment repeatedly asks you to develop ${inferior}. Use this as a prompt for observing energy, feedback, pacing, embodiment, and values; do not treat it as career counseling or a directive about which role to choose.`,
     individuation: edge,
     shadow: `The shadow pattern is most likely to gather around ${inferior}. You may reject this function in yourself, then meet it outside as fascination or contempt. The task is not to become the opposite of yourself. The task is to make enough room for the weak channel that it no longer needs to erupt.`,
     growth: practice,
@@ -174,45 +223,48 @@ Write a personalized analysis in 150-200 words that:
 
 Keep the tone direct, psychologically grounded, and useful. Use second person ("you"). Clearly treat the result as educational self-reflection, not diagnosis, therapy, or a clinical assessment. Avoid certainty, treatment advice, and claims of scientific validation. Do not mention that this is a free or limited analysis. Do not use bullet points, headers, or any markdown formatting like asterisks. Write in plain flowing paragraphs only.`;
 
-  const analysis = await generateGeminiText(prompt, {
-    temperature: 0.7,
-    maxOutputTokens: 500,
-  }).catch((error) => {
+  const fallbackInput = { scores, stack, attitudeScore, isUndifferentiated, resultVersion, depthResult };
+  let analysis = fallbackFreeAnalysis(fallbackInput);
+
+  try {
+    const generated = await generateGeminiText(prompt, {
+      temperature: 0.7,
+      maxOutputTokens: 500,
+    });
+
+    if (isUsableFreeAnalysis(generated)) {
+      analysis = generated.trim();
+    } else {
+      console.error('Using fallback free analysis: generated response was incomplete');
+    }
+  } catch (error: any) {
     console.error('Using fallback free analysis:', error?.message || error);
-    return fallbackFreeAnalysis({ scores, stack, attitudeScore, isUndifferentiated, resultVersion, depthResult });
-  });
+  }
 
   return res.status(200).json({ analysis });
 }
 
 async function handlePremiumAnalysis(req: VercelRequest, res: VercelResponse) {
   const user = await getSessionUser(req.headers.cookie);
-  if (!user?.id) {
-    return res.status(401).json({ error: 'Authentication required' });
-  }
-
-  const supabase = getSupabaseAdminClient();
-
-  let hasPremiumAccess = false;
-  const { data: purchases } = await supabase
-    .from('purchases')
-    .select('id, status, tier')
-    .eq('user_id', user.id)
-    .eq('status', 'completed')
-    .limit(1);
-
-  if (purchases && purchases.length > 0) {
-    hasPremiumAccess = true;
-  }
-
-  const { scores, stack, attitudeScore, isUndifferentiated, depthResult } = req.body || {};
-
-  if (!hasPremiumAccess) {
-    return res.status(403).json({ error: 'Premium access required' });
-  }
+  const { scores, stack, attitudeScore, isUndifferentiated, depthResult, checkoutSessionId } = req.body || {};
 
   if (!scores || !stack) {
     return res.status(400).json({ error: 'Invalid assessment data format' });
+  }
+
+  let hasPremiumAccess = false;
+
+  if (user?.id) {
+    const supabase = getSupabaseAdminClient();
+    hasPremiumAccess = Boolean(await findCompletedPurchaseForUser(supabase, user));
+  }
+
+  if (!hasPremiumAccess) {
+    hasPremiumAccess = await verifyPaidCheckoutSession(checkoutSessionId);
+  }
+
+  if (!hasPremiumAccess) {
+    return res.status(403).json({ error: 'Premium access required' });
   }
 
   const prompt = `Write as an educational Jungian typology guide. Create a premium TypeJung self-reflection report from this result.
@@ -225,7 +277,7 @@ Each value should be 120-180 words, direct, psychologically grounded, and second
 Compatibility scores:
 ${JSON.stringify({ scores, stack, attitudeScore, isUndifferentiated }, null, 2)}
 
-Depth energy map:
+Depth function-stack map:
 ${JSON.stringify(depthResult || stack.depthResult || null, null, 2)}
 `;
 

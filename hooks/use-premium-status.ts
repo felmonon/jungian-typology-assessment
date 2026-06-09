@@ -16,6 +16,8 @@ export function usePremiumStatus() {
       const localUnlocked = localStorage.getItem('jungian_assessment_unlocked') === 'true';
       const localUnlockUserId = localStorage.getItem('jungian_assessment_unlock_user_id');
       const unlockDate = localStorage.getItem('jungian_assessment_unlock_date');
+      const hasVerifiedCheckoutSession = Boolean(localStorage.getItem('jungian_assessment_checkout_session_id'));
+      const hasLocalPaidUnlock = Boolean((localTier === 'insight' || localTier === 'mastery') && localUnlocked);
       
       const isLocalUnlockForCurrentUser = Boolean(userId && (localTier || localUnlocked) && localUnlockUserId === userId);
 
@@ -59,7 +61,11 @@ export function usePremiumStatus() {
           }
         }
       } else if (!isAuthenticated) {
-        setTier('free');
+        if (hasLocalPaidUnlock && hasVerifiedCheckoutSession) {
+          setTier(localTier || 'insight');
+        } else {
+          setTier('free');
+        }
       }
       setIsLoading(false);
     }

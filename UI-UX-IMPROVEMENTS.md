@@ -150,5 +150,5 @@ styles/globals.css                   # Animation + reduced motion
 ### Larger Features
 - [ ] Dark mode support
 - [ ] Gamification badges
-- [ ] Voice input for AI coach
+- [ ] Voice input for AI Type Guide
 - [ ] Share milestone celebrations

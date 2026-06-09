@@ -1,8 +1,10 @@
-# TypeJung - Jungian Cognitive Function Assessment
+# TypeJung - Free Jungian Function-Stack Map
 
 [![CI/CD Pipeline](https://github.com/felmonon/jungian-typology-assessment/actions/workflows/ci.yml/badge.svg)](https://github.com/felmonon/jungian-typology-assessment/actions/workflows/ci.yml)
 [![Live App](https://img.shields.io/badge/live-typejung.com-brightgreen)](https://typejung.com)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+TypeJung is the free Jungian function-stack map for people whose MBTI result keeps changing.
 
 A production full-stack SaaS that applies Jungian cognitive-function theory to how people notice patterns, make decisions, handle stress, and relate to others. It combines a free assessment, saved profiles, share links, Stripe-backed one-time paid reports, Supabase persistence, and AI-assisted interpretation.
 
@@ -46,7 +48,7 @@ flowchart LR
 
 Consumer personality quizzes like 16personalities sort you into a four-letter label and stop there. That can be fine for entertainment, but it is thin when you want to understand why two capable people keep misreading each other, or why your usual strengths become unreliable under pressure.
 
-This project goes deeper. It measures all **8 Jungian cognitive functions** (Ti, Te, Fi, Fe, Ni, Ne, Si, Se), maps your full function stack, and surfaces patterns that matter in real self-understanding:
+This project goes deeper. It maps self-reported patterns across all **8 Jungian cognitive functions** (Ti, Te, Fi, Fe, Ni, Ne, Si, Se), shows a likely function stack, and surfaces patterns that matter in real self-understanding:
 
 - **How you reason** - Do you follow a precise internal model (Ti) or organize around visible outcomes (Te)?
 - **How you notice information** - Do you converge on a single pattern (Ni), explore possibilities (Ne), trust experience (Si), or respond to the present moment (Se)?
@@ -90,9 +92,9 @@ The underlying model is Carl Jung's original typology — not the simplified MBT
 
 | Tier | Price | What You Get |
 |------|-------|-------------|
-| **Free** | $0 | 42-question assessment, basic energy map, dominant-inferior axis |
-| **Insight** | CA$10 one-time | + deeper report, stress pattern map, relationship triggers, somatic practices |
-| **Mastery** | CA$29 one-time | + AI Type Coach, individuation roadmap, practice library, reassessment tracking |
+| **Free** | $0 | 42-question assessment, basic function-stack map, dominant-inferior axis |
+| **Insight** | CA$10 one-time | + deeper report, stress-pattern map, relationship-pattern reflection, practice prompts |
+| **Mastery** | CA$29 one-time | + AI Type Guide, individuation roadmap, practice library, reassessment tracking |
 
 ---
 

@@ -28,7 +28,10 @@ export const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const behavior = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      ? 'auto'
+      : 'smooth';
+    messagesEndRef.current?.scrollIntoView({ behavior });
   };
 
   useEffect(() => {
@@ -87,9 +90,9 @@ export const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
 
   const suggestedQuestions = [
     "How can I develop my inferior function?",
-    "What are my biggest growth opportunities?",
+    "What reflection questions fit this result?",
     "How does my type handle stress?",
-    "What careers suit my cognitive functions?",
+    "What work themes should I observe?",
   ];
 
   return (
@@ -101,7 +104,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
           className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-jung-dark hover:bg-jung-secondary text-white px-6 py-4 rounded-full shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl min-h-[56px]"
         >
           <MessageCircle className="w-5 h-5" />
-          <span className="font-serif font-medium tracking-wide">Ask Your Type Coach</span>
+          <span className="font-serif font-medium tracking-wide">Ask Your Type Guide</span>
         </button>
       )}
 
@@ -115,8 +118,8 @@ export const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
                 <Sparkles className="w-5 h-5 text-jung-accent" />
               </div>
               <div>
-                <h3 className="font-serif font-bold text-lg">Jungian Type Coach</h3>
-                <p className="text-xs text-white/70 font-serif">Ask about your type and growth</p>
+                <h3 className="font-serif font-bold text-lg">Jungian Type Guide</h3>
+                <p className="text-xs text-white/70 font-serif">Educational reflection, not advice</p>
               </div>
             </div>
             <button
@@ -133,7 +136,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
             {messages.length === 0 && (
               <div className="space-y-4">
                 <p className="text-jung-secondary text-sm text-center font-serif italic">
-                  Ask me anything about your cognitive functions and how to grow.
+                  Ask about your cognitive functions, stress patterns, and reflection prompts. This is not therapy, diagnosis, career counseling, or relationship advice.
                 </p>
                 <div className="space-y-2">
                   {suggestedQuestions.map((q, i) => (

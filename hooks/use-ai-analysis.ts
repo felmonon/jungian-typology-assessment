@@ -35,6 +35,7 @@ export interface AnalysisInput {
   isUndifferentiated: boolean;
   resultVersion?: string;
   depthResult?: unknown;
+  checkoutSessionId?: string;
 }
 
 export function useAiAnalysis() {

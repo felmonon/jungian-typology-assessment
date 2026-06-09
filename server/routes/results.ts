@@ -22,10 +22,11 @@ function generateShareSlug(): string {
 }
 
 export function registerResultsRoutes(app: Express): void {
-  app.post("/api/results", isAuthenticated, validate(schemas.assessmentResult), async (req, res) => {
+  app.post("/api/results", validate(schemas.assessmentResult), async (req, res) => {
     try {
       const user = req.user as any;
-      if (!user?.id) {
+      const shareOnly = req.body.shareOnly === true;
+      if (!user?.id && !shareOnly) {
         return res.status(401).json({ message: "Unauthorized" });
       }
 
@@ -35,7 +36,7 @@ export function registerResultsRoutes(app: Express): void {
       const [result] = await db
         .insert(assessmentResults)
         .values({
-          userId: user.id,
+          userId: user?.id || null,
           scores,
           stack,
           attitudeScore: String(attitudeScore),

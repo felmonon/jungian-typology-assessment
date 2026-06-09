@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSessionUser } from './_lib/auth.js';
 import { generateGeminiText } from './_lib/gemini.js';
+import { findCompletedPurchaseForUser } from './_lib/purchases.js';
 import { enforceRateLimit } from './_lib/rate-limit.js';
 import { getSupabaseAdminClient } from './_lib/supabase.js';
 
@@ -41,7 +42,7 @@ function fallbackChatResponse(profile: ChatRequest['userProfile'], message: stri
   const dominant = FUNCTION_NAMES[profile.dominantFunction] || profile.dominantFunction;
   const inferior = FUNCTION_NAMES[profile.inferiorFunction] || profile.inferiorFunction;
 
-  return `I cannot reach the live AI provider right now, but your saved profile still gives a useful direction. Your dominant channel is ${dominant}, so your first move is likely to trust that way of organizing experience. The growth question is usually carried by ${inferior}. For this question, start by asking where you are relying too heavily on your strongest function, then give the inferior function one small concrete role. If the question is about stress, slow the body before interpreting. If it is about relationships, look for the value or need underneath the reaction. If it is about work, choose the next action that lets your dominant strength operate without avoiding the weaker channel.`;
+  return `I cannot reach the live AI provider right now, but your saved profile still gives a useful reflection direction. Your dominant channel is ${dominant}, so your first move is likely to trust that way of organizing experience. The growth question is usually carried by ${inferior}. For this question, ask where you may be relying too heavily on your strongest function, then give the inferior function one small concrete role. If the question is about stress, treat this as self-observation rather than diagnosis. If it is about relationships or work, use the result to name patterns and questions to explore, not as professional advice or a rule for what to do.`;
 }
 
 function cleanResponse(text: string): string {
@@ -64,7 +65,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     keyPrefix: 'ai:chat',
     limit: 30,
     windowMs: 60 * 60 * 1000,
-    message: 'Too many coach messages. Please wait and try again.',
+    message: 'Too many guide messages. Please wait and try again.',
   })) return;
 
   try {
@@ -80,20 +81,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const supabase = getSupabaseAdminClient();
 
-    let hasPremiumAccess = false;
-    const { data: purchases } = await supabase
-      .from('purchases')
-      .select('id, status, tier')
-      .eq('user_id', user.id)
-      .eq('status', 'completed')
-      .limit(1);
+    const purchase = await findCompletedPurchaseForUser(supabase, user);
+    const hasMasteryAccess = purchase?.tier === 'mastery';
 
-    if (purchases && purchases.length > 0) {
-      hasPremiumAccess = true;
-    }
-
-    if (!hasPremiumAccess) {
-      return res.status(403).json({ error: 'Premium access required' });
+    if (!hasMasteryAccess) {
+      return res.status(403).json({ error: 'Mastery access required for the AI Type Guide' });
     }
 
     const sortedScores = [...userProfile.scores].sort((a, b) => b.score - a.score);
@@ -103,7 +95,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const attitude = userProfile.attitudeScore > 0 ? 'Extraverted' : 'Introverted';
     const recentHistory = history.slice(-8).map((msg) => `${msg.role}: ${msg.content}`).join('\n');
 
-    const prompt = `You are the TypeJung premium coach. Help the user understand their Jungian energy map, inferior-function development, stress patterns, and practical growth.
+    const prompt = `You are the TypeJung AI Type Guide: an educational self-reflection companion for a user's Jungian function-stack map. Help the user understand their result, inferior-function development, stress reflection patterns, and practical observation prompts.
 
 User profile:
 - Dominant: ${FUNCTION_NAMES[userProfile.dominantFunction] || userProfile.dominantFunction} (${userProfile.dominantFunction})
@@ -120,7 +112,7 @@ User asks:
 ${message.trim()}
 
 Rules:
-Only answer questions about their type, growth, stress, somatic patterns, relationships, career, or individuation. If the question is unrelated, briefly redirect to their TypeJung result. Use second person. Keep the answer practical and psychologically grounded in 150-300 words. Do not use markdown, bullet points, numbered lists, or headings.`;
+Only answer questions about their type, self-reflection, stress observation, somatic patterns, relationships, work themes, or individuation. If the question is unrelated, briefly redirect to their TypeJung result. Use second person. Keep the answer practical and psychologically grounded in 150-300 words. Do not use markdown, bullet points, numbered lists, or headings. Do not provide therapy, diagnosis, treatment advice, crisis advice, career counseling, legal advice, financial advice, or relationship directives. When the user asks about relationships or work, frame your answer as reflection questions, communication patterns, and possible areas to observe. If they describe danger, self-harm, abuse, a medical issue, or a crisis, tell them this tool is not appropriate for that situation and encourage contacting qualified local support or emergency services.`;
 
     const responseText = await generateGeminiText(prompt, {
       temperature: 0.7,

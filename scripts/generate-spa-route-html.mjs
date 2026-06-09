@@ -13,12 +13,12 @@ const routePages = [
     path: '/assessment',
     title: 'Take the Free Jungian Cognitive Function Assessment | TypeJung',
     description:
-      'Take a free 42-question Jungian cognitive function assessment that maps all 8 functions, inferior-function pressure, somatic signals, and attitude direction.',
-    h1: 'Take the free Jungian cognitive function assessment',
+      'When your MBTI result keeps changing, take a free Jungian function-stack assessment that maps all 8 functions, stress edge, and attitude direction.',
+    h1: 'Map the function pattern underneath your type',
     cta: 'Start the free assessment',
     body: [
-      'TypeJung measures all 8 Jungian cognitive functions through scenario-based questions instead of reducing you immediately to a four-letter label.',
-      'The free result shows the core energy map first. Paid Insight and Mastery reports are optional one-time CAD upgrades after you can see whether the result feels useful.',
+      'TypeJung maps self-reported patterns across all 8 Jungian cognitive functions through scenario-based questions instead of reducing you immediately to a four-letter label.',
+      'The free result shows the core function-stack map first. Paid Insight and Mastery reports are optional one-time CAD upgrades after you can see whether the result feels useful.',
       'This page is the best starting point if you are comparing Jungian tests, MBTI alternatives, inferior-function tests, or cognitive-function tests.',
     ],
   },
@@ -34,9 +34,22 @@ const routePages = [
     path: '/pricing',
     title: 'TypeJung Pricing - Free, Insight, and Mastery Plans',
     description:
-      'Start with the free TypeJung assessment, then unlock Insight for CA$10 or Mastery for CA$29 with transparent one-time CAD pricing.',
-    h1: 'TypeJung pricing',
+      'Start with the free TypeJung assessment, then unlock Insight for CA$7 or Mastery for CA$20.30 with TYPEJUNG30 applied on Stripe.',
+    h1: 'Start with the map. Decide after.',
     cta: 'Compare plans',
+  },
+  {
+    path: '/sample-report',
+    title: 'Sample Paid Report | TypeJung',
+    description:
+      'Preview a fictional TypeJung paid report sample before you buy, including developmental edge, stress-pattern reflection, relationship-pattern reflection, practices, and AI guide examples.',
+    h1: 'Sample TypeJung paid report',
+    cta: 'Start the free assessment',
+    body: [
+      'This fictional sample shows the structure, depth, and tone of a TypeJung paid report before checkout.',
+      'Insight adds interpretation of the free map: developmental edge, stress-pattern reflection, relationship-pattern reflection, and practical next steps.',
+      'Mastery adds the AI Type Guide and practice support for people who want to keep working with the result over time.',
+    ],
   },
   {
     path: '/checkout/insight',
@@ -60,17 +73,30 @@ const routePages = [
     path: '/leaderboard',
     title: 'Community Jungian Function Results | TypeJung',
     description:
-      'Explore community TypeJung energy map patterns across cognitive functions, dominant-inferior axes, and Jungian typology results.',
+      'Explore community TypeJung function-stack map patterns across cognitive functions, dominant-inferior axes, and Jungian typology results.',
     h1: 'Community Jungian function results',
     cta: 'Take your assessment',
   },
   {
     path: '/about',
-    title: 'About TypeJung - A Depth-Based Jungian Assessment',
+    title: 'About TypeJung - Free Jungian Function-Stack Map',
     description:
-      'TypeJung maps Jungian energy, inferior-function pressure, somatic signals, and attitude direction instead of forcing a shallow four-letter label.',
+      'TypeJung maps all 8 cognitive functions, inferior-function pressure, somatic signals, and attitude direction instead of forcing a shallow four-letter label.',
     h1: 'About TypeJung',
     cta: 'Start the free assessment',
+  },
+  {
+    path: '/ai-run-store',
+    title: 'AI-Run TypeJung Lab - Transparent AI Operator',
+    description:
+      'See how TypeJung is being run as a supervised AI-operated software store with a public operating loop, guardrails, shipped changes, and current experiments.',
+    h1: 'AI-run TypeJung lab',
+    cta: 'Start the free assessment',
+    body: [
+      'TypeJung is being operated as a measurable AI-assisted software store: the operator audits the funnel, ships improvements, verifies them, and reports what changed.',
+      'The public lab shows the operating loop, guardrails, shipped ledger, and AI roles without inventing revenue, testimonials, or unsupported product claims.',
+      'The core product still comes first: take the free function-stack map, then upgrade only if the paid interpretation is worth keeping.',
+    ],
   },
 ];
 

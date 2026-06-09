@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { motion, type Variants } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
@@ -7,29 +6,20 @@ import {
   Check,
   ChevronDown,
   Compass,
+  FileText,
   Lock,
   MessageCircle,
-  Sparkles,
+  ShieldCheck,
 } from 'lucide-react';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { DiscountCaptureCard } from '../components/discount/DiscountCaptureCard';
 import { Button } from '../components/ui/Button';
 import { FunctionRadial } from '../components/home/FunctionRadial';
 import { PRICING } from '../data/pricing';
-import { AnalyticsEvents } from '../lib/analytics';
+import { discountedPriceLabel, EMAIL_CAPTURE_OFFER } from '../data/discount';
+import { AnalyticsEvents, trackEvent } from '../lib/analytics';
+import { pathWithSource } from '../lib/acquisition-source';
 import { PAGE_SEO, useSEO } from '../hooks/useSEO';
-
-const ease = [0.22, 1, 0.36, 1] as const;
-
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 18 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease } },
-};
-
-const stagger: Variants = {
-  hidden: { opacity: 1 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
-};
 
 const sampleProfile = [
   { name: 'Ti', label: 'Thinking inward', value: 82, role: 'Dominant' },
@@ -43,36 +33,61 @@ const sampleProfile = [
 ];
 
 const trustPoints = [
-  'No account required for the free map',
-  '42 scenario-based questions',
-  'Paid upgrade only after your result',
+  '42 prompts, usually 12-16 minutes',
+  'Free all-8-function map first',
+  'Paid depth only after the result',
 ];
 
 const valueCards = [
   {
     icon: Compass,
-    title: 'A readable map, not a vague label',
+    title: 'Stop collecting labels',
     description:
-      'See all eight cognitive functions at once, including which functions lead, which support, and which create stress.',
+      'Built for people comparing INFJ vs INFP, INTJ vs INTP, Sakinorva alternatives, and changing MBTI results.',
   },
   {
     icon: Brain,
-    title: 'Built around actual patterns',
+    title: 'Read the pattern',
     description:
-      'Questions focus on attention, stress, conflict, body signals, decisions, and relationships instead of simple identity claims.',
+      'See all eight cognitive functions, likely stack shape, reliability, and dominant-inferior tension before paying.',
   },
   {
     icon: MessageCircle,
-    title: 'Depth only when you want it',
+    title: 'Work with the stress edge',
     description:
-      'Start free. Upgrade to Insight or Mastery only if the map earns your trust and you want deeper interpretation.',
+      'Use paid depth only when the free map explains something real and you want practical interpretation behind it.',
+  },
+];
+
+const proofSignals = [
+  {
+    label: 'Likely stack',
+    value: 'Ti-Ne',
+    note: 'Shown as a working hypothesis, not a final identity claim.',
+  },
+  {
+    label: 'Stress edge',
+    value: 'Ti to Fe',
+    note: 'The dominant-inferior tension stays visible.',
+  },
+  {
+    label: 'Before checkout',
+    value: 'Free',
+    note: 'You inspect the map before choosing paid interpretation.',
   },
 ];
 
 const steps = [
   ['01', 'Answer the assessment', 'Move through 42 prompts about attention, stress, decisions, and relationships.'],
-  ['02', 'Read the free map', 'Get your function pattern, dominant-inferior axis, and a plain-language summary.'],
-  ['03', 'Upgrade for depth', 'Unlock guided interpretation, growth practices, and the AI Type Coach when useful.'],
+  ['02', 'Read the free function-stack map', 'Get your full function pattern, dominant-inferior axis, and a plain-language summary.'],
+  ['03', 'Upgrade for depth', 'Unlock guided interpretation, growth practices, and the AI Type Guide when useful.'],
+];
+
+const reportQuestions = [
+  'Which function is leading my attention, and which one creates pressure?',
+  'Why do I repeat the same stress pattern in work or relationships?',
+  'What does my result mean beyond a four-letter personality label?',
+  'What should I practice this week so the insight becomes useful?',
 ];
 
 const pricingTiers = [
@@ -80,29 +95,30 @@ const pricingTiers = [
     id: 'free',
     name: 'Free',
     price: PRICING.free.price,
-    amount: PRICING.free.amount,
-    description: 'Take the full assessment and see the core map.',
-    features: ['42 questions', 'Function map', 'Dominant-inferior axis', 'No signup required'],
+    description: 'Take the full assessment and decide from the function-stack map.',
+    features: ['42 questions', 'Eight-function map', 'Dominant-inferior axis', 'No card required'],
     cta: 'Start free',
   },
   {
     id: 'insight',
     name: PRICING.insight.name,
-    price: PRICING.insight.price,
-    amount: PRICING.insight.amount,
-    description: 'Understand the meaning behind your map.',
-    features: ['Deeper written report', 'Stress pattern analysis', 'Relationship triggers', 'Grounding practices'],
-    cta: 'View Insight',
+    price: discountedPriceLabel(PRICING.insight.amount),
+    originalPrice: PRICING.insight.price,
+    priceNote: `${EMAIL_CAPTURE_OFFER.code} auto-applies on Stripe`,
+    description: 'Turn your result into a practical interpretation.',
+    features: ['Developmental edge', 'Stress-pattern map', 'Relationship pattern', 'Practice prompts'],
+    cta: `View Insight - ${discountedPriceLabel(PRICING.insight.amount)}`,
     highlighted: true,
   },
   {
     id: 'mastery',
     name: PRICING.mastery.name,
-    price: PRICING.mastery.price,
-    amount: PRICING.mastery.amount,
-    description: 'Use your map with guided follow-up support.',
-    features: ['Everything in Insight', 'AI Type Coach', 'Growth exercises', 'Practice roadmap'],
-    cta: 'View Mastery',
+    price: discountedPriceLabel(PRICING.mastery.amount),
+    originalPrice: PRICING.mastery.price,
+    priceNote: `${EMAIL_CAPTURE_OFFER.code} auto-applies on Stripe`,
+    description: 'Use the report with guided follow-up support.',
+    features: ['Everything in Insight', 'AI Type Guide', 'Growth exercises', 'Individuation roadmap'],
+    cta: `View Mastery - ${discountedPriceLabel(PRICING.mastery.amount)}`,
   },
 ];
 
@@ -110,7 +126,7 @@ const faqs = [
   {
     question: 'Is this just another MBTI test?',
     answer:
-      'No. TypeJung does not stop at a four-letter label. It maps all eight functions and shows the tension between dominant strengths and inferior-function pressure.',
+      'No. TypeJung does not stop at a four-letter label. It maps all eight functions and shows the dominant-inferior tension behind the result.',
   },
   {
     question: 'Do I need to pay first?',
@@ -129,66 +145,79 @@ const faqs = [
   },
 ];
 
-const seoGuideLinks = [
-  ['Jungian cognitive functions test', '/jungian-cognitive-functions-test'],
-  ['Jungian test', '/jungian-test'],
-  ['Cognitive function test', '/cognitive-function-test'],
-  ['Jungian cognitive functions', '/cognitive-functions'],
-  ['MBTI alternative', '/mbti-alternative'],
-  ['Inferior function test', '/inferior-function-test'],
-  ['Shadow work test', '/shadow-work-test'],
-  ['Why MBTI changes', '/mbti-keeps-changing'],
-];
-
 export const Home: React.FC = () => {
   const navigate = useNavigate();
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   useSEO(PAGE_SEO.home);
 
+  useEffect(() => {
+    trackEvent('home_wedge_viewed', {
+      source: 'home',
+      promise: 'mbti_alternative_function_stack',
+      version: '2026_06_remake',
+    });
+  }, []);
+
   const startAssessment = (location: string) => {
-    AnalyticsEvents.ctaClicked('start_assessment', location);
-    navigate('/assessment');
+    const destination = pathWithSource('/assessment', location);
+    trackEvent('assessment_start_intent', {
+      source: location,
+      promise: 'mbti_alternative_function_stack',
+    });
+    AnalyticsEvents.ctaClicked('start_assessment', location, {
+      buttonText: 'Get my free map',
+      destination,
+    });
+    navigate(destination);
   };
 
-  const goPricing = (tier: string, amount: number) => {
-    AnalyticsEvents.ctaClicked(`view_${tier.toLowerCase()}_pricing`, 'pricing_section');
-    AnalyticsEvents.purchaseStarted(tier, amount);
-    navigate('/pricing');
+  const goPricing = (tier: string) => {
+    const normalizedTier = tier.toLowerCase();
+    const destination = pathWithSource(`/pricing?tier=${normalizedTier}`, `home_pricing_${normalizedTier}`);
+    AnalyticsEvents.ctaClicked(`view_${normalizedTier}_pricing`, 'pricing_section', {
+      buttonText: `View ${tier}`,
+      destination,
+    });
+    navigate(destination);
+  };
+
+  const viewSampleReport = (location: string) => {
+    const destination = pathWithSource('/sample-report', location);
+    AnalyticsEvents.ctaClicked('view_sample_report', location, {
+      buttonText: 'View sample report',
+      destination,
+    });
+    navigate(destination);
   };
 
   return (
     <ErrorBoundary>
       <div className="relative overflow-hidden">
         <section className="relative border-b border-jung-border-light bg-[linear-gradient(180deg,#fbfaf6_0%,#f3efe5_100%)]">
-          <div className="lab-container grid gap-12 py-14 md:py-20 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:py-24">
-            <motion.div initial="hidden" animate="visible" variants={stagger}>
-              <motion.div variants={fadeUp} className="mb-7 flex flex-wrap items-center gap-3">
+          <div className="lab-container grid gap-10 py-10 md:py-14 lg:grid-cols-[1fr_0.92fr] lg:items-center lg:py-16">
+            <div>
+              <div className="mb-6 flex flex-wrap items-center gap-3">
                 <span className="rounded-full border border-jung-border bg-white px-3 py-1 text-xs font-semibold text-jung-secondary shadow-sm">
-                  Free Jungian cognitive functions test
+                  Free Jungian function-stack map
                 </span>
-                <span className="rounded-full bg-jung-accent-light px-3 py-1 text-xs font-semibold text-jung-accent">
-                  12-16 minutes
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-jung-accent-light px-3 py-1 text-xs font-semibold text-jung-accent">
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  Free before checkout
                 </span>
-              </motion.div>
+              </div>
 
-              <motion.h1
-                variants={fadeUp}
-                className="max-w-4xl text-balance font-display text-[44px] font-semibold leading-[0.98] text-jung-dark sm:text-6xl lg:text-[74px]"
-              >
-                See the pattern behind your personality.
-              </motion.h1>
+              <h1 className="max-w-4xl text-balance font-display text-[38px] font-semibold leading-[1.02] text-jung-dark sm:text-5xl lg:text-[64px]">
+                When your MBTI result keeps changing, map the pattern underneath.
+              </h1>
 
-              <motion.p
-                variants={fadeUp}
-                className="mt-7 max-w-2xl text-lg leading-8 text-jung-secondary md:text-xl"
-              >
-                TypeJung maps your Jungian cognitive functions, stress edge, and
-                dominant-inferior tension without forcing you into a shallow four-letter
-                result.
-              </motion.p>
+              <p className="mt-6 max-w-2xl text-base leading-8 text-jung-secondary md:text-lg">
+                TypeJung shows the function-stack pattern behind nearby type labels: all eight
+                functions, the dominant-inferior tension, and the stress edge behind your result.
+                Start with the free map. Upgrade only if it explains something real.
+              </p>
 
-              <motion.div variants={fadeUp} className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Button
                   onClick={() => startAssessment('home_hero')}
                   variant="accent"
@@ -196,104 +225,143 @@ export const Home: React.FC = () => {
                   rightIcon={<ArrowRight className="h-4 w-4" />}
                   className="rounded-full"
                 >
-                  Start free assessment
+                  Get my free map
                 </Button>
                 <Button
-                  onClick={() => navigate('/learn')}
+                  onClick={() => viewSampleReport('home_hero')}
                   variant="inverted"
                   size="lg"
                   className="rounded-full border border-jung-border"
                 >
-                  See how it works
+                  View sample report
                 </Button>
-              </motion.div>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-jung-muted">
+                Answer the free assessment, read your map, then decide whether deeper interpretation is worth it.
+              </p>
 
-              <motion.div variants={fadeUp} className="mt-9 grid gap-3 sm:grid-cols-3">
+              <div className="mt-8 grid gap-3 sm:grid-cols-3">
                 {trustPoints.map((point) => (
                   <div key={point} className="flex items-start gap-2 text-sm text-jung-secondary">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-jung-accent" />
                     <span>{point}</span>
                   </div>
                 ))}
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 24, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.7, ease }}
-              className="relative"
-            >
-              <div className="rounded-[28px] border border-jung-border bg-white p-4 shadow-xl shadow-jung-dark/10 md:p-5">
-                <div className="rounded-3xl border border-jung-border-light bg-jung-base p-5 md:p-6">
-                  <div className="mb-5 flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-xs font-semibold uppercase text-jung-muted">
-                        Sample result
-                      </p>
-                      <h2 className="mt-1 font-display text-3xl font-semibold text-jung-dark">
-                        Ti-Ne profile
-                      </h2>
-                    </div>
-                    <div className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-jung-accent shadow-sm">
-                      Free map
-                    </div>
+            <div className="rounded-2xl border border-jung-border bg-white p-4 shadow-xl shadow-jung-dark/10 md:p-5">
+              <div className="mb-5 flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs font-semibold uppercase text-jung-muted">Sample free result</p>
+                  <h2 className="mt-1 font-display text-3xl font-semibold text-jung-dark">Function-stack map</h2>
+                </div>
+                <span className="rounded-full bg-jung-accent-light px-3 py-1 text-xs font-semibold text-jung-accent">
+                  Free map
+                </span>
+              </div>
+
+              <div className="mb-5 grid gap-2 sm:grid-cols-3">
+                {proofSignals.map((signal) => (
+                  <div key={signal.label} className="rounded-lg border border-jung-border-light bg-jung-base px-3 py-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-jung-muted">
+                      {signal.label}
+                    </p>
+                    <p className="mt-1 font-display text-xl font-semibold text-jung-dark">{signal.value}</p>
+                    <p className="mt-1 text-xs leading-5 text-jung-secondary">{signal.note}</p>
                   </div>
+                ))}
+              </div>
 
-                  <div className="grid gap-5 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
-                    <div className="mx-auto w-full max-w-[260px]">
-                      <FunctionRadial
-                        data={sampleProfile.map(({ name, label, value }) => ({ name, label, value }))}
-                        size={300}
-                      />
-                    </div>
+              <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+                <div className="mx-auto w-full max-w-[250px]">
+                  <FunctionRadial
+                    data={sampleProfile.map(({ name, label, value }) => ({ name, label, value }))}
+                    size={292}
+                  />
+                </div>
 
-                    <div className="space-y-3">
-                      {sampleProfile.slice(0, 5).map((fn) => (
-                        <div key={fn.name} className="rounded-2xl bg-white p-3 shadow-sm">
-                          <div className="mb-2 flex items-center justify-between gap-3">
-                            <div className="flex items-center gap-3">
-                              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-jung-accent-light font-display text-lg italic text-jung-accent">
-                                {fn.name}
-                              </span>
-                              <div>
-                                <p className="text-sm font-semibold text-jung-dark">{fn.label}</p>
-                                <p className="text-xs text-jung-muted">{fn.role}</p>
-                              </div>
-                            </div>
-                            <span className="font-mono text-sm text-jung-dark">{fn.value}</span>
-                          </div>
-                          <div className="h-2 overflow-hidden rounded-full bg-jung-surface-alt">
-                            <div className="h-full rounded-full bg-jung-accent" style={{ width: `${fn.value}%` }} />
+                <div className="space-y-2">
+                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted">
+                    Top signals
+                  </p>
+                  {sampleProfile.slice(0, 4).map((fn) => (
+                    <div key={fn.name} className="rounded-lg bg-jung-base p-2.5">
+                      <div className="mb-2 flex items-center justify-between gap-3">
+                        <div className="flex min-w-0 items-center gap-3">
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white font-display text-base italic text-jung-accent shadow-sm">
+                            {fn.name}
+                          </span>
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-semibold text-jung-dark">{fn.label}</p>
+                            <p className="text-xs text-jung-muted">{fn.role}</p>
                           </div>
                         </div>
-                      ))}
+                        <span className="font-mono text-sm text-jung-dark">{fn.value}</span>
+                      </div>
+                      <div className="h-1.5 overflow-hidden rounded-full bg-jung-border-light">
+                        <div className="h-full rounded-full bg-jung-accent" style={{ width: `${fn.value}%` }} />
+                      </div>
                     </div>
-                  </div>
-
-                  <div className="mt-5 rounded-2xl border border-jung-border-light bg-white p-4">
-                    <p className="text-sm font-semibold text-jung-dark">What the report explains</p>
-                    <p className="mt-1 text-sm leading-6 text-jung-secondary">
-                      Why the Ti-Ne pattern seeks precision first, explores possibilities second,
-                      and may experience Fe as social pressure under stress.
-                    </p>
-                  </div>
+                  ))}
                 </div>
               </div>
-            </motion.div>
+
+              <div className="mt-4 border-t border-jung-border-light pt-4">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted">
+                  All 8 functions remain visible
+                </p>
+                <div className="grid grid-cols-4 gap-2 sm:grid-cols-8 lg:grid-cols-4 xl:grid-cols-8">
+                  {sampleProfile.map((fn) => (
+                    <div key={fn.name} className="rounded-lg bg-jung-base px-2 py-2 text-center">
+                      <p className="font-display text-base font-semibold italic text-jung-accent">{fn.name}</p>
+                      <p className="mt-0.5 font-mono text-[11px] text-jung-muted">{fn.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section className="border-b border-jung-border-light bg-white">
-          <div className="lab-container grid gap-px bg-jung-border-light md:grid-cols-3">
+        <section className="border-b border-jung-border-light bg-white py-6">
+          <div className="lab-container">
+            <div className="grid gap-4 rounded-lg border border-jung-border bg-jung-base p-5 md:grid-cols-[minmax(0,1fr)_minmax(20rem,0.9fr)] md:items-center">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted">
+                  Save the path
+                </p>
+                <h2 className="mt-2 font-display text-2xl font-semibold text-jung-dark">
+                  Not ready for a 12-minute assessment right now?
+                </h2>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-jung-secondary">
+                  Email yourself the free test link and the paid-report code. The result still stays free to view first.
+                </p>
+              </div>
+              <DiscountCaptureCard
+                source="home_post_hero_save_path"
+                compact
+                minimal
+                minimalTitle="Email me the test"
+                minimalDescription={`Get the free assessment link, sample report, and ${EMAIL_CAPTURE_OFFER.code} code in one private email.`}
+                minimalSubmitLabel="Send the link"
+                minimalFootnote="One email with the next step. No subscription."
+                minimalSentMessage="Path sent. The email links back to the free assessment and keeps the upgrade code ready."
+                preferredTier="insight"
+                showCheckoutButtons={false}
+              />
+            </div>
+          </div>
+        </section>
+
+        <section className="border-b border-jung-border-light bg-white py-12 lg:py-14">
+          <div className="lab-container grid gap-4 md:grid-cols-3">
             {valueCards.map((card) => {
               const Icon = card.icon;
               return (
-                <div key={card.title} className="bg-white px-6 py-8 md:px-8">
-                  <Icon className="h-6 w-6 text-jung-accent" />
-                  <h3 className="mt-5 font-display text-2xl font-semibold text-jung-dark">
-                    {card.title}
-                  </h3>
+                <div key={card.title} className="rounded-lg border border-jung-border bg-jung-base p-5">
+                  <Icon className="h-5 w-5 text-jung-accent" />
+                  <h3 className="mt-4 font-display text-2xl font-semibold text-jung-dark">{card.title}</h3>
                   <p className="mt-3 text-sm leading-7 text-jung-secondary">{card.description}</p>
                 </div>
               );
@@ -301,42 +369,72 @@ export const Home: React.FC = () => {
           </div>
         </section>
 
-        <section className="bg-jung-base py-20 lg:py-28">
-          <div className="lab-container">
-            <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-              <div>
-                <p className="text-xs font-semibold uppercase text-jung-muted">
-                  How it works
-                </p>
-                <h2 className="mt-4 max-w-xl font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
-                  A clearer path from curiosity to usable insight.
-                </h2>
-              </div>
-              <div className="grid gap-4">
-                {steps.map(([number, title, description]) => (
-                  <div key={number} className="rounded-3xl border border-jung-border bg-white p-6 shadow-sm">
-                    <div className="flex gap-5">
-                      <span className="font-mono text-xs font-semibold text-jung-accent">{number}</span>
-                      <div>
-                        <h3 className="font-display text-2xl font-semibold text-jung-dark">{title}</h3>
-                        <p className="mt-2 text-sm leading-7 text-jung-secondary">{description}</p>
-                      </div>
+        <section className="bg-jung-base py-16 lg:py-20">
+          <div className="lab-container grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+            <div>
+              <p className="text-xs font-semibold uppercase text-jung-muted">How it works</p>
+              <h2 className="mt-4 max-w-xl font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
+                A clear path from curiosity to usable insight.
+              </h2>
+            </div>
+            <div className="grid gap-4">
+              {steps.map(([number, title, description]) => (
+                <div key={number} className="rounded-lg border border-jung-border bg-white p-5 shadow-sm">
+                  <div className="flex gap-4">
+                    <span className="mt-1 font-mono text-xs font-semibold text-jung-accent">{number}</span>
+                    <div>
+                      <h3 className="font-display text-2xl font-semibold text-jung-dark">{title}</h3>
+                      <p className="mt-2 text-sm leading-7 text-jung-secondary">{description}</p>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
-        <section id="pricing" className="border-y border-jung-border-light bg-white py-20 lg:py-28">
-          <div className="lab-container">
-            <div className="mb-12 max-w-2xl">
-              <p className="text-xs font-semibold uppercase text-jung-muted">
-                Pricing
+        <section className="border-y border-jung-border-light bg-white py-16 lg:py-20">
+          <div className="lab-container grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+            <div>
+              <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
+                <FileText className="h-5 w-5" />
+              </div>
+              <p className="text-xs font-semibold uppercase text-jung-muted">Paid report preview</p>
+              <h2 className="mt-4 max-w-xl font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
+                The upgrade has to earn its place.
+              </h2>
+              <p className="mt-5 max-w-lg text-sm leading-7 text-jung-secondary">
+                Insight and Mastery are not a second test. They explain the result you already saw:
+                the edge, stress pattern, relationship reflection, and next practice.
               </p>
+              <Button
+                onClick={() => viewSampleReport('home_paid_preview')}
+                variant="secondary"
+                size="md"
+                rightIcon={<ArrowRight className="h-4 w-4" />}
+                className="mt-7"
+              >
+                View sample report
+              </Button>
+            </div>
+
+            <div className="grid gap-3">
+              {reportQuestions.map((question) => (
+                <div key={question} className="flex items-start gap-4 rounded-lg border border-jung-border bg-jung-base p-5">
+                  <Check className="mt-1 h-4 w-4 shrink-0 text-jung-accent" />
+                  <p className="text-sm font-semibold leading-7 text-jung-dark">{question}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="pricing" className="border-b border-jung-border-light bg-white py-16 lg:py-20">
+          <div className="lab-container">
+            <div className="mb-10 max-w-2xl">
+              <p className="text-xs font-semibold uppercase text-jung-muted">Pricing</p>
               <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
-                Start free. Upgrade only when the map is useful.
+                Buy the interpretation only if the free map makes sense.
               </h2>
             </div>
 
@@ -346,7 +444,7 @@ export const Home: React.FC = () => {
                 return (
                   <div
                     key={tier.id}
-                    className={`relative flex flex-col rounded-3xl border p-6 shadow-sm ${
+                    className={`relative flex flex-col rounded-lg border p-6 shadow-sm ${
                       highlighted
                         ? 'border-jung-accent bg-jung-accent text-white shadow-jung-accent/20'
                         : 'border-jung-border bg-jung-base text-jung-dark'
@@ -362,17 +460,22 @@ export const Home: React.FC = () => {
                       {tier.description}
                     </p>
                     <div className="mt-7 flex items-end gap-2">
-                      <span className="font-display text-5xl font-semibold">{tier.price}</span>
+                      <span className="font-display text-4xl font-semibold sm:text-5xl">{tier.price}</span>
                       <span className={`mb-2 text-xs font-semibold ${highlighted ? 'text-white/60' : 'text-jung-muted'}`}>
                         {tier.id === 'free' ? 'to start' : 'one-time'}
                       </span>
                     </div>
+                    {tier.originalPrice && (
+                      <p className={`mt-2 text-xs leading-5 ${highlighted ? 'text-white/70' : 'text-jung-muted'}`}>
+                        <span className="line-through">{tier.originalPrice}</span> before code. {tier.priceNote}.
+                      </p>
+                    )}
                     <button
                       type="button"
                       onClick={() =>
                         tier.id === 'free'
                           ? startAssessment('home_pricing_free')
-                          : goPricing(tier.name, tier.amount)
+                          : goPricing(tier.name)
                       }
                       className={`mt-7 inline-flex min-h-12 items-center justify-center rounded-full px-5 text-sm font-semibold transition-all ${
                         highlighted
@@ -380,7 +483,7 @@ export const Home: React.FC = () => {
                           : 'bg-jung-dark text-white hover:bg-jung-accent'
                       }`}
                     >
-                      {tier.cta}
+                      {tier.id === 'free' ? 'Get my free map' : tier.cta}
                     </button>
                     <ul className={`mt-7 space-y-3 border-t pt-6 ${highlighted ? 'border-white/16' : 'border-jung-border'}`}>
                       {tier.features.map((feature) => (
@@ -395,21 +498,19 @@ export const Home: React.FC = () => {
               })}
             </div>
 
-            <DiscountCaptureCard source="home_pricing_section" compact className="mx-auto mt-10 max-w-3xl" />
+            <DiscountCaptureCard source="home_pricing_section" compact className="mx-auto mt-8 max-w-3xl" />
           </div>
         </section>
 
-        <section className="bg-jung-base py-20 lg:py-28">
+        <section className="bg-jung-base py-16 lg:py-20">
           <div className="lab-container grid gap-10 lg:grid-cols-[0.88fr_1.12fr]">
             <div>
-              <p className="text-xs font-semibold uppercase text-jung-muted">
-                Before you start
-              </p>
+              <p className="text-xs font-semibold uppercase text-jung-muted">Before you start</p>
               <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                 Straight answers, no personality-test hype.
               </h2>
             </div>
-            <div className="divide-y divide-jung-border overflow-hidden rounded-3xl border border-jung-border bg-white">
+            <div className="divide-y divide-jung-border overflow-hidden rounded-lg border border-jung-border bg-white">
               {faqs.map((faq, index) => {
                 const open = openFaq === index;
                 return (
@@ -417,14 +518,14 @@ export const Home: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setOpenFaq(open ? null : index)}
-                      className="flex w-full items-start justify-between gap-5 px-6 py-5 text-left transition-colors hover:bg-jung-surface-alt"
+                      className="flex w-full items-start justify-between gap-5 px-5 py-5 text-left transition-colors hover:bg-jung-surface-alt"
                       aria-expanded={open}
                     >
                       <span className="font-display text-xl font-semibold text-jung-dark">{faq.question}</span>
                       <ChevronDown className={`mt-1 h-5 w-5 shrink-0 text-jung-muted transition-transform ${open ? 'rotate-180' : ''}`} />
                     </button>
                     {open && (
-                      <div className="px-6 pb-6">
+                      <div className="px-5 pb-6">
                         <p className="max-w-2xl text-sm leading-7 text-jung-secondary">{faq.answer}</p>
                       </div>
                     )}
@@ -435,50 +536,29 @@ export const Home: React.FC = () => {
           </div>
         </section>
 
-        <section className="border-y border-jung-border-light bg-white py-16">
-          <div className="lab-container">
-            <div className="mb-7 flex items-center gap-3">
-              <Sparkles className="h-5 w-5 text-jung-accent" />
-              <h2 className="font-display text-2xl font-semibold text-jung-dark">Useful guides</h2>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              {seoGuideLinks.map(([label, href]) => (
-                <a
-                  key={href}
-                  href={href}
-                  className="rounded-full border border-jung-border bg-jung-base px-4 py-2 text-sm font-semibold text-jung-secondary transition-colors hover:border-jung-accent hover:text-jung-accent"
-                >
-                  {label}
-                </a>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-jung-accent px-4 py-16 text-white sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-5xl rounded-[32px] border border-white/15 bg-white/8 p-8 md:p-12">
-            <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
-              <div>
-                <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/12 px-3 py-1 text-xs font-semibold">
-                  <Lock className="h-3.5 w-3.5" />
-                  Private by default
-                </div>
-                <h2 className="max-w-2xl font-display text-4xl font-semibold leading-tight md:text-5xl">
-                  Take the assessment before you decide anything.
-                </h2>
-                <p className="mt-4 max-w-xl text-white/74">
-                  You will know quickly whether the map gives you something more precise than a normal type quiz.
-                </p>
+        <section className="bg-jung-accent py-14 text-white lg:py-16">
+          <div className="lab-container flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+            <div>
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/12 px-3 py-1 text-xs font-semibold">
+                <Lock className="h-3.5 w-3.5" />
+                Private by default
               </div>
-              <button
-                type="button"
-                onClick={() => startAssessment('home_final_cta')}
-                className="inline-flex min-h-14 shrink-0 items-center justify-center gap-2 rounded-full bg-white px-7 text-sm font-semibold text-jung-accent transition-transform hover:-translate-y-0.5"
-              >
-                Start free
-                <ArrowRight className="h-4 w-4" />
-              </button>
+              <h2 className="max-w-2xl font-display text-4xl font-semibold leading-tight md:text-5xl">
+                Take the assessment before you decide anything.
+              </h2>
+              <p className="mt-4 max-w-xl text-white/74">
+                You will know quickly whether the function-stack map gives you something more precise
+                than another type label.
+              </p>
             </div>
+            <button
+              type="button"
+              onClick={() => startAssessment('home_final_cta')}
+              className="inline-flex min-h-14 shrink-0 items-center justify-center gap-2 rounded-full bg-white px-7 text-sm font-semibold text-jung-accent transition-transform hover:-translate-y-0.5"
+            >
+              Get my free map
+              <ArrowRight className="h-4 w-4" />
+            </button>
           </div>
         </section>
       </div>

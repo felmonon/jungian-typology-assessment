@@ -16,9 +16,9 @@ Use 20-35 second vertical videos. Show the TypeJung result/map quickly, not only
 
 **Hook:** Most personality tests ask the wrong question.
 
-**Body:** They ask "what type are you?" and stop there. But the useful question is: where does your energy flow, and where does it get stuck under pressure?
+**Body:** They ask "what type are you?" and stop there. But the useful question is: which functions lead, and which ones tighten under pressure?
 
-**CTA:** TypeJung gives you a free Jungian energy map. Try it at typejung.com.
+**CTA:** TypeJung gives you a free Jungian function-stack map. Try it at typejung.com.
 
 ## Script 3: Inferior Function
 
@@ -26,7 +26,7 @@ Use 20-35 second vertical videos. Show the TypeJung result/map quickly, not only
 
 **Body:** That is why self-description can be misleading. You might describe your strengths clearly, but your growth edge appears through irritation, projection, attraction, and body signals.
 
-**CTA:** TypeJung measures that layer directly. Take the free test at typejung.com.
+**CTA:** TypeJung maps that layer from your answers. Take the free test at typejung.com.
 
 ## Script 4: INFJ vs INFP
 
@@ -34,7 +34,7 @@ Use 20-35 second vertical videos. Show the TypeJung result/map quickly, not only
 
 **Body:** Both can look private, idealistic, and sensitive. The real question is whether your pattern is more Ni-Fe or Fi-Ne. One converges on hidden meaning and relational atmosphere. The other protects inner value and explores possibility.
 
-**CTA:** Compare your energy map at typejung.com.
+**CTA:** Compare your function-stack map at typejung.com.
 
 ## Script 5: INTJ vs INTP
 
@@ -89,4 +89,4 @@ Use 20-35 second vertical videos. Show the TypeJung result/map quickly, not only
 - "Your type did not change. The test was too shallow."
 - "MBTI mistyping makes more sense when you look at cognitive functions."
 - "The inferior function is often the missing clue."
-- "Free Jungian energy map: typejung.com"
+- "Free Jungian function-stack map: typejung.com"

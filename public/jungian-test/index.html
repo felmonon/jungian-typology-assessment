@@ -52,13 +52,14 @@
       linear-gradient(180deg, rgba(244,244,242,0.72) 0%, rgba(250,250,248,0) 360px),
       var(--jung-base);
   }
-  h1, h2, h3 { font-family: "Fraunces", Georgia, serif; font-weight: 600; letter-spacing: 0; }
+  h1, h2, h3 { font-family: "Fraunces", Georgia, serif; font-weight: 600; letter-spacing: 0; overflow-wrap: anywhere; }
   h1 { color: var(--jung-dark); font-size: clamp(2.35rem, 7vw, 4.4rem); line-height: 0.98; margin: 0 0 0.35em; }
   h2 { color: var(--jung-dark); border-bottom: 1px solid var(--jung-border); padding-bottom: 12px; margin-top: 48px; font-size: clamp(1.55rem, 3.5vw, 2.25rem); line-height: 1.1; }
   h3 { color: var(--jung-dark); margin-top: 30px; font-size: 1.2rem; line-height: 1.25; }
-  p, li { color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; }
-  a { color: var(--jung-accent); text-decoration-thickness: 0.08em; text-underline-offset: 0.18em; }
+  p, li { color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; overflow-wrap: anywhere; }
+  a { color: var(--jung-accent); text-decoration-thickness: 0.08em; text-underline-offset: 0.18em; overflow-wrap: anywhere; }
   .subtitle { color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; font-size: clamp(1.1rem, 2.6vw, 1.35rem); line-height: 1.65; margin-bottom: 22px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
   .breadcrumb { color: var(--jung-muted); margin-bottom: 28px; font-size: 0.92rem; }
   .breadcrumb a { color: var(--jung-accent); text-decoration: none; font-weight: 600; }
   .eyebrow { color: var(--jung-accent); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.78rem; margin-bottom: 14px; }
@@ -66,9 +67,38 @@
   .cta-box p, .cta-box h2, .cta-box h3 { color: white; }
   .cta-box h2 { border: 0; margin-top: 0; padding-bottom: 0; }
   .cta-box h3 { margin-top: 0; }
+  .hero-actions, .cta-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 24px 0 0; }
   .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 12px 22px; background: var(--jung-accent); color: white; text-decoration: none; border-radius: 8px; font-weight: 700; box-shadow: 0 18px 50px -34px rgb(47 111 88 / 0.7); }
   .btn:hover { background: var(--jung-accent-hover); }
+  .secondary-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 12px 20px; background: var(--jung-surface); color: var(--jung-dark); text-decoration: none; border: 1px solid var(--jung-border); border-radius: 8px; font-weight: 700; }
+  .secondary-btn:hover { border-color: var(--jung-accent-muted); color: var(--jung-accent); }
+  .cta-box .secondary-btn { background: transparent; color: white; border-color: rgba(255,255,255,0.32); }
+  .cta-box .secondary-btn:hover { border-color: rgba(255,255,255,0.72); color: white; }
   .text-link { color: var(--jung-accent-light); font-weight: 700; margin-left: 16px; }
+  .proof-strip { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; padding: 0; list-style: none; }
+  .proof-strip li { margin: 0; padding: 7px 10px; border: 1px solid var(--jung-border-light); border-radius: 8px; background: rgba(255,255,255,0.72); color: var(--jung-secondary); font-family: "Space Grotesk", Verdana, sans-serif; font-size: 0.82rem; font-weight: 600; line-height: 1.25; }
+  .save-link-panel { display: grid; gap: 14px; margin: 24px 0 0; padding: 18px; border: 1px solid var(--jung-accent-muted); border-radius: 8px; background: color-mix(in srgb, var(--jung-accent-light) 56%, white); }
+  .save-link-panel h2 { border: 0; margin: 0; padding: 0; font-family: "Space Grotesk", Verdana, sans-serif; font-size: 1.04rem; line-height: 1.25; }
+  .save-link-panel p { margin: 0; font-size: 0.98rem; line-height: 1.55; }
+  .save-link-form { display: grid; gap: 10px; }
+  .save-link-form-row { display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr) auto; }
+  .save-link-form input[type="email"] { min-height: 44px; width: 100%; border: 1px solid var(--jung-border); border-radius: 8px; background: var(--jung-surface); color: var(--jung-dark); font: 600 0.95rem "Space Grotesk", Verdana, sans-serif; padding: 0 12px; }
+  .save-link-form button { min-height: 44px; border: 0; border-radius: 8px; background: var(--jung-accent); color: white; cursor: pointer; font: 700 0.92rem "Space Grotesk", Verdana, sans-serif; padding: 0 16px; }
+  .save-link-form button:disabled { cursor: wait; opacity: 0.72; }
+  .save-link-status { min-height: 1.35rem; color: var(--jung-secondary); font-size: 0.86rem !important; }
+  .honeypot { display: none; }
+  .creator-share-kit { margin: 30px 0 36px; padding: clamp(20px, 4vw, 28px); border: 1px solid var(--jung-border); border-radius: 8px; background: var(--jung-surface); box-shadow: 0 16px 50px -42px rgb(29 38 32 / 0.4); }
+  .creator-share-kit h2 { border: 0; margin: 0; padding: 0; font-size: clamp(1.35rem, 3vw, 1.85rem); }
+  .creator-share-kit-intro { margin: 8px 0 0; max-width: 740px; }
+  .creator-public-link { margin: 16px 0 0; padding: 12px 14px; border: 1px solid var(--jung-border-light); border-radius: 8px; background: var(--jung-surface-alt); font-family: "Space Grotesk", Verdana, sans-serif; font-size: 0.9rem; }
+  .creator-public-link strong { display: block; margin-bottom: 3px; color: var(--jung-dark); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .copy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 18px 0 0; }
+  .copy-card { display: grid; gap: 10px; min-height: 100%; padding: 15px; border: 1px solid var(--jung-border-light); border-radius: 8px; background: color-mix(in srgb, var(--jung-accent-light) 22%, white); }
+  .copy-card h3 { margin: 0; font-family: "Space Grotesk", Verdana, sans-serif; font-size: 1rem; }
+  .copy-template { min-height: 172px; width: 100%; resize: vertical; border: 1px solid var(--jung-border); border-radius: 8px; background: white; color: var(--jung-secondary); font: 500 0.9rem/1.55 "Source Serif 4", Georgia, serif; padding: 12px; }
+  .copy-action-row { display: grid; gap: 7px; align-items: center; }
+  .copy-action-row button { justify-self: start; min-height: 40px; border: 0; border-radius: 8px; background: var(--jung-dark); color: white; cursor: pointer; font: 700 0.88rem "Space Grotesk", Verdana, sans-serif; padding: 0 14px; }
+  .copy-status { min-height: 1.25rem; margin: 0; color: var(--jung-muted); font-size: 0.82rem !important; }
   .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 20px 0; }
   .related-card { background: var(--jung-surface); padding: 16px; border-radius: 8px; border: 1px solid var(--jung-border-light); box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
   .related-card a { color: var(--jung-dark); text-decoration: none; font-weight: 700; }
@@ -88,7 +118,8 @@
   .context-links li { margin: 4px 0; }
   .faq-item { background: var(--jung-surface); padding: 18px; border-radius: 8px; margin-bottom: 14px; border: 1px solid var(--jung-border-light); }
   .faq-item h3 { margin: 0 0 8px; font-size: 1.05rem; }
-  .comparison-table { width: 100%; border-collapse: collapse; margin: 22px 0; background: var(--jung-surface); border: 1px solid var(--jung-border); border-radius: 8px; overflow: hidden; }
+  .comparison-table { display: block; width: 100%; max-width: 100%; border-collapse: collapse; margin: 22px 0; background: var(--jung-surface); border: 1px solid var(--jung-border); border-radius: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .comparison-table thead, .comparison-table tbody { display: table; width: 100%; min-width: min(620px, 100%); }
   .comparison-table th { background: var(--jung-dark); color: white; padding: 13px; text-align: left; }
   .comparison-table td { padding: 13px; border-bottom: 1px solid var(--jung-border-light); vertical-align: top; color: var(--jung-secondary); }
   .comparison-table tr:nth-child(even) { background: var(--jung-surface-alt); }
@@ -104,6 +135,9 @@
     nav a { margin-right: 0; }
     .intent-grid { grid-template-columns: 1fr; }
     .trait-list { columns: 1; }
+    .hero-actions > a, .cta-actions > a { width: 100%; }
+    .save-link-form-row { grid-template-columns: 1fr; }
+    .copy-action-row button { width: 100%; }
     .text-link { display: inline-block; margin: 14px 0 0; }
   }
 </style>
@@ -116,7 +150,7 @@
   "description": "Take a Jungian test that maps all 8 cognitive functions, shows your likely type pattern, and supports educational self-reflection.",
   "url": "https://typejung.com/jungian-test",
   "inLanguage": "en",
-  "dateModified": "2026-05-21",
+  "dateModified": "2026-06-09",
   "isPartOf": {
     "@type": "WebSite",
     "name": "TypeJung",
@@ -186,9 +220,9 @@
 <body>
   <nav>
     <a href="/">Home</a>
-    <a href="/assessment">Take Assessment</a>
+    <a href="/assessment?source=seo_jungian_test_nav">Take Assessment</a>
     <a href="/learn">Learn</a>
-    <a href="/pricing">Pricing</a>
+    <a href="/pricing?source=seo_jungian_test_nav">Pricing</a>
     <a href="/blog/">Blog</a>
   </nav>
 
@@ -199,8 +233,32 @@
   <header>
     <p class="eyebrow">Jungian test</p>
     <h1>A Jungian test that goes beyond a four-letter label</h1>
-    <p class="subtitle">TypeJung is a Jungian self-assessment for people who want more than a quick type label. It measures how you use all 8 cognitive functions, then turns that profile into an educational map of attention, decision-making, and stress patterns.</p>
-    <p class="subtitle">The free assessment takes about 12 to 16 minutes. Paid reports are optional one-time CAD upgrades: Insight for CA$10 and Mastery for CA$29.</p>
+    <p class="subtitle">TypeJung is a Jungian self-assessment for people who want more than a quick type label. It maps self-reported patterns associated with all 8 cognitive functions, then turns that profile into an educational map of attention, decision-making, and stress patterns.</p>
+    <p class="subtitle">The free assessment takes about 12 to 16 minutes. Paid reports are optional one-time CAD upgrades; TYPEJUNG30 currently brings Insight to CA$7 and Mastery to CA$20.30 on Stripe.</p>
+    <div class="hero-actions">
+      <a href="/assessment?source=seo_jungian_test_hero" class="btn">Start the free assessment</a>
+      <a href="/sample-report?source=seo_jungian_test_hero_sample" class="secondary-btn">View sample report</a>
+    </div>
+    <ul class="proof-strip" aria-label="Assessment proof points">
+      <li>42-question map</li>
+      <li>No payment first</li>
+      <li>CA$7 Insight with TYPEJUNG30</li>
+    </ul>
+    <section class="save-link-panel" aria-labelledby="jungian-test-save-link-title">
+    <div>
+      <h2 id="jungian-test-save-link-title">Want the free map later?</h2>
+      <p>Email yourself the assessment link and TYPEJUNG30 code. Start free, then decide after the result.</p>
+    </div>
+    <form class="save-link-form" data-discount-lead-form data-source="seo_jungian_test_email_code" data-tier="insight">
+      <label class="sr-only" for="jungian-test-save-link-email">Email address</label>
+      <div class="save-link-form-row">
+        <input id="jungian-test-save-link-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+        <button type="submit">Email the free link</button>
+      </div>
+      <input class="honeypot" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <p class="save-link-status" aria-live="polite"></p>
+    </form>
+  </section>
   </header>
 
   <section class="intent-grid" aria-label="Quick assessment fit">
@@ -209,7 +267,7 @@
       <span>Searchers who want a Jungian test with visible cognitive-function evidence, not only a fast type label.</span>
     </div>
     <div class="intent-card">
-      <strong>Measures</strong>
+      <strong>Maps</strong>
       <span>All 8 function-attitudes, dominant-inferior tension, behavioral scenarios, stress signals, somatic cues, and attitude direction.</span>
     </div>
     <div class="intent-card">
@@ -218,12 +276,23 @@
     </div>
   </section>
 
+
+
   <section class="cluster-nav" aria-label="Jungian test topic cluster">
     <h2>Related Jungian assessment guides</h2>
     <div class="cluster-grid">
       <a class="cluster-link" href="/jungian-cognitive-functions-test"><strong>Jungian cognitive functions test</strong><span>Map the full function-attitude pattern behind a likely type result.</span></a>
-      <a class="cluster-link" href="/cognitive-function-test"><strong>Cognitive function test</strong><span>See how TypeJung scores Ni, Ne, Si, Se, Ti, Te, Fi, and Fe independently.</span></a>
-      <a class="cluster-link" href="/mbti-alternative"><strong>MBTI alternative</strong><span>Compare TypeJung against label-first MBTI-style quizzes and four-letter tests.</span></a>
+      <a class="cluster-link" href="/cognitive-function-test"><strong>Cognitive function test</strong><span>See how TypeJung maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe in one function-stack view.</span></a>
+      <a class="cluster-link" href="/cognitive-functions-quiz"><strong>Cognitive functions quiz</strong><span>Use a quiz-style entry point when you want the function map first, not only a four-letter result.</span></a>
+      <a class="cluster-link" href="/free-cognitive-function-test"><strong>Free cognitive function test</strong><span>Start the no-payment assessment path and see the free function map first.</span></a>
+      <a class="cluster-link" href="/function-stack-test"><strong>Function stack test</strong><span>Compare dominant, auxiliary, tertiary, and inferior signals from the full map.</span></a>
+      <a class="cluster-link" href="/dominant-function-test"><strong>Dominant function test</strong><span>Use the full map to test which function is most likely leading your pattern.</span></a>
+      <a class="cluster-link" href="/jungian-personality-test"><strong>Jungian personality test</strong><span>Use the broader Jungian personality route when you want type plus function evidence.</span></a>
+      <a class="cluster-link" href="/mbti-test-alternative"><strong>MBTI test alternative</strong><span>Use TypeJung when MBTI-style quizzes keep changing and you want function evidence before a label.</span></a>
+      <a class="cluster-link" href="/mbti-alternative"><strong>MBTI alternative</strong><span>Compare TypeJung as a function-based alternative to label-first MBTI-style typology.</span></a>
+      <a class="cluster-link" href="/16personalities-alternative"><strong>16Personalities alternative</strong><span>Compare a free function-stack map against broad 16Personalities-style type summaries.</span></a>
+      <a class="cluster-link" href="/sakinorva-alternative"><strong>Sakinorva alternative</strong><span>Compare TypeJung as a free-first cognitive-functions test and interpretation path.</span></a>
+      <a class="cluster-link" href="/mbti-mistype-test"><strong>MBTI mistype test</strong><span>Use function evidence to check whether a changing or competing type label is really a mistype.</span></a>
       <a class="cluster-link" href="/inferior-function-test"><strong>Inferior function test</strong><span>Use the dominant-inferior axis to understand stress, grip patterns, and development.</span></a>
     </div>
   </section>
@@ -260,7 +329,7 @@
       <tr><td>Result format</td><td>A single type code</td><td>Function map plus likely type pattern</td></tr>
       <tr><td>Jungian depth</td><td>Usually light or implied</td><td>Function-attitude and dominant-inferior interpretation</td></tr>
       <tr><td>Stress insight</td><td>Generic advice</td><td>Inferior-function and grip pattern context</td></tr>
-      <tr><td>Payment path</td><td>Often pay before depth is clear</td><td>Free core map first, optional one-time upgrades later</td></tr>
+      <tr><td>Payment path</td><td>Often pay before depth is clear</td><td>Free function-stack map first, optional one-time upgrades later</td></tr>
     </tbody>
   </table>
 </section>
@@ -286,24 +355,25 @@
 
   <section>
   <h2>When a paid report helps</h2>
-  <p>The free assessment gives you the core map. Insight adds developmental edge analysis, a stress pattern map, relationship triggers, personalized practice guidance, and lifetime unlocked result access for a one-time CA$10 payment. Mastery adds the AI Type Coach, an individuation roadmap, reassessment tracking, a practice library, and priority support for a one-time CA$29 payment.</p>
+  <p>The free assessment gives you the function-stack map. Insight adds developmental edge analysis, a stress-pattern reflection map, relationship-pattern reflection, and practical prompts for a one-time CA$10 base price, currently CA$7 with TYPEJUNG30 on Stripe. Mastery adds the AI Type Guide, an individuation roadmap, reflection exercises, and practice support for a one-time CA$29 base price, currently CA$20.30 with the same code.</p>
   <p>The best path is to take the free test first. Upgrade only if the function map feels accurate enough to make deeper interpretation useful.</p>
   <div class="context-links">
     <strong>Useful next reads</strong>
     <ul>
-      <li><a href="/pricing">Compare Free, Insight, and Mastery pricing</a></li>
-      <li><a href="/assessment">Start the free Jungian assessment</a></li>
+      <li><a href="/pricing?source=seo_jungian_test_section_4">Compare Free, Insight, and Mastery pricing</a></li>
+      <li><a href="/assessment?source=seo_jungian_test_section_4">Start the free Jungian assessment</a></li>
     </ul>
   </div>
 </section>
 
   <div class="cta-box">
     <h2>Start with your own function profile</h2>
-    <p>Take the free TypeJung assessment first. If the core map feels useful, Insight is a one-time CA$10 report and Mastery is a one-time CA$29 upgrade with the AI Type Coach and practice tools.</p>
-    <p>
-      <a href="/assessment" class="btn">Take the Free Assessment</a>
-      <a href="/pricing" class="text-link">See pricing</a>
-    </p>
+    <p>Take the free TypeJung assessment first. If the function-stack map feels useful, Insight is currently CA$7 with TYPEJUNG30 and Mastery is CA$20.30 with the same Stripe code.</p>
+    <div class="cta-actions">
+      <a href="/assessment?source=seo_jungian_test_final" class="btn">Take the free assessment</a>
+      <a href="/sample-report?source=seo_jungian_test_final_sample" class="secondary-btn">View sample report</a>
+      <a href="/pricing?source=seo_jungian_test_final_pricing" class="text-link">See pricing</a>
+    </div>
   </div>
 
   <section>
@@ -325,11 +395,11 @@
   <section>
     <h2>Related TypeJung Pages</h2>
     <div class="related-grid">
-      <div class="related-card"><a href="/assessment">Take the free assessment</a></div>
+      <div class="related-card"><a href="/assessment?source=seo_jungian_test_related">Take the free assessment</a></div>
       <div class="related-card"><a href="/jungian-typology">Jungian typology guide</a></div>
       <div class="related-card"><a href="/cognitive-functions">Cognitive functions guide</a></div>
       <div class="related-card"><a href="/learn">Learn Jungian typology</a></div>
-      <div class="related-card"><a href="/pricing">Compare Free, Insight, and Mastery</a></div>
+      <div class="related-card"><a href="/pricing?source=seo_jungian_test_related">Compare Free, Insight, and Mastery</a></div>
     </div>
   </section>
 
@@ -337,5 +407,144 @@
     <p>&copy; 2026 TypeJung. A tool for self-exploration based on Jung's Psychological Types.</p>
     <p><a href="/privacy">Privacy Policy</a> | <a href="/terms">Terms of Service</a></p>
   </footer>
+  <script>
+    (() => {
+      const attributionPayload = () => {
+        const params = new URLSearchParams(window.location.search);
+        const cleanToken = (value) => {
+          if (typeof value !== 'string') return '';
+          return value
+            .trim()
+            .replace(/[^a-zA-Z0-9_-]/g, '_')
+            .replace(/_+/g, '_')
+            .replace(/^_+|_+$/g, '')
+            .slice(0, 100);
+        };
+        const cleanSourceChain = (value) => {
+          if (typeof value !== 'string') return '';
+          return Array.from(new Set(value
+            .split('>')
+            .map((token) => cleanToken(token).slice(0, 80))
+            .filter(Boolean)))
+            .join('>')
+            .slice(0, 240);
+        };
+        const utmSource = cleanToken(params.get('utm_source'));
+        const utmCampaign = cleanToken(params.get('utm_campaign'));
+        const parentSource = cleanToken(params.get('parent_source')) || cleanToken(params.get('source'));
+        const sourceChain = cleanSourceChain(params.get('source_chain'));
+
+        return {
+          ...(utmSource ? { utmSource } : {}),
+          ...(utmCampaign ? { utmCampaign } : {}),
+          ...(parentSource ? { parentSource } : {}),
+          ...(sourceChain ? { sourceChain } : {}),
+        };
+      };
+      const forms = document.querySelectorAll('[data-discount-lead-form]');
+      forms.forEach((form) => {
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          const email = form.querySelector('input[name="email"]')?.value || '';
+          const website = form.querySelector('input[name="website"]')?.value || '';
+          const button = form.querySelector('button[type="submit"]');
+          const status = form.querySelector('.save-link-status');
+          const source = form.getAttribute('data-source') || 'seo_email_code';
+          const tierIntent = form.getAttribute('data-tier') || 'insight';
+
+          if (status) status.textContent = 'Sending the link...';
+          if (button) button.disabled = true;
+
+          try {
+            const response = await fetch('/api/auth/discount-lead', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ email, website, source, tierIntent, ...attributionPayload() }),
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.error || 'Could not send the link.');
+            if (status) status.textContent = 'Sent. Check your inbox for the free assessment link and code.';
+            form.setAttribute('data-sent', 'true');
+          } catch (error) {
+            if (status) status.textContent = error.message || 'Could not send the link. Try again in a moment.';
+            if (button) button.disabled = false;
+          }
+        });
+      });
+    })();
+  </script>
+
+  <script>
+    (() => {
+      const cleanToken = (value, maxLength = 100) => {
+        if (typeof value !== 'string') return '';
+        return value
+          .trim()
+          .replace(/[^a-zA-Z0-9_-]/g, '_')
+          .replace(/_+/g, '_')
+          .replace(/^_+|_+$/g, '')
+          .slice(0, maxLength);
+      };
+      const cleanSourceChain = (value) => {
+        if (typeof value !== 'string') return '';
+        return Array.from(new Set(value
+          .split('>')
+          .map((token) => cleanToken(token, 80))
+          .filter(Boolean)))
+          .join('>')
+          .slice(0, 240);
+      };
+      const appendSourceChain = (...values) => {
+        return Array.from(new Set(values.flatMap((value) => {
+          const chain = cleanSourceChain(value);
+          return chain ? chain.split('>') : [];
+        }))).join('>').slice(0, 240);
+      };
+      const currentParams = new URLSearchParams(window.location.search);
+      const currentSource = cleanToken(currentParams.get('source'), 80);
+      const currentParentSource = cleanToken(currentParams.get('parent_source'), 80);
+      const currentSourceChain = appendSourceChain(
+        currentParams.get('source_chain'),
+        currentParentSource,
+        currentSource,
+      );
+      const preservedKeys = ['utm_source', 'utm_campaign', 'utm_medium', 'utm_content', 'utm_term', 'ref', 'shared_result', 'parent_source'];
+      const preserved = new URLSearchParams();
+      preservedKeys.forEach((key) => {
+        const value = cleanToken(currentParams.get(key));
+        if (value) preserved.set(key, value);
+      });
+      if (currentSourceChain) preserved.set('source_chain', currentSourceChain);
+      const hasPreserved = Array.from(preserved.keys()).length > 0;
+      if (!hasPreserved && !currentSource) return;
+
+      document.querySelectorAll('a[href]').forEach((link) => {
+        const rawHref = link.getAttribute('href') || '';
+        if (!rawHref.startsWith('/') || rawHref.startsWith('//') || rawHref.startsWith('/api/')) return;
+
+        const url = new URL(rawHref, window.location.origin);
+        preserved.forEach((value, key) => {
+          if (!url.searchParams.has(key)) url.searchParams.set(key, value);
+        });
+
+        const linkSource = cleanToken(url.searchParams.get('source'), 80);
+        if (currentSource && linkSource && linkSource !== currentSource && !url.searchParams.has('parent_source')) {
+          url.searchParams.set('parent_source', currentSource);
+        }
+        if (currentSource && !linkSource) {
+          url.searchParams.set('source', currentSource);
+        }
+        const finalSource = cleanToken(url.searchParams.get('source'), 80);
+        const finalSourceChain = appendSourceChain(
+          currentSourceChain,
+          finalSource && finalSource !== currentSource ? finalSource : '',
+        );
+        if (finalSourceChain) url.searchParams.set('source_chain', finalSourceChain);
+
+        link.setAttribute('href', url.pathname + url.search + url.hash);
+      });
+    })();
+  </script>
 </body>
 </html>

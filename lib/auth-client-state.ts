@@ -8,6 +8,7 @@ const AUTH_SCOPED_LOCAL_STORAGE_KEYS = [
   'jungian_assessment_unlocked',
   'jungian_assessment_unlock_user_id',
   'jungian_assessment_unlock_date',
+  'jungian_assessment_checkout_session_id',
   'jungian_assessment_send_email',
   'jungian_assessment_customer_email',
 ] as const;

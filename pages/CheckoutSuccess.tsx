@@ -1,25 +1,46 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { CheckCircle, Loader2, XCircle, FileText, Layers, AlertTriangle, Heart, Briefcase, Compass, RefreshCcw, Download, Shield } from 'lucide-react';
+import { Check, CheckCircle, Copy, Loader2, XCircle, FileText, Layers, AlertTriangle, Heart, Briefcase, Compass, RefreshCcw, Download, Shield, Share2, Sparkles, type LucideIcon } from 'lucide-react';
 import { TypeJungMark } from '../components/brand/TypeJungMark';
 import { Button } from '../components/ui/Button';
-import { PRICING } from '../data/pricing';
+import { isPaidTierId, PRICING, type PaidTierId } from '../data/pricing';
+import { SUPPORT_EMAIL } from '../data/support';
 import { FUNCTION_DESCRIPTIONS } from '../data/questions';
-import { FUNCTION_LABELS } from '../data/depthAssessment';
-import { AnalyticsEvents } from '../lib/analytics';
+import { ATTITUDE_LABELS, FUNCTION_LABELS } from '../data/depthAssessment';
+import { AnalyticsEvents, trackEvent } from '../lib/analytics';
+import { pathWithSource } from '../lib/acquisition-source';
+import { clearPendingCheckout } from '../lib/pending-checkout';
+import { clearUpgradeIntent } from '../lib/upgrade-intent';
+import { depthResultToLegacyAnalysisInput } from '../utils/depthCompatibility';
 import { extractDepthResult } from '../utils/depthCompatibility';
+import { DepthAssessmentResult } from '../utils/depthScoring';
 import { useAuth } from '../hooks/use-auth';
 
-const UNLOCKED_FEATURES = [
-  { icon: FileText, text: 'Detailed TypeJung depth report' },
-  { icon: Layers, text: 'Energy hierarchy and dominant-inferior axis' },
-  { icon: AlertTriangle, text: 'Stress and complex vulnerability patterns' },
-  { icon: Heart, text: 'Relationship trigger interpretation' },
-  { icon: Briefcase, text: 'Work and decision-making guidance' },
-  { icon: Compass, text: 'Individuation roadmap with practices' },
-  { icon: Download, text: 'Downloadable result archive' },
-  { icon: RefreshCcw, text: 'Lifetime access to future updates' },
-];
+const UNLOCKED_FEATURES = {
+  insight: [
+    { icon: FileText, text: 'Detailed TypeJung depth report' },
+    { icon: Layers, text: 'Energy hierarchy and dominant-inferior axis' },
+    { icon: AlertTriangle, text: 'Stress-pattern reflection' },
+    { icon: Heart, text: 'Relationship-pattern reflection' },
+    { icon: Briefcase, text: 'Work-pattern reflection prompts' },
+    { icon: Compass, text: 'Practical reflection prompts' },
+    { icon: Download, text: 'Downloadable result archive' },
+    { icon: RefreshCcw, text: 'Restore access by signing in with the purchase email' },
+  ],
+  mastery: [
+    { icon: FileText, text: 'Everything in the Insight depth report' },
+    { icon: Sparkles, text: 'AI Type Guide for follow-up reflection questions' },
+    { icon: Compass, text: 'Individuation roadmap and practice plan' },
+    { icon: AlertTriangle, text: 'Stress-pattern reflection' },
+    { icon: Heart, text: 'Relationship-pattern reflection' },
+    { icon: Briefcase, text: 'Work-pattern reflection prompts' },
+    { icon: Download, text: 'Downloadable result archive' },
+    { icon: RefreshCcw, text: 'Restore access by signing in with the purchase email' },
+  ],
+} satisfies Record<PaidTierId, Array<{ icon: LucideIcon; text: string }>>;
+
+const POST_PURCHASE_INVITE_GOAL = 3;
+const POST_PURCHASE_CAMPAIGN = 'customer_referral';
 
 type VerifySessionResponse = {
   paid?: boolean;
@@ -28,6 +49,9 @@ type VerifySessionResponse = {
     tier?: string;
   };
   transactionId?: string;
+  amountPaid?: number | null;
+  currency?: string | null;
+  discountCode?: string | null;
   customerEmail?: string;
 };
 
@@ -41,7 +65,15 @@ export const CheckoutSuccess: React.FC = () => {
   const { user } = useAuth();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [error, setError] = useState<string | null>(null);
+  const [purchasedTier, setPurchasedTier] = useState<PaidTierId>('insight');
   const [dominantFunction, setDominantFunction] = useState<string | null>(null);
+  const [savedDepthResult, setSavedDepthResult] = useState<DepthAssessmentResult | null>(null);
+  const [shareSlug, setShareSlug] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    return localStorage.getItem('jungian_assessment_share_slug');
+  });
+  const [isPreparingInvite, setIsPreparingInvite] = useState(false);
+  const [inviteCopied, setInviteCopied] = useState(false);
 
   useEffect(() => {
     // Try multiple ways to get session_id (hash routing can be tricky)
@@ -68,6 +100,7 @@ export const CheckoutSuccess: React.FC = () => {
         const results = JSON.parse(savedResults);
         const depthResult = extractDepthResult(results);
         if (depthResult) {
+          setSavedDepthResult(depthResult);
           setDominantFunction(FUNCTION_LABELS[depthResult.dominant]);
         } else if (results.stack?.dominant?.function) {
           setDominantFunction(results.stack.dominant.function);
@@ -94,11 +127,14 @@ export const CheckoutSuccess: React.FC = () => {
         const data = await response.json() as VerifySessionResponse;
 
         if (data.paid) {
-          const tier = data.tier || data.metadata?.tier || 'insight';
+          const verifiedTier = data.tier || data.metadata?.tier;
+          const tier = isPaidTierId(verifiedTier) ? verifiedTier : 'insight';
           const transactionId = data.transactionId || verifiedSessionId;
+          setPurchasedTier(tier);
           localStorage.setItem('jungian_assessment_tier', tier);
           localStorage.setItem('jungian_assessment_unlocked', 'true');
           localStorage.setItem('jungian_assessment_unlock_date', new Date().toISOString());
+          localStorage.setItem('jungian_assessment_checkout_session_id', verifiedSessionId);
           localStorage.setItem('jungian_assessment_send_email', 'true');
           if (user?.id) {
             localStorage.setItem('jungian_assessment_unlock_user_id', user.id);
@@ -106,16 +142,31 @@ export const CheckoutSuccess: React.FC = () => {
           if (data.customerEmail) {
             localStorage.setItem('jungian_assessment_customer_email', data.customerEmail);
           }
+          clearPendingCheckout();
+          clearUpgradeIntent();
           if (tier === 'insight' || tier === 'mastery') {
             const trackingKey = purchaseTrackingKey(transactionId);
             if (localStorage.getItem(trackingKey) !== 'true') {
-              const tracked = AnalyticsEvents.purchaseCompleted(tier, PRICING[tier].amount, transactionId);
+              const amountPaid = typeof data.amountPaid === 'number' && Number.isFinite(data.amountPaid)
+                ? data.amountPaid
+                : PRICING[tier].amount;
+              const tracked = AnalyticsEvents.purchaseCompleted(
+                tier,
+                amountPaid,
+                transactionId,
+                typeof data.currency === 'string' ? data.currency : 'CAD',
+              );
               if (tracked) {
                 localStorage.setItem(trackingKey, 'true');
               }
             }
           }
           setStatus('success');
+          trackEvent('post_purchase_referral_prompt_viewed', {
+            tier,
+            has_share_slug: Boolean(localStorage.getItem('jungian_assessment_share_slug')),
+            has_result: Boolean(savedResults),
+          });
         } else {
           setStatus('error');
           setError('Payment not completed');
@@ -128,6 +179,81 @@ export const CheckoutSuccess: React.FC = () => {
 
     verifySession();
   }, [searchParams, navigate, user?.id]);
+
+  const ensureShareSlug = useCallback(async (): Promise<string | null> => {
+    if (shareSlug) return shareSlug;
+    if (!savedDepthResult) return null;
+
+    setIsPreparingInvite(true);
+
+    try {
+      const response = await fetch('/api/results', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          ...depthResultToLegacyAnalysisInput(savedDepthResult),
+          shareOnly: true,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.message || 'Failed to create share link');
+      }
+
+      const saved = await response.json();
+      if (!saved?.shareSlug) {
+        throw new Error('Share link was not returned');
+      }
+
+      localStorage.setItem('jungian_assessment_share_slug', saved.shareSlug);
+      setShareSlug(saved.shareSlug);
+      trackEvent('post_purchase_share_link_created', {
+        source: 'checkout_success',
+        has_result: true,
+      });
+      return saved.shareSlug;
+    } catch (error) {
+      console.error('Failed to create post-purchase share link:', error);
+      return null;
+    } finally {
+      setIsPreparingInvite(false);
+    }
+  }, [savedDepthResult, shareSlug]);
+
+  const copyCustomerInvite = useCallback(async () => {
+    if (typeof window === 'undefined') return;
+
+    const nextShareSlug = await ensureShareSlug();
+    const sharePath = nextShareSlug
+      ? pathWithSource(`/share/${nextShareSlug}`, 'post_purchase_referral', {
+        ref: 'customer_referral',
+        utm_campaign: POST_PURCHASE_CAMPAIGN,
+      })
+      : pathWithSource('/assessment', 'post_purchase_referral', {
+        ref: 'customer_referral',
+        utm_campaign: POST_PURCHASE_CAMPAIGN,
+      });
+    const url = `${window.location.origin}${sharePath}`;
+    const axisText = savedDepthResult
+      ? `My TypeJung map came out as ${ATTITUDE_LABELS[savedDepthResult.attitude.dominant]} ${FUNCTION_LABELS[savedDepthResult.dominant]} to ${ATTITUDE_LABELS[savedDepthResult.hierarchy.find((item) => item.position === 'inferior')?.attitude ?? 'extraverted']} ${FUNCTION_LABELS[savedDepthResult.inferior]}.`
+      : 'I used TypeJung to map the cognitive-function pattern behind my type.';
+    const text = `${axisText} I kept the deeper report after the free map felt useful. Take the free assessment first and compare yours with mine: ${url}`;
+
+    try {
+      await navigator.clipboard.writeText(text);
+      setInviteCopied(true);
+      window.setTimeout(() => setInviteCopied(false), 2400);
+      trackEvent('post_purchase_referral_copied', {
+        source: 'checkout_success',
+        has_share_slug: Boolean(nextShareSlug),
+        invite_goal: POST_PURCHASE_INVITE_GOAL,
+      });
+    } catch (error) {
+      console.error('Failed to copy post-purchase invite:', error);
+    }
+  }, [ensureShareSlug, savedDepthResult]);
 
   if (status === 'loading') {
     return (
@@ -164,6 +290,7 @@ export const CheckoutSuccess: React.FC = () => {
   }
 
   const funcTitle = dominantFunction ? FUNCTION_DESCRIPTIONS[dominantFunction]?.title || dominantFunction : null;
+  const unlockedFeatures = UNLOCKED_FEATURES[purchasedTier];
 
   return (
     <div className="min-h-[60vh] bg-jung-base py-12">
@@ -189,7 +316,7 @@ export const CheckoutSuccess: React.FC = () => {
           </div>
 
           <p className="text-sm text-jung-muted">
-            You can return to this unlocked result from this browser. Sign in with the purchase email to restore access across devices and use account-based premium features.
+            You can return to this unlocked result from this browser. Sign in with the purchase email to restore access across devices{purchasedTier === 'mastery' ? ' and use the AI Type Guide' : ''}.
           </p>
         </div>
 
@@ -197,7 +324,7 @@ export const CheckoutSuccess: React.FC = () => {
           <div className="mb-8 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-5">
             <h2 className="text-lg font-semibold text-jung-dark">Save the unlock to your account</h2>
             <p className="mt-2 text-sm leading-6 text-jung-secondary">
-              Your Stripe receipt verifies the purchase in this browser. To keep access in history, restore it later, or use the AI Type Coach, sign in with the same email used at checkout.
+              Your Stripe receipt verifies the purchase in this browser. To keep access in history, restore it later{purchasedTier === 'mastery' ? ', and use the AI Type Guide' : ''}, sign in with the same email used at checkout.
             </p>
             <Button
               onClick={() => navigate('/auth')}
@@ -216,7 +343,7 @@ export const CheckoutSuccess: React.FC = () => {
           </h2>
 
           <div className="space-y-4">
-            {UNLOCKED_FEATURES.map((feature, i) => {
+            {unlockedFeatures.map((feature, i) => {
               const Icon = feature.icon;
               return (
                 <div key={i} className="flex items-start gap-3">
@@ -242,13 +369,48 @@ export const CheckoutSuccess: React.FC = () => {
           </Button>
         </div>
 
+        <div className="mb-8 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-5 shadow-sm sm:p-6">
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center">
+            <div>
+              <div className="mb-3 inline-flex items-center gap-2 rounded-lg bg-jung-surface px-3 py-1.5 text-xs font-semibold text-jung-accent">
+                <Share2 className="h-3.5 w-3.5" />
+                Customer referral
+              </div>
+              <h2 className="text-heading text-2xl text-jung-dark">
+                Invite {POST_PURCHASE_INVITE_GOAL} people who would compare maps with you.
+              </h2>
+              <p className="mt-3 text-sm leading-7 text-jung-secondary">
+                The strongest time to share TypeJung is right after the free map earned enough trust to keep the deeper report. Your invite sends people to the free map first.
+              </p>
+            </div>
+            <div className="grid gap-3">
+              <Button
+                variant="accent"
+                size="lg"
+                onClick={copyCustomerInvite}
+                disabled={isPreparingInvite}
+                leftIcon={isPreparingInvite ? <Loader2 className="h-4 w-4 animate-spin" /> : inviteCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              >
+                {isPreparingInvite ? 'Preparing invite' : inviteCopied ? 'Invite copied' : 'Copy customer invite'}
+              </Button>
+              <Button
+                variant="outline"
+                size="md"
+                onClick={() => navigate('/results')}
+              >
+                Open results
+              </Button>
+            </div>
+          </div>
+        </div>
+
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-2 text-jung-muted">
             <Shield className="h-4 w-4 text-jung-accent" />
             <span className="text-sm">30-Day Money-Back Guarantee</span>
           </div>
           <p className="text-xs text-jung-muted">
-            Not insightful? Contact us within 30 days for a full refund.
+            Not insightful? Email {SUPPORT_EMAIL} within 30 days with your Stripe receipt.
           </p>
         </div>
       </div>

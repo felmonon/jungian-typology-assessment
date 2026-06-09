@@ -1,10 +1,12 @@
 // Google Analytics 4 integration with validation
+import { track as trackVercelEvent } from '@vercel/analytics';
 import { z } from 'zod';
 
 declare global {
   interface Window {
     gtag: (...args: any[]) => void;
     dataLayer: any[];
+    __typejungFunnelAnonymousId?: string;
   }
 }
 
@@ -29,6 +31,11 @@ const AssessmentEventSchema = z.object({
   progress_percent: z.number().min(0).max(100).optional(),
   source: z.string().min(1).max(100).optional(),
   entry_page: z.string().min(1).max(500).optional(),
+  utm_campaign: z.string().min(1).max(100).optional(),
+  utm_source: z.string().min(1).max(100).optional(),
+  shared_result: z.string().min(1).max(100).optional(),
+  parent_source: z.string().min(1).max(100).optional(),
+  source_chain: z.string().min(1).max(240).optional(),
   result_type: z.string().min(1).max(50).optional(),
 });
 
@@ -83,7 +90,91 @@ const CTAEventSchema = z.object({
   location: z.string().min(1).max(100),
   button_text: z.string().min(1).max(150).optional(),
   destination: z.string().min(1).max(500).optional(),
+  tier: z.string().min(1).max(50).optional(),
 });
+
+function vercelEventProperties(params?: Record<string, any>): Record<string, string | number | boolean | null> {
+  if (!params) return {};
+
+  return Object.fromEntries(
+    Object.entries(params).flatMap(([key, value]) => {
+      if (value === undefined) return [];
+      if (value === null || typeof value === 'boolean') return [[key, value]];
+      if (typeof value === 'number') return Number.isFinite(value) ? [[key, value]] : [];
+      if (typeof value === 'string') return [[key, value.substring(0, 500)]];
+      return [];
+    }),
+  );
+}
+
+const FUNNEL_ANONYMOUS_ID_STORAGE_KEY = 'typejung_funnel_anonymous_id';
+const FUNNEL_MIRROR_EVENT_NAMES = new Set([
+  'assessment_started',
+  'assessment_completed',
+  'results_viewed',
+  'checkout_review_viewed',
+]);
+
+function randomFunnelToken(): string {
+  if (typeof window !== 'undefined' && window.crypto?.randomUUID) {
+    return window.crypto.randomUUID();
+  }
+
+  return `anon_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 12)}`;
+}
+
+export function getFunnelAnonymousId(): string {
+  if (typeof window === 'undefined') return randomFunnelToken();
+  if (window.__typejungFunnelAnonymousId) return window.__typejungFunnelAnonymousId;
+
+  try {
+    const existing = localStorage.getItem(FUNNEL_ANONYMOUS_ID_STORAGE_KEY);
+    if (existing) {
+      window.__typejungFunnelAnonymousId = existing;
+      return existing;
+    }
+
+    const generated = randomFunnelToken();
+    localStorage.setItem(FUNNEL_ANONYMOUS_ID_STORAGE_KEY, generated);
+    window.__typejungFunnelAnonymousId = generated;
+    return generated;
+  } catch {
+    const generated = randomFunnelToken();
+    window.__typejungFunnelAnonymousId = generated;
+    return generated;
+  }
+}
+
+function mirrorFunnelEvent(eventName: string, params?: Record<string, any>): void {
+  if (typeof window === 'undefined' || !FUNNEL_MIRROR_EVENT_NAMES.has(eventName)) return;
+
+  const properties = vercelEventProperties(params);
+  const body = JSON.stringify({
+    eventName,
+    eventId: `client:${eventName}:${randomFunnelToken()}`,
+    anonymousId: getFunnelAnonymousId(),
+    path: `${window.location.pathname}${window.location.search}`,
+    occurredAt: new Date().toISOString(),
+    properties,
+  });
+
+  try {
+    if (navigator.sendBeacon) {
+      const blob = new Blob([body], { type: 'application/json' });
+      navigator.sendBeacon('/api/analytics', blob);
+      return;
+    }
+
+    void fetch('/api/analytics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body,
+      keepalive: true,
+    });
+  } catch (error) {
+    console.warn('Analytics: Failed to mirror funnel event:', eventName, error);
+  }
+}
 
 // Safe tracking helper with validation
 function safeTrackEvent(
@@ -91,26 +182,40 @@ function safeTrackEvent(
   params?: Record<string, any>,
   schema?: z.ZodSchema<any>
 ): boolean {
-  if (!analyticsEnabled || !canTrackEvent() || !GA_MEASUREMENT_ID || typeof window === 'undefined' || !window.gtag) {
+  if (!analyticsEnabled || !canTrackEvent() || typeof window === 'undefined') {
     return false;
   }
 
   try {
+    let eventParams = params || {};
+
     // Validate params if schema provided
     if (schema && params) {
       const result = schema.safeParse(params);
       if (!result.success) {
         console.warn(`Analytics: Invalid params for event "${eventName}":`, result.error.format());
-        // Still track the event, but without invalid params
-        window.gtag('event', eventName, {});
-        return true;
+        // Still track the event, but without invalid params.
+        eventParams = {};
       }
     }
 
-    window.gtag('event', eventName, params || {});
-    analyticsState.lastEventTime = Date.now();
-    analyticsState.eventCount += 1;
-    return true;
+    let tracked = false;
+
+    if (GA_MEASUREMENT_ID && window.gtag) {
+      window.gtag('event', eventName, eventParams);
+      tracked = true;
+    }
+
+    trackVercelEvent(eventName, vercelEventProperties(eventParams));
+    tracked = true;
+    mirrorFunnelEvent(eventName, eventParams);
+
+    if (tracked) {
+      analyticsState.lastEventTime = Date.now();
+      analyticsState.eventCount += 1;
+    }
+
+    return tracked;
   } catch (error) {
     console.error(`Analytics: Failed to track event "${eventName}":`, error);
     analyticsState.errors.push(error instanceof Error ? error.message : String(error));
@@ -229,20 +334,41 @@ function buildEcommerceItems(plan: string, price: number) {
 // Predefined events for the assessment with validation
 export const AnalyticsEvents = {
   // Assessment funnel
-  assessmentStarted: (source = 'assessment_page', entryPage?: string) => {
+  assessmentStarted: (
+    source = 'assessment_page',
+    entryPage?: string,
+    attribution?: { utmCampaign?: string; utmSource?: string; sharedResult?: string; parentSource?: string; sourceChain?: string },
+  ) => {
     const params = {
       source: String(source).substring(0, 100),
       ...(entryPage ? { entry_page: String(entryPage).substring(0, 500) } : {}),
+      ...(attribution?.utmCampaign ? { utm_campaign: String(attribution.utmCampaign).substring(0, 100) } : {}),
+      ...(attribution?.utmSource ? { utm_source: String(attribution.utmSource).substring(0, 100) } : {}),
+      ...(attribution?.sharedResult ? { shared_result: String(attribution.sharedResult).substring(0, 100) } : {}),
+      ...(attribution?.parentSource ? { parent_source: String(attribution.parentSource).substring(0, 100) } : {}),
+      ...(attribution?.sourceChain ? { source_chain: String(attribution.sourceChain).substring(0, 240) } : {}),
     };
     return safeTrackEvent('assessment_started', params, AssessmentEventSchema);
   },
   
-  assessmentCompleted: (timeSpentSeconds: number) => {
+  assessmentCompleted: (
+    timeSpentSeconds: number,
+    source?: string,
+    entryPage?: string,
+    attribution?: { utmCampaign?: string; utmSource?: string; sharedResult?: string; parentSource?: string; sourceChain?: string },
+  ) => {
     const seconds = Math.round(timeSpentSeconds);
     const params = {
       time_spent_seconds: seconds,
       duration_seconds: seconds,
       result_type: 'depth_energy_map',
+      ...(source ? { source: String(source).substring(0, 100) } : {}),
+      ...(entryPage ? { entry_page: String(entryPage).substring(0, 500) } : {}),
+      ...(attribution?.utmCampaign ? { utm_campaign: String(attribution.utmCampaign).substring(0, 100) } : {}),
+      ...(attribution?.utmSource ? { utm_source: String(attribution.utmSource).substring(0, 100) } : {}),
+      ...(attribution?.sharedResult ? { shared_result: String(attribution.sharedResult).substring(0, 100) } : {}),
+      ...(attribution?.parentSource ? { parent_source: String(attribution.parentSource).substring(0, 100) } : {}),
+      ...(attribution?.sourceChain ? { source_chain: String(attribution.sourceChain).substring(0, 240) } : {}),
     };
     const validation = AssessmentEventSchema.safeParse(params);
     if (!validation.success) {
@@ -251,8 +377,20 @@ export const AnalyticsEvents = {
     return safeTrackEvent('assessment_completed', params, AssessmentEventSchema);
   },
   
-  assessmentAbandoned: (questionNumber: number) => {
-    const params = { question_number: Math.round(questionNumber) };
+  assessmentAbandoned: (
+    questionNumber: number,
+    source?: string,
+    attribution?: { utmCampaign?: string; utmSource?: string; sharedResult?: string; parentSource?: string; sourceChain?: string },
+  ) => {
+    const params = {
+      question_number: Math.round(questionNumber),
+      ...(source ? { source: String(source).substring(0, 100) } : {}),
+      ...(attribution?.utmCampaign ? { utm_campaign: String(attribution.utmCampaign).substring(0, 100) } : {}),
+      ...(attribution?.utmSource ? { utm_source: String(attribution.utmSource).substring(0, 100) } : {}),
+      ...(attribution?.sharedResult ? { shared_result: String(attribution.sharedResult).substring(0, 100) } : {}),
+      ...(attribution?.parentSource ? { parent_source: String(attribution.parentSource).substring(0, 100) } : {}),
+      ...(attribution?.sourceChain ? { source_chain: String(attribution.sourceChain).substring(0, 240) } : {}),
+    };
     return safeTrackEvent('assessment_abandoned', params, AssessmentEventSchema);
   },
 
@@ -343,16 +481,17 @@ export const AnalyticsEvents = {
     return recommendedEventTracked || customEventTracked;
   },
   
-  purchaseCompleted: (plan: string, price: number, transactionId?: string | null) => {
+  purchaseCompleted: (plan: string, price: number, transactionId?: string | null, currency = 'CAD') => {
     const cleanedTransactionId = typeof transactionId === 'string'
       ? transactionId.trim().substring(0, 100)
       : '';
+    const cleanedCurrency = /^[A-Z]{3}$/.test(currency) ? currency : 'CAD';
     const params = {
       plan: String(plan).substring(0, 50),
       tier: String(plan).substring(0, 50),
       value: Math.max(0, Number(price)),
       price: Math.max(0, Number(price)),
-      currency: 'CAD',
+      currency: cleanedCurrency,
       ...(cleanedTransactionId ? { transaction_id: cleanedTransactionId } : {}),
       items: buildEcommerceItems(plan, price),
     };
@@ -378,12 +517,13 @@ export const AnalyticsEvents = {
     return safeTrackEvent('about_page_viewed');
   },
   
-  ctaClicked: (ctaName: string, location: string, options?: { buttonText?: string; destination?: string }) => {
+  ctaClicked: (ctaName: string, location: string, options?: { buttonText?: string; destination?: string; tier?: string }) => {
     const params = {
       cta_name: String(ctaName).substring(0, 100),
       location: String(location).substring(0, 100),
       ...(options?.buttonText ? { button_text: String(options.buttonText).substring(0, 150) } : {}),
       ...(options?.destination ? { destination: String(options.destination).substring(0, 500) } : {}),
+      ...(options?.tier ? { tier: String(options.tier).substring(0, 50) } : {}),
     };
     return safeTrackEvent('cta_clicked', params, CTAEventSchema);
   },

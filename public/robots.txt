@@ -12,14 +12,23 @@ Sitemap: https://typejung.com/sitemap.xml
 User-agent: GPTBot
 Allow: /
 Allow: /content.txt
+Allow: /llms.txt
+Disallow: /api/
+Disallow: /admin
 
 User-agent: ChatGPT-User
 Allow: /
 Allow: /content.txt
+Allow: /llms.txt
+Disallow: /api/
+Disallow: /admin
 
 User-agent: Claude-Web
 Allow: /
 Allow: /content.txt
+Allow: /llms.txt
+Disallow: /api/
+Disallow: /admin
 
 User-agent: Googlebot
 Allow: /

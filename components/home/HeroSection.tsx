@@ -65,9 +65,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
               transition={{ duration: 0.8, delay: 0.15, ease }}
               className="text-lg md:text-xl text-jung-secondary leading-relaxed max-w-xl mb-10 font-light"
             >
-              TypeJung measures all eight Jungian cognitive functions independently —
-              no forced types, no MBTI stereotypes. Clear, data-driven insight into
-              how your mind actually works.
+              TypeJung maps self-reported patterns across all eight Jungian cognitive functions —
+              no forced types, no MBTI stereotypes. A clearer self-reflection map for
+              how your attention, decisions, and stress patterns show up.
             </motion.p>
 
             <motion.div

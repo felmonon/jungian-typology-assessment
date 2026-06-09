@@ -1,5 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
 
@@ -19,6 +20,8 @@ const History = lazy(() => import('./pages/History').then(({ History }) => ({ de
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy').then(({ PrivacyPolicy }) => ({ default: PrivacyPolicy })));
 const TermsOfService = lazy(() => import('./pages/TermsOfService').then(({ TermsOfService }) => ({ default: TermsOfService })));
 const Pricing = lazy(() => import('./pages/Pricing').then(({ Pricing }) => ({ default: Pricing })));
+const SampleReport = lazy(() => import('./pages/SampleReport').then(({ SampleReport }) => ({ default: SampleReport })));
+const AIRunStore = lazy(() => import('./pages/AIRunStore').then(({ AIRunStore }) => ({ default: AIRunStore })));
 
 const RouteFallback: React.FC = () => (
   <div className="lab-container flex min-h-[48vh] items-center justify-center py-16" aria-live="polite" aria-busy="true">
@@ -31,7 +34,7 @@ const RouteFallback: React.FC = () => (
 
 const VercelAnalyticsRouter: React.FC = () => {
   const location = useLocation();
-  const path = `${location.pathname}${location.search}${location.hash}`;
+  const path = location.pathname;
 
   return <Analytics route={location.pathname} path={path} />;
 };
@@ -59,11 +62,14 @@ const App: React.FC = () => {
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/sample-report" element={<SampleReport />} />
+            <Route path="/ai-run-store" element={<AIRunStore />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
       </Layout>
       <VercelAnalyticsRouter />
+      <SpeedInsights />
     </BrowserRouter>
   );
 };

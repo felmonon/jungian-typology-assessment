@@ -3,9 +3,9 @@
 @theme {
   /* Typography */
   --font-display: "Fraunces", serif;
-  --font-serif: "Source Serif 4", serif;
+  --font-serif: "Fraunces", Georgia, serif;
   --font-sans: "Space Grotesk", sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --font-mono: "SFMono-Regular", "Menlo", "Cascadia Mono", monospace;
 
   /* Quiet, high-end academic product palette */
   --color-jung-base: #fafaf8;

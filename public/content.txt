@@ -1,201 +1,453 @@
-# TypeJung - Measure All 8 Cognitive Functions
+# TypeJung - Map All 8 Cognitive Functions
 # Website: https://typejung.com
-# Last Updated: 2026-05-18
+# Last Updated: 2026-06-09
 
 ================================================================================
 ABOUT
 ================================================================================
 
-TypeJung is a free psychological self-assessment based on Carl Jung's
-original theory of psychological types (1921).
+TypeJung is a free educational self-assessment based on Jungian psychological type theory.
 
-Unlike simplified 4-letter type indicators, this assessment combines behavioral
-evidence, inferior-function triggers, somatic signals, and attitude direction to
-map where energy flows and where it gets stuck.
+Unlike simplified four-letter type quizzes, TypeJung combines behavioral evidence, inferior-function triggers, somatic signals, and attitude direction to map which functions lead, support, and tighten under stress.
 
-================================================================================
-THE 8 COGNITIVE FUNCTIONS
-================================================================================
+Primary conversion action:
+Take the free 42-question assessment, review the function-stack map, then optionally buy Insight or Mastery if the result feels worth keeping.
 
-PERCEIVING FUNCTIONS:
-- Ni (Introverted Intuition): Pattern recognition, future visioning, convergent insights
-  Learn more: https://typejung.com/functions/ni
-
-- Ne (Extraverted Intuition): Possibilities, brainstorming, divergent thinking
-  Learn more: https://typejung.com/functions/ne
-
-- Si (Introverted Sensing): Memory, tradition, detailed recall
-  Learn more: https://typejung.com/functions/si
-
-- Se (Extraverted Sensing): Present-moment awareness, action, sensory engagement
-  Learn more: https://typejung.com/functions/se
-
-JUDGING FUNCTIONS:
-- Ti (Introverted Thinking): Internal logic, analysis, framework building
-  Learn more: https://typejung.com/functions/ti
-
-- Te (Extraverted Thinking): External organization, efficiency, measurable results
-  Learn more: https://typejung.com/functions/te
-
-- Fi (Introverted Feeling): Personal values, authenticity, moral compass
-  Learn more: https://typejung.com/functions/fi
-
-- Fe (Extraverted Feeling): Social harmony, emotional attunement, group dynamics
-  Learn more: https://typejung.com/functions/fe
+Safety and claims:
+TypeJung is for educational self-reflection. It is not clinical, diagnostic, therapeutic, or a guaranteed typing authority.
 
 ================================================================================
-THE 16 PERSONALITY TYPES
+OFFER
 ================================================================================
 
-ANALYSTS (NT):
-- INTJ "The Architect" (Ni-Te-Fi-Se): Strategic visionaries with deep insight
-  Learn more: https://typejung.com/types/intj
-- INTP "The Logician" (Ti-Ne-Si-Fe): Innovative thinkers who build mental models
-  Learn more: https://typejung.com/types/intp
-- ENTJ "The Commander" (Te-Ni-Se-Fi): Natural leaders who organize for efficiency
-  Learn more: https://typejung.com/types/entj
-- ENTP "The Debater" (Ne-Ti-Fe-Si): Quick-witted innovators who love challenge
-  Learn more: https://typejung.com/types/entp
-
-DIPLOMATS (NF):
-- INFJ "The Advocate" (Ni-Fe-Ti-Se): Idealistic visionaries who help others grow
-  Learn more: https://typejung.com/types/infj
-- INFP "The Mediator" (Fi-Ne-Si-Te): Value-driven individuals seeking authenticity
-  Learn more: https://typejung.com/types/infp
-- ENFJ "The Protagonist" (Fe-Ni-Se-Ti): Charismatic leaders who inspire growth
-  Learn more: https://typejung.com/types/enfj
-- ENFP "The Campaigner" (Ne-Fi-Te-Si): Enthusiastic innovators with warmth
-  Learn more: https://typejung.com/types/enfp
-
-SENTINELS (SJ):
-- ISTJ "The Logistician" (Si-Te-Fi-Ne): Responsible organizers who value tradition
-  Learn more: https://typejung.com/types/istj
-- ISFJ "The Defender" (Si-Fe-Ti-Ne): Dedicated caretakers who work quietly
-  Learn more: https://typejung.com/types/isfj
-- ESTJ "The Executive" (Te-Si-Ne-Fi): Organized administrators who bring order
-  Learn more: https://typejung.com/types/estj
-- ESFJ "The Consul" (Fe-Si-Ne-Ti): Caring hosts who create harmony
-  Learn more: https://typejung.com/types/esfj
-
-EXPLORERS (SP):
-- ISTP "The Virtuoso" (Ti-Se-Ni-Fe): Practical problem-solvers who act in the moment
-  Learn more: https://typejung.com/types/istp
-- ISFP "The Adventurer" (Fi-Se-Ni-Te): Artistic souls who seek authenticity
-  Learn more: https://typejung.com/types/isfp
-- ESTP "The Entrepreneur" (Se-Ti-Fe-Ni): Energetic doers who live in the moment
-  Learn more: https://typejung.com/types/estp
-- ESFP "The Entertainer" (Se-Fi-Te-Ni): Spontaneous performers who bring energy
-  Learn more: https://typejung.com/types/esfp
-
-================================================================================
-FEATURES
-================================================================================
-
-FREE TIER:
+Free tier:
 - 42-question cognitive function assessment
 - Energy map visualization of all 8 functions
 - Dominant-inferior axis
 - Shareable results page
 - Type distribution leaderboard
 
-INSIGHT TIER (CA$19):
+Insight tier:
+- One-time CAD upgrade
+- CA$10 base price before code
+- Currently CA$7 with TYPEJUNG30 on Stripe
 - Developmental edge report
-- Stress pattern map
-- Relationship trigger interpretation
-- Somatic practice guidance
+- Stress-pattern reflection map
+- Relationship-pattern reflection
+- Practical reflection prompts
 
-MASTERY TIER (CA$39):
-- AI Type Coach chat
+Mastery tier:
+- One-time CAD upgrade
+- CA$29 base price before code
+- Currently CA$20.30 with TYPEJUNG30 on Stripe
+- AI Type Guide chat
 - Individuation roadmap
 - Tailored growth exercises
-- Practice library
-- Priority support
+- Practice support
+- Account-based guide access after sign-in
+
+Important:
+- The free assessment does not require payment.
+- Insight and Mastery are optional one-time upgrades, not subscriptions.
+- The sample report is fictional and shows the structure, tone, and depth of a paid report.
 
 ================================================================================
 HOW IT WORKS
 ================================================================================
 
-1. Take the 42-question assessment (12-16 minutes)
-2. View your Jungian energy map
-3. Read the synthesis of your dominant-inferior pattern
-4. Explore detailed function breakdowns
-5. Optionally upgrade for deeper analysis
+1. Take the 42-question assessment.
+2. View your Jungian function-stack map.
+3. Read the synthesis of your dominant-inferior pattern.
+4. Explore detailed function and type pages.
+5. Optionally upgrade for deeper analysis only after seeing the free map.
 
 ================================================================================
-HIGH-INTENT GUIDES
+HIGH-INTENT LANDING PAGES
 ================================================================================
+
+MBTI test alternative:
+https://typejung.com/mbti-test-alternative
+Looking for an MBTI test alternative? TypeJung maps all 8 Jungian cognitive functions before any paid report, so you can inspect the pattern behind the label.
+Best for: People who want a serious second opinion after changing MBTI results or broad personality labels.
+Maps: Ni, Ne, Si, Se, Ti, Te, Fi, Fe, likely function stack, inferior-function pressure, attitude direction, and reliability signal.
+
+16Personalities alternative:
+https://typejung.com/16personalities-alternative
+Looking for a 16Personalities alternative? TypeJung maps all 8 Jungian cognitive functions, shows a free result first, and avoids forcing a final label too early.
+Best for: People who liked the accessibility of a quick type result but want a deeper function-based map.
+Maps: All 8 Jungian functions, dominant-inferior axis, stress-edge signal, attitude direction, and answer consistency.
+
+Sakinorva alternative:
+https://typejung.com/sakinorva-alternative
+Looking for a Sakinorva alternative? TypeJung maps all 8 Jungian functions, shows a free result first, and offers optional deeper reports only after you see the map.
+Best for: People comparing cognitive-function tests who want an inspectable free map and optional paid depth after the result.
+Maps: All 8 function-attitudes, likely dominant-inferior axis, attitude direction, answer consistency, stress-edge signals, and type-pattern evidence.
+
+Keys2Cognition alternative:
+https://typejung.com/keys2cognition-alternative
+Compare TypeJung as a Keys2Cognition alternative for mapping all 8 Jungian functions, stress edges, and optional deeper reports after a free result.
+Best for: Searchers who know cognitive-process language and want a modern result page with an optional deeper report.
+Maps: Ni, Ne, Si, Se, Ti, Te, Fi, Fe, likely hierarchy, dominant-inferior tension, answer consistency, and stress cues.
+
+Mistype Investigator alternative:
+https://typejung.com/mistype-investigator-alternative
+Use TypeJung as a Mistype Investigator alternative when you want a free cognitive-function map, stress-edge context, and optional deeper interpretation.
+Best for: People trying to resolve a suspected MBTI mistype through function evidence instead of more type descriptions.
+Maps: All 8 functions, likely type pattern, dominant-inferior axis, stress signals, and answer consistency.
+
+Michael Caloz alternative:
+https://typejung.com/michael-caloz-alternative
+Looking for a Michael Caloz alternative? TypeJung maps all 8 functions, shows a free result first, and offers optional paid depth after the map.
+Best for: People who like function-pair comparison tests but want a result-first upgrade path and a clear sample report before checkout.
+Maps: All 8 function-attitudes, likely hierarchy, dominant-inferior tension, stress-edge signals, answer consistency, and type-pattern evidence.
+
+IDRlabs cognitive function test alternative:
+https://typejung.com/idrlabs-cognitive-function-test-alternative
+Compare TypeJung as an IDRlabs cognitive function test alternative with a free all-8-function map, stress edge, and optional paid interpretation.
+Best for: People who found IDRlabs useful but want a quieter Jungian map with paid depth only after seeing the free result.
+Maps: Ni, Ne, Si, Se, Ti, Te, Fi, Fe, likely hierarchy, dominant-inferior axis, stress cues, and answer consistency.
+
+16Selves alternative:
+https://typejung.com/16selves-alternative
+Looking for a 16Selves alternative? TypeJung maps all 8 Jungian function-attitudes before optional one-time paid reports.
+Best for: People comparing modern Jungian function tests who want all 8 functions plus an optional paid interpretation path.
+Maps: All 8 function-attitudes, likely type pattern, dominant-inferior axis, attitude direction, stress-edge cues, and answer consistency.
+
+best cognitive functions test:
+https://typejung.com/best-cognitive-functions-test
+Compare what makes a cognitive functions test useful: all 8 functions, inspectable scores, stress-edge context, free-first results, and practical interpretation.
+Best for: Searchers comparing cognitive-function tests and deciding which one to take next.
+Maps: All 8 function-attitudes, hierarchy hypotheses, dominant-inferior axis, stress patterns, and confidence signals.
+
+dominant function test:
+https://typejung.com/dominant-function-test
+Take a dominant function test that compares all 8 Jungian cognitive functions, support signals, and inferior-function pressure before naming a likely lead function.
+Best for: People who suspect a dominant function but want evidence across all 8 functions and the matching inferior-function edge.
+Maps: All 8 function-attitudes, likely dominant and support signals, dominant-inferior tension, attitude direction, and stress-pattern evidence.
+
+Ni dominant test:
+https://typejung.com/ni-dominant-test
+Use TypeJung as a Ni dominant test to compare Introverted Intuition evidence, likely type pattern, and Se stress-edge signals.
+Best for: People who suspect Ni leads their type pattern, especially INFJ or INTJ searchers comparing function evidence.
+Maps: All 8 functions, likely Ni-Se dominant-inferior tension, attitude direction, stress signals, and nearby type hypotheses.
+
+Ne dominant test:
+https://typejung.com/ne-dominant-test
+Use TypeJung as a Ne dominant test to compare Extraverted Intuition evidence, likely type pattern, and Si stress-edge signals.
+Best for: People who suspect Ne leads their type pattern, especially ENFP or ENTP searchers comparing function evidence.
+Maps: All 8 functions, likely Ne-Si dominant-inferior tension, attitude direction, stress signals, and nearby type hypotheses.
+
+Si dominant test:
+https://typejung.com/si-dominant-test
+Use TypeJung as a Si dominant test to compare Introverted Sensing evidence, likely type pattern, and Ne stress-edge signals.
+Best for: People who suspect Si leads their type pattern, especially ISFJ or ISTJ searchers comparing function evidence.
+Maps: All 8 functions, likely Si-Ne dominant-inferior tension, attitude direction, stress signals, and nearby type hypotheses.
+
+Se dominant test:
+https://typejung.com/se-dominant-test
+Use TypeJung as a Se dominant test to compare Extraverted Sensing evidence, likely type pattern, and Ni stress-edge signals.
+Best for: People who suspect Se leads their type pattern, especially ESFP or ESTP searchers comparing function evidence.
+Maps: All 8 functions, likely Se-Ni dominant-inferior tension, attitude direction, stress signals, and nearby type hypotheses.
+
+Ti dominant test:
+https://typejung.com/ti-dominant-test
+Use TypeJung as a Ti dominant test to compare Introverted Thinking evidence, likely type pattern, and Fe stress-edge signals.
+Best for: People who suspect Ti leads their type pattern, especially INTP or ISTP searchers comparing function evidence.
+Maps: All 8 functions, likely Ti-Fe dominant-inferior tension, attitude direction, stress signals, and nearby type hypotheses.
+
+Te dominant test:
+https://typejung.com/te-dominant-test
+Use TypeJung as a Te dominant test to compare Extraverted Thinking evidence, likely type pattern, and Fi stress-edge signals.
+Best for: People who suspect Te leads their type pattern, especially ENTJ or ESTJ searchers comparing function evidence.
+Maps: All 8 functions, likely Te-Fi dominant-inferior tension, attitude direction, stress signals, and nearby type hypotheses.
+
+Fi dominant test:
+https://typejung.com/fi-dominant-test
+Use TypeJung as a Fi dominant test to compare Introverted Feeling evidence, likely type pattern, and Te stress-edge signals.
+Best for: People who suspect Fi leads their type pattern, especially INFP or ISFP searchers comparing function evidence.
+Maps: All 8 functions, likely Fi-Te dominant-inferior tension, attitude direction, stress signals, and nearby type hypotheses.
+
+Fe dominant test:
+https://typejung.com/fe-dominant-test
+Use TypeJung as a Fe dominant test to compare Extraverted Feeling evidence, likely type pattern, and Ti stress-edge signals.
+Best for: People who suspect Fe leads their type pattern, especially ENFJ or ESFJ searchers comparing function evidence.
+Maps: All 8 functions, likely Fe-Ti dominant-inferior tension, attitude direction, stress signals, and nearby type hypotheses.
+
+TypeJung creator preview:
+https://typejung.com/creator-preview
+A review path for typology creators, newsletters, and communities evaluating TypeJung as a free-first Jungian function-stack map.
+Best for: Typology creators, newsletters, coaches, and community moderators evaluating a free-first cognitive-functions tool before mentioning it publicly.
+Maps: 42 scenario prompts, all 8 Jungian function-attitudes, likely function-stack pattern, dominant-inferior axis, stress-edge signals, and optional paid interpretation.
 
 Jungian test:
 https://typejung.com/jungian-test
-Best for people who want a broad Jungian test with all 8 functions, a likely type pattern, and a free first result.
+Take a Jungian test that maps all 8 cognitive functions, shows your likely type pattern, and supports educational self-reflection.
+Best for: Searchers who want a Jungian test with visible cognitive-function evidence, not only a fast type label.
+Maps: All 8 function-attitudes, dominant-inferior tension, behavioral scenarios, stress signals, somatic cues, and attitude direction.
 
 MBTI alternative:
 https://typejung.com/mbti-alternative
-Best for people whose MBTI result keeps changing or who want function evidence behind a four-letter type label.
+Compare TypeJung as an MBTI alternative for people who want Jungian function evidence, a free function-stack map, and optional paid interpretation after the result.
+Best for: People comparing MBTI as a framework with function-based Jungian typology and wanting a more inspectable map.
+Maps: Independent function scores, likely type pattern, inferior-function pressure, and context for why MBTI results change.
 
-Inferior function test:
+inferior function test:
 https://typejung.com/inferior-function-test
-Best for people studying stress reactions, grip patterns, and the growth edge behind the dominant-inferior axis.
+Find your likely inferior function and understand how it can show up under stress with TypeJung's cognitive function assessment.
+Best for: People who want to understand stress patterns, grip reactions, and the growth edge behind a Jungian type result.
+Maps: Dominant-inferior tension, pressure responses, function imbalance, attraction and avoidance signals, and recovery themes.
 
-Cognitive function test:
+cognitive function test:
 https://typejung.com/cognitive-function-test
-Best for people who want to see Ni, Ne, Si, Se, Ti, Te, Fi, and Fe scored independently.
+Take a cognitive function test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe in one Jungian function-stack profile.
+Best for: Searchers who want a cognitive function test that shows all 8 scores and explains the pattern behind them.
+Maps: Ni, Ne, Si, Se, Ti, Te, Fi, Fe, likely type pattern, dominant-inferior axis, stress signals, and interpretation confidence.
+
+cognitive functions quiz:
+https://typejung.com/cognitive-functions-quiz
+Take a cognitive functions quiz that maps all 8 Jungian functions, shows the dominant-inferior axis, and gives the free result before any paid report.
+Best for: People who want a quiz-style route into Jungian cognitive functions without paying before the result is visible.
+Maps: All 8 function-attitudes, likely stack pattern, dominant-inferior axis, stress edge, and answer-consistency signal.
+
+free cognitive function test:
+https://typejung.com/free-cognitive-function-test
+Take a free cognitive function test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe before any optional paid report.
+Best for: Searchers who want a free cognitive function test and do not want to pay before seeing whether the result is useful.
+Maps: All 8 function-attitudes, likely dominant and inferior pattern, attitude direction, stress signals, and practical self-reflection prompts.
+
+function stack test:
+https://typejung.com/function-stack-test
+Use TypeJung as a function stack test to compare dominant, auxiliary, tertiary, and inferior Jungian function signals.
+Best for: People who know cognitive functions and want to test the stack pattern behind their type hypothesis.
+Maps: Dominant, auxiliary, tertiary, and inferior signals across the 8 functions, with attitude direction and stress-edge evidence.
+
+Jungian personality test:
+https://typejung.com/jungian-personality-test
+Take a Jungian personality test that maps cognitive functions, likely type pattern, stress edge, and self-reflection themes.
+Best for: Searchers who want a Jungian personality test with type language, cognitive functions, and practical self-reflection.
+Maps: Function energy, attitude direction, likely type pattern, dominant-inferior tension, stress signals, and developmental edge.
 
 INFJ vs INFP test:
 https://typejung.com/infj-vs-infp-test
+Use TypeJung as an INFJ vs INFP test by comparing Ni-Fe and Fi-Ne evidence instead of relying on stereotypes.
 
 INTJ vs INTP test:
 https://typejung.com/intj-vs-intp-test
+Use TypeJung as an INTJ vs INTP test by comparing Ni-Te and Ti-Ne function evidence instead of stereotypes.
 
-Why MBTI keeps changing:
+INFJ vs INTJ test:
+https://typejung.com/infj-vs-intj-test
+Use TypeJung as an INFJ vs INTJ test by comparing Ni-Fe and Ni-Te function evidence before choosing a label.
+Best for: People deciding between INFJ and INTJ who want function evidence instead of another stereotype list.
+Maps: All 8 cognitive functions, likely type pattern, dominant-inferior axis, attitude direction, and stress-edge signals.
+
+ENFP vs INFP test:
+https://typejung.com/enfp-vs-infp-test
+Use TypeJung as an ENFP vs INFP test by comparing Ne-Fi and Fi-Ne function evidence before choosing a label.
+Best for: People deciding between ENFP and INFP who want function evidence instead of another stereotype list.
+Maps: All 8 cognitive functions, likely type pattern, dominant-inferior axis, attitude direction, and stress-edge signals.
+
+ENTP vs INTP test:
+https://typejung.com/entp-vs-intp-test
+Use TypeJung as an ENTP vs INTP test by comparing Ne-Ti and Ti-Ne function evidence before choosing a label.
+Best for: People deciding between ENTP and INTP who want function evidence instead of another stereotype list.
+Maps: All 8 cognitive functions, likely type pattern, dominant-inferior axis, attitude direction, and stress-edge signals.
+
+INTJ vs ENTJ test:
+https://typejung.com/intj-vs-entj-test
+Use TypeJung as an INTJ vs ENTJ test by comparing Ni-Te and Te-Ni function evidence before choosing a label.
+Best for: People deciding between INTJ and ENTJ who want function evidence instead of another stereotype list.
+Maps: All 8 cognitive functions, likely type pattern, dominant-inferior axis, attitude direction, and stress-edge signals.
+
+INFJ vs ENFJ test:
+https://typejung.com/infj-vs-enfj-test
+Use TypeJung as an INFJ vs ENFJ test by comparing Ni-Fe and Fe-Ni function evidence before choosing a label.
+Best for: People deciding between INFJ and ENFJ who want function evidence instead of another stereotype list.
+Maps: All 8 cognitive functions, likely type pattern, dominant-inferior axis, attitude direction, and stress-edge signals.
+
+INFP vs ISFP test:
+https://typejung.com/infp-vs-isfp-test
+Use TypeJung as an INFP vs ISFP test by comparing Fi-Ne and Fi-Se function evidence before choosing a label.
+Best for: People deciding between INFP and ISFP who want function evidence instead of another stereotype list.
+Maps: All 8 cognitive functions, likely type pattern, dominant-inferior axis, attitude direction, and stress-edge signals.
+
+INTP vs ISTP test:
+https://typejung.com/intp-vs-istp-test
+Use TypeJung as an INTP vs ISTP test by comparing Ti-Ne and Ti-Se function evidence before choosing a label.
+Best for: People deciding between INTP and ISTP who want function evidence instead of another stereotype list.
+Maps: All 8 cognitive functions, likely type pattern, dominant-inferior axis, attitude direction, and stress-edge signals.
+
+ENFP vs ENTP test:
+https://typejung.com/enfp-vs-entp-test
+Use TypeJung as an ENFP vs ENTP test by comparing Ne-Fi and Ne-Ti function evidence before choosing a label.
+Best for: People deciding between ENFP and ENTP who want function evidence instead of another stereotype list.
+Maps: All 8 cognitive functions, likely type pattern, dominant-inferior axis, attitude direction, and stress-edge signals.
+
+ENTJ vs ESTJ test:
+https://typejung.com/entj-vs-estj-test
+Use TypeJung as an ENTJ vs ESTJ test by comparing Te-Ni and Te-Si function evidence before choosing a label.
+Best for: People deciding between ENTJ and ESTJ who want function evidence instead of another stereotype list.
+Maps: All 8 cognitive functions, likely type pattern, dominant-inferior axis, attitude direction, and stress-edge signals.
+
+ISFJ vs INFJ test:
+https://typejung.com/isfj-vs-infj-test
+Use TypeJung as an ISFJ vs INFJ test by comparing Si-Fe and Ni-Fe function evidence before choosing a label.
+Best for: People deciding between ISFJ and INFJ who want function evidence instead of another stereotype list.
+Maps: All 8 cognitive functions, likely type pattern, dominant-inferior axis, attitude direction, and stress-edge signals.
+
+ISTJ vs INTJ test:
+https://typejung.com/istj-vs-intj-test
+Use TypeJung as an ISTJ vs INTJ test by comparing Si-Te and Ni-Te function evidence before choosing a label.
+Best for: People deciding between ISTJ and INTJ who want function evidence instead of another stereotype list.
+Maps: All 8 cognitive functions, likely type pattern, dominant-inferior axis, attitude direction, and stress-edge signals.
+
+ESFP vs ENFP test:
+https://typejung.com/esfp-vs-enfp-test
+Use TypeJung as an ESFP vs ENFP test by comparing Se-Fi and Ne-Fi function evidence before choosing a label.
+Best for: People deciding between ESFP and ENFP who want function evidence instead of another stereotype list.
+Maps: All 8 cognitive functions, likely type pattern, dominant-inferior axis, attitude direction, and stress-edge signals.
+
+ESTP vs ENTP test:
+https://typejung.com/estp-vs-entp-test
+Use TypeJung as an ESTP vs ENTP test by comparing Se-Ti and Ne-Ti function evidence before choosing a label.
+Best for: People deciding between ESTP and ENTP who want function evidence instead of another stereotype list.
+Maps: All 8 cognitive functions, likely type pattern, dominant-inferior axis, attitude direction, and stress-edge signals.
+
+MBTI mistype test:
+https://typejung.com/mbti-mistype-test
+Use TypeJung as an MBTI mistype test when your type result keeps changing or two labels both feel partly true.
+Best for: People who suspect an MBTI mistype, keep getting different labels, or are comparing nearby types that both feel partly accurate.
+Maps: All 8 cognitive functions, likely type pattern, dominant and support signals, answer consistency, attitude direction, and inferior-function pressure.
+
+why does my MBTI keep changing:
 https://typejung.com/mbti-keeps-changing
+If your MBTI type keeps changing, TypeJung can help you compare the cognitive function pattern behind shifting labels.
 
 Jungian cognitive functions test:
 https://typejung.com/jungian-cognitive-functions-test
-Best for people searching specifically for a Jungian function stack test or full function-attitude map.
+Take a free Jungian cognitive functions test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, then explains your dominant-inferior pattern.
+Best for: People searching specifically for a Jungian cognitive functions test, function stack test, or full Ni Ne Si Se Ti Te Fi Fe assessment.
+Maps: Introverted and extraverted attitudes across intuition, sensing, thinking, and feeling, plus likely type pattern and dominant-inferior interpretation.
 
-Jungian typology guide:
+Jungian typology:
 https://typejung.com/jungian-typology
+Learn Jungian typology through cognitive functions, attitude direction, dominant-inferior patterns, and practical self-reflection.
 
-Cognitive functions guide:
+Jungian cognitive functions:
 https://typejung.com/cognitive-functions
+Understand the 8 Jungian cognitive functions: Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, plus how they shape type and stress patterns.
 
-Shadow work test:
+shadow work test:
 https://typejung.com/shadow-work-test
+Use a Jungian self-observation test to explore inferior-function pressure and stress reactions without clinical diagnosis.
 
 ================================================================================
 GROWTH ARTICLES
 ================================================================================
 
-Why MBTI type changes:
+Why Does My MBTI Type Keep Changing?:
 https://typejung.com/blog/why-mbti-type-keeps-changing
+Why people get different MBTI results over time, and how cognitive functions explain the pattern better than four-letter labels.
+Tags: Mistyping, MBTI alternative, Cognitive functions
 
-INFJ vs INFP:
+INFJ vs INFP: Cognitive Functions, Not Stereotypes:
 https://typejung.com/blog/infj-vs-infp-cognitive-functions
+A practical Jungian comparison of INFJ and INFP through Ni-Fe and Fi-Ne rather than vague personality stereotypes.
+Tags: INFJ, INFP, Mistyping
 
-INTJ vs INTP:
+INTJ vs INTP: Ni-Te vs Ti-Ne:
 https://typejung.com/blog/intj-vs-intp-ni-te-vs-ti-ne
+How to tell INTJ and INTP apart through Jungian function dynamics instead of stereotypes about intelligence or introversion.
+Tags: INTJ, INTP, Cognitive functions
 
-Inferior function:
+What Is the Inferior Function?:
 https://typejung.com/blog/what-is-the-inferior-function
+A clear explanation of the inferior function in Jungian typology and why it often reveals stress, growth, and shadow patterns.
+Tags: Inferior function, Jungian typology, Growth
 
-The grip:
+What Does It Mean to Be in the Grip?:
 https://typejung.com/blog/what-does-it-mean-to-be-in-the-grip
+A practical guide to grip stress in Jungian typology and how the inferior function can take over under pressure.
+Tags: The grip, Stress, Inferior function
 
-Shadow work prompts:
+Jungian Shadow Work Prompts by Cognitive Function:
 https://typejung.com/blog/jungian-shadow-work-prompts-by-cognitive-function
+Shadow work prompts for each Jungian cognitive function, designed for reflection rather than diagnosis.
+Tags: Shadow work, Prompts, Cognitive functions
 
-Best MBTI alternatives:
+Best MBTI and 16Personalities Alternative Tests:
 https://typejung.com/blog/best-mbti-alternative-tests
+What to look for in an MBTI or 16Personalities alternative if you want cognitive functions, stress patterns, and a result you can inspect.
+Tags: MBTI alternative, Personality tests, Jungian test
+
+Singer-Loomis vs MBTI: What's the Difference?:
+https://typejung.com/blog/singer-loomis-vs-mbti
+How the Singer-Loomis inventory differs from MBTI-style categories, and why measuring function patterns can give a more inspectable result.
+Tags: Singer-Loomis, MBTI alternative, Cognitive functions
+
+Understanding The Grip: When Your Inferior Function Takes Over:
+https://typejung.com/blog/understanding-the-grip
+A Jungian explanation of grip stress and how the inferior function can become reactive under pressure.
+Tags: The grip, Inferior function, Stress
 
 ================================================================================
-CONTACT & LINKS
+THE 8 COGNITIVE FUNCTIONS
 ================================================================================
 
-Website: https://typejung.com
-Assessment: https://typejung.com/assessment
-Theory: https://typejung.com/learn
+NI (Introverted Intuition): https://typejung.com/functions/ni
+NE (Extraverted Intuition): https://typejung.com/functions/ne
+SI (Introverted Sensing): https://typejung.com/functions/si
+SE (Extraverted Sensing): https://typejung.com/functions/se
+TI (Introverted Thinking): https://typejung.com/functions/ti
+TE (Extraverted Thinking): https://typejung.com/functions/te
+FI (Introverted Feeling): https://typejung.com/functions/fi
+FE (Extraverted Feeling): https://typejung.com/functions/fe
+
+================================================================================
+THE 16 TYPE PAGES
+================================================================================
+
+INTJ (Ni-Te-Fi-Se): https://typejung.com/types/intj
+INTP (Ti-Ne-Si-Fe): https://typejung.com/types/intp
+ENTJ (Te-Ni-Se-Fi): https://typejung.com/types/entj
+ENTP (Ne-Ti-Fe-Si): https://typejung.com/types/entp
+INFJ (Ni-Fe-Ti-Se): https://typejung.com/types/infj
+INFP (Fi-Ne-Si-Te): https://typejung.com/types/infp
+ENFJ (Fe-Ni-Se-Ti): https://typejung.com/types/enfj
+ENFP (Ne-Fi-Te-Si): https://typejung.com/types/enfp
+ISTJ (Si-Te-Fi-Ne): https://typejung.com/types/istj
+ISFJ (Si-Fe-Ti-Ne): https://typejung.com/types/isfj
+ESTJ (Te-Si-Ne-Fi): https://typejung.com/types/estj
+ESFJ (Fe-Si-Ne-Ti): https://typejung.com/types/esfj
+ISTP (Ti-Se-Ni-Fe): https://typejung.com/types/istp
+ISFP (Fi-Se-Ni-Te): https://typejung.com/types/isfp
+ESTP (Se-Ti-Fe-Ni): https://typejung.com/types/estp
+ESFP (Se-Fi-Te-Ni): https://typejung.com/types/esfp
+
+================================================================================
+RECOVERY AND ATTRIBUTION PATHS
+================================================================================
+
+Generated SEO page assessment CTAs use source values such as:
+- seo_<slug>_hero
+- seo_<slug>_final
+- seo_<slug>_nav
+- seo_<slug>_related
+
+Generated SEO page save-link forms post to:
+/api/auth/discount-lead
+
+Save-link form source format:
+seo_<slug>_email_code
+blog_<slug>_email_code
+
+Save-link behavior:
+- Email the assessment link and TYPEJUNG30 code.
+- Return users to /assessment rather than pricing.
+- Preserve free-first positioning.
+- Feed recoverable discount_leads records for follow-up.
+
+Sample report: https://typejung.com/sample-report
+AI-run TypeJung lab: https://typejung.com/ai-run-store
 Pricing: https://typejung.com/pricing
-About: https://typejung.com/about
-
-(c) 2026 TypeJung
+Assessment: https://typejung.com/assessment

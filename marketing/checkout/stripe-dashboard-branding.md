@@ -33,9 +33,9 @@ The app already tells users they can choose Pay without Link if they prefer manu
 
 ## Promotion Code
 
-The app sends `allow_promotion_codes=true`, so Stripe Checkout will show the promotion-code field. Create the launch coupon in Stripe:
+The app sends `allow_promotion_codes=true`, so Stripe Checkout will show the promotion-code field. Keep the email-capture coupon active in Stripe:
 
-- Code: `DEPTH20`
-- Discount: 20% off
+- Code: `TYPEJUNG30`
+- Discount: 30% off
 - Duration: once
-- Active window: launch week only
+- Active while the email-capture offer is shown on TypeJung

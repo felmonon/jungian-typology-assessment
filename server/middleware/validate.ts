@@ -69,6 +69,7 @@ export const schemas = {
     isUndifferentiated: z.boolean(),
     resultVersion: z.string().optional(),
     depthResult: z.unknown().optional(),
+    shareOnly: z.boolean().optional(),
   }),
 
   // AI Analysis request

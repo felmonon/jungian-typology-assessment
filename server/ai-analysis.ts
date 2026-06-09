@@ -82,7 +82,7 @@ function fallbackFreeAnalysis(input: AnalysisInput): string {
   const edge = depth?.narrative?.developmentalEdge || `Your developmental work sits around ${inferior}, the channel with the least conscious energy in this result.`;
   const vulnerability = depth?.narrative?.complexVulnerability || "Stress is most likely to pull attention into the inferior channel before you can respond from your stronger functions.";
 
-  return `Your energy map is led by ${dominant}, supported by ${auxiliary}. This means your strongest movement is not a fixed personality label but a repeated channel of attention, judgment, and effort. The important tension is the opposite pole: ${inferior}. ${edge} ${vulnerability} Use the result as a practice map. When stress rises, notice whether you are trying to solve the situation only through the dominant channel. The useful move is to give the inferior function a small, concrete role before it takes over in a primitive form.`;
+  return `Your function-stack map is led by ${dominant}, supported by ${auxiliary}. This means your strongest movement is not a fixed personality label but a repeated channel of attention, judgment, and effort. The important tension is the opposite pole: ${inferior}. ${edge} ${vulnerability} Use the result as a practice map. When stress rises, notice whether you are trying to solve the situation only through the dominant channel. The useful move is to give the inferior function a small, concrete role before it takes over in a primitive form.`;
 }
 
 function formatScoresForPrompt(input: AnalysisInput): string {
@@ -101,13 +101,13 @@ Cognitive Stack:
   const attitude = input.attitudeScore > 0 ? "Extraverted" : "Introverted";
   const depth = input.depthResult || (input.stack as any).depthResult;
   const depthBlock = depth ? `
-Depth Energy Map:
+Depth Function-Stack Map:
 - Dominant channel: ${depth.dominant}
 - Auxiliary channel: ${depth.auxiliary}
 - Inferior channel: ${depth.inferior}
 - Answer consistency signal: ${depth.reliability?.score}% (${depth.reliability?.label})
 - Developmental edge: ${depth.narrative?.developmentalEdge}
-- Complex vulnerability: ${depth.narrative?.complexVulnerability}
+- Pressure pattern: ${depth.narrative?.complexVulnerability}
 ` : "";
 
   return `

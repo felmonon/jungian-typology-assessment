@@ -18,7 +18,7 @@ export const growthBlogArticles = [
         body: [
           'If your MBTI type keeps changing, it does not automatically mean your personality keeps changing. It usually means the test is measuring a surface mood, role, or self-image rather than your deeper function pattern.',
           'A person can look like an INFJ in one season, an INFP in another, and an ENFP when life is more social. That does not mean all three labels are equally useful. It means a four-letter result can be too compressed to show what is actually happening.',
-          'TypeJung is built for this exact problem. Take the free assessment and compare your full energy map instead of trying to force yourself into one binary label.',
+          'TypeJung is built for this exact problem. Take the free assessment and compare your full function-stack map instead of trying to force yourself into one binary label.',
         ],
       },
       {
@@ -159,7 +159,7 @@ export const growthBlogArticles = [
         heading: 'Why an assessment helps',
         body: [
           'Self-description can be misleading because many people admire both competence and precision. TypeJung separates channels so you can see whether your energy clusters around intuition-thinking execution or thinking-intuition modeling.',
-          'If you keep switching between INTJ and INTP, use the energy map to compare your dominant and inferior pressures instead of only comparing type summaries.',
+          'If you keep switching between INTJ and INTP, use the function-stack map to compare your dominant and inferior pressures instead of only comparing type summaries.',
         ],
       },
     ],
@@ -332,16 +332,18 @@ export const growthBlogArticles = [
   },
   {
     slug: 'best-mbti-alternative-tests',
-    title: 'Best MBTI Alternative Tests for Deeper Self-Understanding',
-    description: 'What to look for in an MBTI alternative test if you want cognitive functions, growth patterns, and a less generic result.',
+    title: 'Best MBTI and 16Personalities Alternative Tests',
+    description: 'What to look for in an MBTI or 16Personalities alternative if you want cognitive functions, stress patterns, and a result you can inspect.',
     date: '2026-05-18',
     readTime: '8 min read',
     tags: ['MBTI alternative', 'Personality tests', 'Jungian test'],
     related: [
+      ['/mbti-test-alternative', 'MBTI test alternative'],
+      ['/16personalities-alternative', '16Personalities alternative'],
+      ['/sakinorva-alternative', 'Sakinorva alternative'],
       ['/mbti-alternative', 'MBTI alternative'],
       ['/cognitive-function-test', 'Cognitive function test'],
       ['/jungian-test', 'Jungian test'],
-      ['/pricing', 'Pricing'],
     ],
     sections: [
       {
@@ -379,7 +381,7 @@ export const growthBlogArticles = [
         heading: 'A practical recommendation',
         body: [
           'Use any quick test as a rough hypothesis, not a verdict. Then use a cognitive-function assessment to test the pattern more carefully.',
-          'If you want a deeper MBTI alternative, start with TypeJung, read the energy map, and compare your dominant-inferior axis with your lived stress patterns.',
+          'If you want a deeper MBTI alternative, start with TypeJung, read the function-stack map, and compare your dominant-inferior axis with your lived stress patterns.',
         ],
       },
     ],

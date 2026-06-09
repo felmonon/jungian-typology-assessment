@@ -7,13 +7,15 @@ import { getUncachableStripeClient } from './stripeClient';
 import { setupAuth, registerAuthRoutes } from './server/integrations/auth';
 import { registerResultsRoutes } from './server/routes/results';
 import { registerAdminRoutes } from './server/routes/admin';
+import { registerAnalyticsRoutes } from './server/routes/analytics';
 import { sendPdfEmail } from './server/resend';
 import { db } from './server/db';
 import { purchases, users } from './shared/schema';
 import { eq } from 'drizzle-orm';
 import { generateFreeAnalysis, generatePremiumAnalysis } from './server/ai-analysis';
 import { z } from 'zod';
-import { getStripePriceIdForTier, getStripeWebhookSecret, parsePaidTier, resolveCheckoutBaseUrl } from './server/checkout';
+import { findActivePromotionCodeId, getAutoPromotionCode, getStripePriceIdForTier, getStripeWebhookSecret, parsePaidTier, resolveCheckoutBaseUrl } from './server/checkout';
+import { serveGeneratedStaticPages } from './server/static-pages';
 
 const analysisInputSchema = z.object({
   scores: z.array(z.object({
@@ -166,6 +168,7 @@ async function startServer() {
   registerAuthRoutes(app);
   registerResultsRoutes(app);
   registerAdminRoutes(app);
+  registerAnalyticsRoutes(app);
 
   app.get('/api/premium-status', async (req: any, res) => {
     try {
@@ -231,6 +234,10 @@ async function startServer() {
       }
 
       const baseUrl = resolveCheckoutBaseUrl(req.headers.origin, req.headers.host);
+      const autoPromotionCode = getAutoPromotionCode();
+      const activePromotionCodeId = autoPromotionCode
+        ? await findActivePromotionCodeId(stripe, autoPromotionCode)
+        : null;
 
       const sessionParams: any = {
         mode: 'payment',
@@ -243,12 +250,23 @@ async function startServer() {
         ],
         success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${baseUrl}/results`,
-        allow_promotion_codes: true,
         metadata: {
           product: 'jungian_assessment_premium',
           tier: resolvedTier,
         },
       };
+
+      if (activePromotionCodeId) {
+        sessionParams.discounts = [{ promotion_code: activePromotionCodeId }];
+        sessionParams.metadata.discount_code = autoPromotionCode;
+        sessionParams.payment_intent_data = {
+          metadata: {
+            discount_code: autoPromotionCode,
+          },
+        };
+      } else {
+        sessionParams.allow_promotion_codes = true;
+      }
 
       if (req.isAuthenticated && req.isAuthenticated() && req.user?.email) {
         sessionParams.customer_email = req.user.email;
@@ -417,6 +435,14 @@ async function startServer() {
   });
 
   const publicDir = path.join(__dirname, 'dist', 'public');
+  app.use((req, res, next) => {
+    if (req.path.startsWith('/share/')) {
+      res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+    }
+    next();
+  });
+
+  app.use(serveGeneratedStaticPages(publicDir));
   app.use(express.static(publicDir));
 
   app.use((req, res, next) => {

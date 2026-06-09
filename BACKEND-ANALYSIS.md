@@ -79,7 +79,7 @@
 ### 4. AI Features
 - **Free analysis**: Single Gemini call (150-200 words)
 - **Premium analysis**: 10 parallel section generation
-- **AI Coach chat**: Contextual conversations with history
+- **AI Type Guide chat**: Contextual result-aware reflection with history
 - **Rate limiting**: 10 AI calls/hour
 
 ### 5. API Endpoints

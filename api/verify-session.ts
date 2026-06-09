@@ -1,9 +1,20 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSessionUserFromCookie } from './_lib/auth-utils.js';
+import { markCheckoutIntentExpired } from './_lib/checkout-intents.js';
 import { recordCheckoutPurchase, resolveCheckoutTransactionId, resolveTierFromCheckoutSession } from './_lib/purchases.js';
 import { enforceRateLimit } from './_lib/rate-limit.js';
 import { getSupabaseAdminClient, hasSupabaseAdminConfig } from './_lib/supabase.js';
 import { getStripeSecretKey } from '../server/checkout.js';
+
+function centsToAmount(value: unknown): number | null {
+  return typeof value === 'number' && Number.isFinite(value) ? value / 100 : null;
+}
+
+function normalizedCurrency(value: unknown): string {
+  return typeof value === 'string' && /^[a-zA-Z]{3}$/.test(value)
+    ? value.toUpperCase()
+    : 'CAD';
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET' && req.method !== 'POST') {
@@ -66,9 +77,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         tier,
         metadata: { tier },
         transactionId,
+        amountTotal: typeof session.amount_total === 'number' ? session.amount_total : null,
+        amountPaid: centsToAmount(session.amount_total),
+        amountDiscount: centsToAmount(session.total_details?.amount_discount),
+        currency: normalizedCurrency(session.currency),
+        discountCode: typeof session.metadata?.discount_code === 'string' ? session.metadata.discount_code : null,
         customerEmail: session.customer_details?.email,
       });
     } else {
+      if (session.status === 'expired' && hasSupabaseAdminConfig()) {
+        const supabase = getSupabaseAdminClient();
+        await markCheckoutIntentExpired(supabase, session);
+      }
+
       return res.status(200).json({
         success: true,
         paid: false,

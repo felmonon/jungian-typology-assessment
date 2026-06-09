@@ -1,25 +1,40 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Check, Download, Link2, Loader2, LogIn, RefreshCcw, Save, Share2, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, Check, Copy, Download, FileText, Link2, Loader2, Lock, LogIn, RefreshCcw, Save, Share2, ShieldCheck, Sparkles } from 'lucide-react';
 import { ChatBot } from '../components/ChatBot';
 import { DiscountCaptureCard } from '../components/discount/DiscountCaptureCard';
 import { Button } from '../components/ui/Button';
 import { ATTITUDE_LABELS, AttitudeDirection, FUNCTION_LABELS, FunctionChannel, depthLayerMeta } from '../data/depthAssessment';
+import { discountedPriceLabel, EMAIL_CAPTURE_OFFER } from '../data/discount';
 import { PRICING, type PaidTierId } from '../data/pricing';
-import { useAiAnalysis } from '../hooks/use-ai-analysis';
+import { SUPPORT_EMAIL } from '../data/support';
+import { useAiAnalysis, type AnalysisInput, type PremiumAnalysis } from '../hooks/use-ai-analysis';
 import { useAuth } from '../hooks/use-auth';
 import { usePremiumStatus } from '../hooks/use-premium-status';
-import { AnalyticsEvents } from '../lib/analytics';
+import { AnalyticsEvents, trackEvent } from '../lib/analytics';
+import { pathWithSource, readAcquisitionSource } from '../lib/acquisition-source';
+import { resultUpgradeContextFromSource, type ResultUpgradeContext } from '../lib/result-upgrade-context';
+import { readUpgradeIntent } from '../lib/upgrade-intent';
 import { depthResultToLegacyAnalysisInput } from '../utils/depthCompatibility';
 import { DepthAssessmentResult, isDepthAssessmentResult } from '../utils/depthScoring';
 
 const RESULTS_KEY = 'jungian_assessment_results';
+const CHECKOUT_SESSION_KEY = 'jungian_assessment_checkout_session_id';
 const LIFECYCLE_EMAIL_ENDPOINT = '/api/lifecycle-email';
 const RESULT_READY_EMAIL_ATTEMPT_PREFIX = 'typejung_lifecycle_email_result_ready_';
 const UPGRADE_EMAIL_DUE_PREFIX = 'typejung_lifecycle_email_upgrade_due_';
 const UPGRADE_EMAIL_ATTEMPT_PREFIX = 'typejung_lifecycle_email_upgrade_';
 const UPGRADE_EMAIL_DELAY_MS = 36 * 60 * 60 * 1000;
+const PUBLIC_SHARE_SLUG_PREFIX = 'typejung_public_share_slug_';
+const REFERRAL_INVITE_GOAL = 3;
+const REFERRAL_INVITE_CAMPAIGN = 'friend_compare';
+type InviteShareLocation = 'results_compare_banner' | 'results_invite_card';
+
+const inviteSourceByLocation: Record<InviteShareLocation, string> = {
+  results_compare_banner: 'result_compare_banner',
+  results_invite_card: 'result_compare_card',
+};
 
 const upgradeOptions: Array<{
   tier: PaidTierId;
@@ -32,16 +47,31 @@ const upgradeOptions: Array<{
     tier: 'insight',
     label: 'Insight',
     description: 'Best when you want the deeper report after the free map feels accurate.',
-    features: ['Developmental edge', 'Stress pattern map', 'Somatic practices'],
-    preview: 'Unlocks a detailed interpretation of your inferior-function edge, stress triggers, and practice guidance.',
+    features: ['Developmental edge', 'Stress-pattern map', 'Practice prompts'],
+    preview: 'Unlocks a detailed interpretation of your inferior-function edge, stress-pattern reflection, and practice prompts.',
   },
   {
     tier: 'mastery',
     label: 'Mastery',
-    description: 'Best when you want the report plus ongoing AI coaching and exercises.',
-    features: ['Everything in Insight', 'AI Type Coach', 'Practice roadmap'],
-    preview: 'Adds coach questions, tailored exercises, and a roadmap for working with the result over time.',
+    description: 'Best when you want the report plus AI Type Guide reflection prompts and exercises.',
+    features: ['Everything in Insight', 'AI Type Guide', 'Practice roadmap'],
+    preview: 'Adds guide questions, tailored exercises, and a roadmap for working with the result over time.',
   },
+];
+
+const paidTierPrice = (tier: PaidTierId) => discountedPriceLabel(PRICING[tier].amount);
+
+const premiumReportSectionConfig: Array<{ key: keyof PremiumAnalysis; title: string }> = [
+  { key: 'overview', title: 'Overview' },
+  { key: 'functionAnalysis', title: 'Function analysis' },
+  { key: 'archetypes', title: 'Archetypal pattern' },
+  { key: 'theGrip', title: 'Grip and stress pattern' },
+  { key: 'relationships', title: 'Relationships' },
+  { key: 'career', title: 'Work and vocation' },
+  { key: 'individuation', title: 'Individuation path' },
+  { key: 'shadow', title: 'Shadow material' },
+  { key: 'growth', title: 'Growth practices' },
+  { key: 'dreams', title: 'Dream and symbol lens' },
 ];
 
 type ResultsState =
@@ -100,6 +130,22 @@ const formatDate = (iso: string) => {
   }
 };
 
+const sentenceParts = (value: string) =>
+  value
+    .match(/[^.!?]+[.!?]+|[^.!?]+$/g)
+    ?.map((part) => part.trim())
+    .filter(Boolean) || [];
+
+const previewSentences = (value: string, fallback: string, count = 2) => {
+  const parts = sentenceParts(value);
+  return (parts.length ? parts : [fallback]).slice(0, count);
+};
+
+const lockedSentences = (value: string, fallback: string, offset = 2) => {
+  const parts = sentenceParts(value).slice(offset);
+  return parts.length ? parts : [fallback];
+};
+
 const readResults = (): ResultsState => {
   try {
     const raw = localStorage.getItem(RESULTS_KEY);
@@ -109,6 +155,15 @@ const readResults = (): ResultsState => {
     return { status: 'legacy' };
   } catch {
     return { status: 'no-results' };
+  }
+};
+
+const readCheckoutSessionId = (): string | undefined => {
+  try {
+    const value = localStorage.getItem(CHECKOUT_SESSION_KEY)?.trim();
+    return value || undefined;
+  } catch {
+    return undefined;
   }
 };
 
@@ -133,7 +188,7 @@ const EnergyBars: React.FC<{ results: DepthAssessmentResult }> = ({ results }) =
     <div className="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <p className="text-label">Energy distribution</p>
-        <h2 className="mt-2 text-heading text-3xl text-jung-dark">Your energy map</h2>
+        <h2 className="mt-2 text-heading text-3xl text-jung-dark">Your function-stack map</h2>
       </div>
       <div className="rounded-lg bg-jung-accent-light px-3 py-2 text-sm font-semibold text-jung-accent">
         {results.reliability.score}% consistency
@@ -207,6 +262,322 @@ const SignalGrid: React.FC<{ results: DepthAssessmentResult }> = ({ results }) =
   );
 };
 
+const LockedPremiumPreview: React.FC<{
+  results: DepthAssessmentResult;
+  dominantLabel: string;
+  inferiorLabel: string;
+  intendedTier: PaidTierId;
+  onUnlock: (tier: PaidTierId, location: string) => void;
+  onViewSampleReport: (location: string) => void;
+}> = ({ results, dominantLabel, inferiorLabel, intendedTier, onUnlock, onViewSampleReport }) => {
+  const primaryName = PRICING[intendedTier].name;
+  const functionStackLabel = results.hierarchy
+    .map((item) => getFunctionCode(item.channel, item.attitude))
+    .join('-');
+  const inferiorChannelLabel = FUNCTION_LABELS[results.inferior];
+  const dominantEnergy = results.energy.find((item) => item.channel === results.dominant)?.score ?? results.hierarchy[0]?.score ?? 0;
+  const inferiorEnergy = results.energy.find((item) => item.channel === results.inferior)?.score ?? results.hierarchy[3]?.score ?? 0;
+  const listPrice = PRICING[intendedTier].price;
+  const lockedSections = [
+    {
+      title: 'Developmental edge',
+      eyebrow: `${dominantEnergy}% dominant / ${inferiorEnergy}% edge`,
+      visibleLines: previewSentences(
+        results.narrative.developmentalEdge,
+        `${inferiorLabel} is the low-energy edge in this map, so the full report starts with what that function asks you to practice.`,
+      ),
+      lockedLines: lockedSentences(
+        results.narrative.practice,
+        `The full section connects that edge to a concrete weekly practice for the ${dominantLabel} to ${inferiorLabel} axis.`,
+        0,
+      ),
+    },
+    {
+      title: 'Stress pattern',
+      eyebrow: `${inferiorChannelLabel} under pressure`,
+      visibleLines: previewSentences(
+        results.narrative.complexVulnerability,
+        `Stress is likely to collect around the ${inferiorChannelLabel.toLowerCase()} side of this result, especially when the dominant pattern has been overextended.`,
+      ),
+      lockedLines: lockedSentences(
+        results.narrative.somaticSignature,
+        `The full section names the body signal that tends to appear before the stress loop gets louder.`,
+        0,
+      ),
+    },
+    {
+      title: 'Relationship repair cue',
+      eyebrow: `${dominantLabel} to ${inferiorLabel}`,
+      visibleLines: [
+        axisCopy[results.dominant],
+        `The paid report translates that axis into the moment you are most likely to defend, withdraw, overexplain, or push for control.`,
+      ],
+      lockedLines: [
+        `It then gives a repair sentence and one observation prompt for catching the pattern before the interaction hardens.`,
+        `This part is personalized to the ${functionStackLabel} stack and ${results.reliability.label.toLowerCase()} consistency signal.`,
+      ],
+    },
+  ];
+
+  return (
+    <section className="mb-8 overflow-hidden rounded-lg border border-jung-dark bg-jung-dark text-white shadow-xl">
+      <div className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_23rem]">
+        <div className="p-5 sm:p-7">
+          <div className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-3 py-1.5 text-xs font-semibold text-jung-subtle">
+            <Lock className="h-3.5 w-3.5" />
+            Locked report preview
+          </div>
+          <h2 className="mt-4 text-heading text-3xl text-white">
+            Your paid report starts inside this {functionStackLabel} result.
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-white/70">
+            The free map names the pattern. The locked report previews below use the actual language generated from your scores, then fades where the full interpretation continues.
+          </p>
+
+          <div className="mt-6 grid gap-4 xl:grid-cols-3">
+            {lockedSections.map((section) => (
+              <article key={section.title} className="rounded-lg border border-white/10 bg-white/[0.08] p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-jung-subtle">{section.eyebrow}</p>
+                    <h3 className="mt-2 text-base font-semibold leading-6 text-white">{section.title}</h3>
+                  </div>
+                  <Lock className="mt-1 h-4 w-4 flex-none text-jung-subtle" />
+                </div>
+                <div className="mt-3 space-y-2 text-xs leading-5 text-white/72">
+                  {section.visibleLines.map((line) => (
+                    <p key={line}>{line}</p>
+                  ))}
+                </div>
+                <div className="relative mt-4 overflow-hidden rounded-lg border border-white/10 bg-black/[0.18] p-4">
+                  <div aria-hidden="true" className="space-y-2 select-none text-xs leading-5 text-white/75 blur-[3px]">
+                    {section.lockedLines.map((line) => (
+                      <p key={line}>{line}</p>
+                    ))}
+                  </div>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gradient-to-b from-jung-dark/20 via-jung-dark/55 to-jung-dark/85 px-4 text-center">
+                    <span className="inline-flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-xs font-semibold text-jung-dark shadow-sm">
+                      <Lock className="h-3.5 w-3.5" />
+                      Full section locked
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => onUnlock(intendedTier, `results_premium_preview_${section.title.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`)}
+                      className="rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-xs font-semibold text-white transition hover:bg-white/20"
+                    >
+                      Unlock full report - {listPrice}
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <div className="border-t border-white/10 bg-white p-5 text-jung-dark sm:p-6 lg:border-l lg:border-t-0">
+          <p className="text-label">Keep reading</p>
+          <h3 className="mt-2 text-heading text-2xl text-jung-dark">
+            {primaryName} - {paidTierPrice(intendedTier)}
+          </h3>
+          <p className="mt-3 text-sm leading-6 text-jung-secondary">
+            Your free map is already complete. Unlock the report only if the axis feels worth keeping.
+          </p>
+          <div className="mt-5 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-4">
+            <p className="text-sm font-semibold text-jung-dark">Built from this result</p>
+            <p className="mt-2 text-xs leading-5 text-jung-secondary">
+              {results.reliability.label} consistency signal. {dominantLabel} to {inferiorLabel}.
+            </p>
+          </div>
+          <Button
+            variant="accent"
+            size="lg"
+            className="mt-5 w-full"
+            onClick={() => onUnlock(intendedTier, 'results_locked_preview')}
+            rightIcon={<ArrowRight className="h-4 w-4" />}
+          >
+            Unlock full report - {listPrice}
+          </Button>
+          <button
+            type="button"
+            onClick={() => onUnlock(intendedTier, 'results_locked_preview_price_note')}
+            className="mt-3 w-full rounded-lg border border-jung-border bg-jung-base px-3 py-2 text-xs font-semibold text-jung-secondary transition hover:border-jung-accent hover:text-jung-accent"
+          >
+            Continue to review the price before Stripe
+          </button>
+          <p className="mt-3 text-xs leading-5 text-jung-muted">
+            {EMAIL_CAPTURE_OFFER.code} applies on Stripe. You review the order first; no subscription is created.
+          </p>
+          <button
+            type="button"
+            onClick={() => onViewSampleReport('results_locked_preview')}
+            className="mt-4 text-xs font-semibold text-jung-accent hover:underline"
+          >
+            See a full sample report
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const UpgradeStrip: React.FC<{
+  dominantLabel: string;
+  inferiorLabel: string;
+  intendedTier?: PaidTierId;
+  upgradeContext?: ResultUpgradeContext | null;
+  onUnlock: (tier: PaidTierId, location: string) => void;
+  onViewSampleReport: (location: string) => void;
+}> = ({ dominantLabel, inferiorLabel, intendedTier, upgradeContext, onUnlock, onViewSampleReport }) => {
+  const primaryTier = intendedTier ?? 'insight';
+  const secondaryTier: PaidTierId = primaryTier === 'insight' ? 'mastery' : 'insight';
+  const primaryName = PRICING[primaryTier].name;
+  const secondaryName = PRICING[secondaryTier].name;
+  const eyebrow = upgradeContext?.eyebrow || (intendedTier ? `${primaryName} selected` : 'Your map is ready');
+  const headline = upgradeContext?.headline || (intendedTier ? `Continue to ${primaryName} from your result.` : 'Unlock the meaning behind this exact pattern.');
+  const body = upgradeContext?.stripBody(primaryName, dominantLabel, inferiorLabel)
+    || `Your free result shows the map. ${primaryName} adds the meaning behind the ${dominantLabel} to ${inferiorLabel} pattern: stress-pattern reflection, relationship patterns, and practical next steps.`;
+  const modules = [
+    {
+      title: 'Axis interpretation',
+      body: `How the ${dominantLabel} to ${inferiorLabel} pattern can show up when the free map feels accurate but still incomplete.`,
+    },
+    {
+      title: 'Stress and repair',
+      body: `What tends to pull ${dominantLabel} into ${inferiorLabel} pressure, plus the early signals and repair moves to watch.`,
+    },
+    {
+      title: 'Practice plan',
+      body: 'Concrete prompts for work, conflict, relationships, and self-observation so the result becomes usable.',
+    },
+  ];
+  const reportQuestions = [
+    `What does my ${dominantLabel} lead actually mean in daily decisions?`,
+    `Where does ${inferiorLabel} pressure make my behavior look inconsistent?`,
+    'Which relationship and work patterns should I watch first?',
+    'What should I practice this week so the map turns into action?',
+  ];
+
+  return (
+    <section className="mb-10 overflow-hidden rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 shadow-sm">
+      <div className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_25rem]">
+        <div>
+          <div className="p-5 sm:p-7">
+            <div className="mb-3 inline-flex items-center gap-2 rounded-lg bg-jung-surface px-3 py-1.5 text-xs font-semibold text-jung-accent">
+              <Sparkles className="h-3.5 w-3.5" />
+              {eyebrow}
+            </div>
+            <h2 className="text-heading text-2xl text-jung-dark sm:text-3xl">
+              {headline}
+            </h2>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-jung-secondary">
+              {body}
+            </p>
+            <div className="mt-5 grid gap-3 md:grid-cols-3">
+              {modules.map((module, index) => (
+                <div key={module.title} className="rounded-lg border border-jung-border bg-jung-surface p-4">
+                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-jung-accent-light text-xs font-semibold text-jung-accent">
+                    {index + 1}
+                  </span>
+                  <h3 className="mt-3 text-sm font-semibold text-jung-dark">{module.title}</h3>
+                  <p className="mt-2 text-xs leading-5 text-jung-secondary">{module.body}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 rounded-lg border border-jung-border bg-jung-surface p-4 sm:p-5">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-jung-dark">Questions the paid report answers</p>
+                  <p className="mt-1 text-xs leading-5 text-jung-muted">
+                    Use this only if the free map feels worth keeping.
+                  </p>
+                </div>
+                <span className="w-fit rounded-lg bg-jung-accent-light px-2.5 py-1 text-xs font-semibold text-jung-accent">
+                  Built from this result
+                </span>
+              </div>
+              <ul className="mt-4 grid gap-2 text-sm leading-6 text-jung-secondary sm:grid-cols-2">
+                {reportQuestions.map((question) => (
+                  <li key={question} className="flex min-w-0 gap-2">
+                    <Check className="mt-1 h-3.5 w-3.5 flex-none text-jung-accent" />
+                    <span className="min-w-0">{question}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2 text-xs text-jung-muted">
+              {[`${EMAIL_CAPTURE_OFFER.code} auto-applied`, 'One-time CAD purchase', 'No subscription', '7-day guarantee'].map((item) => (
+                <span key={item} className="inline-flex items-center gap-1.5 rounded-lg border border-jung-border bg-jung-surface px-3 py-1.5">
+                  <Check className="h-3.5 w-3.5 text-jung-accent" />
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-jung-accent-muted bg-jung-surface p-5 sm:p-6 lg:border-l lg:border-t-0">
+          <p className="text-label">Recommended next step</p>
+          <h3 className="mt-2 text-heading text-2xl text-jung-dark">
+            {primaryName} - {paidTierPrice(primaryTier)}
+          </h3>
+          <p className="mt-2 text-xs leading-5 text-jung-muted">
+            <span className="line-through">{PRICING[primaryTier].price}</span> before {EMAIL_CAPTURE_OFFER.code}. Stripe applies the code before payment.
+          </p>
+          <div className="mt-4 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-4">
+            <p className="text-sm font-semibold text-jung-dark">Report starts from your axis</p>
+            <p className="mt-2 text-xs leading-5 text-jung-secondary">
+              {dominantLabel} to {inferiorLabel} stays visible through the paid interpretation.
+            </p>
+          </div>
+
+          <Button
+            variant="accent"
+            size="lg"
+            className="mt-5 w-full"
+            onClick={() => onUnlock(primaryTier, 'results_upgrade_strip')}
+            rightIcon={<ArrowRight className="h-4 w-4" />}
+          >
+            Unlock my {primaryName} report
+          </Button>
+
+          <div className="mt-3 grid gap-2">
+            <button
+              type="button"
+              onClick={() => onUnlock(secondaryTier, 'results_upgrade_strip_secondary')}
+              className="min-h-11 rounded-lg border border-jung-border bg-jung-base px-4 text-sm font-semibold text-jung-secondary transition hover:border-jung-accent hover:text-jung-accent"
+            >
+              {secondaryName} instead - {paidTierPrice(secondaryTier)}
+            </button>
+            <button
+              type="button"
+              onClick={() => onViewSampleReport('results_upgrade_strip')}
+              className="min-h-11 rounded-lg border border-jung-border bg-white px-4 text-sm font-semibold text-jung-secondary transition hover:border-jung-accent hover:text-jung-accent"
+            >
+              Preview before buying
+            </button>
+          </div>
+
+          <DiscountCaptureCard
+            source="results_upgrade_strip"
+            dominantLabel={dominantLabel}
+            inferiorLabel={inferiorLabel}
+            compact
+            minimal
+            minimalTitle="Not paying right now?"
+            minimalDescription={`Email the ${dominantLabel} to ${inferiorLabel} axis, the ${EMAIL_CAPTURE_OFFER.code} code, and the ${primaryName} link.`}
+            minimalSubmitLabel="Email my result path"
+            minimalFootnote="One email with the backup code and report link. No spam."
+            minimalSentMessage={`Result path sent. The email links back to ${primaryName} with the discount ready.`}
+            preferredTier={primaryTier}
+            showCheckoutButtons={false}
+            className="mt-5 border-t border-jung-border pt-5"
+          />
+        </div>
+      </div>
+    </section>
+  );
+};
+
 export const Results: React.FC = () => {
   const navigate = useNavigate();
   const [state, setState] = useState<ResultsState>({ status: 'loading' });
@@ -225,14 +596,63 @@ export const Results: React.FC = () => {
   const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error' | 'skipped'>('idle');
   const [shareSlug, setShareSlug] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
+  const [inviteCopied, setInviteCopied] = useState(false);
+  const [summaryCopied, setSummaryCopied] = useState(false);
+  const [returnCopied, setReturnCopied] = useState(false);
+  const [shareLinkState, setShareLinkState] = useState<'idle' | 'creating' | 'error'>('idle');
+  const [upgradeIntent] = useState(readUpgradeIntent);
+  const [acquisition] = useState(readAcquisitionSource);
+  const referralPromptTrackedRef = useRef<string | null>(null);
+  const upgradeOfferTrackedRef = useRef<string | null>(null);
+  const upgradeContextTrackedRef = useRef<string | null>(null);
+  const lockedPreviewTrackedRef = useRef<string | null>(null);
+  const inboundSharedResultSlug = acquisition?.sharedResult && acquisition.sharedResult !== shareSlug
+    ? acquisition.sharedResult
+    : null;
+  const intendedTier = upgradeIntent?.tier ?? 'insight';
+  const intendedTierName = PRICING[intendedTier].name;
+  const orderedUpgradeOptions = useMemo(() => {
+    if (!upgradeIntent) return upgradeOptions;
+    return [
+      ...upgradeOptions.filter((option) => option.tier === upgradeIntent.tier),
+      ...upgradeOptions.filter((option) => option.tier !== upgradeIntent.tier),
+    ];
+  }, [upgradeIntent]);
+  const upgradeContext = useMemo(
+    () => resultUpgradeContextFromSource(acquisition?.source, {
+      parentSource: acquisition?.parentSource,
+      utmCampaign: acquisition?.utmCampaign,
+      utmSource: acquisition?.utmSource,
+      sourceChain: acquisition?.sourceChain,
+    }),
+    [acquisition?.parentSource, acquisition?.source, acquisition?.sourceChain, acquisition?.utmCampaign, acquisition?.utmSource],
+  );
 
   const openUpgradeCheckout = useCallback((paidTier: PaidTierId, location: string) => {
+    const destination = pathWithSource(`/checkout/${paidTier}`, location);
+    trackEvent('results_unlock_clicked', {
+      source: location,
+      tier: paidTier,
+      destination,
+      price_cad: PRICING[paidTier].amount,
+      displayed_price: PRICING[paidTier].price,
+      discounted_price: paidTierPrice(paidTier),
+    });
     AnalyticsEvents.upgradeClicked(location, paidTier);
     AnalyticsEvents.ctaClicked(`unlock_${paidTier}`, location, {
-      buttonText: `Unlock ${PRICING[paidTier].name}`,
-      destination: `/checkout/${paidTier}`,
+      buttonText: `Unlock ${PRICING[paidTier].name} - ${paidTierPrice(paidTier)}`,
+      destination,
     });
-    navigate(`/checkout/${paidTier}`);
+    navigate(destination);
+  }, [navigate]);
+
+  const viewSampleReport = useCallback((location: string) => {
+    const destination = pathWithSource('/sample-report', location);
+    AnalyticsEvents.ctaClicked('view_sample_report', location, {
+      buttonText: 'View sample report',
+      destination,
+    });
+    navigate(destination);
   }, [navigate]);
 
   useEffect(() => {
@@ -244,6 +664,12 @@ export const Results: React.FC = () => {
     () => currentResults ? depthResultToLegacyAnalysisInput(currentResults) : null,
     [currentResults],
   );
+  const premiumAnalysisInput = useMemo<AnalysisInput | null>(() => {
+    if (!legacyInput) return null;
+    const checkoutSessionId = readCheckoutSessionId();
+    return checkoutSessionId ? { ...legacyInput, checkoutSessionId } : legacyInput;
+  }, [legacyInput]);
+  const hasVerifiedCheckoutSession = Boolean(premiumAnalysisInput?.checkoutSessionId);
 
   useEffect(() => {
     if (!currentResults) return;
@@ -260,6 +686,100 @@ export const Results: React.FC = () => {
     }
   }, [currentResults]);
 
+  useEffect(() => {
+    if (!currentResults || !inboundSharedResultSlug) return;
+
+    trackEvent('inbound_shared_result_prompt_viewed', {
+      source: acquisition?.source || 'unknown',
+      shared_result: inboundSharedResultSlug,
+      utm_campaign: acquisition?.utmCampaign || 'unknown',
+      dominant_function: getFunctionCode(currentResults.dominant, currentResults.attitude.dominant),
+    });
+  }, [acquisition?.source, acquisition?.utmCampaign, currentResults, inboundSharedResultSlug]);
+
+  useEffect(() => {
+    if (!currentResults || premiumLoading || isPremium) return;
+
+    const trackedKey = `${currentResults.completedAt}_${intendedTier}_${upgradeContext?.category || 'default'}`;
+    if (upgradeOfferTrackedRef.current === trackedKey) return;
+    upgradeOfferTrackedRef.current = trackedKey;
+
+    trackEvent('result_upgrade_offer_viewed', {
+      source: acquisition?.source || 'unknown',
+      intended_tier: intendedTier,
+      context_category: upgradeContext?.category || 'default',
+      has_context: Boolean(upgradeContext),
+      dominant_function: getFunctionCode(currentResults.dominant, currentResults.attitude.dominant),
+      has_upgrade_intent: Boolean(upgradeIntent),
+      ...(acquisition?.parentSource ? { parent_source: acquisition.parentSource } : {}),
+      ...(acquisition?.utmCampaign ? { utm_campaign: acquisition.utmCampaign } : {}),
+      ...(acquisition?.utmSource ? { utm_source: acquisition.utmSource } : {}),
+      ...(acquisition?.sourceChain ? { source_chain: acquisition.sourceChain } : {}),
+    });
+  }, [acquisition, currentResults, intendedTier, isPremium, premiumLoading, upgradeContext, upgradeIntent]);
+
+  useEffect(() => {
+    if (!currentResults || premiumLoading || isPremium) return;
+
+    const trackedKey = `${currentResults.completedAt}_${intendedTier}`;
+    if (lockedPreviewTrackedRef.current === trackedKey) return;
+    lockedPreviewTrackedRef.current = trackedKey;
+
+    const previewPayload = {
+      source: acquisition?.source || 'unknown',
+      intended_tier: intendedTier,
+      dominant_function: getFunctionCode(currentResults.dominant, currentResults.attitude.dominant),
+      inferior_function: getFunctionCode(
+        currentResults.inferior,
+        currentResults.hierarchy.find((item) => item.position === 'inferior')?.attitude ?? 'extraverted',
+      ),
+      reliability: currentResults.reliability.label,
+      has_upgrade_intent: Boolean(upgradeIntent),
+      context_category: upgradeContext?.category || 'default',
+      ...(acquisition?.parentSource ? { parent_source: acquisition.parentSource } : {}),
+      ...(acquisition?.utmCampaign ? { utm_campaign: acquisition.utmCampaign } : {}),
+      ...(acquisition?.utmSource ? { utm_source: acquisition.utmSource } : {}),
+      ...(acquisition?.sourceChain ? { source_chain: acquisition.sourceChain } : {}),
+    };
+
+    trackEvent('results_premium_preview_viewed', previewPayload);
+    trackEvent('result_locked_preview_viewed', previewPayload);
+  }, [acquisition, currentResults, intendedTier, isPremium, premiumLoading, upgradeContext?.category, upgradeIntent]);
+
+  useEffect(() => {
+    if (!currentResults) return;
+
+    const trackedKey = `${currentResults.completedAt}_${shareSlug || 'no_share_slug'}`;
+    if (referralPromptTrackedRef.current === trackedKey) return;
+    referralPromptTrackedRef.current = trackedKey;
+
+    trackEvent('result_referral_prompt_viewed', {
+      source: 'results_page',
+      dominant_function: getFunctionCode(currentResults.dominant, currentResults.attitude.dominant),
+      has_share_slug: Boolean(shareSlug),
+      invite_goal: REFERRAL_INVITE_GOAL,
+    });
+  }, [currentResults, shareSlug]);
+
+  useEffect(() => {
+    if (!currentResults || premiumLoading || isPremium || !upgradeContext) return;
+
+    const trackedKey = `${currentResults.completedAt}_${upgradeContext.category}`;
+    if (upgradeContextTrackedRef.current === trackedKey) return;
+    upgradeContextTrackedRef.current = trackedKey;
+
+    trackEvent('result_upgrade_context_viewed', {
+      source: acquisition?.source || 'unknown',
+      context_category: upgradeContext.category,
+      intended_tier: intendedTier,
+      dominant_function: getFunctionCode(currentResults.dominant, currentResults.attitude.dominant),
+      ...(acquisition?.parentSource ? { parent_source: acquisition.parentSource } : {}),
+      ...(acquisition?.utmCampaign ? { utm_campaign: acquisition.utmCampaign } : {}),
+      ...(acquisition?.utmSource ? { utm_source: acquisition.utmSource } : {}),
+      ...(acquisition?.sourceChain ? { source_chain: acquisition.sourceChain } : {}),
+    });
+  }, [acquisition, currentResults, intendedTier, isPremium, premiumLoading, upgradeContext]);
+
   const lifecycleEmailSummary = useMemo(() => {
     if (!currentResults) return null;
 
@@ -268,6 +788,19 @@ export const Results: React.FC = () => {
       inferiorLabel: `${ATTITUDE_LABELS[currentResults.hierarchy.find((item) => item.position === 'inferior')?.attitude ?? 'extraverted']} ${FUNCTION_LABELS[currentResults.inferior]}`,
     };
   }, [currentResults]);
+
+  useEffect(() => {
+    if (!currentResults || shareSlug) return;
+
+    try {
+      const savedPublicSlug = localStorage.getItem(`${PUBLIC_SHARE_SLUG_PREFIX}${currentResults.completedAt}`);
+      if (savedPublicSlug) {
+        setShareSlug(savedPublicSlug);
+      }
+    } catch {
+      // Share links are helpful but should never block the result page.
+    }
+  }, [currentResults, shareSlug]);
 
   useEffect(() => {
     if (!currentResults || !legacyInput || authLoading) return;
@@ -329,9 +862,10 @@ export const Results: React.FC = () => {
   }, [fetchFreeAnalysis, freeAnalysis, freeError, isLoadingFree, legacyInput]);
 
   useEffect(() => {
-    if (!legacyInput || !isPremium || !isAuthenticated || premiumLoading || premiumAnalysis || premiumError || isLoadingPremium) return;
-    fetchPremiumAnalysis(legacyInput);
-  }, [fetchPremiumAnalysis, isAuthenticated, isLoadingPremium, isPremium, legacyInput, premiumAnalysis, premiumError, premiumLoading]);
+    if (!premiumAnalysisInput || !isPremium || premiumLoading || premiumAnalysis || premiumError || isLoadingPremium) return;
+    if (!isAuthenticated && !premiumAnalysisInput.checkoutSessionId) return;
+    fetchPremiumAnalysis(premiumAnalysisInput);
+  }, [fetchPremiumAnalysis, isAuthenticated, isLoadingPremium, isPremium, premiumAnalysis, premiumAnalysisInput, premiumError, premiumLoading]);
 
   useEffect(() => {
     if (!currentResults || !lifecycleEmailSummary || authLoading || !user?.email) return;
@@ -400,7 +934,7 @@ export const Results: React.FC = () => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `typejung-energy-map-${state.results.completedAt.slice(0, 10)}.json`;
+    link.download = `typejung-function-stack-map-${state.results.completedAt.slice(0, 10)}.json`;
     link.click();
     URL.revokeObjectURL(url);
   }, [state]);
@@ -420,11 +954,63 @@ export const Results: React.FC = () => {
     }
   }, [shareSlug]);
 
+  const ensureShareSlug = useCallback(async (source = 'results_share_card'): Promise<string | null> => {
+    if (shareSlug) return shareSlug;
+    if (!legacyInput || !currentResults) return null;
+
+    setShareLinkState('creating');
+
+    try {
+      const response = await fetch('/api/results', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          ...legacyInput,
+          shareOnly: true,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.message || 'Failed to create share link');
+      }
+
+      const saved = await response.json();
+      if (!saved?.shareSlug) {
+        throw new Error('Share link was not returned');
+      }
+
+      localStorage.setItem(`${PUBLIC_SHARE_SLUG_PREFIX}${currentResults.completedAt}`, saved.shareSlug);
+      localStorage.setItem('jungian_assessment_share_slug', saved.shareSlug);
+      setShareSlug(saved.shareSlug);
+      setShareLinkState('idle');
+      AnalyticsEvents.resultSaved('public_compare_link_created', true);
+      trackEvent('result_compare_link_created', {
+        source,
+        signed_in: Boolean(isAuthenticated),
+      });
+      return saved.shareSlug;
+    } catch (error) {
+      console.error('Failed to create share link:', error);
+      setShareLinkState('error');
+      trackEvent('result_compare_link_failed', {
+        source,
+        signed_in: Boolean(isAuthenticated),
+      });
+      return null;
+    }
+  }, [currentResults, isAuthenticated, legacyInput, shareSlug]);
+
+  const createShareLink = useCallback((source = 'results_share_card') => {
+    void ensureShareSlug(source);
+  }, [ensureShareSlug]);
+
   const openShareWindow = useCallback((method: 'twitter' | 'linkedin') => {
     if (!shareSlug || typeof window === 'undefined') return;
 
     const url = `${window.location.origin}/share/${shareSlug}`;
-    const text = 'I mapped my Jungian energy pattern with TypeJung. It shows cognitive functions, inferior-function stress, and a growth edge.';
+    const text = 'I mapped my Jungian function-stack pattern with TypeJung. It shows cognitive functions, inferior-function stress, and a growth edge.';
     const shareUrl = method === 'twitter'
       ? `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`
       : `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
@@ -432,6 +1018,167 @@ export const Results: React.FC = () => {
     AnalyticsEvents.resultsShared(method);
     window.open(shareUrl, '_blank', 'noopener,noreferrer');
   }, [shareSlug]);
+
+  const buildInviteUrls = useCallback((location: InviteShareLocation, slug: string | null) => {
+    if (typeof window === 'undefined') {
+      return { assessmentUrl: '', sharedResultUrl: null as string | null };
+    }
+
+    const inviteSource = inviteSourceByLocation[location];
+    const assessmentPath = pathWithSource('/assessment', inviteSource, {
+      ref: 'result_share',
+      utm_campaign: REFERRAL_INVITE_CAMPAIGN,
+      compare: slug,
+    });
+    const sharedResultPath = slug
+      ? pathWithSource(`/share/${slug}`, inviteSource, {
+        ref: 'result_share',
+        utm_campaign: REFERRAL_INVITE_CAMPAIGN,
+      })
+      : null;
+
+    return {
+      assessmentUrl: `${window.location.origin}${assessmentPath}`,
+      sharedResultUrl: sharedResultPath ? `${window.location.origin}${sharedResultPath}` : null,
+    };
+  }, []);
+
+  const shareAssessmentInvite = useCallback(async (location: InviteShareLocation = 'results_invite_card') => {
+    if (typeof window === 'undefined') return;
+
+    const nextShareSlug = shareSlug ?? await ensureShareSlug(`invite_${location}`);
+    const { assessmentUrl, sharedResultUrl } = buildInviteUrls(location, nextShareSlug);
+    const url = sharedResultUrl ?? assessmentUrl;
+    const axisText = lifecycleEmailSummary
+      ? `My TypeJung map came out as ${lifecycleEmailSummary.dominantLabel} with ${lifecycleEmailSummary.inferiorLabel} as the growth edge.`
+      : 'I just mapped my Jungian function-stack pattern with TypeJung.';
+    const text = sharedResultUrl
+      ? `${axisText} Compare your map with mine here: ${url}`
+      : `${axisText} Take the free assessment and compare your map with mine: ${url}`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: 'Compare TypeJung maps',
+          text,
+          url,
+        });
+        trackEvent('assessment_invite_shared', {
+          source: location,
+          method: 'native',
+          invite_source: inviteSourceByLocation[location],
+          has_share_slug: Boolean(nextShareSlug),
+          invite_goal: REFERRAL_INVITE_GOAL,
+        });
+        return;
+      }
+
+      await navigator.clipboard.writeText(text);
+      setInviteCopied(true);
+      window.setTimeout(() => setInviteCopied(false), 2400);
+      trackEvent('assessment_invite_shared', {
+        source: location,
+        method: 'copy',
+        invite_source: inviteSourceByLocation[location],
+        has_share_slug: Boolean(nextShareSlug),
+        invite_goal: REFERRAL_INVITE_GOAL,
+      });
+    } catch (error) {
+      console.error('Failed to share assessment invite:', error);
+    }
+  }, [buildInviteUrls, ensureShareSlug, lifecycleEmailSummary, shareSlug]);
+
+  const copyResultSummary = useCallback(async () => {
+    if (typeof window === 'undefined') return;
+
+    const nextShareSlug = shareSlug ?? await ensureShareSlug('result_summary_share');
+    const inviteSource = 'result_summary_share';
+    const sharedResultPath = nextShareSlug
+      ? pathWithSource(`/share/${nextShareSlug}`, inviteSource, {
+        ref: 'result_share',
+        utm_campaign: REFERRAL_INVITE_CAMPAIGN,
+      })
+      : null;
+    const assessmentPath = pathWithSource('/assessment', inviteSource, {
+      ref: 'result_share',
+      utm_campaign: REFERRAL_INVITE_CAMPAIGN,
+      compare: nextShareSlug,
+    });
+    const url = `${window.location.origin}${sharedResultPath ?? assessmentPath}`;
+    const axisText = lifecycleEmailSummary
+      ? `My TypeJung map came out as ${lifecycleEmailSummary.dominantLabel} to ${lifecycleEmailSummary.inferiorLabel}.`
+      : 'I mapped my Jungian cognitive function pattern with TypeJung.';
+    const text = nextShareSlug
+      ? `${axisText} It maps all 8 cognitive functions before any paid report. Compare your map with mine: ${url}`
+      : `${axisText} It maps all 8 cognitive functions before any paid report. Try the free assessment and compare yours: ${url}`;
+
+    try {
+      await navigator.clipboard.writeText(text);
+      setSummaryCopied(true);
+      window.setTimeout(() => setSummaryCopied(false), 2400);
+      trackEvent('result_summary_shared', {
+        source: 'results_page',
+        method: 'copy',
+        invite_source: 'result_summary_share',
+        has_share_slug: Boolean(nextShareSlug),
+        invite_goal: REFERRAL_INVITE_GOAL,
+      });
+    } catch (error) {
+      console.error('Failed to copy result summary:', error);
+    }
+  }, [ensureShareSlug, lifecycleEmailSummary, shareSlug]);
+
+  const copyReturnCompareReply = useCallback(async () => {
+    if (typeof window === 'undefined' || !inboundSharedResultSlug) return;
+
+    const nextShareSlug = shareSlug ?? await ensureShareSlug('inbound_result_reply');
+    if (!nextShareSlug) return;
+
+    const ownSharePath = pathWithSource(`/share/${nextShareSlug}`, 'inbound_result_reply', {
+      ref: 'shared_result_reply',
+      utm_campaign: REFERRAL_INVITE_CAMPAIGN,
+      parent_source: acquisition?.source || 'shared_result_cta',
+      shared_result: inboundSharedResultSlug,
+    });
+    const originalSharePath = pathWithSource(`/share/${inboundSharedResultSlug}`, 'result_reply_original', {
+      ref: 'shared_result_reply',
+      utm_campaign: REFERRAL_INVITE_CAMPAIGN,
+    });
+    const ownShareUrl = `${window.location.origin}${ownSharePath}`;
+    const originalShareUrl = `${window.location.origin}${originalSharePath}`;
+    const axisText = lifecycleEmailSummary
+      ? `I took TypeJung too. My map came out as ${lifecycleEmailSummary.dominantLabel} to ${lifecycleEmailSummary.inferiorLabel}.`
+      : 'I took TypeJung too and made my own function-stack map.';
+    const text = `${axisText} Here is mine so we can compare both maps: ${ownShareUrl}\n\nYour original map: ${originalShareUrl}`;
+
+    try {
+      await navigator.clipboard.writeText(text);
+      setReturnCopied(true);
+      window.setTimeout(() => setReturnCopied(false), 2400);
+      trackEvent('inbound_shared_result_reply_copied', {
+        source: acquisition?.source || 'unknown',
+        shared_result: inboundSharedResultSlug,
+        reply_share_slug: nextShareSlug,
+        utm_campaign: REFERRAL_INVITE_CAMPAIGN,
+      });
+    } catch (error) {
+      console.error('Failed to copy shared-result reply:', error);
+    }
+  }, [acquisition?.source, ensureShareSlug, inboundSharedResultSlug, lifecycleEmailSummary, shareSlug]);
+
+  const openInboundSharedResult = useCallback(() => {
+    if (typeof window === 'undefined' || !inboundSharedResultSlug) return;
+
+    const originalSharePath = pathWithSource(`/share/${inboundSharedResultSlug}`, 'result_reply_original', {
+      ref: 'shared_result_reply',
+      utm_campaign: REFERRAL_INVITE_CAMPAIGN,
+    });
+    trackEvent('inbound_shared_result_original_opened', {
+      source: acquisition?.source || 'unknown',
+      shared_result: inboundSharedResultSlug,
+    });
+    window.location.href = originalSharePath;
+  }, [acquisition?.source, inboundSharedResultSlug]);
 
   if (state.status === 'loading') {
     return (
@@ -451,7 +1198,7 @@ export const Results: React.FC = () => {
       <div className="min-h-[60vh] bg-jung-base px-4 py-20">
         <div className="editorial-container">
           <div className="card-premium mx-auto max-w-xl p-8 text-center">
-            <h1 className="text-heading text-3xl text-jung-dark">No energy map yet</h1>
+            <h1 className="text-heading text-3xl text-jung-dark">No function-stack map yet</h1>
             <p className="mt-3 text-sm leading-6 text-jung-secondary">
               Complete the assessment first, then your result will appear here.
             </p>
@@ -469,7 +1216,7 @@ export const Results: React.FC = () => {
       <div className="min-h-[60vh] bg-jung-base px-4 py-20">
         <div className="editorial-container">
           <div className="card-premium mx-auto max-w-xl p-8 text-center">
-            <h1 className="text-heading text-3xl text-jung-dark">Retake for the new energy map</h1>
+            <h1 className="text-heading text-3xl text-jung-dark">Retake for the new function-stack map</h1>
             <p className="mt-3 text-sm leading-6 text-jung-secondary">
               Your saved result was created with the older 8-function scorer. The redesigned flow uses the new 42-question depth model.
             </p>
@@ -484,6 +1231,13 @@ export const Results: React.FC = () => {
 
   const { results } = state;
   const shareUrl = shareSlug && typeof window !== 'undefined' ? `${window.location.origin}/share/${shareSlug}` : null;
+  const inboundOriginalShareUrl = inboundSharedResultSlug && typeof window !== 'undefined'
+    ? `${window.location.origin}${pathWithSource(`/share/${inboundSharedResultSlug}`, 'result_reply_original', {
+      ref: 'shared_result_reply',
+      utm_campaign: REFERRAL_INVITE_CAMPAIGN,
+    })}`
+    : null;
+  const isPreparingReferral = shareLinkState === 'creating' && !shareSlug;
   const dominantLabel = lifecycleEmailSummary?.dominantLabel ?? `${ATTITUDE_LABELS[results.attitude.dominant]} ${FUNCTION_LABELS[results.dominant]}`;
   const inferiorLabel = lifecycleEmailSummary?.inferiorLabel ?? `${ATTITUDE_LABELS[results.hierarchy.find((item) => item.position === 'inferior')?.attitude ?? 'extraverted']} ${FUNCTION_LABELS[results.inferior]}`;
   const chatProfile = legacyInput ? {
@@ -494,9 +1248,23 @@ export const Results: React.FC = () => {
     scores: legacyInput.scores.map((score) => ({ function: score.function, score: score.score })),
     attitudeScore: legacyInput.attitudeScore,
   } : null;
+  const functionStackCodes = results.hierarchy.map((item) => getFunctionCode(item.channel, item.attitude));
+  const functionStackLabel = functionStackCodes.join('-');
+  const allFunctionScores = legacyInput
+    ? [...legacyInput.scores].sort((left, right) => right.score - left.score)
+    : [];
+  const premiumReportSections = premiumAnalysis
+    ? premiumReportSectionConfig
+      .map((section) => ({
+        ...section,
+        body: premiumAnalysis[section.key],
+      }))
+      .filter((section) => Boolean(section.body && section.body.trim()))
+    : [];
+  const hasMasteryAccess = tier === 'mastery';
 
   return (
-    <div className="min-h-screen bg-jung-base pb-20">
+    <div className={`min-h-screen bg-jung-base ${!premiumLoading && !isPremium ? 'pb-36 md:pb-20' : 'pb-20'}`}>
       <div className="editorial-container py-10 lg:py-16">
         <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <Button variant="ghost" onClick={() => navigate('/')} className="justify-start px-0 text-jung-muted hover:text-jung-accent">
@@ -516,16 +1284,176 @@ export const Results: React.FC = () => {
           <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
             <div>
               <p className="text-sm font-semibold text-white/60">{formatDate(results.completedAt)}</p>
-              <h1 className="mt-4 text-display text-5xl text-white sm:text-6xl">Your energy map</h1>
+              <h1 className="mt-4 text-display text-5xl text-white sm:text-6xl">Your function-stack map</h1>
+              {!premiumLoading && !isPremium && (
+                <DiscountCaptureCard
+                  source="results_hero_mobile_save_path"
+                  dominantLabel={dominantLabel}
+                  inferiorLabel={inferiorLabel}
+                  compact
+                  minimal
+                  minimalTone="dark"
+                  minimalTitle="Send yourself this map"
+                  minimalDescription={`Email the ${dominantLabel} to ${inferiorLabel} axis, the ${EMAIL_CAPTURE_OFFER.code} code, and the ${intendedTierName} checkout path before you leave.`}
+                  minimalSubmitLabel="Send map"
+                  minimalFootnote="One private email with this result path and code. No subscription."
+                  minimalSentMessage={`Result path sent. The email links back to ${intendedTierName} with the discount ready.`}
+                  preferredTier={intendedTier}
+                  showCheckoutButtons={false}
+                  className="mt-6 hidden border-t border-white/10 pt-5 md:block lg:hidden"
+                />
+              )}
               <p className="mt-5 max-w-3xl text-lg leading-8 text-white/75">
                 {results.narrative.energyMap}
               </p>
             </div>
             <div className="rounded-lg border border-white/15 bg-white/10 p-5">
-              <p className="text-sm font-semibold text-white/60">Dominant-inferior axis</p>
-              <p className="mt-3 text-2xl font-semibold">{dominantLabel}</p>
-              <p className="my-2 text-sm text-white/45">to</p>
-              <p className="text-2xl font-semibold text-jung-subtle">{inferiorLabel}</p>
+              <p className="text-sm font-semibold text-white/60">Shareable stack signal</p>
+              <p className="mt-3 font-mono text-3xl font-semibold tracking-[0.08em] text-white">
+                {functionStackLabel}
+              </p>
+              <p className="mt-3 text-xs leading-5 text-white/55">
+                Nearest function pattern, not a fixed identity label. Use it to inspect the evidence below.
+              </p>
+              <div className="mt-5 border-t border-white/10 pt-5">
+                <p className="text-sm font-semibold text-white/60">Dominant-inferior axis</p>
+                <p className="mt-3 text-2xl font-semibold">{dominantLabel}</p>
+                <p className="my-2 text-sm text-white/45">to</p>
+                <p className="text-2xl font-semibold text-jung-subtle">{inferiorLabel}</p>
+              </div>
+              {!premiumLoading && !isPremium && (
+                <DiscountCaptureCard
+                  source="results_hero_axis_save_path"
+                  dominantLabel={dominantLabel}
+                  inferiorLabel={inferiorLabel}
+                  compact
+                  minimal
+                  minimalTone="dark"
+                  minimalTitle="Send yourself this map"
+                  minimalDescription={`Email the ${dominantLabel} to ${inferiorLabel} axis, the ${EMAIL_CAPTURE_OFFER.code} code, and the ${intendedTierName} checkout path before you leave.`}
+                  minimalSubmitLabel="Send map"
+                  minimalFootnote="One private email with this result path and code. No subscription."
+                  minimalSentMessage={`Result path sent. The email links back to ${intendedTierName} with the discount ready.`}
+                  preferredTier={intendedTier}
+                  showCheckoutButtons={false}
+                  className="mt-5 hidden border-t border-white/10 pt-5 lg:block"
+                />
+              )}
+            </div>
+          </div>
+        </section>
+
+        {!premiumLoading && !isPremium && (
+          <>
+            <LockedPremiumPreview
+              results={results}
+              dominantLabel={dominantLabel}
+              inferiorLabel={inferiorLabel}
+              intendedTier={intendedTier}
+              onUnlock={openUpgradeCheckout}
+              onViewSampleReport={viewSampleReport}
+            />
+          </>
+        )}
+
+        {inboundSharedResultSlug && (
+          <section className="mb-8 overflow-hidden rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 shadow-sm">
+            <div className="grid gap-0 lg:grid-cols-[1fr_26rem]">
+              <div className="p-5 sm:p-6">
+                <p className="text-label">Reply to the shared map</p>
+                <h2 className="mt-2 text-2xl font-semibold text-jung-dark">Send your map back while the comparison is fresh.</h2>
+                <p className="mt-3 max-w-3xl text-sm leading-6 text-jung-secondary">
+                  You arrived from someone else's TypeJung result. Share your own map back so both dominant-inferior axes can sit in the same conversation.
+                </p>
+              </div>
+              <div className="border-t border-jung-accent-muted bg-jung-surface p-5 sm:p-6 lg:border-l lg:border-t-0">
+                <div className="flex items-center gap-2 text-sm font-semibold text-jung-dark">
+                  <Share2 className="h-4 w-4 text-jung-accent" />
+                  Return-share prompt
+                </div>
+                <p className="mt-3 text-sm leading-6 text-jung-secondary">
+                  This creates your compare page and copies a reply that includes both maps.
+                </p>
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  <Button
+                    variant="accent"
+                    className="w-full"
+                    onClick={copyReturnCompareReply}
+                    disabled={isPreparingReferral}
+                    leftIcon={isPreparingReferral ? <Loader2 className="h-4 w-4 animate-spin" /> : returnCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  >
+                    {isPreparingReferral ? 'Preparing reply' : returnCopied ? 'Reply copied' : 'Copy reply'}
+                  </Button>
+                  {inboundOriginalShareUrl && (
+                    <Button variant="outline" className="w-full" onClick={openInboundSharedResult} leftIcon={<Link2 className="h-4 w-4" />}>
+                      Open their map
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        <section className="mb-8 overflow-hidden rounded-lg border border-jung-border bg-jung-surface shadow-sm">
+          <div className="grid gap-0 lg:grid-cols-[1fr_28rem]">
+            <div className="p-5 sm:p-6">
+              <p className="text-label">Compare maps</p>
+              <h2 className="mt-2 text-2xl font-semibold text-jung-dark">Invite {REFERRAL_INVITE_GOAL} people who would actually compare maps.</h2>
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-jung-secondary">
+                Your axis is {dominantLabel} to {inferiorLabel}. A shared result gives them a concrete starting point before they take the free assessment.
+              </p>
+              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                {[
+                  ['1', 'Share your map'],
+                  ['2', 'Ask for their axis'],
+                  ['3', 'Compare stress edges'],
+                ].map(([step, label]) => (
+                  <div key={step} className="rounded-lg border border-jung-border bg-jung-base px-4 py-3">
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-jung-muted">Step {step}</p>
+                    <p className="mt-1 text-sm font-semibold text-jung-dark">{label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="border-t border-jung-border bg-jung-base p-5 sm:p-6 lg:border-l lg:border-t-0">
+              <div className="flex items-center gap-2 text-sm font-semibold text-jung-dark">
+                <Sparkles className="h-4 w-4 text-jung-accent" />
+                Ready-to-send invite
+              </div>
+              <p className="mt-3 text-sm leading-6 text-jung-secondary">
+                Start with your result, then let them bring their own map back to the same conversation.
+              </p>
+              {shareUrl && (
+                <a className="mt-3 block break-all text-xs leading-5 text-jung-accent hover:underline" href={shareUrl}>
+                  {shareUrl}
+                </a>
+              )}
+              {shareLinkState === 'error' && !shareUrl && (
+                <p className="mt-3 text-xs leading-5 text-error">
+                  The compare page could not be created, so the invite will use the free assessment link instead.
+                </p>
+              )}
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                <Button
+                  variant="accent"
+                  className="w-full"
+                  onClick={() => shareAssessmentInvite('results_compare_banner')}
+                  disabled={isPreparingReferral}
+                  leftIcon={isPreparingReferral ? <Loader2 className="h-4 w-4 animate-spin" /> : inviteCopied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
+                >
+                  {isPreparingReferral ? 'Preparing invite' : inviteCopied ? 'Invite copied' : 'Share invite'}
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={copyResultSummary}
+                  disabled={isPreparingReferral}
+                  leftIcon={isPreparingReferral ? <Loader2 className="h-4 w-4 animate-spin" /> : summaryCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                >
+                  {isPreparingReferral ? 'Preparing link' : summaryCopied ? 'Summary copied' : 'Copy summary'}
+                </Button>
+              </div>
             </div>
           </div>
         </section>
@@ -580,13 +1508,89 @@ export const Results: React.FC = () => {
           <SignalGrid results={results} />
         </section>
 
+        {allFunctionScores.length > 0 && (
+          <section className="mt-8 rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm sm:p-6">
+            <div className="grid gap-6 lg:grid-cols-[0.72fr_1fr] lg:items-start">
+              <div>
+                <p className="text-label">Eight-function view</p>
+                <h2 className="mt-3 text-heading text-3xl text-jung-dark">
+                  {functionStackLabel} is the stack signal. The full map stays visible.
+                </h2>
+                <p className="mt-4 text-sm leading-7 text-jung-secondary">
+                  TypeJung derives the function-attitude pattern from your energy channels and attitude direction,
+                  then keeps all eight functions visible so close signals are easier to inspect.
+                </p>
+              </div>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {allFunctionScores.map((score) => (
+                  <div key={score.function} className="rounded-lg border border-jung-border bg-jung-base p-3">
+                    <div className="mb-2 flex items-center justify-between gap-3">
+                      <span className="font-display text-xl font-semibold italic text-jung-dark">{score.function}</span>
+                      <span className="font-mono text-sm font-semibold text-jung-muted">{score.score}%</span>
+                    </div>
+                    <div className="h-2 overflow-hidden rounded-full bg-jung-border-light">
+                      <div className="h-full rounded-full bg-jung-accent" style={{ width: `${score.score}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {isPremium && (
+          <section id="premium-report" className="mt-8 rounded-lg border border-jung-accent-muted bg-jung-surface p-5 shadow-sm sm:p-6">
+            <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-label">Unlocked report</p>
+                <h2 className="mt-2 text-heading text-3xl text-jung-dark">
+                  Your full {tier || 'Premium'} interpretation
+                </h2>
+              </div>
+              <span className="w-fit rounded-lg bg-jung-accent-light px-3 py-2 text-xs font-semibold text-jung-accent">
+                {hasVerifiedCheckoutSession ? 'Stripe session verified' : 'Account access verified'}
+              </span>
+            </div>
+
+            {isLoadingPremium && (
+              <div className="flex items-center gap-3 rounded-lg border border-jung-border bg-jung-base p-4 text-sm text-jung-secondary">
+                <Loader2 className="h-4 w-4 animate-spin text-jung-accent" />
+                Generating the full premium report.
+              </div>
+            )}
+
+            {!isLoadingPremium && premiumError && (
+              <div className="rounded-lg border border-error/30 bg-jung-base p-4 text-sm leading-6 text-error">
+                Premium report unavailable: {premiumError}
+              </div>
+            )}
+
+            {!isLoadingPremium && !premiumError && premiumReportSections.length > 0 && (
+              <div className="grid gap-4 lg:grid-cols-2">
+                {premiumReportSections.map((section) => (
+                  <article key={section.key} className="rounded-lg border border-jung-border bg-jung-base p-5">
+                    <h3 className="text-lg font-semibold text-jung-dark">{section.title}</h3>
+                    <p className="mt-3 whitespace-pre-line text-sm leading-7 text-jung-secondary">{section.body}</p>
+                  </article>
+                ))}
+              </div>
+            )}
+
+            {!isLoadingPremium && !premiumError && premiumReportSections.length === 0 && (
+              <p className="rounded-lg border border-jung-border bg-jung-base p-4 text-sm leading-6 text-jung-secondary">
+                Your paid access is active. The full report will appear here when the analysis is available.
+              </p>
+            )}
+          </section>
+        )}
+
         <section className="mt-8 grid gap-5 lg:grid-cols-3 lg:items-start">
           <div className="rounded-lg border border-jung-border bg-jung-surface p-6">
             <p className="text-label">Account</p>
             <h2 className="mt-3 text-2xl font-semibold text-jung-dark">Save this result</h2>
             <div className="mt-4 text-sm leading-7 text-jung-secondary">
               {authLoading && 'Checking your session.'}
-              {!authLoading && !user && 'Sign in to save this result to your history, create a share link, and restore any paid access tied to your email.'}
+              {!authLoading && !user && 'Create a compare link without signing in, or sign in if you want this result saved to account history and restored across devices.'}
               {isAuthenticated && saveState === 'saving' && 'Saving this result to your account history.'}
               {isAuthenticated && saveState === 'saved' && 'Saved to your account history.'}
               {isAuthenticated && saveState === 'error' && 'The result is ready, but it could not be saved to your account right now.'}
@@ -601,6 +1605,61 @@ export const Results: React.FC = () => {
                 <Button variant="outline" onClick={() => navigate('/history')} leftIcon={saveState === 'saving' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}>
                   Open history
                 </Button>
+              )}
+              <div className="rounded-lg border border-jung-border bg-jung-base p-4">
+                <div className="flex items-center gap-2 text-sm font-semibold text-jung-dark">
+                  <Share2 className="h-4 w-4 text-jung-accent" />
+                  Send the test to someone
+                </div>
+                <p className="mt-2 text-xs leading-5 text-jung-secondary">
+                  If this map felt accurate, send the free assessment to three people who would want to compare their own result.
+                </p>
+                <Button
+                  variant="accent"
+                  size="sm"
+                  className="mt-4 w-full"
+                  onClick={() => shareAssessmentInvite('results_invite_card')}
+                  disabled={isPreparingReferral}
+                  leftIcon={isPreparingReferral ? <Loader2 className="h-4 w-4 animate-spin" /> : inviteCopied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
+                >
+                  {isPreparingReferral ? 'Preparing invite' : inviteCopied ? 'Copied invite' : 'Share free assessment'}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-2 w-full"
+                  onClick={copyResultSummary}
+                  disabled={isPreparingReferral}
+                  leftIcon={isPreparingReferral ? <Loader2 className="h-4 w-4 animate-spin" /> : summaryCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                >
+                  {isPreparingReferral ? 'Preparing link' : summaryCopied ? 'Summary copied' : 'Copy result summary'}
+                </Button>
+              </div>
+              {!shareUrl && (
+                <div className="rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-4">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-jung-dark">
+                    <Link2 className="h-4 w-4 text-jung-accent" />
+                    Create a compare link
+                  </div>
+                  <p className="mt-2 text-xs leading-5 text-jung-secondary">
+                    Generate an unlisted share page for this map so someone can put their result beside yours. Anyone with the link can view it, so do not share it if you want the result kept private.
+                  </p>
+                  <Button
+                    variant="accent"
+                    size="sm"
+                    className="mt-4 w-full"
+                    onClick={() => createShareLink('results_account_card')}
+                    disabled={shareLinkState === 'creating'}
+                    leftIcon={shareLinkState === 'creating' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Link2 className="h-4 w-4" />}
+                  >
+                    {shareLinkState === 'creating' ? 'Creating link' : 'Create compare link'}
+                  </Button>
+                  {shareLinkState === 'error' && (
+                    <p className="mt-2 text-xs leading-5 text-error">
+                      The share link could not be created. Try again, or use the invite copy above.
+                    </p>
+                  )}
+                </div>
               )}
               {shareUrl && (
                 <div className="rounded-lg border border-jung-border bg-jung-base p-4">
@@ -652,15 +1711,21 @@ export const Results: React.FC = () => {
                 <Loader2 className="h-4 w-4 animate-spin text-jung-accent" />
                 Checking premium status.
               </div>
-            ) : isPremium && !isAuthenticated ? (
+            ) : isPremium && (isAuthenticated || hasVerifiedCheckoutSession) ? (
               <div className="mt-4 text-sm leading-7 text-jung-secondary">
-                Your paid status is active for this session. Sign in with the purchase email to save the unlock to your account and use premium report or coach features across devices.
+                {isLoadingPremium && 'Generating premium analysis.'}
+                {premiumAnalysis?.overview || premiumAnalysis?.growth || (premiumError
+                  ? `Premium analysis unavailable: ${premiumError}`
+                  : 'Premium status is active. Your deeper report APIs are available.')}
+                {!isAuthenticated && (
+                  <p className="mt-4 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-4 text-xs leading-5 text-jung-secondary">
+                    This paid report is unlocked in this browser. Sign in with the Stripe purchase email to save access across devices{hasMasteryAccess ? ' and use the AI Type Guide' : ''}.
+                  </p>
+                )}
               </div>
             ) : isPremium ? (
               <div className="mt-4 text-sm leading-7 text-jung-secondary">
-                {isLoadingPremium && 'Generating premium analysis.'}
-                {premiumAnalysis?.overview || premiumAnalysis?.growth || 'Premium status is active. Your deeper report APIs are available.'}
-                {premiumError && ` Premium analysis unavailable: ${premiumError}`}
+                Your paid status is active in this browser. Sign in with the purchase email to save the unlock to your account{hasMasteryAccess ? ' and use the AI Type Guide across devices' : ' and restore the report across devices'}.
               </div>
             ) : (
               <>
@@ -672,13 +1737,14 @@ export const Results: React.FC = () => {
                   dominantLabel={dominantLabel}
                   inferiorLabel={inferiorLabel}
                   compact
+                  preferredTier={intendedTier}
                   className="mt-5"
                 />
                 <div className="mt-5 grid gap-3 sm:grid-cols-3">
                   {[
                     ['Pay after value', 'Read your free map first. Upgrade only if it feels worth keeping.'],
-                    ['One-time CAD', 'Insight is CA$10 and Mastery is CA$29. No renewal or hidden subscription.'],
-                    ['30-day refund', 'If the paid report is not useful, contact support with your Stripe receipt.'],
+                    ['One-time CAD', `Insight is ${paidTierPrice('insight')} and Mastery is ${paidTierPrice('mastery')} with ${EMAIL_CAPTURE_OFFER.code}. No renewal or hidden subscription.`],
+                    ['7-day guarantee', `If the paid report is not useful, email ${SUPPORT_EMAIL} with your Stripe receipt within 7 days.`],
                   ].map(([label, copy]) => (
                     <div key={label} className="rounded-lg border border-jung-border bg-jung-base p-3">
                       <div className="flex items-center gap-2 text-xs font-semibold text-jung-dark">
@@ -690,14 +1756,22 @@ export const Results: React.FC = () => {
                   ))}
                 </div>
                 <div className="mt-5 divide-y divide-jung-border rounded-lg border border-jung-border bg-jung-base">
-                  {upgradeOptions.map((option) => (
+                  {orderedUpgradeOptions.map((option) => (
                     <div key={option.tier} className="p-4">
                       <div className="grid gap-4">
                         <div>
                           <div className="flex flex-wrap items-center gap-2">
                             <h3 className="text-base font-semibold text-jung-dark">{option.label}</h3>
+                            {upgradeIntent?.tier === option.tier && (
+                              <span className="rounded-lg bg-jung-dark px-2 py-1 text-xs font-semibold text-white">
+                                Selected before assessment
+                              </span>
+                            )}
                             <span className="rounded-lg bg-jung-accent-light px-2 py-1 text-xs font-semibold text-jung-accent">
-                              {PRICING[option.tier].price} one-time
+                              {paidTierPrice(option.tier)} one-time
+                            </span>
+                            <span className="rounded-lg border border-jung-border bg-jung-surface px-2 py-1 text-xs font-semibold text-jung-muted">
+                              <span className="line-through">{PRICING[option.tier].price}</span> before code
                             </span>
                           </div>
                           <p className="mt-2 text-sm leading-6 text-jung-secondary">{option.description}</p>
@@ -720,26 +1794,34 @@ export const Results: React.FC = () => {
                           onClick={() => openUpgradeCheckout(option.tier, 'results_paid_report_card')}
                           rightIcon={<ArrowRight className="h-4 w-4" />}
                         >
-                          Unlock {option.label}
+                          {upgradeIntent?.tier === option.tier ? 'Continue to' : 'Unlock'} {option.label} - {paidTierPrice(option.tier)}
                         </Button>
                       </div>
                     </div>
                   ))}
                 </div>
-                <Button
-                  className="mt-4"
-                  variant="ghost"
-                  onClick={() => {
-                    AnalyticsEvents.ctaClicked('compare_pricing', 'results_paid_report_card', {
-                      buttonText: 'Compare plans',
-                      destination: '/pricing',
-                    });
-                    navigate('/pricing');
-                  }}
-                  leftIcon={<Sparkles className="h-4 w-4" />}
-                >
-                  Compare all plans
-                </Button>
+                <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      AnalyticsEvents.ctaClicked('compare_pricing', 'results_paid_report_card', {
+                        buttonText: 'Compare plans',
+                        destination: '/pricing#compare',
+                      });
+                      navigate('/pricing#compare');
+                    }}
+                    leftIcon={<Sparkles className="h-4 w-4" />}
+                  >
+                    Compare all plans
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => viewSampleReport('results_paid_report_card')}
+                    leftIcon={<FileText className="h-4 w-4" />}
+                  >
+                    View sample report
+                  </Button>
+                </div>
               </>
             )}
           </div>
@@ -753,8 +1835,8 @@ export const Results: React.FC = () => {
           </div>
 
           <div className="rounded-lg border border-jung-border bg-jung-surface p-6">
-            <p className="text-label">Complex vulnerability</p>
-            <h2 className="mt-3 text-2xl font-semibold text-jung-dark">Where capture is likely</h2>
+            <p className="text-label">Pressure pattern</p>
+            <h2 className="mt-3 text-2xl font-semibold text-jung-dark">Where overreaction is likely</h2>
             <p className="mt-4 text-sm leading-7 text-jung-secondary">{results.narrative.complexVulnerability}</p>
           </div>
 
@@ -796,7 +1878,39 @@ export const Results: React.FC = () => {
           ))}
         </section>
       </div>
-      {isAuthenticated && isPremium && chatProfile && <ChatBot userProfile={chatProfile} />}
+      {!premiumLoading && !isPremium && (
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-jung-border bg-jung-surface/95 shadow-[0_-12px_32px_rgba(41,28,18,0.14)] backdrop-blur md:hidden">
+          <div className="mx-auto grid max-w-screen-sm gap-3 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3">
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-jung-dark">
+                  {intendedTierName} report - {paidTierPrice(intendedTier)}
+                </p>
+                <p className="mt-0.5 text-xs leading-4 text-jung-muted">
+                  {upgradeIntent ? 'Your selected upgrade. ' : ''}{EMAIL_CAPTURE_OFFER.code} applied on Stripe. No subscription.
+                </p>
+              </div>
+              <Button
+                variant="accent"
+                size="sm"
+                className="flex-none"
+                onClick={() => openUpgradeCheckout(intendedTier, 'results_mobile_sticky')}
+                rightIcon={<ArrowRight className="h-4 w-4" />}
+              >
+                Unlock report
+              </Button>
+            </div>
+            <button
+              type="button"
+              onClick={() => viewSampleReport('results_mobile_sticky')}
+              className="min-h-9 rounded-lg border border-jung-border bg-jung-base px-3 text-xs font-semibold text-jung-secondary transition hover:border-jung-accent hover:text-jung-accent"
+            >
+              Preview before buying
+            </button>
+          </div>
+        </div>
+      )}
+      {isAuthenticated && hasMasteryAccess && chatProfile && <ChatBot userProfile={chatProfile} />}
     </div>
   );
 };

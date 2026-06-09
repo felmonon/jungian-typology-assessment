@@ -16,16 +16,16 @@ const SITE_NAME = 'TypeJung';
 // SEO configurations for each page
 export const PAGE_SEO: Record<string, SEOConfig> = {
   home: {
-    title: 'TypeJung - Free Jungian Cognitive Functions Test',
-    description: 'Take a free Jungian cognitive functions test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, then explains your dominant-inferior pattern.',
+    title: 'Free Cognitive Function Test - MBTI Test Alternative | TypeJung',
+    description: 'Take a free 42-question Jungian cognitive functions test for people comparing MBTI tests, Sakinorva, and 16Personalities. See the function-stack map first.',
   },
   assessment: {
     title: 'Take the Free Jungian Cognitive Function Assessment | TypeJung',
     description: 'Answer 42 scenario-based questions to map all 8 Jungian cognitive functions, inferior-function pressure, somatic signals, and attitude direction.',
   },
   results: {
-    title: 'Your Energy Map | TypeJung',
-    description: 'View your Jungian energy map, dominant-inferior axis, developmental edge, somatic signal, and reliability score.',
+    title: 'Your Function-Stack Map | TypeJung',
+    description: 'View your Jungian function-stack map, dominant-inferior axis, developmental edge, somatic signal, and reliability score.',
     noIndex: true, // Results are personal
   },
   learn: {
@@ -34,11 +34,15 @@ export const PAGE_SEO: Record<string, SEOConfig> = {
   },
   about: {
     title: 'About | TypeJung',
-    description: 'Learn why TypeJung maps Jungian energy, inferior-function pressure, somatic signals, and attitude direction instead of forcing a four-letter label.',
+    description: 'Learn why TypeJung maps all 8 cognitive functions, inferior-function pressure, somatic signals, and attitude direction instead of forcing a four-letter label.',
   },
   pricing: {
     title: 'Pricing | TypeJung',
-    description: 'Start with the free TypeJung assessment, then unlock Insight for CA$10 or Mastery for CA$29 with one-time CAD pricing.',
+    description: 'Start with the free TypeJung assessment, then unlock Insight for CA$7 or Mastery for CA$20.30 with TYPEJUNG30 applied on Stripe.',
+  },
+  sampleReport: {
+    title: 'Sample Paid Report | TypeJung',
+    description: 'Preview a fictional TypeJung paid report sample before you buy, including developmental edge, stress-pattern reflection, relationship-pattern reflection, practices, and AI Type Guide examples.',
   },
   privacy: {
     title: 'Privacy Policy | TypeJung',
@@ -50,7 +54,7 @@ export const PAGE_SEO: Record<string, SEOConfig> = {
   },
   leaderboard: {
     title: 'Community Results | TypeJung',
-    description: 'See how TypeJung energy maps distribute across the community and compare dominant-inferior patterns.',
+    description: 'See how TypeJung function-stack maps distribute across the community and compare dominant-inferior patterns.',
   },
 };
 

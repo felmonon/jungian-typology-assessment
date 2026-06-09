@@ -82,19 +82,19 @@ function generateHomepageNoscript() {
   return `<noscript>
   <div style="max-width: 900px; margin: 0 auto; padding: 40px 20px; font-family: Georgia, serif; line-height: 1.8; color: #333;">
     <header style="text-align: center; margin-bottom: 40px; border-bottom: 2px solid #b45309; padding-bottom: 30px;">
-      <h1 style="font-size: 2.5em; color: #451a03;">TypeJung - Jungian Energy Map Assessment</h1>
-      <p style="font-size: 1.3em; color: #57534e;">Map where your energy flows, where stress distorts it, and what your next growth edge looks like.</p>
+      <h1 style="font-size: 2.5em; color: #451a03;">TypeJung - Free Jungian Function-Stack Map</h1>
+      <p style="font-size: 1.3em; color: #57534e;">When your MBTI result keeps changing, map the pattern underneath.</p>
       <p><a href="/assessment" style="display: inline-block; padding: 15px 30px; background: #451a03; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">Take the Free Assessment</a></p>
     </header>
 
     <section style="margin-bottom: 40px;">
       <h2 style="color: #451a03; border-bottom: 1px solid #e7e5e4; padding-bottom: 10px;">Why TypeJung is Different</h2>
-      <p>Unlike simplified 4-letter type indicators, TypeJung combines behavioral scenarios, inferior-function triggers, somatic indicators, and attitude questions to build a practical energy map instead of only a type label.</p>
+      <p>Unlike simplified 4-letter type indicators, TypeJung combines behavioral scenarios, inferior-function stress signals, somatic indicators, and attitude questions to build a function-stack map you can inspect.</p>
       <ul>
         <li>No forced binary choices between only two traits</li>
-        <li>Inferior-function answers carry extra weight</li>
-        <li>See a function energy map instead of only a type label</li>
-        <li>Understand your developmental edge and stress pattern</li>
+        <li>No credit card required for the free map</li>
+        <li>See the function pattern beneath your type label</li>
+        <li>Upgrade only after the result feels useful</li>
       </ul>
     </section>
 
@@ -129,17 +129,17 @@ function generateHomepageNoscript() {
         <div style="padding: 15px; border: 2px solid #e7e5e4; border-radius: 8px; background: white;">
           <h3 style="margin-top: 0;">Free</h3>
           <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 8px 0;">CA$0</p>
-          <ul style="padding-left: 18px; margin: 0;"><li>42-question assessment</li><li>Energy map visualization</li><li>Dominant-inferior axis</li></ul>
+          <ul style="padding-left: 18px; margin: 0;"><li>42-question assessment</li><li>Function-stack map</li><li>Dominant-inferior axis</li></ul>
         </div>
         <div style="padding: 15px; border: 2px solid #b45309; border-radius: 8px; background: #fffbeb;">
           <h3 style="margin-top: 0;">Insight</h3>
           <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 8px 0;">CA$10</p>
-          <ul style="padding-left: 18px; margin: 0;"><li>Developmental edge report</li><li>Stress pattern map</li><li>Somatic practices</li></ul>
+          <ul style="padding-left: 18px; margin: 0;"><li>Developmental edge report</li><li>Stress-pattern map</li><li>Practice prompts</li></ul>
         </div>
         <div style="padding: 15px; border: 2px solid #451a03; border-radius: 8px; background: #fef3c7;">
           <h3 style="margin-top: 0;">Mastery</h3>
           <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 8px 0;">CA$29</p>
-          <ul style="padding-left: 18px; margin: 0;"><li>AI Type Coach</li><li>Practice roadmap</li><li>Priority support</li></ul>
+          <ul style="padding-left: 18px; margin: 0;"><li>AI Type Guide</li><li>Practice roadmap</li><li>Account-based guide access</li></ul>
         </div>
       </div>
       <p style="text-align: center; margin-top: 15px;"><a href="/pricing">View full pricing details</a></p>
@@ -315,7 +315,7 @@ function generateAssessmentNoscript() {
   <div style="max-width: 800px; margin: 0 auto; padding: 40px 20px; font-family: Georgia, serif; line-height: 1.8; color: #333;">
     <h1 style="color: #451a03; font-size: 2.2em; margin-bottom: 20px;">Jungian Cognitive Function Assessment</h1>
 
-    <p style="font-size: 1.15em; color: #57534e; margin-bottom: 30px;">Take our free 42-question assessment to discover your cognitive function profile. Unlike other tests, we measure all 8 functions independently on a spectrum.</p>
+    <p style="font-size: 1.15em; color: #57534e; margin-bottom: 30px;">Take our free 42-question assessment to map your self-reported cognitive-function profile across all 8 functions.</p>
 
     <section style="margin-bottom: 35px; padding: 25px; background: #fef3c7; border-radius: 10px;">
       <h2 style="color: #451a03; margin-top: 0;">What You'll Learn</h2>
@@ -324,7 +324,7 @@ function generateAssessmentNoscript() {
         <li>Your dominant and auxiliary functions</li>
         <li>Your best-fit personality type based on your function profile</li>
         <li>A readable synthesis of your cognitive patterns</li>
-        <li>A visual energy map of your function strengths and stress edge</li>
+        <li>A function-stack map of your strengths and stress edge</li>
       </ul>
     </section>
 
@@ -332,7 +332,7 @@ function generateAssessmentNoscript() {
       <h2 style="color: #451a03; border-bottom: 1px solid #e7e5e4; padding-bottom: 8px;">How It Works</h2>
       <ol>
         <li><strong>Answer 42 questions</strong> - Rate how much each statement describes you (12-16 minutes)</li>
-        <li><strong>Get your results</strong> - See your cognitive function scores in an energy map</li>
+        <li><strong>Get your results</strong> - See your cognitive function scores in a function-stack map</li>
         <li><strong>Explore insights</strong> - Read the synthesis of your dominant-inferior pattern</li>
         <li><strong>Share your results</strong> - Get a unique link to share with others</li>
       </ol>
@@ -379,16 +379,16 @@ function generatePricingNoscript() {
   <div style="max-width: 900px; margin: 0 auto; padding: 40px 20px; font-family: Georgia, serif; line-height: 1.8; color: #333;">
     <h1 style="color: #451a03; font-size: 2.2em; margin-bottom: 20px; text-align: center;">TypeJung Pricing Plans</h1>
 
-    <p style="font-size: 1.15em; color: #57534e; margin-bottom: 30px; text-align: center;">Choose the plan that's right for your self-discovery journey. Start free and upgrade anytime.</p>
+    <p style="font-size: 1.15em; color: #57534e; margin-bottom: 30px; text-align: center;">Take the free assessment first. Upgrade only after the map feels useful.</p>
 
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-bottom: 40px;">
       <div style="padding: 25px; border: 2px solid #e7e5e4; border-radius: 10px; background: white;">
         <h2 style="margin-top: 0; color: #451a03;">Free</h2>
         <p style="font-size: 2.5em; font-weight: bold; color: #451a03; margin: 15px 0;">CA$0</p>
-        <p style="color: #57534e;">Perfect for getting started</p>
+        <p style="color: #57534e;">No card required</p>
         <ul style="padding-left: 20px;">
           <li>42-question assessment</li>
-          <li>Energy map visualization</li>
+          <li>Function-stack map</li>
           <li>Dominant-inferior axis</li>
           <li>Shareable results link</li>
           <li>Your best-fit type</li>
@@ -398,33 +398,32 @@ function generatePricingNoscript() {
 
       <div style="padding: 25px; border: 3px solid #b45309; border-radius: 10px; background: #fffbeb;">
         <h2 style="margin-top: 0; color: #451a03;">Insight</h2>
-        <p style="font-size: 2.5em; font-weight: bold; color: #451a03; margin: 15px 0;">CA$10</p>
-        <p style="color: #57534e;">One-time payment</p>
+        <p style="font-size: 2.5em; font-weight: bold; color: #451a03; margin: 15px 0;">CA$7</p>
+        <p style="color: #57534e;">One-time payment with TYPEJUNG30. CA$10 before code.</p>
         <ul style="padding-left: 20px;">
           <li>Everything in Free, plus:</li>
           <li>Developmental edge report</li>
           <li>Stress pattern map</li>
-          <li>Relationship trigger interpretation</li>
-          <li>Somatic practice guidance</li>
+          <li>Relationship-pattern reflection</li>
+          <li>Practical reflection prompts</li>
           <li>Lifetime unlocked result access</li>
         </ul>
-        <p><a href="/assessment" style="display: block; text-align: center; padding: 12px; background: #b45309; color: white; text-decoration: none; border-radius: 5px;">Get Insight - CA$10</a></p>
+        <p><a href="/assessment" style="display: block; text-align: center; padding: 12px; background: #b45309; color: white; text-decoration: none; border-radius: 5px;">Start free first</a></p>
       </div>
 
       <div style="padding: 25px; border: 3px solid #451a03; border-radius: 10px; background: #fef3c7;">
         <h2 style="margin-top: 0; color: #451a03;">Mastery</h2>
-        <p style="font-size: 2.5em; font-weight: bold; color: #451a03; margin: 15px 0;">CA$29</p>
-        <p style="color: #57534e;">One-time payment</p>
+        <p style="font-size: 2.5em; font-weight: bold; color: #451a03; margin: 15px 0;">CA$20.30</p>
+        <p style="color: #57534e;">One-time payment with TYPEJUNG30. CA$29 before code.</p>
         <ul style="padding-left: 20px;">
           <li>Everything in Insight, plus:</li>
-          <li>AI Type Coach chat</li>
+          <li>AI Type Guide chat</li>
           <li>Individuation roadmap</li>
           <li>Growth exercises tailored to your cognitive stack</li>
-          <li>Practice library</li>
-          <li>Priority support</li>
-          <li>Individuation roadmap</li>
+          <li>Practice support</li>
+          <li>Account-based guide access after sign-in</li>
         </ul>
-        <p><a href="/assessment" style="display: block; text-align: center; padding: 12px; background: #451a03; color: white; text-decoration: none; border-radius: 5px;">Get Mastery - CA$29</a></p>
+        <p><a href="/assessment" style="display: block; text-align: center; padding: 12px; background: #451a03; color: white; text-decoration: none; border-radius: 5px;">Start free first</a></p>
       </div>
     </div>
 
@@ -432,13 +431,13 @@ function generatePricingNoscript() {
       <h2 style="color: #451a03; border-bottom: 1px solid #e7e5e4; padding-bottom: 8px;">Frequently Asked Questions</h2>
 
       <h3>Is the assessment really free?</h3>
-      <p>Yes. The core 42-question assessment, energy map, and dominant-inferior axis are free. No credit card required.</p>
+      <p>Yes. The core 42-question assessment, function-stack map, and dominant-inferior axis are free. No credit card required.</p>
 
       <h3>What's the difference between plans?</h3>
-      <p>Free gives you your function scores and core map. Insight (CA$10) adds the deeper report, stress map, and practices. Mastery (CA$29) adds the AI Type Coach and ongoing practice support.</p>
+      <p>Free gives you your function scores and function-stack map. Insight is currently CA$7 with TYPEJUNG30 and adds the deeper report, stress-pattern reflection, and practices. Mastery is currently CA$20.30 with the same code and adds the AI Type Guide and ongoing practice support.</p>
 
       <h3>Is it a subscription?</h3>
-      <p>No! Insight and Mastery are one-time payments. You keep access to your upgraded results forever.</p>
+      <p>No. Insight and Mastery are one-time payments. Sign in with the purchase email to restore paid access across devices.</p>
     </section>
 
     <nav style="margin-top: 40px; padding: 20px; background: #f5f5f4; border-radius: 8px;">

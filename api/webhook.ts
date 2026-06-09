@@ -1,6 +1,10 @@
 import Stripe from 'stripe';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { recordCheckoutPurchase } from './_lib/purchases.js';
+import { track as trackVercelServerEvent } from '@vercel/analytics/server';
+import { markCheckoutIntentExpired } from './_lib/checkout-intents.js';
+import { recordFunnelEvent } from './_lib/funnel-events.js';
+import { markPurchaseStatusByPaymentIntent, recordCheckoutPurchase } from './_lib/purchases.js';
+import { queueCheckoutRecoveryEmail } from './_lib/recovery-emails.js';
 import { getSupabaseAdminClient, hasSupabaseAdminConfig } from './_lib/supabase.js';
 import { getStripeSecretKey, getStripeWebhookSecret } from '../server/checkout.js';
 
@@ -17,6 +21,62 @@ async function buffer(readable: any) {
     chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
   }
   return Buffer.concat(chunks);
+}
+
+function checkoutAttributionEventParams(session: Stripe.Checkout.Session) {
+  const metadata = session.metadata || {};
+
+  return {
+    acquisition_source: metadata.acquisition_source || metadata.source || 'unknown',
+    acquisition_ref: metadata.acquisition_ref || 'unknown',
+    utm_campaign: metadata.utm_campaign || 'unknown',
+    utm_source: metadata.utm_source || 'unknown',
+    shared_result: metadata.shared_result || 'none',
+    parent_source: metadata.parent_source || 'none',
+    source_chain: metadata.source_chain || 'none',
+  };
+}
+
+function vercelEventProperties(params: Record<string, unknown>): Record<string, string | number | boolean | null> {
+  return Object.fromEntries(
+    Object.entries(params).flatMap(([key, value]) => {
+      if (value === null || typeof value === 'boolean') return [[key, value]];
+      if (typeof value === 'number') return Number.isFinite(value) ? [[key, value]] : [];
+      if (typeof value === 'string') return [[key, value.slice(0, 500)]];
+      return [];
+    }),
+  ) as Record<string, string | number | boolean | null>;
+}
+
+async function trackCheckoutWebhookEvent(eventName: string, params: Record<string, unknown>) {
+  try {
+    await trackVercelServerEvent(eventName, vercelEventProperties(params));
+  } catch (error) {
+    console.warn('Vercel checkout webhook analytics event failed:', eventName, error instanceof Error ? error.message : 'Unknown error');
+  }
+}
+
+function stripeObjectId(value: string | { id?: string | null } | null | undefined): string | null {
+  if (!value) return null;
+  return typeof value === 'string' ? value : value.id || null;
+}
+
+async function updatePurchaseStatusFromPaymentIntent(
+  supabase: ReturnType<typeof getSupabaseAdminClient>,
+  paymentIntent: string | { id?: string | null } | null | undefined,
+  status: 'refunded' | 'disputed',
+) {
+  const paymentIntentId = stripeObjectId(paymentIntent);
+  const purchaseFound = await markPurchaseStatusByPaymentIntent(supabase, paymentIntentId, status);
+
+  await trackCheckoutWebhookEvent('server_purchase_status_updated', {
+    status,
+    purchase_found: purchaseFound,
+  });
+
+  if (!purchaseFound) {
+    console.warn(`No purchase found for ${status} payment intent:`, paymentIntentId || 'missing');
+  }
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -51,19 +111,76 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   // Handle the event
   switch (event.type) {
-    case 'checkout.session.completed':
+    case 'checkout.session.completed': {
       const checkoutSession = event.data.object as Stripe.Checkout.Session;
       const session = await stripe.checkout.sessions.retrieve(checkoutSession.id, {
         expand: ['line_items.data.price'],
       });
-      await recordCheckoutPurchase(supabase, session);
+      const purchase = await recordCheckoutPurchase(supabase, session);
       console.log('Payment recorded for session:', session.id);
+      if (purchase) {
+        try {
+          await recordFunnelEvent(supabase, {
+            eventId: `purchase:${session.id}`,
+            eventName: 'purchase',
+            anonymousId: session.metadata?.anonymous_id,
+            source: session.metadata?.source || 'unknown',
+            tier: purchase.tier,
+            checkoutIntentId: session.metadata?.checkout_intent_id,
+            stripeSessionId: session.id,
+            purchaseId: typeof purchase.id === 'string' ? purchase.id : null,
+            value: typeof session.amount_total === 'number' ? session.amount_total / 100 : null,
+            currency: typeof session.currency === 'string' ? session.currency.toUpperCase() : 'CAD',
+            properties: {
+              ...checkoutAttributionEventParams(session),
+              payment_status: session.payment_status || 'unknown',
+              stripe_customer_present: Boolean(session.customer),
+            },
+          });
+        } catch (funnelError) {
+          console.warn('Purchase funnel event insert failed:', funnelError instanceof Error ? funnelError.message : 'Unknown error');
+        }
+      }
+      await trackCheckoutWebhookEvent('server_purchase_recorded', {
+        tier: session.metadata?.tier || 'unknown',
+        source: session.metadata?.source || 'unknown',
+        ...checkoutAttributionEventParams(session),
+        amount_cad: session.currency === 'cad' && session.amount_total ? session.amount_total / 100 : null,
+        status: session.payment_status || 'unknown',
+      });
       break;
+    }
 
-    case 'payment_intent.succeeded':
+    case 'checkout.session.expired': {
+      const expiredSession = event.data.object as Stripe.Checkout.Session;
+      await markCheckoutIntentExpired(supabase, expiredSession);
+      const queueResult = await queueCheckoutRecoveryEmail(supabase, expiredSession);
+      await trackCheckoutWebhookEvent(queueResult.queued ? 'server_checkout_recovery_queued' : 'server_checkout_recovery_skipped', {
+        reason: queueResult.reason || (queueResult.queued ? 'queued' : 'unknown'),
+        tier: expiredSession.metadata?.tier || 'unknown',
+        source: expiredSession.metadata?.source || 'unknown',
+        ...checkoutAttributionEventParams(expiredSession),
+      });
+      break;
+    }
+
+    case 'payment_intent.succeeded': {
       const paymentIntent = event.data.object as Stripe.PaymentIntent;
       console.log('PaymentIntent succeeded:', paymentIntent.id);
       break;
+    }
+
+    case 'charge.refunded': {
+      const charge = event.data.object as Stripe.Charge;
+      await updatePurchaseStatusFromPaymentIntent(supabase, charge.payment_intent, 'refunded');
+      break;
+    }
+
+    case 'charge.dispute.created': {
+      const dispute = event.data.object as Stripe.Dispute;
+      await updatePurchaseStatusFromPaymentIntent(supabase, (dispute as any).payment_intent, 'disputed');
+      break;
+    }
 
     default:
       console.log(`Unhandled event type: ${event.type}`);

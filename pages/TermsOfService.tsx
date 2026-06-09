@@ -100,7 +100,7 @@ export const TermsOfService: React.FC = () => {
             <div className="card-elevated rounded-2xl p-5">
               <h3 className="font-semibold text-jung-dark mb-2 font-serif">Refund Policy</h3>
               <p className="text-jung-secondary text-sm m-0 font-body">
-                We offer a <strong className="text-jung-dark">30-day refund policy</strong>. If you are not satisfied with your paid TypeJung report, you may request a full refund within 30 days of purchase. To request a refund, please contact us with your order details.
+                We offer a <strong className="text-jung-dark">7-day money-back guarantee</strong>. If you are not satisfied with your paid TypeJung report, you may request a full refund within 7 days of purchase. To request a refund, please contact us with your order details.
               </p>
             </div>
 

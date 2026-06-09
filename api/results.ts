@@ -19,7 +19,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const supabase = getSupabaseAdminClient();
 
     if (req.method === 'POST') {
-      if (!user?.id) {
+      const shareOnly = req.body?.shareOnly === true;
+
+      if (!user?.id && !shareOnly) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
 
@@ -34,7 +36,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const { data: result, error } = await supabase
         .from('assessment_results')
         .insert({
-          user_id: user.id,
+          user_id: user?.id || null,
           scores,
           stack,
           attitude_score: String(attitudeScore),

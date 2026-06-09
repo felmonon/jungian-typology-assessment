@@ -51,10 +51,6 @@ export const AITypeCoachSection: React.FC = () => {
 
   return (
     <section className="py-24 lg:py-32 bg-jung-dark relative overflow-hidden">
-      {/* Decorative Orbs */}
-      <div className="absolute top-1/4 left-0 w-96 h-96 bg-jung-accent/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-0 w-64 h-64 bg-jung-gold/5 rounded-full blur-[100px] pointer-events-none" />
-
       <div className="editorial-container relative z-10">
         <motion.div
           initial="hidden"
@@ -68,26 +64,26 @@ export const AITypeCoachSection: React.FC = () => {
             <motion.div variants={itemVariants} className="inline-flex">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 backdrop-blur-md rounded-full shadow-2xl">
                 <Sparkles className="w-4 h-4 text-jung-accent-muted" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Advanced AI Protocol</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Mastery reflection companion</span>
               </div>
             </motion.div>
 
             <div className="space-y-6">
               <motion.h2 variants={itemVariants} className="text-display text-4xl sm:text-5xl lg:text-6xl text-white leading-tight">
-                An Analyst in your <br />
-                <span className="italic text-jung-accent-muted">Pocket.</span>
+                A result-aware guide for <br />
+                <span className="italic text-jung-accent-muted">reflection.</span>
               </motion.h2>
               <motion.p variants={itemVariants} className="text-body-lg text-jung-subtle leading-relaxed max-w-lg">
-                The Master Insight upgrade includes our AI Type Coach—an LLM fine-tuned on thousands of pages of Jungian literature and your specific assessment results.
+                The Mastery upgrade includes an AI Type Guide grounded in your TypeJung result. It helps you ask better follow-up questions without pretending to provide therapy, diagnosis, career counseling, or relationship advice.
               </motion.p>
             </div>
 
             <motion.div variants={itemVariants} className="grid sm:grid-cols-2 gap-6">
               {[
-                "Personalized Shadow Work",
-                "Career Path Synergy",
-                "Interpersonal Strategy",
-                "Archetypal Mapping"
+                "Result-aware prompts",
+                "Stress pattern reflection",
+                "Work-theme questions",
+                "Relationship communication prompts"
               ].map((feature, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <div className="w-6 h-6 rounded-full bg-jung-accent/20 border border-jung-accent/30 flex items-center justify-center">
@@ -113,15 +109,15 @@ export const AITypeCoachSection: React.FC = () => {
                     <Bot className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h4 className="text-display text-lg text-white">AI Analyst</h4>
+                    <h4 className="text-display text-lg text-white">AI Type Guide</h4>
                     <span className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-jung-accent-muted animate-pulse" />
-                      <span className="text-[10px] uppercase tracking-widest text-jung-subtle font-bold">Neural Engine Ready</span>
+                      <span className="text-[10px] uppercase tracking-widest text-jung-subtle font-bold">Educational prompts ready</span>
                     </span>
                   </div>
                 </div>
                 <div className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold text-jung-subtle uppercase">
-                  GPT-4o Optimized
+                  Not therapy
                 </div>
               </div>
 
@@ -152,7 +148,7 @@ export const AITypeCoachSection: React.FC = () => {
                         <div className="w-5 h-5 rounded bg-jung-accent/20 flex items-center justify-center">
                           <Bot className="w-3 h-3 text-jung-accent-muted" />
                         </div>
-                        <span className="text-[10px] uppercase tracking-widest text-jung-accent-muted font-bold">Analyst</span>
+                        <span className="text-[10px] uppercase tracking-widest text-jung-accent-muted font-bold">Guide</span>
                       </div>
                       <div className="bg-jung-accent/10 border border-jung-accent/20 text-white px-5 py-4 rounded-2xl rounded-tl-none max-w-[95%] shadow-2xl relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-1 h-full bg-jung-accent" />
@@ -174,9 +170,12 @@ export const AITypeCoachSection: React.FC = () => {
                               className="inline-block w-2.5 h-4 bg-jung-accent-muted ml-1 align-middle"
                             />
                           )}
-                        </div>
-                      </div>
-                    </motion.div>
+              </div>
+              <div className="border-t border-white/10 bg-white/[0.03] px-6 py-4 text-xs leading-5 text-jung-subtle">
+                Educational self-reflection only. Use it to explore your result, not as therapy, diagnosis, career counseling, or relationship advice.
+              </div>
+            </div>
+          </motion.div>
                   )}
                 </AnimatePresence>
               </div>

@@ -22,9 +22,14 @@ const item: Variants = {
 
 export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) => {
   const handlePricingClick = (tier: string, amount: number) => {
-    AnalyticsEvents.ctaClicked(`view_${tier.toLowerCase()}_pricing`, 'pricing_section');
-    AnalyticsEvents.purchaseStarted(tier, amount);
-    onNavigate('/pricing');
+    const normalizedTier = tier.toLowerCase();
+    const destination = amount === 0 ? '/assessment' : `/pricing?tier=${normalizedTier}`;
+    AnalyticsEvents.ctaClicked(
+      amount === 0 ? 'start_assessment' : `view_${normalizedTier}_pricing`,
+      'pricing_section',
+      { buttonText: tier, destination },
+    );
+    onNavigate(destination);
   };
 
   return (
@@ -64,6 +69,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) =>
         >
           {PRICING_TIERS.map((p, idx) => {
             const highlighted = p.popular;
+            const displayPrice = p.discountedPrice ?? p.price;
             return (
               <motion.div
                 key={p.name}
@@ -105,7 +111,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) =>
                       highlighted ? 'text-jung-base' : 'text-jung-dark'
                     }`}
                   >
-                    {p.price}
+                    {displayPrice}
                   </span>
                   <span
                     className={`font-mono text-[10px] tracking-[0.22em] uppercase ml-2 ${
@@ -115,6 +121,15 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) =>
                     {p.amount === 0 ? 'forever' : 'one-time'}
                   </span>
                 </div>
+                {p.discountedPrice && (
+                  <p
+                    className={`mb-4 text-xs leading-5 ${
+                      highlighted ? 'text-jung-base/70' : 'text-jung-muted'
+                    }`}
+                  >
+                    <span className="line-through">{p.price}</span> before code. {p.priceNote}.
+                  </p>
+                )}
 
                 <p
                   className={`text-sm leading-relaxed mb-8 font-light ${

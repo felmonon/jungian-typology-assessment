@@ -295,7 +295,7 @@ export const TypeDetailPage: React.FC = () => {
             Are you an {data.code}?
           </h2>
           <p className="text-jung-secondary mb-8 max-w-lg mx-auto">
-            Take our free assessment to measure all 8 cognitive functions and discover if {data.code} matches your profile.
+            Take our free assessment to map self-reported patterns across all 8 cognitive functions and see whether {data.code} matches your profile.
           </p>
           <Button onClick={() => navigate('/assessment')} size="lg">
             Take the Free Assessment

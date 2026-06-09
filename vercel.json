@@ -1,6 +1,43 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist/public",
+  "crons": [
+    {
+      "path": "/api/auth/discount-followups",
+      "schedule": "17 14 * * *"
+    },
+    {
+      "path": "/api/recovery-emails",
+      "schedule": "23 15 * * *"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/blog/:slug/",
+      "destination": "/blog/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/functions/:fn/",
+      "destination": "/functions/:fn",
+      "permanent": true
+    },
+    {
+      "source": "/types/:type/",
+      "destination": "/types/:type",
+      "permanent": true
+    },
+    {
+      "source": "/assessment%3Fsource=:source",
+      "destination": "/assessment?source=:source",
+      "permanent": true
+    },
+    {
+      "source": "/%3Futm_source=:source",
+      "destination": "/?utm_source=:source",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/stripe/webhook",
@@ -11,8 +48,16 @@
       "destination": "/api/auth/lifecycle-email"
     },
     {
+      "source": "/api/recovery-emails",
+      "destination": "/api/auth/recovery-emails"
+    },
+    {
       "source": "/api/profile",
       "destination": "/api/auth/profile"
+    },
+    {
+      "source": "/api/auth/google/callback",
+      "destination": "/api/auth/google-callback"
     },
     {
       "source": "/assessment",
@@ -51,12 +96,24 @@
       "destination": "/mbti-alternative/index.html"
     },
     {
+      "source": "/mbti-mistype-test",
+      "destination": "/mbti-mistype-test/index.html"
+    },
+    {
       "source": "/inferior-function-test",
       "destination": "/inferior-function-test/index.html"
     },
     {
       "source": "/cognitive-function-test",
       "destination": "/cognitive-function-test/index.html"
+    },
+    {
+      "source": "/cognitive-functions-quiz",
+      "destination": "/cognitive-functions-quiz/index.html"
+    },
+    {
+      "source": "/creator-preview",
+      "destination": "/creator-preview/index.html"
     },
     {
       "source": "/infj-vs-infp-test",
@@ -107,11 +164,60 @@
       "destination": "/api/:path*"
     },
     {
-      "source": "/((?!api/|assets/|@vite/|@react-refresh|.*\\.html$|.*\\.txt$|.*\\.xml$|.*\\.png$|.*\\.svg$|.*\\.ico$|.*\\.webmanifest$|.*\\.css$|.*\\.js$|.*\\.jsx$|.*\\.ts$|.*\\.tsx$|.*\\.woff2?$|.*\\.ttf$|.*\\.eot$).*)",
+      "source": "/auth",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/profile",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/settings",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/results",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/success",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/share/:slug",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/history",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/",
       "destination": "/index.html"
     }
   ],
   "headers": [
+    {
+      "source": "/share/:slug",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
     {
       "source": "/(.*)",
       "headers": [
@@ -169,6 +275,28 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=3600"
+        }
+      ]
+    },
+    {
+      "source": "/llms.txt",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
         }
       ]
     },

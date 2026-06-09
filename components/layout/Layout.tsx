@@ -1,23 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { BookOpen, Clock, LogIn, LogOut, Menu, Trophy, User, X } from 'lucide-react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
+import { ArrowRight, BookOpen, CheckCircle2, Clock, CreditCard, LogIn, LogOut, Menu, Trophy, User, X } from 'lucide-react';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { TypeJungMark } from '../brand/TypeJungMark';
 import { useAuth } from '../../hooks/use-auth';
 import { usePageTracking } from '../../hooks/useAnalytics';
+import { trackEvent } from '../../lib/analytics';
+import {
+  dismissAssessmentResumePrompt,
+  readResumableAssessmentProgress,
+  type ResumableAssessmentProgress,
+} from '../../lib/assessment-progress';
+import {
+  clearPendingCheckout,
+  pendingCheckoutName,
+  pendingCheckoutPriceLabel,
+  pendingCheckoutRestartPath,
+  readPendingCheckout,
+  type PendingCheckout,
+} from '../../lib/pending-checkout';
 
 const navigation = [
   { to: '/', label: 'Home' },
   { to: '/learn', label: 'Learn' },
-  { to: '/leaderboard', label: 'Community' },
   { to: '/pricing', label: 'Pricing' },
 ];
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, isLoading, isAuthenticated, logout, isLoggingOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [pendingCheckout, setPendingCheckout] = useState<PendingCheckout | null>(null);
+  const [assessmentProgress, setAssessmentProgress] = useState<ResumableAssessmentProgress | null>(null);
 
   usePageTracking();
 
@@ -28,9 +43,138 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const refreshRecoveryPrompts = () => {
+    setPendingCheckout(readPendingCheckout());
+    setAssessmentProgress(readResumableAssessmentProgress());
+  };
+
   useEffect(() => {
     setMobileMenuOpen(false);
+    refreshRecoveryPrompts();
   }, [location.pathname]);
+
+  useEffect(() => {
+    refreshRecoveryPrompts();
+
+    const refreshOnReturn = () => refreshRecoveryPrompts();
+
+    window.addEventListener('focus', refreshOnReturn);
+    window.addEventListener('pageshow', refreshOnReturn);
+    window.addEventListener('storage', refreshOnReturn);
+    window.addEventListener('typejung:pending-checkout-changed', refreshOnReturn);
+
+    return () => {
+      window.removeEventListener('focus', refreshOnReturn);
+      window.removeEventListener('pageshow', refreshOnReturn);
+      window.removeEventListener('storage', refreshOnReturn);
+      window.removeEventListener('typejung:pending-checkout-changed', refreshOnReturn);
+    };
+  }, []);
+
+  const shouldShowPendingCheckout = Boolean(
+    pendingCheckout
+      && !location.pathname.startsWith('/checkout')
+      && location.pathname !== '/success'
+  );
+  const shouldShowAssessmentResume = Boolean(
+    assessmentProgress
+      && !shouldShowPendingCheckout
+      && !location.pathname.startsWith('/assessment')
+      && !location.pathname.startsWith('/checkout')
+      && location.pathname !== '/results'
+      && location.pathname !== '/success'
+  );
+  const pendingCheckoutViewKey = useMemo(() => {
+    if (!pendingCheckout || !shouldShowPendingCheckout) return null;
+    return [
+      'typejung_pending_checkout_banner_viewed',
+      pendingCheckout.tier,
+      pendingCheckout.status,
+      pendingCheckout.sessionId || pendingCheckout.createdAt,
+    ].join('_');
+  }, [pendingCheckout, shouldShowPendingCheckout]);
+  const pendingCheckoutEventParams = useMemo(() => {
+    if (!pendingCheckout) return null;
+
+    return {
+      tier: pendingCheckout.tier,
+      status: pendingCheckout.status,
+      source: 'global_recovery_banner',
+      original_checkout_source: pendingCheckout.source,
+      ...(pendingCheckout.utmCampaign ? { utm_campaign: pendingCheckout.utmCampaign } : {}),
+      ...(pendingCheckout.utmSource ? { utm_source: pendingCheckout.utmSource } : {}),
+      ...(pendingCheckout.sharedResult ? { shared_result: pendingCheckout.sharedResult } : {}),
+      parent_source: pendingCheckout.parentSource || pendingCheckout.source,
+    };
+  }, [pendingCheckout]);
+
+  useEffect(() => {
+    if (!pendingCheckout || !shouldShowPendingCheckout || !pendingCheckoutViewKey) return;
+
+    try {
+      if (sessionStorage.getItem(pendingCheckoutViewKey)) return;
+      sessionStorage.setItem(pendingCheckoutViewKey, 'true');
+    } catch {
+      // If sessionStorage is unavailable, still send the first visible render.
+    }
+
+    trackEvent('pending_checkout_banner_viewed', {
+      ...(pendingCheckoutEventParams || {}),
+    });
+  }, [pendingCheckout, pendingCheckoutEventParams, pendingCheckoutViewKey, shouldShowPendingCheckout]);
+
+  const resumePendingCheckout = () => {
+    if (!pendingCheckout) return;
+
+    if (pendingCheckout.status === 'expired') {
+      trackEvent('pending_checkout_restart_clicked', {
+        ...(pendingCheckoutEventParams || {}),
+      });
+      const restartPath = pendingCheckoutRestartPath(pendingCheckout);
+      clearPendingCheckout();
+      setPendingCheckout(null);
+      navigate(restartPath);
+      return;
+    }
+
+    trackEvent('pending_checkout_resume_clicked', {
+      ...(pendingCheckoutEventParams || {}),
+    });
+    window.location.href = pendingCheckout.url;
+  };
+
+  const dismissPendingCheckout = () => {
+    if (pendingCheckout) {
+      trackEvent('pending_checkout_dismissed', {
+        ...(pendingCheckoutEventParams || {}),
+      });
+    }
+    clearPendingCheckout();
+    setPendingCheckout(null);
+  };
+
+  const resumeAssessment = () => {
+    if (!assessmentProgress) return;
+
+    trackEvent('assessment_resume_clicked', {
+      source: 'global_resume_banner',
+      progress_percent: assessmentProgress.progressPercent,
+      answered_count: assessmentProgress.answeredCount,
+    });
+    navigate('/assessment?source=global_resume_banner');
+  };
+
+  const dismissAssessmentResume = () => {
+    if (assessmentProgress) {
+      trackEvent('assessment_resume_dismissed', {
+        source: 'global_resume_banner',
+        progress_percent: assessmentProgress.progressPercent,
+        answered_count: assessmentProgress.answeredCount,
+      });
+    }
+    dismissAssessmentResumePrompt();
+    setAssessmentProgress(null);
+  };
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `inline-flex min-h-10 items-center rounded-lg px-3.5 py-2 text-sm font-semibold transition-all ${
@@ -95,7 +239,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             </span>
             <span className="flex flex-col">
               <span className="font-display text-xl leading-none text-jung-dark sm:text-2xl">TypeJung</span>
-              <span className="text-[11px] font-medium text-jung-muted sm:text-xs">Jungian function assessment</span>
+              <span className="text-[11px] font-medium text-jung-muted sm:text-xs">Free function-stack map</span>
             </span>
           </Link>
 
@@ -131,82 +275,154 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           </div>
         </div>
 
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.18 }}
-              className="lg:hidden"
-            >
-              <div className="lab-container pb-4 pt-3">
-                <div className="rounded-lg border border-jung-border bg-jung-surface p-2 shadow-lg">
-                  {navigation.map((item) => (
-                    <NavLink key={item.to} to={item.to} end={item.to === '/'} className={mobileNavLinkClass}>
-                      {item.label}
+        {mobileMenuOpen && (
+          <div className="lg:hidden">
+            <div className="lab-container pb-4 pt-3">
+              <div className="rounded-lg border border-jung-border bg-jung-surface p-2 shadow-lg">
+                {navigation.map((item) => (
+                  <NavLink key={item.to} to={item.to} end={item.to === '/'} className={mobileNavLinkClass}>
+                    {item.label}
+                  </NavLink>
+                ))}
+                {isAuthenticated && (
+                  <>
+                    <NavLink to="/profile" className={mobileNavLinkClass}>
+                      <span className="inline-flex items-center gap-2">
+                        <User className="h-4 w-4" />
+                        Profile settings
+                      </span>
                     </NavLink>
-                  ))}
-                  {isAuthenticated && (
-                    <>
-                      <NavLink to="/profile" className={mobileNavLinkClass}>
-                        <span className="inline-flex items-center gap-2">
-                          <User className="h-4 w-4" />
-                          Profile settings
-                        </span>
-                      </NavLink>
-                      <NavLink to="/history" className={mobileNavLinkClass}>
-                        <span className="inline-flex items-center gap-2">
-                          <Clock className="h-4 w-4" />
-                          History
-                        </span>
-                      </NavLink>
-                      <NavLink to="/leaderboard" className={mobileNavLinkClass}>
-                        <span className="inline-flex items-center gap-2">
-                          <Trophy className="h-4 w-4" />
-                          Results data
-                        </span>
-                      </NavLink>
-                    </>
-                  )}
-                  <div className="mt-2 grid gap-2 border-t border-jung-border pt-2">
-                    <Link
-                      to="/assessment"
-                      className="inline-flex min-h-11 items-center justify-center rounded-lg bg-jung-accent px-4 text-sm font-semibold text-white"
+                    <NavLink to="/history" className={mobileNavLinkClass}>
+                      <span className="inline-flex items-center gap-2">
+                        <Clock className="h-4 w-4" />
+                        History
+                      </span>
+                    </NavLink>
+                    <NavLink to="/leaderboard" className={mobileNavLinkClass}>
+                      <span className="inline-flex items-center gap-2">
+                        <Trophy className="h-4 w-4" />
+                        Results data
+                      </span>
+                    </NavLink>
+                  </>
+                )}
+                <div className="mt-2 grid gap-2 border-t border-jung-border pt-2">
+                  <Link
+                    to="/assessment"
+                    className="inline-flex min-h-11 items-center justify-center rounded-lg bg-jung-accent px-4 text-sm font-semibold text-white"
+                  >
+                    Start free assessment
+                  </Link>
+                  {isAuthenticated ? (
+                    <button
+                      type="button"
+                      onClick={() => logout()}
+                      disabled={isLoggingOut}
+                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-jung-border px-4 text-sm font-semibold text-jung-dark disabled:opacity-50"
                     >
-                      Start free assessment
+                      <LogOut className="h-4 w-4" />
+                      Sign out
+                    </button>
+                  ) : (
+                    <Link
+                      to="/auth"
+                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-jung-border px-4 text-sm font-semibold text-jung-dark"
+                    >
+                      <LogIn className="h-4 w-4" />
+                      Sign in
                     </Link>
-                    {isAuthenticated ? (
-                      <button
-                        type="button"
-                        onClick={() => logout()}
-                        disabled={isLoggingOut}
-                        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-jung-border px-4 text-sm font-semibold text-jung-dark disabled:opacity-50"
-                      >
-                        <LogOut className="h-4 w-4" />
-                        Sign out
-                      </button>
-                    ) : (
-                      <Link
-                        to="/auth"
-                        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-jung-border px-4 text-sm font-semibold text-jung-dark"
-                      >
-                        <LogIn className="h-4 w-4" />
-                        Sign in
-                      </Link>
-                    )}
-                  </div>
+                  )}
                 </div>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </div>
+          </div>
+        )}
       </header>
+
+      {shouldShowPendingCheckout && pendingCheckout && (
+        <section className="border-b border-jung-accent-muted bg-jung-accent-light/80">
+          <div className="lab-container flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 items-start gap-3">
+              <span className="mt-0.5 inline-flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-jung-surface text-jung-accent shadow-sm">
+                <CreditCard className="h-4 w-4" />
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-jung-dark">
+                  {pendingCheckout.status === 'expired'
+                    ? `Your ${pendingCheckoutName(pendingCheckout.tier)} checkout expired.`
+                    : `Your ${pendingCheckoutName(pendingCheckout.tier)} checkout is still open.`}
+                </p>
+                <p className="mt-1 text-xs leading-5 text-jung-secondary">
+                  {pendingCheckout.status === 'expired'
+                    ? `Start a fresh secure Stripe step for ${pendingCheckoutPriceLabel(pendingCheckout.tier)}. No subscription.`
+                    : `Resume the secure Stripe step for ${pendingCheckoutPriceLabel(pendingCheckout.tier)}. No subscription.`}
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-none items-center gap-2">
+              <button
+                type="button"
+                onClick={resumePendingCheckout}
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-jung-accent px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-px hover:bg-jung-accent-hover"
+              >
+                {pendingCheckout.status === 'expired' ? 'Restart checkout' : 'Resume payment'}
+                <ArrowRight className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={dismissPendingCheckout}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-jung-border bg-jung-surface text-jung-muted transition hover:text-jung-dark"
+                aria-label="Dismiss pending checkout"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {shouldShowAssessmentResume && assessmentProgress && (
+        <section className="border-b border-jung-border bg-jung-surface">
+          <div className="lab-container flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 items-start gap-3">
+              <span className="mt-0.5 inline-flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent shadow-sm">
+                <CheckCircle2 className="h-4 w-4" />
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-jung-dark">
+                  Your free assessment is {assessmentProgress.progressPercent}% complete.
+                </p>
+                <p className="mt-1 text-xs leading-5 text-jung-secondary">
+                  Resume from {assessmentProgress.answeredCount} of {assessmentProgress.totalQuestions} answered questions and finish the map before deciding on any upgrade.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-none items-center gap-2">
+              <button
+                type="button"
+                onClick={resumeAssessment}
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-jung-accent px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-px hover:bg-jung-accent-hover"
+              >
+                Resume assessment
+                <ArrowRight className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={dismissAssessmentResume}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-jung-border bg-jung-surface text-jung-muted transition hover:text-jung-dark"
+                aria-label="Dismiss assessment reminder"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
 
       <main>{children}</main>
 
-      <footer className="border-t border-jung-border bg-jung-surface/70 py-12">
-        <div className="lab-container grid gap-10 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
+      <footer className="border-t border-jung-border bg-jung-surface/70 py-10">
+        <div className="lab-container grid gap-8 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
           <div>
             <Link to="/" className="mb-4 inline-flex min-h-11 items-center gap-3">
               <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-jung-border bg-jung-surface">
@@ -219,43 +435,34 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             </p>
           </div>
 
-          <div>
-            <h4 className="mb-4 text-sm font-semibold text-jung-dark">Explore</h4>
-            <div className="grid gap-3 text-sm text-jung-secondary">
-              <Link to="/assessment" className="inline-flex min-h-10 items-center hover:text-jung-accent">Assessment</Link>
-              <Link to="/learn" className="inline-flex min-h-10 items-center hover:text-jung-accent">Learn the theory</Link>
-              <Link to="/pricing" className="inline-flex min-h-10 items-center hover:text-jung-accent">Pricing</Link>
-              <Link to="/about" className="inline-flex min-h-10 items-center hover:text-jung-accent">About</Link>
-            </div>
-          </div>
+	          <div>
+	            <h4 className="mb-4 text-sm font-semibold text-jung-dark">Explore</h4>
+	            <div className="grid gap-2 text-sm text-jung-secondary">
+	              <Link to="/assessment" className="inline-flex min-h-8 items-center hover:text-jung-accent">Assessment</Link>
+	              <Link to="/pricing" className="inline-flex min-h-8 items-center hover:text-jung-accent">Pricing</Link>
+	              <Link to="/learn" className="inline-flex min-h-8 items-center hover:text-jung-accent">Learn the theory</Link>
+	            </div>
+	          </div>
 
-          <div>
-            <h4 className="mb-4 text-sm font-semibold text-jung-dark">Guides</h4>
-            <div className="grid gap-3 text-sm text-jung-secondary">
-              <a href="/jungian-test" className="inline-flex min-h-10 items-center hover:text-jung-accent">Jungian test</a>
-              <a href="/jungian-typology" className="inline-flex min-h-10 items-center hover:text-jung-accent">Jungian typology</a>
-              <a href="/cognitive-functions" className="inline-flex min-h-10 items-center hover:text-jung-accent">Cognitive functions</a>
-              <a href="/mbti-alternative" className="inline-flex min-h-10 items-center hover:text-jung-accent">MBTI alternative</a>
-              <a href="/inferior-function-test" className="inline-flex min-h-10 items-center hover:text-jung-accent">Inferior function test</a>
-              <a href="/cognitive-function-test" className="inline-flex min-h-10 items-center hover:text-jung-accent">Cognitive function test</a>
-              <a href="/jungian-cognitive-functions-test" className="inline-flex min-h-10 items-center hover:text-jung-accent">Jungian cognitive functions test</a>
-              <a href="/infj-vs-infp-test" className="inline-flex min-h-10 items-center hover:text-jung-accent">INFJ vs INFP test</a>
-              <a href="/intj-vs-intp-test" className="inline-flex min-h-10 items-center hover:text-jung-accent">INTJ vs INTP test</a>
-              <a href="/mbti-keeps-changing" className="inline-flex min-h-10 items-center hover:text-jung-accent">Why MBTI changes</a>
-              <a href="/shadow-work-test" className="inline-flex min-h-10 items-center hover:text-jung-accent">Shadow work test</a>
-            </div>
-          </div>
+	          <div>
+	            <h4 className="mb-4 text-sm font-semibold text-jung-dark">Guides</h4>
+	            <div className="grid gap-2 text-sm text-jung-secondary">
+	              <a href="/free-cognitive-function-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">Free cognitive function test</a>
+	              <a href="/mbti-test-alternative" className="inline-flex min-h-8 items-center hover:text-jung-accent">MBTI test alternative</a>
+	              <a href="/sakinorva-alternative" className="inline-flex min-h-8 items-center hover:text-jung-accent">Sakinorva alternative</a>
+	              <a href="/infj-vs-infp-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">INFJ vs INFP test</a>
+	              <a href="/intj-vs-intp-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">INTJ vs INTP test</a>
+	            </div>
+	          </div>
 
-          <div>
-            <h4 className="mb-4 text-sm font-semibold text-jung-dark">Account</h4>
-            <div className="grid gap-3 text-sm text-jung-secondary">
-              <Link to="/auth" className="inline-flex min-h-10 items-center hover:text-jung-accent">Sign in</Link>
-              <Link to="/profile" className="inline-flex min-h-10 items-center hover:text-jung-accent">Profile settings</Link>
-              <Link to="/history" className="inline-flex min-h-10 items-center hover:text-jung-accent">History</Link>
-              <Link to="/privacy" className="inline-flex min-h-10 items-center hover:text-jung-accent">Privacy</Link>
-              <Link to="/terms" className="inline-flex min-h-10 items-center hover:text-jung-accent">Terms</Link>
-            </div>
-          </div>
+	          <div>
+	            <h4 className="mb-4 text-sm font-semibold text-jung-dark">Account</h4>
+	            <div className="grid gap-2 text-sm text-jung-secondary">
+	              <Link to="/auth" className="inline-flex min-h-8 items-center hover:text-jung-accent">Sign in</Link>
+	              <Link to="/privacy" className="inline-flex min-h-8 items-center hover:text-jung-accent">Privacy</Link>
+	              <Link to="/terms" className="inline-flex min-h-8 items-center hover:text-jung-accent">Terms</Link>
+	            </div>
+	          </div>
         </div>
         <div className="lab-container mt-10 flex flex-col gap-3 border-t border-jung-border pt-6 text-xs text-jung-muted sm:flex-row sm:items-center sm:justify-between">
           <span>&copy; {new Date().getFullYear()} TypeJung</span>

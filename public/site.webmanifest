@@ -1,11 +1,11 @@
 {
-  "name": "TypeJung - Jungian Cognitive Function Assessment",
+  "name": "TypeJung - Free Jungian Function-Stack Map",
   "short_name": "TypeJung",
-  "description": "A depth-based Jungian assessment that maps energy flow, stress patterns, and growth edges",
+  "description": "A free Jungian function-stack map for people whose MBTI result keeps changing",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#faf9f6",
-  "theme_color": "#451a03",
+  "background_color": "#fafaf8",
+  "theme_color": "#224a31",
   "icons": [
     {
       "src": "/logo.svg",

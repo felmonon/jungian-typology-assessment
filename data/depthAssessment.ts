@@ -67,7 +67,7 @@ export const depthLayerMeta: Record<DepthLayer, { label: string; shortLabel: str
   inferior: {
     label: 'Inferior function detection',
     shortLabel: 'Inferior',
-    description: 'Stress and relationship triggers that reveal where energy becomes primitive, reactive, or hard to control.',
+    description: 'Stress and relationship-pattern signals that show where energy can become reactive or hard to control.',
   },
   somatic: {
     label: 'Somatic indicators',

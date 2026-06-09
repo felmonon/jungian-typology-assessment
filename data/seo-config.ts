@@ -2,7 +2,7 @@
 
 export const siteConfig = {
   name: 'TypeJung',
-  description: 'Free depth-based Jungian assessment that maps cognitive functions, energy flow, inferior-function stress, and growth edges.',
+  description: 'Free Jungian function-stack map that shows all 8 cognitive functions, dominant-inferior tension, and stress edges for educational self-reflection.',
   url: 'https://typejung.com',
   ogImage: 'https://typejung.com/og-image.png',
   keywords: [

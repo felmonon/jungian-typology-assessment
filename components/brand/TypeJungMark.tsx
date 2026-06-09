@@ -37,7 +37,7 @@ export const TypeJungMark: React.FC<TypeJungMarkProps> = ({
         viewBox="0 0 100 100"
         className={`${sizeClasses[size]} shrink-0`}
         role="img"
-        aria-label="TypeJung energy map mark"
+        aria-label="TypeJung function-stack map mark"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >

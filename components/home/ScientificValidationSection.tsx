@@ -39,7 +39,7 @@ export const ScientificValidationSection: React.FC = () => {
           <div className="space-y-8">
             <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-2 bg-jung-accent/10 dark:bg-jung-accent/20 border border-jung-accent/20 rounded-full">
               <GraduationCap className="w-4 h-4 text-jung-accent" />
-              <span className="text-xs font-serif font-bold text-jung-accent uppercase tracking-widest">Research-informed method</span>
+              <span className="text-xs font-serif font-bold text-jung-accent uppercase tracking-widest">Method design</span>
             </motion.div>
 
             <motion.h2 variants={itemVariants} className="text-display text-4xl sm:text-5xl text-jung-dark leading-tight">

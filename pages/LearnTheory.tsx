@@ -168,7 +168,7 @@ export const LearnTheory: React.FC = () => {
                 {
                   icon: <Sparkles className="w-5 h-5 text-jung-accent" />,
                   title: '8 Independent Scales',
-                  desc: 'Measures each cognitive process independently—no forcing opposites'
+                  desc: 'Maps each cognitive process independently—no forcing opposites'
                 },
                 {
                   icon: <Compass className="w-5 h-5 text-jung-accent" />,

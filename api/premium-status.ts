@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSessionUserFromCookie } from './_lib/auth-utils.js';
+import { findCompletedPurchaseForUser } from './_lib/purchases.js';
 import { getSupabaseAdminClient } from './_lib/supabase.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -17,35 +18,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json({ tier: 'free', isPremium: false, reason: 'not_authenticated' });
     }
 
-    // Check for purchase by user ID
-    let { data: purchases } = await supabase
-      .from('purchases')
-      .select('id, tier, status, createdAt:created_at')
-      .eq('user_id', user.id)
-      .eq('status', 'completed')
-      .limit(1);
+    const purchase = await findCompletedPurchaseForUser(supabase, user);
 
-    // Also check by email if no purchase found
-    if ((!purchases || purchases.length === 0) && user.email) {
-      const { data: users } = await supabase
-        .from('users')
-        .select('id')
-        .eq('email', user.email);
-
-      if (users && users.length > 0) {
-        const { data: emailPurchases } = await supabase
-          .from('purchases')
-          .select('id, tier, status, createdAt:created_at')
-          .eq('user_id', users[0].id)
-          .eq('status', 'completed')
-          .limit(1);
-
-        purchases = emailPurchases;
-      }
-    }
-
-    if (purchases && purchases.length > 0) {
-      const purchase = purchases[0];
+    if (purchase) {
       const tier = purchase.tier || 'insight';
       return res.status(200).json({
         tier: tier,

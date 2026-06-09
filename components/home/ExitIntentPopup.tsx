@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { X, ArrowRight } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { AnalyticsEvents } from './data';
 import { TypeJungMark } from '../brand/TypeJungMark';
+import { DiscountCaptureCard } from '../discount/DiscountCaptureCard';
+import { useModalFocus } from '../../hooks/useModalFocus';
 
 interface ExitIntentPopupProps {
   isOpen: boolean;
@@ -10,11 +12,20 @@ interface ExitIntentPopupProps {
   onStartAssessment: () => void;
 }
 
-export const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({ 
-  isOpen, 
-  onClose, 
-  onStartAssessment 
+export const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({
+  isOpen,
+  onClose,
+  onStartAssessment
 }) => {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  useModalFocus({
+    isOpen,
+    dialogRef,
+    initialFocusRef: closeButtonRef,
+    onClose,
+  });
+
   if (!isOpen) return null;
 
   const handleStart = () => {
@@ -23,9 +34,21 @@ export const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-jung-dark/60 z-50 flex items-center justify-center p-4 animate-fade-in">
-      <div className="bg-jung-surface rounded-2xl max-w-md w-full p-8 relative shadow-xl border border-jung-border animate-scale-in">
+    <div
+      className="fixed inset-0 bg-jung-dark/60 z-50 flex items-center justify-center p-4 animate-fade-in"
+      onClick={onClose}
+    >
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="exit-popup-title"
+        tabIndex={-1}
+        className="bg-jung-surface rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 relative shadow-xl border border-jung-border animate-scale-in"
+        onClick={(event) => event.stopPropagation()}
+      >
         <button
+          ref={closeButtonRef}
           onClick={onClose}
           className="absolute top-4 right-4 text-jung-muted hover:text-jung-dark transition-colors p-2"
           aria-label="Close popup"
@@ -38,7 +61,7 @@ export const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({
             <TypeJungMark size="md" />
           </div>
 
-          <h3 className="text-display text-2xl text-jung-dark mb-4">
+          <h3 id="exit-popup-title" className="text-display text-2xl text-jung-dark mb-4">
             Still unsure which type you are?
           </h3>
 
@@ -51,7 +74,7 @@ export const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({
               Your free result includes:
             </p>
             <p className="text-sm text-jung-secondary">
-              an 8-function energy map, your dominant-inferior axis, and a plain-language starting point for reflection.
+              an 8-function stack map, your dominant-inferior axis, and a plain-language starting point for reflection.
             </p>
           </div>
 
@@ -62,6 +85,24 @@ export const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({
           >
             Try the Free Assessment <ArrowRight className="ml-2 w-4 h-4" />
           </Button>
+
+          <div className="mt-6 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.12em] text-jung-muted">
+            <span className="h-px flex-1 bg-jung-border" />
+            or
+            <span className="h-px flex-1 bg-jung-border" />
+          </div>
+
+          <DiscountCaptureCard
+            source="exit_popup_email_code"
+            minimal
+            showCheckoutButtons={false}
+            minimalTitle="Not ready to start now?"
+            minimalDescription="Email yourself a link back to the free assessment so it's one click when you return."
+            minimalSubmitLabel="Email my link"
+            minimalFootnote="One email with your link back. No spam."
+            minimalSentMessage="Sent. Check your inbox for the link back to your free map."
+            className="mt-4 rounded-xl border border-jung-border bg-jung-base p-4 text-left"
+          />
 
           <button
             onClick={onClose}

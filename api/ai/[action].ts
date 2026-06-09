@@ -1,9 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSessionUser } from '../_lib/auth.js';
 import { generateGeminiText } from '../_lib/gemini.js';
-import { findCompletedPurchaseForUser, resolveTierFromCheckoutSession } from '../_lib/purchases.js';
+import { findCompletedPurchaseForUser, isCheckoutSessionRedeemableBy, resolveTierFromCheckoutSession } from '../_lib/purchases.js';
 import { enforceRateLimit } from '../_lib/rate-limit.js';
-import { getSupabaseAdminClient } from '../_lib/supabase.js';
+import { getSupabaseAdminClient, hasSupabaseAdminConfig } from '../_lib/supabase.js';
 import { getStripeSecretKey } from '../../server/checkout.js';
 
 interface FunctionScore {
@@ -261,6 +261,19 @@ async function handlePremiumAnalysis(req: VercelRequest, res: VercelResponse) {
 
   if (!hasPremiumAccess) {
     hasPremiumAccess = await verifyPaidCheckoutSession(checkoutSessionId);
+
+    // A paid session bound to another account must not unlock premium for
+    // this requester, even though the session id itself checks out on Stripe.
+    if (hasPremiumAccess && hasSupabaseAdminConfig()) {
+      const cleanedSessionId = cleanCheckoutSessionId(checkoutSessionId);
+      if (cleanedSessionId) {
+        hasPremiumAccess = await isCheckoutSessionRedeemableBy(
+          getSupabaseAdminClient(),
+          cleanedSessionId,
+          user,
+        );
+      }
+    }
   }
 
   if (!hasPremiumAccess) {

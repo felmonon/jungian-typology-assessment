@@ -165,6 +165,30 @@ export async function findCompletedPurchaseForUser(
   return emailPurchases?.[0] || null;
 }
 
+export async function isCheckoutSessionRedeemableBy(
+  supabase: SupabaseClient,
+  sessionId: string,
+  user: PurchaseAccessUser | null | undefined,
+): Promise<boolean> {
+  const { data: purchases, error } = await supabase
+    .from('purchases')
+    .select('user_id, customer_email')
+    .eq('stripe_session_id', sessionId)
+    .limit(1);
+
+  if (error) throw error;
+  const purchase = purchases?.[0];
+  // Unknown session (webhook not yet processed) or guest purchase with no
+  // account binding: the session id itself acts as the unlock token.
+  if (!purchase || !purchase.user_id) return true;
+
+  // The purchase is bound to an account: deny redemption from a different
+  // logged-in account. Anonymous requests keep bearer semantics so the
+  // buyer's own success-page flow works before they sign in.
+  if (!user?.id) return true;
+  return user.id === purchase.user_id;
+}
+
 export async function recordCheckoutPurchase(
   supabase: SupabaseClient,
   session: CheckoutSessionLike,

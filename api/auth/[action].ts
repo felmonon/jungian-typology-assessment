@@ -791,16 +791,11 @@ async function handleDiscountLead(req: VercelRequest, res: VercelResponse) {
 
 function isAuthorizedCron(req: VercelRequest): boolean {
   const configuredSecret = process.env.CRON_SECRET;
-  const authHeader = req.headers.authorization;
-
-  if (configuredSecret) {
-    return authHeader === `Bearer ${configuredSecret}`;
+  if (!configuredSecret) {
+    console.error('CRON_SECRET is not configured; rejecting cron request');
+    return false;
   }
-
-  const userAgent = Array.isArray(req.headers['user-agent'])
-    ? req.headers['user-agent'][0]
-    : req.headers['user-agent'];
-  return typeof userAgent === 'string' && userAgent.includes('vercel-cron/1.0');
+  return req.headers.authorization === `Bearer ${configuredSecret}`;
 }
 
 function followupActionForLead(req: VercelRequest, lead: DiscountLeadFollowupRow) {

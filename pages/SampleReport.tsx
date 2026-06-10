@@ -240,7 +240,7 @@ export const SampleReport: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-jung-base">
+    <div className="min-h-screen bg-jung-base pb-28 md:pb-0">
       <section className="section-rule py-12 lg:py-16">
         <div className="editorial-container grid gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1fr)] lg:items-end">
           <div>
@@ -530,6 +530,28 @@ export const SampleReport: React.FC = () => {
           .
         </p>
       </section>
+
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-jung-border bg-jung-surface/95 shadow-[0_-12px_32px_rgba(41,28,18,0.14)] backdrop-blur md:hidden">
+        <div className="mx-auto flex max-w-screen-sm items-center justify-between gap-3 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3">
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-jung-dark">
+              {savedResult ? `Get Insight for your map - ${INSIGHT_PRICE}` : `Insight report - ${INSIGHT_PRICE}`}
+            </p>
+            <p className="mt-0.5 text-xs leading-4 text-jung-muted">
+              {savedResult ? 'One-time. 7-day money-back guarantee.' : 'Free map first. One-time upgrade, no subscription.'}
+            </p>
+          </div>
+          <Button
+            variant="accent"
+            size="sm"
+            className="flex-none"
+            onClick={() => (savedResult ? getInsightReport('sample_report_mobile_sticky') : startAssessment('sample_report_mobile_sticky'))}
+            rightIcon={<ArrowRight className="h-4 w-4" />}
+          >
+            {savedResult ? 'Get Insight' : 'Start free'}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

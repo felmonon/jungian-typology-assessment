@@ -234,9 +234,6 @@ export const Checkout: React.FC = () => {
   const paymentButtonText = finalPriceLabel ? `Pay ${finalPriceLabel} on Stripe` : 'Continue to Stripe';
   const mobilePaymentButtonText = isOpeningStripe ? 'Opening' : 'Pay';
   const recoveryEmailPreview = checkoutRecoveryEmail.trim() || user?.email || capturedEmail || '';
-  const priceContext = paidTier && tierPrice
-    ? `${tierPrice.price} ≈ ${APPROX_USD_PRICE[paidTier]} list price. ${EMAIL_CAPTURE_OFFER.code} currently reduces today's Stripe total to ${finalPriceLabel}.`
-    : '';
 
   const copyDiscountCode = useCallback(async () => {
     try {
@@ -578,17 +575,29 @@ export const Checkout: React.FC = () => {
               <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.08em] text-white/55">Before Stripe</p>
-                  <h2 className="mt-3 text-2xl font-semibold leading-tight text-white">
-                    {priceContext} One-time, not a subscription.
-                  </h2>
-                  <p className="mt-3 text-sm leading-6 text-white/70">
-                    Secure checkout via Stripe. Apple Pay, Google Pay, and Link can appear when they are enabled in Stripe and supported by the buyer's browser/device.
+                  <div className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-2">
+                    {tierPrice && (
+                      <span className="text-lg font-medium text-white/45 line-through decoration-white/40">{tierPrice.price}</span>
+                    )}
+                    <span className="text-display text-4xl text-white sm:text-5xl">{finalPriceLabel}</span>
+                    <span className="inline-flex items-center rounded-full bg-jung-accent px-2.5 py-1 text-xs font-semibold text-white">
+                      {EMAIL_CAPTURE_OFFER.code} · {EMAIL_CAPTURE_OFFER.percentOff}% off
+                    </span>
+                  </div>
+                  <p className="mt-3 text-sm font-medium text-white/80">
+                    One-time payment, not a subscription.{paidTier ? ` About ${APPROX_USD_PRICE[paidTier]} on non-Canadian cards.` : ''}
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-white/60">
+                    Secure checkout via Stripe. Apple Pay, Google Pay, and Link appear when your browser supports them.
                   </p>
                 </div>
                 <div className="rounded-lg border border-white/10 bg-white/10 p-4">
-                  <p className="text-sm font-semibold text-white">7-day money-back guarantee</p>
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="h-4 w-4 flex-none text-jung-subtle" />
+                    <p className="text-sm font-semibold text-white">7-day money-back guarantee</p>
+                  </div>
                   <p className="mt-2 text-xs leading-5 text-white/65">
-                    If the paid report does not feel useful, email {SUPPORT_EMAIL} with the Stripe receipt within 7 days.
+                    If the paid report does not feel useful, email {SUPPORT_EMAIL} with the Stripe receipt within 7 days for a full refund.
                   </p>
                 </div>
               </div>

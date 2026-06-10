@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Check, Copy, Download, FileText, Link2, Loader2, Lock, LogIn, RefreshCcw, Save, Share2, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, Check, Copy, CreditCard, Download, FileText, Link2, Loader2, Lock, LogIn, RefreshCcw, Save, Share2, ShieldCheck, Sparkles } from 'lucide-react';
 import { ChatBot } from '../components/ChatBot';
 import { DiscountCaptureCard } from '../components/discount/DiscountCaptureCard';
 import { Button } from '../components/ui/Button';
@@ -397,6 +397,11 @@ const LockedPremiumPreview: React.FC<{
           >
             Unlock full report - {listPrice}
           </Button>
+          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] font-semibold text-jung-secondary">
+            <span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5 text-jung-accent" />7-day money-back</span>
+            <span className="inline-flex items-center gap-1.5"><CreditCard className="h-3.5 w-3.5 text-jung-accent" />One-time, no subscription</span>
+            <span className="inline-flex items-center gap-1.5"><Lock className="h-3.5 w-3.5 text-jung-accent" />Secure via Stripe</span>
+          </div>
           <button
             type="button"
             onClick={() => onUnlock(intendedTier, 'results_locked_preview_price_note')}
@@ -1395,68 +1400,6 @@ export const Results: React.FC = () => {
           </section>
         )}
 
-        <section className="mb-8 overflow-hidden rounded-lg border border-jung-border bg-jung-surface shadow-sm">
-          <div className="grid gap-0 lg:grid-cols-[1fr_28rem]">
-            <div className="p-5 sm:p-6">
-              <p className="text-label">Compare maps</p>
-              <h2 className="mt-2 text-2xl font-semibold text-jung-dark">Invite {REFERRAL_INVITE_GOAL} people who would actually compare maps.</h2>
-              <p className="mt-3 max-w-3xl text-sm leading-6 text-jung-secondary">
-                Your axis is {dominantLabel} to {inferiorLabel}. A shared result gives them a concrete starting point before they take the free assessment.
-              </p>
-              <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                {[
-                  ['1', 'Share your map'],
-                  ['2', 'Ask for their axis'],
-                  ['3', 'Compare stress edges'],
-                ].map(([step, label]) => (
-                  <div key={step} className="rounded-lg border border-jung-border bg-jung-base px-4 py-3">
-                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-jung-muted">Step {step}</p>
-                    <p className="mt-1 text-sm font-semibold text-jung-dark">{label}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="border-t border-jung-border bg-jung-base p-5 sm:p-6 lg:border-l lg:border-t-0">
-              <div className="flex items-center gap-2 text-sm font-semibold text-jung-dark">
-                <Sparkles className="h-4 w-4 text-jung-accent" />
-                Ready-to-send invite
-              </div>
-              <p className="mt-3 text-sm leading-6 text-jung-secondary">
-                Start with your result, then let them bring their own map back to the same conversation.
-              </p>
-              {shareUrl && (
-                <a className="mt-3 block break-all text-xs leading-5 text-jung-accent hover:underline" href={shareUrl}>
-                  {shareUrl}
-                </a>
-              )}
-              {shareLinkState === 'error' && !shareUrl && (
-                <p className="mt-3 text-xs leading-5 text-error">
-                  The compare page could not be created, so the invite will use the free assessment link instead.
-                </p>
-              )}
-              <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                <Button
-                  variant="accent"
-                  className="w-full"
-                  onClick={() => shareAssessmentInvite('results_compare_banner')}
-                  disabled={isPreparingReferral}
-                  leftIcon={isPreparingReferral ? <Loader2 className="h-4 w-4 animate-spin" /> : inviteCopied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
-                >
-                  {isPreparingReferral ? 'Preparing invite' : inviteCopied ? 'Invite copied' : 'Share invite'}
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={copyResultSummary}
-                  disabled={isPreparingReferral}
-                  leftIcon={isPreparingReferral ? <Loader2 className="h-4 w-4 animate-spin" /> : summaryCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                >
-                  {isPreparingReferral ? 'Preparing link' : summaryCopied ? 'Summary copied' : 'Copy summary'}
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
 
         <div className="grid gap-6 lg:grid-cols-[1fr_0.72fr]">
           <EnergyBars results={results} />
@@ -1537,6 +1480,69 @@ export const Results: React.FC = () => {
             </div>
           </section>
         )}
+
+        <section className="mb-8 overflow-hidden rounded-lg border border-jung-border bg-jung-surface shadow-sm">
+          <div className="grid gap-0 lg:grid-cols-[1fr_28rem]">
+            <div className="p-5 sm:p-6">
+              <p className="text-label">Compare maps</p>
+              <h2 className="mt-2 text-2xl font-semibold text-jung-dark">Invite {REFERRAL_INVITE_GOAL} people who would actually compare maps.</h2>
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-jung-secondary">
+                Your axis is {dominantLabel} to {inferiorLabel}. A shared result gives them a concrete starting point before they take the free assessment.
+              </p>
+              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                {[
+                  ['1', 'Share your map'],
+                  ['2', 'Ask for their axis'],
+                  ['3', 'Compare stress edges'],
+                ].map(([step, label]) => (
+                  <div key={step} className="rounded-lg border border-jung-border bg-jung-base px-4 py-3">
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-jung-muted">Step {step}</p>
+                    <p className="mt-1 text-sm font-semibold text-jung-dark">{label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="border-t border-jung-border bg-jung-base p-5 sm:p-6 lg:border-l lg:border-t-0">
+              <div className="flex items-center gap-2 text-sm font-semibold text-jung-dark">
+                <Sparkles className="h-4 w-4 text-jung-accent" />
+                Ready-to-send invite
+              </div>
+              <p className="mt-3 text-sm leading-6 text-jung-secondary">
+                Start with your result, then let them bring their own map back to the same conversation.
+              </p>
+              {shareUrl && (
+                <a className="mt-3 block break-all text-xs leading-5 text-jung-accent hover:underline" href={shareUrl}>
+                  {shareUrl}
+                </a>
+              )}
+              {shareLinkState === 'error' && !shareUrl && (
+                <p className="mt-3 text-xs leading-5 text-error">
+                  The compare page could not be created, so the invite will use the free assessment link instead.
+                </p>
+              )}
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                <Button
+                  variant="accent"
+                  className="w-full"
+                  onClick={() => shareAssessmentInvite('results_compare_banner')}
+                  disabled={isPreparingReferral}
+                  leftIcon={isPreparingReferral ? <Loader2 className="h-4 w-4 animate-spin" /> : inviteCopied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
+                >
+                  {isPreparingReferral ? 'Preparing invite' : inviteCopied ? 'Invite copied' : 'Share invite'}
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={copyResultSummary}
+                  disabled={isPreparingReferral}
+                  leftIcon={isPreparingReferral ? <Loader2 className="h-4 w-4 animate-spin" /> : summaryCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                >
+                  {isPreparingReferral ? 'Preparing link' : summaryCopied ? 'Summary copied' : 'Copy summary'}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {isPremium && (
           <section id="premium-report" className="mt-8 rounded-lg border border-jung-accent-muted bg-jung-surface p-5 shadow-sm sm:p-6">

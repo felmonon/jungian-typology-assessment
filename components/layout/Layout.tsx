@@ -447,6 +447,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 	          <div>
 	            <h4 className="mb-4 text-sm font-semibold text-jung-dark">Guides</h4>
 	            <div className="grid gap-2 text-sm text-jung-secondary">
+	              <a href="/guides" className="inline-flex min-h-8 items-center hover:text-jung-accent">All guides</a>
 	              <a href="/free-cognitive-function-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">Free cognitive function test</a>
 	              <a href="/mbti-test-alternative" className="inline-flex min-h-8 items-center hover:text-jung-accent">MBTI test alternative</a>
 	              <a href="/sakinorva-alternative" className="inline-flex min-h-8 items-center hover:text-jung-accent">Sakinorva alternative</a>

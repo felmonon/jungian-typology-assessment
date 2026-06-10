@@ -1,6 +1,6 @@
 # TypeJung - Map All 8 Cognitive Functions
 # Website: https://typejung.com
-# Last Updated: 2026-06-09
+# Last Updated: 2026-06-10
 
 ================================================================================
 ABOUT
@@ -118,6 +118,12 @@ https://typejung.com/best-cognitive-functions-test
 Compare what makes a cognitive functions test useful: all 8 functions, inspectable scores, stress-edge context, free-first results, and practical interpretation.
 Best for: Searchers comparing cognitive-function tests and deciding which one to take next.
 Maps: All 8 function-attitudes, hierarchy hypotheses, dominant-inferior axis, stress patterns, and confidence signals.
+
+TypeJung guides:
+https://typejung.com/guides
+Browse TypeJung guides for Jungian tests, cognitive functions, function stacks, inferior-function stress, MBTI alternatives, and common mistype comparisons.
+Best for: People comparing Jungian assessments, learning cognitive functions, or checking a likely mistype before choosing a label.
+Maps: All 8 cognitive functions, function-stack interpretation, dominant-inferior tension, stress-pattern context, and close type comparisons.
 
 dominant function test:
 https://typejung.com/dominant-function-test

@@ -1072,8 +1072,8 @@ async function handleDiscountFollowups(req: VercelRequest, res: VercelResponse) 
 }
 
 async function handleCheckoutRecoveryEmails(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', 'GET');
+  if (req.method !== 'GET' && req.method !== 'POST') {
+    res.setHeader('Allow', 'GET, POST');
     return res.status(405).json({ error: 'Method not allowed' });
   }
 

@@ -1803,8 +1803,164 @@ const dominantFunctionHubPage = {
   ],
 };
 
+const guidesHubPage = {
+  slug: 'guides',
+  query: 'TypeJung guides',
+  title: 'TypeJung Guides - Jungian Tests, Cognitive Functions, and MBTI Alternatives',
+  description: 'Browse TypeJung guides for Jungian tests, cognitive functions, function stacks, inferior-function stress, MBTI alternatives, and common mistype comparisons.',
+  keywords: ['TypeJung guides', 'Jungian test guides', 'cognitive function guides', 'MBTI alternative guides', 'function stack guide'],
+  eyebrow: 'TypeJung guides',
+  h1: 'Guides for reading your Jungian function map',
+  intro: [
+    'Use this hub when you want the right next page after a TypeJung result or before taking the free assessment.',
+    'The guides are organized around practical search paths: Jungian test pages, cognitive-function theory, MBTI alternatives, and common type-comparison questions.',
+  ],
+  intent: {
+    bestFor: 'People comparing Jungian assessments, learning cognitive functions, or checking a likely mistype before choosing a label.',
+    measures: 'All 8 cognitive functions, function-stack interpretation, dominant-inferior tension, stress-pattern context, and close type comparisons.',
+    privacy: 'Most guides are public. The free assessment shows the map before any optional paid Insight or Mastery report.',
+  },
+  sections: [
+    {
+      heading: 'Start with the assessment path',
+      body: [
+        'If you are new to TypeJung, start with the free assessment and use the guides to interpret the result afterward.',
+        'These pages explain what the test maps, why the function stack matters, and how to compare a result without treating any label as final proof.',
+      ],
+      links: [
+        { href: '/assessment', label: 'Take the free assessment' },
+        { href: '/free-cognitive-function-test', label: 'Free cognitive function test' },
+        { href: '/cognitive-function-test', label: 'Cognitive function test' },
+        { href: '/cognitive-functions-quiz', label: 'Cognitive functions quiz' },
+        { href: '/jungian-personality-test', label: 'Jungian personality test' },
+        { href: '/function-stack-test', label: 'Function stack test' },
+        { href: '/dominant-function-test', label: 'Dominant function test' },
+        { href: '/inferior-function-test', label: 'Inferior function test' },
+        { href: '/shadow-work-test', label: 'Shadow work test' },
+      ],
+    },
+    {
+      heading: 'Check each dominant function',
+      body: [
+        'Use these when one function already looks likely and you want the evidence to inspect, the false positives to avoid, and the matching inferior edge.',
+      ],
+      links: [
+        { href: '/ni-dominant-test', label: 'Ni dominant test' },
+        { href: '/ne-dominant-test', label: 'Ne dominant test' },
+        { href: '/si-dominant-test', label: 'Si dominant test' },
+        { href: '/se-dominant-test', label: 'Se dominant test' },
+        { href: '/ti-dominant-test', label: 'Ti dominant test' },
+        { href: '/te-dominant-test', label: 'Te dominant test' },
+        { href: '/fi-dominant-test', label: 'Fi dominant test' },
+        { href: '/fe-dominant-test', label: 'Fe dominant test' },
+      ],
+    },
+    {
+      heading: 'Learn the Jungian function model',
+      body: [
+        'Use the theory guides when you want language for Ni, Ne, Si, Se, Ti, Te, Fi, and Fe before interpreting a score shape.',
+        'The most useful reading order is usually the broad Jungian page, the cognitive-functions guide, then the specific function or type page that matches your result.',
+      ],
+      table: {
+        headers: ['Need', 'Best guide', 'Use it for'],
+        rows: [
+          ['Broad overview', 'Jungian test', 'Understanding how TypeJung differs from a quick label quiz'],
+          ['Theory foundation', 'Jungian typology', 'Learning attitudes, functions, type, and self-reflection language'],
+          ['Function language', 'Cognitive functions guide', 'Comparing the eight function-attitudes before reading a result'],
+          ['Full function test', 'Jungian cognitive functions test', 'Seeing how Ni, Ne, Si, Se, Ti, Te, Fi, and Fe are mapped together'],
+        ],
+      },
+      links: [
+        { href: '/jungian-test', label: 'Jungian test' },
+        { href: '/jungian-typology', label: 'Jungian typology guide' },
+        { href: '/cognitive-functions', label: 'Cognitive functions guide' },
+        { href: '/jungian-cognitive-functions-test', label: 'Jungian cognitive functions test' },
+      ],
+    },
+    {
+      heading: 'Compare TypeJung with other test paths',
+      body: [
+        'Alternative pages are useful when you already know another test name and want to understand what TypeJung does differently.',
+        'The repeated pattern is simple: TypeJung gives the free function-stack map first, then asks whether optional paid interpretation is worth adding.',
+      ],
+      links: [
+        { href: '/mbti-test-alternative', label: 'MBTI test alternative' },
+        { href: '/mbti-alternative', label: 'MBTI alternative' },
+        { href: '/16personalities-alternative', label: '16Personalities alternative' },
+        { href: '/sakinorva-alternative', label: 'Sakinorva alternative' },
+        { href: '/keys2cognition-alternative', label: 'Keys2Cognition alternative' },
+        { href: '/mistype-investigator-alternative', label: 'Mistype Investigator alternative' },
+        { href: '/michael-caloz-alternative', label: 'Michael Caloz alternative' },
+        { href: '/idrlabs-cognitive-function-test-alternative', label: 'IDRlabs alternative' },
+        { href: '/16selves-alternative', label: '16Selves alternative' },
+        { href: '/best-cognitive-functions-test', label: 'Best cognitive functions test' },
+      ],
+    },
+    {
+      heading: 'Resolve common mistype questions',
+      body: [
+        'Comparison guides help when two nearby labels both sound plausible. They focus on function order, support function evidence, and the inferior-function edge.',
+        'Use them after the free map if your top result is close to another pattern or if previous tests keep switching between two types.',
+      ],
+      links: [
+        { href: '/mbti-mistype-test', label: 'MBTI mistype test' },
+        { href: '/mbti-keeps-changing', label: 'Why your MBTI keeps changing' },
+        { href: '/infj-vs-infp-test', label: 'INFJ vs INFP test' },
+        { href: '/intj-vs-intp-test', label: 'INTJ vs INTP test' },
+        { href: '/infj-vs-intj-test', label: 'INFJ vs INTJ test' },
+        { href: '/infj-vs-enfj-test', label: 'INFJ vs ENFJ test' },
+        { href: '/intj-vs-entj-test', label: 'INTJ vs ENTJ test' },
+        { href: '/istj-vs-intj-test', label: 'ISTJ vs INTJ test' },
+        { href: '/infp-vs-isfp-test', label: 'INFP vs ISFP test' },
+        { href: '/enfp-vs-infp-test', label: 'ENFP vs INFP test' },
+        { href: '/enfp-vs-entp-test', label: 'ENFP vs ENTP test' },
+        { href: '/entp-vs-intp-test', label: 'ENTP vs INTP test' },
+        { href: '/intp-vs-istp-test', label: 'INTP vs ISTP test' },
+        { href: '/entj-vs-estj-test', label: 'ENTJ vs ESTJ test' },
+        { href: '/isfj-vs-infj-test', label: 'ISFJ vs INFJ test' },
+        { href: '/esfp-vs-enfp-test', label: 'ESFP vs ENFP test' },
+        { href: '/estp-vs-entp-test', label: 'ESTP vs ENTP test' },
+      ],
+    },
+    {
+      heading: 'Preview paid depth before deciding',
+      body: [
+        'The free guides and assessment are enough to start working with the map. Paid reports are optional and should deepen a result you already find useful.',
+        'Preview the sample report and pricing page before buying, especially if you want stress-pattern reflection, relationship-pattern reflection, and practice prompts tied to your exact map.',
+      ],
+      links: [
+        { href: '/sample-report', label: 'View the sample report' },
+        { href: '/pricing', label: 'Compare Free, Insight, and Mastery' },
+      ],
+    },
+  ],
+  faqs: [
+    {
+      question: 'Which TypeJung guide should I read first?',
+      answer: 'If you have not taken the assessment, start with the free cognitive function test page. If you already have a result, read the function stack test and the guides for your strongest and weakest functions.',
+    },
+    {
+      question: 'Are the guides free?',
+      answer: 'Yes. The public guides and the core assessment map are free. Insight and Mastery are optional one-time paid reports after you see the free map.',
+    },
+    {
+      question: 'Can these guides prove my type?',
+      answer: 'No. TypeJung guides are educational self-reflection resources. Use them to inspect function evidence, stress patterns, and close alternatives rather than treating any page as final proof.',
+    },
+  ],
+  relatedLinks: [
+    { href: '/assessment', label: 'Take the free assessment' },
+    { href: '/free-cognitive-function-test', label: 'Free cognitive function test' },
+    { href: '/cognitive-functions', label: 'Cognitive functions guide' },
+    { href: '/function-stack-test', label: 'Function stack test' },
+    { href: '/sakinorva-alternative', label: 'Sakinorva alternative' },
+    { href: '/sample-report', label: 'View sample report' },
+  ],
+};
+
 export const seoLandingPages = [
   ...competitorLandingPages,
+  guidesHubPage,
   dominantFunctionHubPage,
   ...dominantFunctionLandingPages,
   {

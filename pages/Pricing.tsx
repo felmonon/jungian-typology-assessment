@@ -213,17 +213,6 @@ export const Pricing: React.FC = () => {
     }, 0);
   }, [location.hash, selectedPaidTier]);
 
-  const scrollToPricingSection = useCallback((section: 'plans' | 'compare') => {
-    const target = section === 'compare' ? compareSectionRef.current : plansSectionRef.current;
-    if (!target) return;
-
-    trackEvent('pricing_anchor_clicked', {
-      source: 'pricing_page',
-      section,
-    });
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, []);
-
   const saveUpgradeIntent = (tier: PaidTierId, source: string) => {
     writeUpgradeIntent(tier, source);
     trackEvent('upgrade_intent_saved', { source, tier });
@@ -286,7 +275,7 @@ export const Pricing: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-jung-base">
-      <section className="section-rule py-12 lg:py-16">
+      <section className="section-rule py-10 lg:py-16">
         <div className="editorial-container grid gap-10 lg:grid-cols-[0.78fr_1fr] lg:items-end">
           <div>
             <p className="text-label">Pricing</p>
@@ -314,9 +303,9 @@ export const Pricing: React.FC = () => {
           </div>
           <div className="max-w-2xl lg:justify-self-end">
             <p className="text-body-lg text-jung-secondary">
-              The free assessment gives you the function-stack map first. Insight and Mastery are optional one-time upgrades for deeper interpretation, practice prompts, and result-aware reflection support. With {EMAIL_CAPTURE_OFFER.code}, Stripe currently shows Insight at {discountedPriceLabel(PRICING.insight.amount)} and Mastery at {discountedPriceLabel(PRICING.mastery.amount)}.
+              The free assessment maps your function stack first. Insight and Mastery are optional one-time upgrades. With {EMAIL_CAPTURE_OFFER.code}, Stripe shows Insight at {discountedPriceLabel(PRICING.insight.amount)} and Mastery at {discountedPriceLabel(PRICING.mastery.amount)}.
             </p>
-            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
               {TRUST_ITEMS.map(({ icon: Icon, label, body }) => (
                 <div key={label} className="rounded-lg border border-jung-border bg-jung-surface p-4 shadow-sm">
                   <Icon className="mb-3 h-4 w-4 text-jung-accent" />
@@ -332,24 +321,6 @@ export const Pricing: React.FC = () => {
               showCheckoutButtons={hasLocalResults}
               className="mt-5"
             />
-            <div className="mt-4 grid gap-2 sm:grid-cols-2">
-              <Button
-                variant="outline"
-                size="md"
-                onClick={() => scrollToPricingSection('plans')}
-                rightIcon={<ChevronDown className="h-4 w-4" />}
-              >
-                See plans
-              </Button>
-              <Button
-                variant="outline"
-                size="md"
-                onClick={() => scrollToPricingSection('compare')}
-                rightIcon={<ChevronDown className="h-4 w-4" />}
-              >
-                Compare tiers
-              </Button>
-            </div>
           </div>
         </div>
       </section>
@@ -390,7 +361,7 @@ export const Pricing: React.FC = () => {
         </section>
       )}
 
-      <section id="plans" ref={plansSectionRef} className="scroll-mt-24 py-12 lg:py-16">
+      <section id="plans" ref={plansSectionRef} className="scroll-mt-24 py-10 lg:py-16">
         <div className="editorial-container">
           <div className="grid gap-5 lg:grid-cols-3">
             {TIERS.map((tier) => {
@@ -467,7 +438,7 @@ export const Pricing: React.FC = () => {
         </div>
       </section>
 
-      <section id="compare" ref={compareSectionRef} className="scroll-mt-24 border-y border-jung-border bg-jung-surface py-14">
+      <section id="compare" ref={compareSectionRef} className="scroll-mt-24 border-y border-jung-border bg-jung-surface py-10 lg:py-14">
         <div className="editorial-container">
           <div className="mb-8 max-w-2xl">
             <p className="text-label">Compare</p>
@@ -503,7 +474,7 @@ export const Pricing: React.FC = () => {
         </div>
       </section>
 
-      <section className="editorial-container py-14">
+      <section className="editorial-container py-10 lg:py-14">
         <div className="grid gap-8 lg:grid-cols-[0.72fr_1fr] lg:items-start">
           <div>
             <p className="text-label">Paid preview</p>
@@ -536,23 +507,7 @@ export const Pricing: React.FC = () => {
         </div>
       </section>
 
-      <section className="editorial-container pb-14">
-        <div className="grid gap-4 md:grid-cols-3">
-          {[
-            { icon: ShieldCheck, title: 'Private by default', body: 'The free result can stay local. Sign in when you want saved history, share links, or paid access restored across devices.' },
-            { icon: Clock, title: 'Restore access', body: 'Paid access is one-time. Sign in with the purchase email to restore the unlocked tier across devices.' },
-            { icon: Sparkles, title: 'Upgrade after seeing value', body: 'You can complete the assessment first and decide after the free map is generated.' },
-          ].map((item) => (
-            <div key={item.title} className="rounded-lg border border-jung-border bg-jung-surface p-6">
-              <item.icon className="h-5 w-5 text-jung-accent" />
-              <h3 className="mt-4 text-lg font-semibold text-jung-dark">{item.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-jung-secondary">{item.body}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="editorial-container pb-16">
+      <section className="editorial-container pb-12 pt-2">
         <div className="mx-auto max-w-3xl">
           <div className="mb-8 text-center">
             <p className="text-label">Questions</p>
@@ -573,7 +528,7 @@ export const Pricing: React.FC = () => {
         </div>
       </section>
 
-      <section className="bg-jung-dark py-16">
+      <section className="bg-jung-dark py-12 lg:py-16">
         <div className="editorial-container grid gap-8 text-white lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
             <p className="text-sm font-semibold text-white/60">Ready when you are</p>

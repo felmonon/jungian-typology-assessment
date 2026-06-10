@@ -324,6 +324,46 @@ export const Home: React.FC = () => {
           </div>
         </section>
 
+
+        <section className="border-b border-jung-border-light bg-white py-12 lg:py-14">
+          <div className="lab-container grid gap-4 md:grid-cols-3">
+            {valueCards.map((card) => {
+              const Icon = card.icon;
+              return (
+                <div key={card.title} className="rounded-lg border border-jung-border bg-jung-base p-5">
+                  <Icon className="h-5 w-5 text-jung-accent" />
+                  <h3 className="mt-4 font-display text-2xl font-semibold text-jung-dark">{card.title}</h3>
+                  <p className="mt-3 text-sm leading-7 text-jung-secondary">{card.description}</p>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="bg-jung-base py-12 lg:py-20">
+          <div className="lab-container grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+            <div>
+              <p className="text-xs font-semibold uppercase text-jung-muted">How it works</p>
+              <h2 className="mt-4 max-w-xl font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
+                A clear path from curiosity to usable insight.
+              </h2>
+            </div>
+            <div className="grid gap-4">
+              {steps.map(([number, title, description]) => (
+                <div key={number} className="rounded-lg border border-jung-border bg-white p-5 shadow-sm">
+                  <div className="flex gap-4">
+                    <span className="mt-1 font-mono text-xs font-semibold text-jung-accent">{number}</span>
+                    <div>
+                      <h3 className="font-display text-2xl font-semibold text-jung-dark">{title}</h3>
+                      <p className="mt-2 text-sm leading-7 text-jung-secondary">{description}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section className="border-b border-jung-border-light bg-white py-6">
           <div className="lab-container">
             <div className="grid gap-4 rounded-lg border border-jung-border bg-jung-base p-5 md:grid-cols-[minmax(0,1fr)_minmax(20rem,0.9fr)] md:items-center">
@@ -354,46 +394,7 @@ export const Home: React.FC = () => {
           </div>
         </section>
 
-        <section className="border-b border-jung-border-light bg-white py-12 lg:py-14">
-          <div className="lab-container grid gap-4 md:grid-cols-3">
-            {valueCards.map((card) => {
-              const Icon = card.icon;
-              return (
-                <div key={card.title} className="rounded-lg border border-jung-border bg-jung-base p-5">
-                  <Icon className="h-5 w-5 text-jung-accent" />
-                  <h3 className="mt-4 font-display text-2xl font-semibold text-jung-dark">{card.title}</h3>
-                  <p className="mt-3 text-sm leading-7 text-jung-secondary">{card.description}</p>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
-        <section className="bg-jung-base py-16 lg:py-20">
-          <div className="lab-container grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
-            <div>
-              <p className="text-xs font-semibold uppercase text-jung-muted">How it works</p>
-              <h2 className="mt-4 max-w-xl font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
-                A clear path from curiosity to usable insight.
-              </h2>
-            </div>
-            <div className="grid gap-4">
-              {steps.map(([number, title, description]) => (
-                <div key={number} className="rounded-lg border border-jung-border bg-white p-5 shadow-sm">
-                  <div className="flex gap-4">
-                    <span className="mt-1 font-mono text-xs font-semibold text-jung-accent">{number}</span>
-                    <div>
-                      <h3 className="font-display text-2xl font-semibold text-jung-dark">{title}</h3>
-                      <p className="mt-2 text-sm leading-7 text-jung-secondary">{description}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="border-y border-jung-border-light bg-white py-16 lg:py-20">
+        <section className="border-y border-jung-border-light bg-white py-12 lg:py-20">
           <div className="lab-container grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
             <div>
               <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
@@ -429,7 +430,7 @@ export const Home: React.FC = () => {
           </div>
         </section>
 
-        <section id="pricing" className="border-b border-jung-border-light bg-white py-16 lg:py-20">
+        <section id="pricing" className="border-b border-jung-border-light bg-white py-12 lg:py-20">
           <div className="lab-container">
             <div className="mb-10 max-w-2xl">
               <p className="text-xs font-semibold uppercase text-jung-muted">Pricing</p>
@@ -502,7 +503,8 @@ export const Home: React.FC = () => {
           </div>
         </section>
 
-        <section className="bg-jung-base py-16 lg:py-20">
+
+        <section className="bg-jung-base py-12 lg:py-20">
           <div className="lab-container grid gap-10 lg:grid-cols-[0.88fr_1.12fr]">
             <div>
               <p className="text-xs font-semibold uppercase text-jung-muted">Before you start</p>
@@ -536,7 +538,7 @@ export const Home: React.FC = () => {
           </div>
         </section>
 
-        <section className="bg-jung-accent py-14 text-white lg:py-16">
+        <section className="bg-jung-accent py-12 text-white lg:py-16">
           <div className="lab-container flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
             <div>
               <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/12 px-3 py-1 text-xs font-semibold">

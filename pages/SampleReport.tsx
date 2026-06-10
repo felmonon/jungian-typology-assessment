@@ -8,7 +8,6 @@ import {
   FileText,
   Heart,
   MessageCircle,
-  ShieldCheck,
   Sparkles,
   Target,
 } from 'lucide-react';
@@ -241,7 +240,7 @@ export const SampleReport: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-jung-base pb-28 md:pb-0">
-      <section className="section-rule py-12 lg:py-16">
+      <section className="section-rule py-10 lg:py-16">
         <div className="editorial-container grid gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1fr)] lg:items-end">
           <div>
             <p className="text-label">Sample report</p>
@@ -316,15 +315,6 @@ export const SampleReport: React.FC = () => {
           </div>
 
           <div className="grid gap-4">
-            <div className="flex items-start gap-3 rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm">
-              <ShieldCheck className="mt-1 h-5 w-5 flex-none text-jung-accent" />
-              <div>
-                <p className="text-sm font-semibold text-jung-dark">Sample only</p>
-                <p className="mt-2 text-sm leading-6 text-jung-secondary">
-                  This page is a fictional example. Your actual paid report is generated from your TypeJung result after the assessment.
-                </p>
-              </div>
-            </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="rounded-lg border border-jung-border bg-jung-base p-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted">Insight</p>
@@ -359,7 +349,7 @@ export const SampleReport: React.FC = () => {
         </div>
       </section>
 
-      <section className="editorial-container py-12 lg:py-14">
+      <section className="editorial-container py-10 lg:py-14">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,0.62fr)_minmax(0,1fr)] lg:items-start">
           <div>
             <p className="text-label">Fictional result context</p>
@@ -390,7 +380,7 @@ export const SampleReport: React.FC = () => {
         </div>
       </section>
 
-      <section className="border-y border-jung-border bg-jung-surface py-14">
+      <section className="border-y border-jung-border bg-jung-surface py-10 lg:py-14">
         <div className="editorial-container">
           <div className="max-w-2xl">
             <p className="text-label">Inside Insight</p>
@@ -440,7 +430,7 @@ export const SampleReport: React.FC = () => {
         </div>
       </section>
 
-      <section className="editorial-container py-14">
+      <section className="editorial-container py-10 lg:py-14">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,0.76fr)_minmax(0,1fr)] lg:items-start">
           <div>
             <p className="text-label">Mastery sample</p>
@@ -487,7 +477,7 @@ export const SampleReport: React.FC = () => {
         </div>
       </section>
 
-      <section className="bg-jung-dark py-16">
+      <section className="bg-jung-dark py-12 lg:py-16">
         <div className="editorial-container grid gap-8 text-white lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
           <div>
             <p className="text-sm font-semibold text-white/60">Ready to see your own map?</p>
@@ -517,7 +507,7 @@ export const SampleReport: React.FC = () => {
         </div>
       </section>
 
-      <section className="editorial-container py-10">
+      <section className="editorial-container py-8">
         <p className="text-xs leading-5 text-jung-muted">
           TypeJung is for reflection and self-understanding, not medical, therapeutic, hiring, or diagnostic decision-making. See the{' '}
           <Link className="font-semibold text-jung-accent hover:text-jung-accent-hover" to="/terms">

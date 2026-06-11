@@ -2,13 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
-  Brain,
+  BarChart3,
   Check,
   ChevronDown,
-  Compass,
+  Eye,
   FileText,
   Lock,
-  MessageCircle,
   ShieldCheck,
 } from 'lucide-react';
 import { ErrorBoundary } from '../components/ErrorBoundary';
@@ -34,46 +33,46 @@ const sampleProfile = [
 
 const trustPoints = [
   '42 prompts, usually 12-16 minutes',
-  'Free all-8-function map first',
-  'Paid depth only after the result',
+  'No card before the free result',
+  'CA$10 depth only after the map',
 ];
 
 const valueCards = [
   {
-    icon: Compass,
-    title: 'Stop collecting labels',
+    icon: BarChart3,
+    title: 'Free map first',
     description:
-      'Built for people comparing INFJ vs INFP, INTJ vs INTP, Sakinorva alternatives, and changing MBTI results.',
+      'See all eight functions, stack shape, reliability, and the dominant-inferior axis before any checkout screen.',
   },
   {
-    icon: Brain,
-    title: 'Read the pattern',
+    icon: Eye,
+    title: 'Preview the paid depth',
     description:
-      'See all eight cognitive functions, likely stack shape, reliability, and dominant-inferior tension before paying.',
+      'The results page shows real personalized excerpts from your developmental edge and stress pattern before you unlock.',
   },
   {
-    icon: MessageCircle,
-    title: 'Work with the stress edge',
+    icon: ShieldCheck,
+    title: 'Review before Stripe',
     description:
-      'Use paid depth only when the free map explains something real and you want practical interpretation behind it.',
+      'Checkout starts with a clear CA$10 one-time review, 7-day guarantee, and secure Stripe payment handoff.',
   },
 ];
 
-const proofSignals = [
+const diagnosticSignals = [
   {
-    label: 'Likely stack',
+    label: 'Likely stack hypothesis',
     value: 'Ti-Ne',
-    note: 'Shown as a working hypothesis, not a final identity claim.',
+    note: 'A working pattern, not a costume or final identity claim.',
   },
   {
-    label: 'Stress edge',
+    label: 'Dominant -> inferior edge',
     value: 'Ti to Fe',
-    note: 'The dominant-inferior tension stays visible.',
+    note: 'Where precision tightens into social pressure.',
   },
   {
-    label: 'Before checkout',
-    value: 'Free',
-    note: 'You inspect the map before choosing paid interpretation.',
+    label: 'Upgrade trigger',
+    value: 'After result',
+    note: 'Paid depth appears when the free map has context.',
   },
 ];
 
@@ -84,10 +83,25 @@ const steps = [
 ];
 
 const reportQuestions = [
-  'Which function is leading my attention, and which one creates pressure?',
-  'Why do I repeat the same stress pattern in work or relationships?',
-  'What does my result mean beyond a four-letter personality label?',
-  'What should I practice this week so the insight becomes useful?',
+  'Your developmental edge starts from the dominant-inferior axis in your actual scores.',
+  'Your stress pattern is framed as concrete signals, not vague type lore.',
+  'Relationship reflection translates the map into conflict and repair patterns.',
+  'Practice prompts turn the result into one thing to test this week.',
+];
+
+const lockedPreview = [
+  {
+    title: 'Developmental edge',
+    unlocked:
+      'Strong Ti can protect clarity by staying detached. Growth starts when precision can name impact without losing rigor.',
+    locked: 'The full report ties this to your inferior-function pressure, repair pattern, and first practice.',
+  },
+  {
+    title: 'Stress pattern',
+    unlocked:
+      'The Ti -> Fe edge often shows up as suddenly reading tone, approval, or exclusion as more dangerous than the actual facts.',
+    locked: 'Unlock the detailed map of early, middle, and repair signals for your own score pattern.',
+  },
 ];
 
 const pricingTiers = [
@@ -194,36 +208,83 @@ export const Home: React.FC = () => {
   return (
     <ErrorBoundary>
       <div className="relative overflow-hidden">
-        <section className="relative border-b border-jung-border-light bg-[linear-gradient(180deg,#fbfaf6_0%,#f3efe5_100%)]">
-          <div className="lab-container grid gap-10 py-10 md:py-14 lg:grid-cols-[1fr_0.92fr] lg:items-center lg:py-16">
-            <div>
-              <div className="mb-6 flex flex-wrap items-center gap-3">
-                <span className="rounded-full border border-jung-border bg-white px-3 py-1 text-xs font-semibold text-jung-secondary shadow-sm">
-                  Free Jungian function-stack map
+        <section className="relative border-b border-jung-border-light bg-jung-base">
+          <div className="lab-container grid gap-8 py-8 md:py-10 lg:grid-cols-[0.86fr_1fr] lg:items-center lg:py-5">
+            <div className="max-w-3xl">
+              <div className="mb-5 flex flex-wrap items-center gap-2">
+                <span className="inline-flex min-h-8 items-center gap-2 rounded-lg border border-jung-border bg-jung-surface px-3 text-xs font-semibold text-jung-secondary shadow-sm">
+                  <BarChart3 className="h-3.5 w-3.5 text-jung-accent" />
+                  <span className="sm:hidden">Free map</span>
+                  <span className="hidden sm:inline">Free function-stack map</span>
                 </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-jung-accent-light px-3 py-1 text-xs font-semibold text-jung-accent">
+                <span className="inline-flex min-h-8 items-center gap-2 rounded-lg bg-jung-accent-light px-3 text-xs font-semibold text-jung-accent">
                   <ShieldCheck className="h-3.5 w-3.5" />
-                  Free before checkout
+                  <span className="sm:hidden">No card first</span>
+                  <span className="hidden sm:inline">No card before results</span>
                 </span>
               </div>
 
-              <h1 className="max-w-4xl text-balance font-display text-[38px] font-semibold leading-[1.02] text-jung-dark sm:text-5xl lg:text-[64px]">
-                When your MBTI result keeps changing, map the pattern underneath.
+              <h1 className="max-w-4xl text-balance font-display text-[34px] font-semibold leading-[0.98] text-jung-dark sm:text-5xl lg:text-[72px]">
+                Your type keeps changing. Map the pattern underneath.
               </h1>
 
-              <p className="mt-6 max-w-2xl text-base leading-8 text-jung-secondary md:text-lg">
-                TypeJung shows the function-stack pattern behind nearby type labels: all eight
-                functions, the dominant-inferior tension, and the stress edge behind your result.
-                Start with the free map. Upgrade only if it explains something real.
+              <p className="mt-4 max-w-2xl text-[15px] leading-6 text-jung-secondary md:text-lg md:leading-8">
+                TypeJung turns a 12-minute assessment into a visible function-stack map: dominant signal,
+                inferior pressure, reliability, and paid depth you can preview before buying.
               </p>
 
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-5 rounded-lg border border-jung-dark bg-jung-dark p-3 text-white shadow-lg shadow-jung-dark/10 lg:hidden">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase text-white/50">Mobile result preview</p>
+                    <h2 className="mt-1 font-display text-2xl font-semibold text-white">Free map, then locked depth.</h2>
+                  </div>
+                  <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-jung-dark">
+                    <Eye className="h-4 w-4" />
+                  </span>
+                </div>
+
+                <div className="mt-4 grid gap-2">
+                  {sampleProfile.slice(0, 2).map((fn) => (
+                    <div key={fn.name} className="rounded-lg border border-white/10 bg-white/10 p-2.5">
+                      <div className="mb-2 flex items-center justify-between gap-3">
+                        <div className="flex min-w-0 items-center gap-2">
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white font-display italic text-jung-accent">
+                            {fn.name}
+                          </span>
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-semibold text-white">{fn.label}</p>
+                            <p className="text-xs text-white/50">{fn.role}</p>
+                          </div>
+                        </div>
+                        <span className="font-mono text-sm text-white">{fn.value}</span>
+                      </div>
+                      <div className="h-1.5 overflow-hidden rounded-lg bg-white/10">
+                        <div className="h-full rounded-lg bg-jung-accent-muted" style={{ width: `${fn.value}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-3 rounded-lg bg-jung-surface p-3 text-jung-dark">
+                  <div className="flex items-center gap-2 text-xs font-semibold uppercase text-jung-muted">
+                    <Lock className="h-3.5 w-3.5 text-jung-accent" />
+                    Paid preview
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-jung-secondary">
+                    Developmental edge: Strong Ti can protect clarity by staying detached...
+                    <span className="ml-1 text-jung-muted blur-[2px]">full stress map unlocks after review.</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <Button
                   onClick={() => startAssessment('home_hero')}
                   variant="accent"
                   size="lg"
                   rightIcon={<ArrowRight className="h-4 w-4" />}
-                  className="rounded-full"
+                  className="w-full sm:w-auto"
                 >
                   Get my free map
                 </Button>
@@ -231,18 +292,19 @@ export const Home: React.FC = () => {
                   onClick={() => viewSampleReport('home_hero')}
                   variant="inverted"
                   size="lg"
-                  className="rounded-full border border-jung-border"
+                  className="w-full border border-jung-border sm:w-auto"
+                  rightIcon={<FileText className="h-4 w-4" />}
                 >
-                  View sample report
+                  View paid sample
                 </Button>
               </div>
               <p className="mt-3 text-sm leading-6 text-jung-muted">
-                Answer the free assessment, read your map, then decide whether deeper interpretation is worth it.
+                Free result first. Upgrade only if the map names something you recognize.
               </p>
 
-              <div className="mt-8 grid gap-3 sm:grid-cols-3">
+              <div className="mt-5 hidden flex-wrap gap-2 sm:flex">
                 {trustPoints.map((point) => (
-                  <div key={point} className="flex items-start gap-2 text-sm text-jung-secondary">
+                  <div key={point} className="flex min-h-9 items-center gap-2 rounded-lg border border-jung-border-light bg-jung-surface px-3 py-1.5 text-xs font-semibold text-jung-secondary sm:text-sm">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-jung-accent" />
                     <span>{point}</span>
                   </div>
@@ -250,74 +312,96 @@ export const Home: React.FC = () => {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-jung-border bg-white p-4 shadow-xl shadow-jung-dark/10 md:p-5">
-              <div className="mb-5 flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs font-semibold uppercase text-jung-muted">Sample free result</p>
-                  <h2 className="mt-1 font-display text-3xl font-semibold text-jung-dark">Function-stack map</h2>
-                </div>
-                <span className="rounded-full bg-jung-accent-light px-3 py-1 text-xs font-semibold text-jung-accent">
-                  Free map
-                </span>
-              </div>
-
-              <div className="mb-5 grid gap-2 sm:grid-cols-3">
-                {proofSignals.map((signal) => (
-                  <div key={signal.label} className="rounded-lg border border-jung-border-light bg-jung-base px-3 py-3">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-jung-muted">
-                      {signal.label}
-                    </p>
-                    <p className="mt-1 font-display text-xl font-semibold text-jung-dark">{signal.value}</p>
-                    <p className="mt-1 text-xs leading-5 text-jung-secondary">{signal.note}</p>
+            <div className="hidden rounded-lg border border-jung-dark bg-jung-dark p-2.5 text-white shadow-xl shadow-jung-dark/20 lg:block">
+              <div className="rounded-lg border border-white/10 bg-white/5 p-3.5">
+                <div className="mb-4 flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-xs font-semibold uppercase text-white/50">Product preview</p>
+                    <h2 className="mt-1 font-display text-3xl font-semibold text-white">
+                      What the result page feels like
+                    </h2>
                   </div>
-                ))}
-              </div>
-
-              <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-                <div className="mx-auto w-full max-w-[250px]">
-                  <FunctionRadial
-                    data={sampleProfile.map(({ name, label, value }) => ({ name, label, value }))}
-                    size={292}
-                  />
+                  <span className="inline-flex min-h-8 items-center gap-2 rounded-lg bg-white px-3 text-xs font-semibold text-jung-dark">
+                    <Eye className="h-3.5 w-3.5" />
+                    Before paywall
+                  </span>
                 </div>
 
-                <div className="space-y-2">
-                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted">
-                    Top signals
-                  </p>
-                  {sampleProfile.slice(0, 4).map((fn) => (
-                    <div key={fn.name} className="rounded-lg bg-jung-base p-2.5">
-                      <div className="mb-2 flex items-center justify-between gap-3">
-                        <div className="flex min-w-0 items-center gap-3">
-                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white font-display text-base italic text-jung-accent shadow-sm">
-                            {fn.name}
-                          </span>
-                          <div className="min-w-0">
-                            <p className="truncate text-sm font-semibold text-jung-dark">{fn.label}</p>
-                            <p className="text-xs text-jung-muted">{fn.role}</p>
+                <div className="grid gap-2 md:grid-cols-3">
+                  {diagnosticSignals.map((signal) => (
+                    <div key={signal.label} className="rounded-lg border border-white/10 bg-white/10 px-3 py-2.5">
+                      <p className="text-[11px] font-semibold uppercase text-white/50">
+                        {signal.label}
+                      </p>
+                      <p className="mt-1 font-display text-xl font-semibold text-white">{signal.value}</p>
+                      <p className="mt-1 line-clamp-2 text-xs leading-5 text-white/60">{signal.note}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-3 grid gap-3 lg:grid-cols-[0.86fr_1.14fr] lg:items-center">
+                  <div className="rounded-lg border border-white/10 bg-jung-surface p-2.5">
+                    <div className="mx-auto w-full max-w-[200px]">
+                      <FunctionRadial
+                        data={sampleProfile.map(({ name, label, value }) => ({ name, label, value }))}
+                        size={228}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold uppercase text-white/50">
+                      Top signals
+                    </p>
+                    {sampleProfile.slice(0, 3).map((fn) => (
+                      <div key={fn.name} className="rounded-lg border border-white/10 bg-white/10 p-2">
+                        <div className="mb-2 flex items-center justify-between gap-3">
+                          <div className="flex min-w-0 items-center gap-3">
+                            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white font-display text-sm italic text-jung-accent shadow-sm">
+                              {fn.name}
+                            </span>
+                            <div className="min-w-0">
+                              <p className="truncate text-sm font-semibold text-white">{fn.label}</p>
+                              <p className="text-xs text-white/50">{fn.role}</p>
+                            </div>
                           </div>
+                          <span className="font-mono text-sm text-white">{fn.value}</span>
                         </div>
-                        <span className="font-mono text-sm text-jung-dark">{fn.value}</span>
+                        <div className="h-1.5 overflow-hidden rounded-lg bg-white/10">
+                          <div className="h-full rounded-lg bg-jung-accent-muted" style={{ width: `${fn.value}%` }} />
+                        </div>
                       </div>
-                      <div className="h-1.5 overflow-hidden rounded-full bg-jung-border-light">
-                        <div className="h-full rounded-full bg-jung-accent" style={{ width: `${fn.value}%` }} />
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              <div className="mt-4 border-t border-jung-border-light pt-4">
-                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted">
-                  All 8 functions remain visible
-                </p>
-                <div className="grid grid-cols-4 gap-2 sm:grid-cols-8 lg:grid-cols-4 xl:grid-cols-8">
-                  {sampleProfile.map((fn) => (
-                    <div key={fn.name} className="rounded-lg bg-jung-base px-2 py-2 text-center">
-                      <p className="font-display text-base font-semibold italic text-jung-accent">{fn.name}</p>
-                      <p className="mt-0.5 font-mono text-[11px] text-jung-muted">{fn.value}</p>
+                <div className="mt-3 rounded-lg border border-jung-border bg-jung-surface p-3.5 text-jung-dark">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-xs font-semibold uppercase text-jung-muted">Locked paid depth</p>
+                      <h3 className="mt-1 font-display text-xl font-semibold">Preview first, then review checkout.</h3>
+                      <p className="mt-1 max-w-lg text-sm leading-6 text-jung-secondary">
+                        The results page shows a real excerpt from your developmental edge and stress pattern before the CA$10 Stripe step.
+                      </p>
                     </div>
-                  ))}
+                    <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
+                      <Lock className="h-4 w-4" />
+                    </span>
+                  </div>
+
+                  <div className="mt-4 flex flex-col gap-3 border-t border-jung-border-light pt-4 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="text-xs leading-5 text-jung-secondary">
+                      This is the paywall moment: personalized preview first, CA$10 checkout review second.
+                    </p>
+                    <Button
+                      onClick={() => viewSampleReport('home_hero_locked_preview')}
+                      variant="accent"
+                      size="sm"
+                      rightIcon={<ArrowRight className="h-4 w-4" />}
+                    >
+                      See sample
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -325,18 +409,35 @@ export const Home: React.FC = () => {
         </section>
 
 
-        <section className="border-b border-jung-border-light bg-white py-12 lg:py-14">
-          <div className="lab-container grid gap-4 md:grid-cols-3">
-            {valueCards.map((card) => {
-              const Icon = card.icon;
-              return (
-                <div key={card.title} className="rounded-lg border border-jung-border bg-jung-base p-5">
-                  <Icon className="h-5 w-5 text-jung-accent" />
-                  <h3 className="mt-4 font-display text-2xl font-semibold text-jung-dark">{card.title}</h3>
-                  <p className="mt-3 text-sm leading-7 text-jung-secondary">{card.description}</p>
-                </div>
-              );
-            })}
+        <section className="border-b border-jung-border-light bg-jung-surface py-10 lg:py-12">
+          <div className="lab-container grid gap-8 lg:grid-cols-[0.7fr_1fr] lg:items-start">
+            <div>
+              <p className="text-label">Funnel promise</p>
+              <h2 className="mt-3 max-w-lg font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
+                The sale waits until the result has emotional weight.
+              </h2>
+            </div>
+            <div className="grid gap-3">
+              {valueCards.map((card, index) => {
+                const Icon = card.icon;
+                return (
+                  <div key={card.title} className="grid gap-4 rounded-lg border border-jung-border bg-jung-base p-4 shadow-sm sm:grid-cols-[auto_1fr] sm:items-start">
+                    <div className="flex items-center gap-3 sm:block">
+                      <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-jung-accent text-white">
+                        <Icon className="h-5 w-5" />
+                      </span>
+                      <span className="font-mono text-xs font-semibold text-jung-muted sm:mt-3 sm:block">
+                        0{index + 1}
+                      </span>
+                    </div>
+                    <div>
+                      <h3 className="font-display text-2xl font-semibold text-jung-dark">{card.title}</h3>
+                      <p className="mt-2 text-sm leading-7 text-jung-secondary">{card.description}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </section>
 
@@ -419,13 +520,42 @@ export const Home: React.FC = () => {
               </Button>
             </div>
 
-            <div className="grid gap-3">
-              {reportQuestions.map((question) => (
-                <div key={question} className="flex items-start gap-4 rounded-lg border border-jung-border bg-jung-base p-5">
-                  <Check className="mt-1 h-4 w-4 shrink-0 text-jung-accent" />
-                  <p className="text-sm font-semibold leading-7 text-jung-dark">{question}</p>
+            <div className="rounded-lg border border-jung-dark bg-jung-dark p-3 text-white shadow-lg shadow-jung-dark/10">
+              <div className="rounded-lg border border-white/10 bg-white/5 p-4 md:p-5">
+                <div className="mb-4 flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-xs font-semibold uppercase text-white/50">Insight report preview</p>
+                    <h3 className="mt-1 font-display text-3xl font-semibold text-white">Locked, but specific.</h3>
+                  </div>
+                  <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white text-jung-dark">
+                    <Lock className="h-4 w-4" />
+                  </span>
                 </div>
-              ))}
+
+                <div className="grid gap-3">
+                  {lockedPreview.map((item) => (
+                    <div key={item.title} className="rounded-lg border border-white/10 bg-white/10 p-4">
+                      <p className="text-sm font-semibold text-white">{item.title}</p>
+                      <p className="mt-2 text-sm leading-6 text-white/75">{item.unlocked}</p>
+                      <p className="mt-2 select-none text-xs leading-5 text-white/45 blur-[2px]">
+                        {item.locked}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-4 rounded-lg bg-jung-surface p-4 text-jung-dark">
+                  <p className="text-xs font-semibold uppercase text-jung-muted">What unlocks</p>
+                  <div className="mt-3 grid gap-3">
+                    {reportQuestions.map((question) => (
+                      <div key={question} className="flex items-start gap-3 text-sm leading-6 text-jung-secondary">
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-jung-accent" />
+                        <span>{question}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>

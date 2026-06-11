@@ -53,7 +53,7 @@ const TIERS: Tier[] = [
     originalPrice: PRICING.insight.price,
     priceNote: `${EMAIL_CAPTURE_OFFER.code} auto-applies on Stripe`,
     savingsLabel: discountSavingsLabel(PRICING.insight.amount),
-    eyebrow: 'Most popular',
+    eyebrow: 'Written interpretation',
     summary: 'Unlock a deeper written read of your map: developmental edge, stress-pattern reflection, relationship-pattern reflection, and practical next steps.',
     bestFor: 'People whose free map feels accurate and who want the meaning behind the scores.',
     features: [
@@ -275,11 +275,11 @@ export const Pricing: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-jung-base">
-      <section className="section-rule py-10 lg:py-16">
-        <div className="editorial-container grid gap-10 lg:grid-cols-[0.78fr_1fr] lg:items-end">
+      <section className="section-rule py-8 lg:py-12">
+        <div className="editorial-container grid gap-8 lg:grid-cols-[0.78fr_1fr] lg:items-center">
           <div>
             <p className="text-label">Pricing</p>
-            <h1 className="mt-4 text-display text-5xl text-jung-dark sm:text-6xl">
+            <h1 className="mt-4 text-display text-[40px] text-jung-dark sm:text-6xl">
               Take the map first. Buy depth only if it earns trust.
             </h1>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
@@ -302,25 +302,53 @@ export const Pricing: React.FC = () => {
             </div>
           </div>
           <div className="max-w-2xl lg:justify-self-end">
-            <p className="text-body-lg text-jung-secondary">
-              The free assessment maps your function stack first. Insight and Mastery are optional one-time upgrades. With {EMAIL_CAPTURE_OFFER.code}, Stripe shows Insight at {discountedPriceLabel(PRICING.insight.amount)} and Mastery at {discountedPriceLabel(PRICING.mastery.amount)}.
-            </p>
-            <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
-              {TRUST_ITEMS.map(({ icon: Icon, label, body }) => (
-                <div key={label} className="rounded-lg border border-jung-border bg-jung-surface p-4 shadow-sm">
-                  <Icon className="mb-3 h-4 w-4 text-jung-accent" />
-                  <p className="text-sm font-semibold text-jung-dark">{label}</p>
-                  <p className="mt-1 text-xs leading-5 text-jung-muted">{body}</p>
+            <div className="rounded-lg border border-jung-dark bg-jung-dark p-3 text-white shadow-lg shadow-jung-dark/10">
+              <div className="rounded-lg border border-white/10 bg-white/5 p-4">
+                <p className="text-xs font-semibold uppercase text-white/50">Before Stripe</p>
+                <h2 className="mt-1 font-display text-2xl font-semibold text-white sm:text-3xl">
+                  You review the exact one-time price first.
+                </h2>
+
+                <div className="mt-4 grid grid-cols-2 gap-2 sm:gap-3">
+                  <div className="rounded-lg border border-white/10 bg-white/10 p-3 sm:p-4">
+                    <p className="text-xs font-semibold uppercase text-white/50">Insight</p>
+                    <p className="mt-1 font-display text-3xl font-semibold text-white sm:text-4xl">
+                      {discountedPriceLabel(PRICING.insight.amount)}
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-white/60">
+                      <span className="line-through">{PRICING.insight.price}</span> before {EMAIL_CAPTURE_OFFER.code}. One-time CAD purchase.
+                    </p>
+                  </div>
+                  <div className="rounded-lg border border-white/10 bg-white/10 p-3 sm:p-4">
+                    <p className="text-xs font-semibold uppercase text-white/50">Mastery</p>
+                    <p className="mt-1 font-display text-3xl font-semibold text-white sm:text-4xl">
+                      {discountedPriceLabel(PRICING.mastery.amount)}
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-white/60">
+                      <span className="line-through">{PRICING.mastery.price}</span> before {EMAIL_CAPTURE_OFFER.code}. No subscription.
+                    </p>
+                  </div>
                 </div>
-              ))}
+
+                <div className="mt-3 flex flex-wrap gap-2 sm:hidden">
+                  {['One-time CAD', 'Secure Stripe', '7-day guarantee'].map((item) => (
+                    <span key={item} className="inline-flex min-h-8 items-center rounded-lg border border-white/10 bg-white/10 px-3 text-xs font-semibold text-white/75">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="mt-3 hidden grid-cols-2 gap-2 sm:grid">
+                  {TRUST_ITEMS.map(({ icon: Icon, label, body }) => (
+                    <div key={label} className="rounded-lg border border-white/10 bg-white/10 p-2.5 sm:p-3">
+                      <Icon className="mb-2 h-4 w-4 text-jung-accent-muted" />
+                      <p className="text-sm font-semibold text-white">{label}</p>
+                      <p className="mt-1 text-xs leading-5 text-white/60">{body}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-            <DiscountCaptureCard
-              source="pricing_hero"
-              compact
-              preferredTier={selectedPaidTier || undefined}
-              showCheckoutButtons={hasLocalResults}
-              className="mt-5"
-            />
           </div>
         </div>
       </section>

@@ -51,8 +51,14 @@ export const TypeJungMark: React.FC<TypeJungMarkProps> = ({
             key={`${node.x}-${node.y}`}
             cx={node.x}
             cy={node.y}
-            r={node.r}
-            className={index === 1 || index === 5 ? 'fill-jung-accent' : 'fill-jung-dark'}
+            r={index === 1 ? 4 : index === 5 ? 3.2 : node.r}
+            className={
+              index === 1
+                ? 'fill-jung-accent'
+                : index === 5
+                  ? 'fill-jung-tension'
+                  : 'fill-jung-dark'
+            }
           />
         ))}
         <path
@@ -64,7 +70,7 @@ export const TypeJungMark: React.FC<TypeJungMarkProps> = ({
         />
         <path
           d="M30 82L18 82L18 70"
-          className="stroke-jung-accent"
+          className="stroke-jung-tension"
           strokeWidth="1.8"
           strokeLinecap="round"
           strokeLinejoin="round"

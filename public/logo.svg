@@ -1,18 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" role="img" aria-label="TypeJung function-stack map mark">
-  <rect width="100" height="100" rx="18" fill="#FAFAF8"/>
-  <circle cx="50" cy="50" r="38" fill="none" stroke="#D2DCD3" stroke-width="1.8"/>
-  <circle cx="50" cy="50" r="22" fill="none" stroke="#D2DCD3" stroke-width="1.2" stroke-dasharray="3 4"/>
-  <path d="M22 78L78 22" fill="none" stroke="#224A31" stroke-width="3" stroke-linecap="round"/>
-  <path d="M50 10V90M10 50H90" fill="none" stroke="#ABB5AD" stroke-width="1.1" stroke-linecap="round"/>
-  <circle cx="50" cy="50" r="5.5" fill="#FAFAF8" stroke="#224A31" stroke-width="1.8"/>
-  <circle cx="50" cy="10" r="3.5" fill="#121512"/>
-  <circle cx="78" cy="22" r="2.6" fill="#224A31"/>
-  <circle cx="90" cy="50" r="3" fill="#121512"/>
-  <circle cx="78" cy="78" r="2.4" fill="#121512"/>
-  <circle cx="50" cy="90" r="3.5" fill="#121512"/>
-  <circle cx="22" cy="78" r="2.6" fill="#224A31"/>
-  <circle cx="10" cy="50" r="3" fill="#121512"/>
-  <circle cx="22" cy="22" r="2.4" fill="#121512"/>
-  <path d="M70 18L82 18L82 30" fill="none" stroke="#224A31" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M30 82L18 82L18 70" fill="none" stroke="#224A31" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect width="100" height="100" rx="18" fill="#FAF8F2"/>
+  <circle cx="50" cy="50" r="38" fill="none" stroke="#D8D4C4" stroke-width="1.8"/>
+  <circle cx="50" cy="50" r="22" fill="none" stroke="#D8D4C4" stroke-width="1.2" stroke-dasharray="3 4"/>
+  <path d="M22 78L78 22" fill="none" stroke="#20492F" stroke-width="3" stroke-linecap="round"/>
+  <path d="M50 10V90M10 50H90" fill="none" stroke="#A8AE9C" stroke-width="1.1" stroke-linecap="round"/>
+  <circle cx="50" cy="50" r="5.5" fill="#FAF8F2" stroke="#20492F" stroke-width="1.8"/>
+  <circle cx="50" cy="10" r="3.5" fill="#15190F"/>
+  <circle cx="78" cy="22" r="4" fill="#20492F"/>
+  <circle cx="90" cy="50" r="3" fill="#15190F"/>
+  <circle cx="78" cy="78" r="2.4" fill="#15190F"/>
+  <circle cx="50" cy="90" r="3.5" fill="#15190F"/>
+  <circle cx="22" cy="78" r="3.2" fill="#B23C1A"/>
+  <circle cx="10" cy="50" r="3" fill="#15190F"/>
+  <circle cx="22" cy="22" r="2.4" fill="#15190F"/>
+  <path d="M70 18L82 18L82 30" fill="none" stroke="#20492F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M30 82L18 82L18 70" fill="none" stroke="#B23C1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

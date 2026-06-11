@@ -177,10 +177,10 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   };
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `inline-flex min-h-10 items-center rounded-lg px-3.5 py-2 text-sm font-semibold transition-all ${
+    `inline-flex min-h-10 items-center border-b-2 px-1 pt-0.5 text-mono text-[11px] font-medium uppercase tracking-[0.14em] transition-all ${
       isActive
-        ? 'bg-jung-accent-light text-jung-accent shadow-sm'
-        : 'text-jung-secondary hover:bg-jung-surface-alt hover:text-jung-dark'
+        ? 'border-jung-tension text-jung-dark'
+        : 'border-transparent text-jung-muted hover:border-jung-border hover:text-jung-dark'
     }`;
 
   const mobileNavLinkClass = ({ isActive }: { isActive: boolean }) =>
@@ -243,7 +243,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-1 rounded-lg border border-jung-border bg-jung-surface/88 p-1 shadow-sm lg:flex">
+          <nav className="hidden items-center gap-7 lg:flex">
             {navigation.map((item) => (
               <NavLink key={item.to} to={item.to} end={item.to === '/'} className={navLinkClass}>
                 {item.label}
@@ -259,7 +259,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             )}
             <Link
               to="/assessment"
-              className="hidden h-10 items-center justify-center rounded-lg bg-jung-accent px-4 text-sm font-semibold text-white shadow-md shadow-jung-accent/10 transition-all hover:-translate-y-px hover:bg-jung-accent-hover hover:shadow-lg sm:inline-flex"
+              className="btn-premium hidden !min-h-10 !py-2 text-sm sm:inline-flex"
             >
               Start free
             </Link>
@@ -421,7 +421,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
       <main>{children}</main>
 
-      <footer className="border-t border-jung-border bg-jung-surface/70 py-10">
+      <footer className="rule-double bg-jung-surface/70 py-12">
         <div className="lab-container grid gap-8 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
           <div>
             <Link to="/" className="mb-4 inline-flex min-h-11 items-center gap-3">
@@ -430,13 +430,13 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               </span>
               <span className="font-display text-2xl text-jung-dark">TypeJung</span>
             </Link>
-            <p className="max-w-sm text-sm leading-6 text-jung-secondary">
+            <p className="annotation max-w-sm text-sm">
               A Jungian cognitive function assessment for mapping strengths, stress edges, and growth patterns.
             </p>
           </div>
 
 	          <div>
-	            <h4 className="mb-4 text-sm font-semibold text-jung-dark">Explore</h4>
+	            <h4 className="text-label mb-4">Explore</h4>
 	            <div className="grid gap-2 text-sm text-jung-secondary">
 	              <Link to="/assessment" className="inline-flex min-h-8 items-center hover:text-jung-accent">Assessment</Link>
 	              <Link to="/pricing" className="inline-flex min-h-8 items-center hover:text-jung-accent">Pricing</Link>
@@ -445,7 +445,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 	          </div>
 
 	          <div>
-	            <h4 className="mb-4 text-sm font-semibold text-jung-dark">Guides</h4>
+	            <h4 className="text-label mb-4">Guides</h4>
 	            <div className="grid gap-2 text-sm text-jung-secondary">
 	              <a href="/guides" className="inline-flex min-h-8 items-center hover:text-jung-accent">All guides</a>
 	              <a href="/free-cognitive-function-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">Free cognitive function test</a>
@@ -457,7 +457,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 	          </div>
 
 	          <div>
-	            <h4 className="mb-4 text-sm font-semibold text-jung-dark">Account</h4>
+	            <h4 className="text-label mb-4">Account</h4>
 	            <div className="grid gap-2 text-sm text-jung-secondary">
 	              <Link to="/auth" className="inline-flex min-h-8 items-center hover:text-jung-accent">Sign in</Link>
 	              <Link to="/privacy" className="inline-flex min-h-8 items-center hover:text-jung-accent">Privacy</Link>

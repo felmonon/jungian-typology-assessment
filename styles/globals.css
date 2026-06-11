@@ -1,32 +1,44 @@
 @import "tailwindcss";
 
+/* ============================================================
+   TypeJung — "The Analyst's Archive"
+   A depth-psychology monograph: warm paper, green ink,
+   hairline rules, mono specimen labels, one oxide-red accent
+   reserved for the dominant–inferior tension.
+   ============================================================ */
+
 @theme {
   /* Typography */
-  --font-display: "Fraunces", serif;
+  --font-display: "Fraunces", Georgia, serif;
   --font-serif: "Fraunces", Georgia, serif;
-  --font-sans: "Space Grotesk", sans-serif;
-  --font-mono: "SFMono-Regular", "Menlo", "Cascadia Mono", monospace;
+  --font-sans: "Schibsted Grotesk", "Helvetica Neue", sans-serif;
+  --font-mono: "Spline Sans Mono", "Menlo", monospace;
 
-  /* Quiet, high-end academic product palette */
-  --color-jung-base: #fafaf8;
-  --color-jung-surface: #ffffff;
-  --color-jung-surface-elevated: #ffffff;
-  --color-jung-surface-alt: #f3f3ef;
+  /* Paper and ink */
+  --color-jung-base: #faf8f2;
+  --color-jung-surface: #fffefa;
+  --color-jung-surface-elevated: #fffefa;
+  --color-jung-surface-alt: #f3f0e7;
 
-  --color-jung-dark: #121512;
-  --color-jung-secondary: #4b524c;
-  --color-jung-muted: #6f7871;
-  --color-jung-subtle: #abb5ad;
+  --color-jung-dark: #15190f;
+  --color-jung-secondary: #4a5142;
+  --color-jung-muted: #6e7565;
+  --color-jung-subtle: #a8ae9c;
 
-  --color-jung-border: #d2dcd3;
-  --color-jung-border-light: #e4ebe5;
+  --color-jung-border: #d8d4c4;
+  --color-jung-border-light: #e8e5da;
 
-  --color-jung-primary: #1e3f2a;
-  --color-jung-accent: #224a31;
-  --color-jung-accent-hover: #173422;
-  --color-jung-accent-light: #eef5f0;
-  --color-jung-accent-muted: #688c72;
+  /* Green ink */
+  --color-jung-primary: #1d3f28;
+  --color-jung-accent: #20492f;
+  --color-jung-accent-hover: #16341f;
+  --color-jung-accent-light: #ecf2e9;
+  --color-jung-accent-muted: #647f60;
   --color-jung-gold: #8c6827;
+
+  /* The tension accent — used sparingly, like red ink on a proof */
+  --color-jung-tension: #b23c1a;
+  --color-jung-tension-light: #f7e9e2;
 
   --color-science-cyan: #225a46;
   --color-science-purple: #5c4970;
@@ -35,19 +47,19 @@
   --color-success: #115c3a;
   --color-warning: #8c4e0b;
 
-  /* Dark mode variables - extremely deep, luxurious dark green-gray */
-  --color-dark-base: #0a0d0a;
-  --color-dark-surface: #101410;
-  --color-dark-surface-elevated: #161c16;
-  --color-dark-text: #f0ede6;
-  --color-dark-border: #222c24;
+  /* Dark plate (used by dark panels and the paywall preview) */
+  --color-dark-base: #0c0f0a;
+  --color-dark-surface: #12160e;
+  --color-dark-surface-elevated: #181d13;
+  --color-dark-text: #f2efe5;
+  --color-dark-border: #262c1e;
 
-  --shadow-sm: 0 1px 3px 0 rgba(18, 21, 18, 0.04);
-  --shadow-md: 0 16px 36px -12px rgba(18, 21, 18, 0.08), 0 4px 12px -4px rgba(18, 21, 18, 0.03);
-  --shadow-lg: 0 32px 64px -24px rgba(18, 21, 18, 0.12), 0 8px 24px -8px rgba(18, 21, 18, 0.04);
-  --shadow-xl: 0 40px 96px -32px rgba(18, 21, 18, 0.16);
-  --shadow-glow: 0 12px 30px -8px rgba(34, 74, 49, 0.25);
-  --shadow-accent: 0 12px 30px -8px rgba(34, 74, 49, 0.2);
+  --shadow-sm: 0 1px 2px 0 rgba(21, 25, 15, 0.05);
+  --shadow-md: 0 14px 32px -14px rgba(21, 25, 15, 0.1), 0 3px 10px -4px rgba(21, 25, 15, 0.04);
+  --shadow-lg: 0 30px 60px -26px rgba(21, 25, 15, 0.14), 0 8px 22px -8px rgba(21, 25, 15, 0.05);
+  --shadow-xl: 0 42px 90px -34px rgba(21, 25, 15, 0.18);
+  --shadow-glow: 0 10px 26px -10px rgba(32, 73, 47, 0.35);
+  --shadow-accent: 0 10px 26px -10px rgba(32, 73, 47, 0.28);
 
   --duration-fast: 150ms;
   --duration-normal: 250ms;
@@ -67,12 +79,12 @@ body {
   background: var(--color-jung-base);
   color: var(--color-jung-dark);
   font-family: var(--font-sans);
-  font-feature-settings: "ss04" 1, "ss01" 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
+/* Soft top-light wash, like a reading lamp on paper */
 body::before {
   content: "";
   position: fixed;
@@ -80,14 +92,22 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(circle at 84% 12%, rgba(34, 74, 49, 0.08) 0, transparent 32rem),
-    radial-gradient(circle at 8% 0%, rgba(140, 104, 39, 0.045) 0, transparent 26rem),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(250, 250, 248, 0));
-  opacity: 1;
+    radial-gradient(ellipse at 78% -4%, rgba(32, 73, 47, 0.07) 0, transparent 34rem),
+    radial-gradient(ellipse at 4% 2%, rgba(140, 104, 39, 0.05) 0, transparent 26rem),
+    linear-gradient(180deg, rgba(255, 254, 250, 0.85), rgba(250, 248, 242, 0));
 }
 
+/* Paper grain over everything, barely-there */
 body::after {
-  display: none;
+  content: "";
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.3;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.05'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 button,
@@ -99,8 +119,8 @@ select {
 }
 
 ::selection {
-  background: var(--color-jung-accent-light);
-  color: var(--color-jung-dark);
+  background: var(--color-jung-accent);
+  color: var(--color-jung-base);
 }
 
 :focus-visible {
@@ -127,29 +147,35 @@ select {
   background: var(--color-jung-muted);
 }
 
+/* ---------- Typography voices ---------- */
+
 .text-display {
   font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: 0;
-  line-height: 0.98;
+  font-weight: 560;
+  font-variation-settings: "opsz" 144;
+  letter-spacing: -0.015em;
+  line-height: 0.97;
 }
 
 .text-heading {
   font-family: var(--font-display);
   font-weight: 600;
-  letter-spacing: 0;
-  line-height: 1.12;
+  font-variation-settings: "opsz" 72;
+  letter-spacing: -0.005em;
+  line-height: 1.1;
 }
 
 .text-body,
 .font-body {
   font-family: var(--font-serif);
   font-weight: 400;
+  font-variation-settings: "opsz" 14;
   line-height: 1.7;
 }
 
 .text-body-lg {
   font-family: var(--font-serif);
+  font-variation-settings: "opsz" 18;
   font-size: 1.125rem;
   line-height: 1.75;
 }
@@ -164,18 +190,52 @@ select {
   font-feature-settings: "zero" 1;
 }
 
+/* Specimen label: the small annotation voice of the archive */
 .text-label {
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-jung-muted);
+}
+
+/* Figure label with a leading red tick, e.g. "Fig. 01 — Function stack" */
+.figure-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-jung-muted);
+}
+
+.figure-label::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  flex: none;
+  background: var(--color-jung-tension);
+}
+
+/* Marginalia: italic serif side-notes */
+.annotation {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-variation-settings: "opsz" 14;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--color-jung-secondary);
 }
 
 .text-balance {
   text-wrap: balance;
 }
+
+/* ---------- Structure ---------- */
 
 .lab-container,
 .editorial-container {
@@ -191,12 +251,60 @@ select {
   }
 }
 
+.section-rule {
+  border-block: 1px solid var(--color-jung-border);
+  background: color-mix(in srgb, var(--color-jung-surface) 72%, transparent);
+}
+
+/* Double hairline, like a plate caption rule */
+.rule-double {
+  border-top: 1px solid var(--color-jung-dark);
+  position: relative;
+}
+
+.rule-double::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 0;
+  right: 0;
+  border-top: 1px solid var(--color-jung-border);
+}
+
+/* Faint mandala plate behind hero/section figures */
+.mandala-backdrop {
+  position: relative;
+}
+
+.mandala-backdrop::before {
+  content: "";
+  position: absolute;
+  inset: -18%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    repeating-radial-gradient(
+      circle at 50% 50%,
+      transparent 0 54px,
+      color-mix(in srgb, var(--color-jung-accent) 9%, transparent) 54px 55px
+    ),
+    repeating-conic-gradient(
+      from 0deg at 50% 50%,
+      color-mix(in srgb, var(--color-jung-accent) 7%, transparent) 0 0.4deg,
+      transparent 0.4deg 30deg
+    );
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, black 0, transparent 68%);
+  mask-image: radial-gradient(circle at 50% 50%, black 0, transparent 68%);
+}
+
+/* ---------- Cards ---------- */
+
 .card-premium,
 .card-elevated {
   position: relative;
-  background: color-mix(in srgb, var(--color-jung-surface-elevated) 97%, transparent);
+  background: var(--color-jung-surface);
   border: 1px solid var(--color-jung-border);
-  border-radius: 12px;
+  border-radius: 10px;
   box-shadow: var(--shadow-sm);
   transition:
     transform var(--duration-normal) var(--ease-tech),
@@ -205,7 +313,7 @@ select {
     background-color var(--duration-normal) var(--ease-tech);
 }
 
-/* Beautiful corner technical brackets that elevate the design from standard web elements */
+/* Registration-mark corners, like a printer's proof */
 .card-premium::before,
 .card-premium::after {
   content: "";
@@ -238,7 +346,6 @@ select {
   border-color: var(--color-jung-accent);
   box-shadow: var(--shadow-md);
   transform: translateY(-3px);
-  background: var(--color-jung-surface);
 }
 
 .card-premium:hover::before,
@@ -253,21 +360,24 @@ select {
   transform: translateY(-2px);
 }
 
+/* ---------- Controls ---------- */
+
+/* Letterpress button: ink slab with a hard offset that closes on press */
 .btn-premium {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
   min-height: 48px;
-  padding: 0.8rem 1.25rem;
+  padding: 0.8rem 1.4rem;
   background: var(--color-jung-accent);
-  color: white;
+  color: var(--color-jung-base);
   font-family: var(--font-sans);
   font-size: 0.875rem;
-  font-weight: 650;
-  letter-spacing: 0;
-  border-radius: 8px;
-  box-shadow: var(--shadow-glow);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  border-radius: 6px;
+  box-shadow: 3px 3px 0 0 color-mix(in srgb, var(--color-jung-dark) 82%, transparent);
   transition:
     transform var(--duration-fast) var(--ease-tech),
     background-color var(--duration-fast) var(--ease-tech),
@@ -276,16 +386,21 @@ select {
 
 .btn-premium:hover {
   background: var(--color-jung-accent-hover);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-lg);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 0 color-mix(in srgb, var(--color-jung-dark) 82%, transparent);
+}
+
+.btn-premium:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 0 color-mix(in srgb, var(--color-jung-dark) 82%, transparent);
 }
 
 .input-premium {
   min-height: 3.1rem;
   width: 100%;
-  border-radius: 8px;
+  border-radius: 6px;
   border: 1px solid var(--color-jung-border);
-  background: var(--color-jung-base);
+  background: var(--color-jung-surface);
   padding: 0.85rem 1rem;
   color: var(--color-jung-dark);
   font-family: var(--font-sans);
@@ -303,17 +418,27 @@ select {
 .input-premium:focus {
   border-color: var(--color-jung-accent);
   background: var(--color-jung-surface);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-jung-accent-light) 78%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-jung-accent-light) 80%, transparent);
   outline: none;
 }
 
-.section-rule {
-  border-block: 1px solid var(--color-jung-border);
-  background: color-mix(in srgb, var(--color-jung-surface) 78%, transparent);
+/* Ink-draw underline for inline links */
+.link-ink {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size var(--duration-normal) var(--ease-tech);
 }
 
+.link-ink:hover {
+  background-size: 100% 1px;
+}
+
+/* ---------- Utilities ---------- */
+
 @utility glass {
-  background: color-mix(in srgb, var(--color-jung-surface-elevated) 86%, transparent);
+  background: color-mix(in srgb, var(--color-jung-surface-elevated) 88%, transparent);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   border: 1px solid color-mix(in srgb, var(--color-jung-border) 72%, transparent);
@@ -335,14 +460,39 @@ select {
   display: none;
 }
 
+/* ---------- Motion ---------- */
+
+@keyframes rise-fade {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  opacity: 0;
+  animation: rise-fade var(--duration-slower) var(--ease-tech) forwards;
+}
+
+.reveal-1 { animation-delay: 60ms; }
+.reveal-2 { animation-delay: 160ms; }
+.reveal-3 { animation-delay: 260ms; }
+.reveal-4 { animation-delay: 380ms; }
+.reveal-5 { animation-delay: 500ms; }
+.reveal-6 { animation-delay: 620ms; }
+
 @keyframes pulse-glow {
   0%,
   100% {
-    box-shadow: 0 18px 50px -38px rgb(47 111 88 / 0.4);
+    box-shadow: 0 18px 50px -38px rgb(32 73 47 / 0.4);
   }
 
   50% {
-    box-shadow: 0 18px 50px -30px rgb(47 111 88 / 0.75);
+    box-shadow: 0 18px 50px -30px rgb(32 73 47 / 0.75);
   }
 }
 
@@ -359,11 +509,19 @@ select {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
+
+  .reveal {
+    opacity: 1;
+  }
 }
 
 @media print {
   body {
     background: white;
     color: black;
+  }
+
+  body::after {
+    display: none;
   }
 }

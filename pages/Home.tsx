@@ -224,11 +224,11 @@ export const Home: React.FC = () => {
                 </span>
               </div>
 
-              <h1 className="max-w-4xl text-balance font-display text-[34px] font-semibold leading-[0.98] text-jung-dark sm:text-5xl lg:text-[72px]">
+              <h1 className="reveal reveal-1 max-w-4xl text-balance font-display text-[34px] font-semibold leading-[0.98] tracking-[-0.015em] text-jung-dark sm:text-5xl lg:text-[72px]">
                 Your type keeps changing. Map the pattern underneath.
               </h1>
 
-              <p className="mt-4 max-w-2xl text-[15px] leading-6 text-jung-secondary md:text-lg md:leading-8">
+              <p className="reveal reveal-2 mt-4 max-w-2xl text-[15px] leading-6 text-jung-secondary md:text-lg md:leading-8">
                 TypeJung turns a 12-minute assessment into a visible function-stack map: dominant signal,
                 inferior pressure, reliability, and paid depth you can preview before buying.
               </p>
@@ -278,7 +278,7 @@ export const Home: React.FC = () => {
                 </div>
               </div>
 
-              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <div className="reveal reveal-3 mt-7 flex flex-col gap-3 sm:flex-row">
                 <Button
                   onClick={() => startAssessment('home_hero')}
                   variant="accent"
@@ -302,7 +302,7 @@ export const Home: React.FC = () => {
                 Free result first. Upgrade only if the map names something you recognize.
               </p>
 
-              <div className="mt-5 hidden flex-wrap gap-2 sm:flex">
+              <div className="reveal reveal-4 mt-5 hidden flex-wrap gap-2 sm:flex">
                 {trustPoints.map((point) => (
                   <div key={point} className="flex min-h-9 items-center gap-2 rounded-lg border border-jung-border-light bg-jung-surface px-3 py-1.5 text-xs font-semibold text-jung-secondary sm:text-sm">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-jung-accent" />
@@ -312,11 +312,11 @@ export const Home: React.FC = () => {
               </div>
             </div>
 
-            <div className="hidden rounded-lg border border-jung-dark bg-jung-dark p-2.5 text-white shadow-xl shadow-jung-dark/20 lg:block">
+            <div className="mandala-backdrop reveal reveal-2 hidden rounded-lg border border-jung-dark bg-jung-dark p-2.5 text-white shadow-xl shadow-jung-dark/20 lg:block">
               <div className="rounded-lg border border-white/10 bg-white/5 p-3.5">
                 <div className="mb-4 flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-xs font-semibold uppercase text-white/50">Product preview</p>
+                    <p className="figure-label !text-white/55">Fig. 01 — Product preview</p>
                     <h2 className="mt-1 font-display text-3xl font-semibold text-white">
                       What the result page feels like
                     </h2>
@@ -412,7 +412,7 @@ export const Home: React.FC = () => {
         <section className="border-b border-jung-border-light bg-jung-surface py-10 lg:py-12">
           <div className="lab-container grid gap-8 lg:grid-cols-[0.7fr_1fr] lg:items-start">
             <div>
-              <p className="text-label">Funnel promise</p>
+              <p className="figure-label">Fig. 02 — Funnel promise</p>
               <h2 className="mt-3 max-w-lg font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                 The sale waits until the result has emotional weight.
               </h2>
@@ -444,7 +444,7 @@ export const Home: React.FC = () => {
         <section className="bg-jung-base py-12 lg:py-20">
           <div className="lab-container grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
             <div>
-              <p className="text-xs font-semibold uppercase text-jung-muted">How it works</p>
+              <p className="figure-label">Fig. 03 — How it works</p>
               <h2 className="mt-4 max-w-xl font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                 A clear path from curiosity to usable insight.
               </h2>
@@ -501,7 +501,7 @@ export const Home: React.FC = () => {
               <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
                 <FileText className="h-5 w-5" />
               </div>
-              <p className="text-xs font-semibold uppercase text-jung-muted">Paid report preview</p>
+              <p className="figure-label">Fig. 04 — Paid report preview</p>
               <h2 className="mt-4 max-w-xl font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                 The upgrade has to earn its place.
               </h2>
@@ -563,7 +563,7 @@ export const Home: React.FC = () => {
         <section id="pricing" className="border-b border-jung-border-light bg-white py-12 lg:py-20">
           <div className="lab-container">
             <div className="mb-10 max-w-2xl">
-              <p className="text-xs font-semibold uppercase text-jung-muted">Pricing</p>
+              <p className="figure-label">Fig. 05 — Pricing</p>
               <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                 Buy the interpretation only if the free map makes sense.
               </h2>
@@ -637,7 +637,7 @@ export const Home: React.FC = () => {
         <section className="bg-jung-base py-12 lg:py-20">
           <div className="lab-container grid gap-10 lg:grid-cols-[0.88fr_1.12fr]">
             <div>
-              <p className="text-xs font-semibold uppercase text-jung-muted">Before you start</p>
+              <p className="figure-label">Fig. 06 — Before you start</p>
               <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                 Straight answers, no personality-test hype.
               </h2>

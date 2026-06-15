@@ -584,6 +584,9 @@ function renderLandingSection(section: any, page: any, sectionIndex: number) {
 
 function generateLandingPage(page: any) {
   const path = `/${page.slug}`;
+  const schemaKeywords = Array.isArray(page.keywords) && page.keywords.length > 0
+    ? page.keywords
+    : [page.query].filter(Boolean);
   const breadcrumbs = breadcrumbSchema([
     { name: 'Home', path: '/' },
     { name: page.query, path },
@@ -605,6 +608,11 @@ function generateLandingPage(page: any) {
     '@type': 'WebPage',
     name: page.title,
     description: page.description,
+    keywords: schemaKeywords.join(', '),
+    about: schemaKeywords.slice(0, 8).map((keyword: string) => ({
+      '@type': 'Thing',
+      name: keyword,
+    })),
     url: `${siteConfig.url}${path}`,
     inLanguage: 'en',
     dateModified: buildDate,

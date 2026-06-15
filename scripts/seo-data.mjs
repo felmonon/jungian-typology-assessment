@@ -3161,7 +3161,7 @@ export const seoLandingPages = [
     slug: 'jungian-cognitive-functions-test',
     query: 'Jungian cognitive functions test',
     title: 'Jungian Cognitive Functions Test - Free Ni Ne Si Se Ti Te Fi Fe Map | TypeJung',
-    description: 'Take a free Jungian cognitive functions test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, then explains your dominant-inferior pattern.',
+    description: 'Take a free 42-question Jungian cognitive functions test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, then shows your function stack and dominant-inferior pattern.',
     keywords: ['Jungian cognitive functions test', 'free Jungian cognitive functions test', 'Jung functions test', 'Ni Ne Si Se Ti Te Fi Fe test', 'Jungian function stack test', 'cognitive function test'],
     eyebrow: 'Jungian functions test',
     h1: 'Free Jungian cognitive functions test for Ni Ne Si Se Ti Te Fi Fe',
@@ -3175,6 +3175,27 @@ export const seoLandingPages = [
       privacy: 'Use the free function-stack map first. Paid interpretation is optional and should only be used if the map feels accurate.',
     },
     sections: [
+      {
+        heading: 'Quick answer: what this Jungian cognitive functions test measures',
+        body: [
+          'This is the TypeJung page built for people searching for a Jungian cognitive functions test. The free assessment uses 42 scenario prompts, then returns an 8-function profile before any paid report.',
+          'The output separates Jungian function-attitudes instead of collapsing everything into a four-letter label. You can inspect the Ni, Ne, Si, Se, Ti, Te, Fi, and Fe score shape, compare the likely function stack, and look at the dominant-inferior axis that often explains stress patterns.',
+        ],
+        table: {
+          headers: ['Search intent', 'What TypeJung returns', 'Why it matters'],
+          rows: [
+            ['Jungian cognitive functions test', 'A free 42-question map of all 8 function-attitudes', 'Matches the full-function search intent instead of giving only a type label'],
+            ['Ni Ne Si Se Ti Te Fi Fe test', 'Separate scores for each function-attitude', 'Lets you see whether the result is differentiated or close'],
+            ['Jungian function stack test', 'A likely dominant, auxiliary, tertiary, and inferior pattern', 'Turns the score profile into a readable stack hypothesis'],
+            ['Free cognitive function test', 'A no-card result before optional paid interpretation', 'Lets searchers judge usefulness before checkout'],
+          ],
+        },
+        links: [
+          { href: '/assessment', label: 'Start the free 42-question Jungian cognitive functions test' },
+          { href: '/free-cognitive-function-test', label: 'Compare the free cognitive function test page' },
+          { href: '/function-stack-test', label: 'Read the function stack test guide' },
+        ],
+      },
       {
         heading: 'Take a Jungian cognitive functions test, not a label quiz',
         body: [

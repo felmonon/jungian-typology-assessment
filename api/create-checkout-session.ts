@@ -109,6 +109,14 @@ function addCheckoutMetadata(params: URLSearchParams, metadata: Record<string, s
   });
 }
 
+export function applyCheckoutCustomerParams(params: URLSearchParams, checkoutCustomerEmail?: string) {
+  params.set('customer_creation', 'always');
+
+  if (checkoutCustomerEmail) {
+    params.set('customer_email', checkoutCustomerEmail);
+  }
+}
+
 export function buildCheckoutCancelUrl(
   baseUrl: string,
   tier: PaidTierId,
@@ -356,9 +364,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         checkoutParams.set('after_expiration[recovery][allow_promotion_codes]', 'true');
       }
 
-      if (checkoutCustomerEmail) {
-        checkoutParams.set('customer_email', checkoutCustomerEmail);
-      }
+      applyCheckoutCustomerParams(checkoutParams, checkoutCustomerEmail);
 
       return checkoutParams;
     };

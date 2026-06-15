@@ -278,7 +278,41 @@ export const Checkout: React.FC = () => {
   }, [checkoutDetails, tierPrice]);
 
   const recoveryEmailPreview = checkoutRecoveryEmail.trim() || user?.email || capturedEmail || '';
-  const hasCheckoutEmail = EMAIL_PATTERN.test(recoveryEmailPreview.trim().toLowerCase());
+  const checkoutEmailCandidate = recoveryEmailPreview.trim();
+  const hasCheckoutEmail = EMAIL_PATTERN.test(checkoutEmailCandidate.toLowerCase());
+  const checkoutEmailDisplay = hasCheckoutEmail ? checkoutEmailCandidate : '';
+  const checkoutEmailCardTitle = hasCheckoutEmail
+    ? 'Checkout email ready'
+    : checkoutEmailCandidate ? 'Fix checkout email' : 'Checkout email required';
+  const checkoutEmailCardDescription = hasCheckoutEmail
+    ? 'Stripe can prefill the receipt email, then TypeJung can attach the unlock to this checkout.'
+    : checkoutEmailCandidate
+      ? 'That email is not valid yet. Fix it before Stripe so the receipt and checkout handoff work.'
+      : 'Add an email before Stripe so the receipt has somewhere to go and this checkout can be recovered if it expires.';
+  const checkoutEmailStatusLabel = hasCheckoutEmail ? 'Ready' : checkoutEmailCandidate ? 'Fix email' : 'Required';
+  const checkoutHandoffItems = [
+    {
+      icon: CreditCard,
+      label: 'Stripe receipt',
+      body: (
+        <>
+          Prefilled to <span className="break-all font-semibold text-jung-dark">{checkoutEmailDisplay}</span>.
+        </>
+      ),
+    },
+    {
+      icon: FileText,
+      label: 'Report unlock',
+      body: 'Return from Stripe to unlock this saved result.',
+    },
+    {
+      icon: checkoutRecoveryOptIn ? RefreshCcw : Lock,
+      label: checkoutRecoveryOptIn ? 'Recovery link' : 'Recovery off',
+      body: checkoutRecoveryOptIn
+        ? 'One TypeJung link if checkout expires.'
+        : 'Stripe still gets the receipt email.',
+    },
+  ] as const;
   const finalPriceLabel = tierPrice ? discountedPriceLabel(tierPrice.amount) : '';
   const paymentButtonText = !hasCheckoutEmail
     ? 'Add email to continue'
@@ -585,16 +619,14 @@ export const Checkout: React.FC = () => {
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p className="text-sm font-semibold text-jung-dark">
-                {recoveryEmailPreview ? 'Checkout email ready' : 'Checkout email required'}
+                {checkoutEmailCardTitle}
               </p>
               <p className="mt-1 text-xs leading-5 text-jung-secondary">
-                {recoveryEmailPreview
-                  ? `Stripe receipt prefill${checkoutRecoveryOptIn ? ' and one interrupted-checkout recovery link' : ''}: ${recoveryEmailPreview}`
-                  : 'Add an email before Stripe so the receipt has somewhere to go and this checkout can be recovered if it expires.'}
+                {checkoutEmailCardDescription}
               </p>
             </div>
             <span className="rounded-lg bg-jung-accent-light px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-jung-accent">
-              {recoveryEmailPreview ? 'Ready' : 'Required'}
+              {checkoutEmailStatusLabel}
             </span>
           </div>
           <button
@@ -602,7 +634,7 @@ export const Checkout: React.FC = () => {
             onClick={() => setShowRecoveryEmailControls((value) => !value)}
             className="mt-3 text-xs font-semibold text-jung-accent hover:underline"
           >
-            {showRecoveryEmailControls ? 'Hide email options' : recoveryEmailPreview ? 'Edit email options' : 'Add email'}
+            {showRecoveryEmailControls ? 'Hide email options' : hasCheckoutEmail ? 'Edit email options' : 'Add email'}
           </button>
         </div>
       </div>
@@ -648,8 +680,26 @@ export const Checkout: React.FC = () => {
           )}
         </div>
       )}
+      {hasCheckoutEmail && (
+        <div className="mt-4 border-t border-jung-border pt-3">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-jung-subtle">After Stripe</p>
+          <div className="mt-2 grid gap-2">
+            {checkoutHandoffItems.map(({ icon: Icon, label, body }) => (
+              <div key={label} className="flex gap-2">
+                <span className="mt-0.5 inline-flex h-6 w-6 flex-none items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
+                  <Icon className="h-3.5 w-3.5" />
+                </span>
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold text-jung-dark">{label}</p>
+                  <p className="mt-0.5 text-xs leading-5 text-jung-secondary">{body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       <p className="mt-3 text-[11px] leading-5 text-jung-muted">
-        Required for receipt and checkout recovery. No subscription is created.
+        {hasCheckoutEmail ? 'One-time purchase. No subscription is created.' : 'Required for receipt and checkout recovery. No subscription is created.'}
       </p>
     </div>
   );

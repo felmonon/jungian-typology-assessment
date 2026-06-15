@@ -277,10 +277,15 @@ export const Checkout: React.FC = () => {
     ];
   }, [checkoutDetails, tierPrice]);
 
-  const finalPriceLabel = tierPrice ? discountedPriceLabel(tierPrice.amount) : '';
-  const paymentButtonText = finalPriceLabel ? `Pay ${finalPriceLabel} on Stripe` : 'Continue to Stripe';
-  const mobilePaymentButtonText = isOpeningStripe ? 'Opening' : finalPriceLabel ? `Pay ${finalPriceLabel}` : 'Pay';
   const recoveryEmailPreview = checkoutRecoveryEmail.trim() || user?.email || capturedEmail || '';
+  const hasCheckoutEmail = EMAIL_PATTERN.test(recoveryEmailPreview.trim().toLowerCase());
+  const finalPriceLabel = tierPrice ? discountedPriceLabel(tierPrice.amount) : '';
+  const paymentButtonText = !hasCheckoutEmail
+    ? 'Add email to continue'
+    : finalPriceLabel ? `Pay ${finalPriceLabel} on Stripe` : 'Continue to Stripe';
+  const mobilePaymentButtonText = isOpeningStripe
+    ? 'Opening'
+    : !hasCheckoutEmail ? 'Add email' : finalPriceLabel ? `Pay ${finalPriceLabel}` : 'Pay';
 
   const copyDiscountCode = useCallback(async () => {
     try {
@@ -509,9 +514,122 @@ export const Checkout: React.FC = () => {
     }
   }, [capturedEmail, checkoutAttribution, checkoutRecoveryEmail, checkoutRecoveryOptIn, finalPriceLabel, paidTier, rememberCheckoutRecoveryEmail, savedResultAxis, sendCheckoutRecoveryLead, tierPrice, user?.email]);
 
-  const handleMobilePaymentClick = useCallback(() => {
+  const focusCheckoutEmail = useCallback((source: string) => {
+    const typedEmail = checkoutRecoveryEmail.trim();
+
+    setShowRecoveryEmailControls(true);
+    setRecoveryEmailError(
+      typedEmail && !EMAIL_PATTERN.test(typedEmail.toLowerCase())
+        ? 'Enter a valid email address before Stripe.'
+        : null,
+    );
+    trackEvent('checkout_email_prompt_opened', {
+      tier: paidTier || 'unknown',
+      source,
+      has_typed_email: Boolean(typedEmail),
+      acquisition_source: checkoutAttribution?.source || 'unknown',
+    });
+
+    window.requestAnimationFrame(() => {
+      checkoutEmailInputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      checkoutEmailInputRef.current?.focus();
+    });
+  }, [checkoutAttribution?.source, checkoutRecoveryEmail, paidTier]);
+
+  const handleCheckoutActionClick = useCallback(() => {
+    if (!hasCheckoutEmail) {
+      focusCheckoutEmail('checkout_primary_button');
+      return;
+    }
+
     void startStripeCheckout();
-  }, [startStripeCheckout]);
+  }, [focusCheckoutEmail, hasCheckoutEmail, startStripeCheckout]);
+
+  const handleMobilePaymentClick = useCallback(() => {
+    if (!hasCheckoutEmail) {
+      focusCheckoutEmail('checkout_mobile_sticky');
+      return;
+    }
+
+    void startStripeCheckout();
+  }, [focusCheckoutEmail, hasCheckoutEmail, startStripeCheckout]);
+
+  const checkoutEmailCard = (
+    <div className="mt-5 rounded-lg border border-jung-border bg-jung-base p-4">
+      <div className="flex gap-3">
+        <Mail className="mt-0.5 h-4 w-4 flex-none text-jung-accent" />
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-sm font-semibold text-jung-dark">
+                {recoveryEmailPreview ? 'Checkout email ready' : 'Checkout email required'}
+              </p>
+              <p className="mt-1 text-xs leading-5 text-jung-secondary">
+                {recoveryEmailPreview
+                  ? `Stripe receipt prefill${checkoutRecoveryOptIn ? ' and one interrupted-checkout recovery link' : ''}: ${recoveryEmailPreview}`
+                  : 'Add an email before Stripe so the receipt has somewhere to go and this checkout can be recovered if it expires.'}
+              </p>
+            </div>
+            <span className="rounded-lg bg-jung-accent-light px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-jung-accent">
+              {recoveryEmailPreview ? 'Ready' : 'Required'}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowRecoveryEmailControls((value) => !value)}
+            className="mt-3 text-xs font-semibold text-jung-accent hover:underline"
+          >
+            {showRecoveryEmailControls ? 'Hide email options' : recoveryEmailPreview ? 'Edit email options' : 'Add email'}
+          </button>
+        </div>
+      </div>
+      {showRecoveryEmailControls && (
+        <div className="mt-3">
+          <label className="sr-only" htmlFor="checkout-recovery-email">
+            Checkout email
+          </label>
+          <input
+            ref={checkoutEmailInputRef}
+            id="checkout-recovery-email"
+            type="email"
+            value={checkoutRecoveryEmail}
+            onChange={(event) => {
+              setCheckoutRecoveryEmail(event.target.value);
+              if (recoveryEmailError) setRecoveryEmailError(null);
+            }}
+            placeholder={user?.email || capturedEmail || 'you@example.com'}
+            aria-invalid={Boolean(recoveryEmailError)}
+            aria-describedby={recoveryEmailError ? 'checkout-recovery-email-error' : undefined}
+            className="h-11 w-full rounded-lg border border-jung-border bg-jung-surface px-3 text-sm text-jung-dark outline-none transition focus:border-jung-accent focus:ring-2 focus:ring-jung-accent/20"
+          />
+          {recoveryEmailError && (
+            <p id="checkout-recovery-email-error" className="mt-2 text-xs leading-5 text-error">
+              {recoveryEmailError}
+            </p>
+          )}
+          <label className="mt-3 flex items-start gap-3 text-xs leading-5 text-jung-secondary">
+            <input
+              type="checkbox"
+              checked={checkoutRecoveryOptIn}
+              onChange={(event) => setCheckoutRecoveryOptIn(event.target.checked)}
+              className="mt-1 h-4 w-4 rounded border-jung-border text-jung-accent accent-jung-accent focus:ring-jung-accent"
+            />
+            <span>
+              Also use this email for one TypeJung recovery link if checkout expires. No subscription is created.
+            </span>
+          </label>
+          {!checkoutRecoveryOptIn && (
+            <p className="mt-2 text-xs leading-5 text-jung-muted">
+              TypeJung recovery emails are off. Stripe will still receive this email for receipt and checkout prefill.
+            </p>
+          )}
+        </div>
+      )}
+      <p className="mt-3 text-[11px] leading-5 text-jung-muted">
+        Required for receipt and checkout recovery. No subscription is created.
+      </p>
+    </div>
+  );
 
   if (!paidTier || !checkoutDetails || !tierPrice) {
     return null;
@@ -836,11 +954,13 @@ export const Checkout: React.FC = () => {
               ))}
             </div>
 
+            {checkoutEmailCard}
+
             <Button
               variant="accent"
               size="lg"
               className="mt-5 w-full"
-              onClick={startStripeCheckout}
+              onClick={handleCheckoutActionClick}
               disabled={isOpeningStripe}
               rightIcon={!isOpeningStripe ? <ArrowRight className="h-5 w-5" /> : undefined}
             >
@@ -856,82 +976,6 @@ export const Checkout: React.FC = () => {
 
             <p className="mt-3 text-center text-xs leading-5 text-jung-muted">
               Secure checkout via Stripe. You will confirm the discounted total before payment is collected.
-            </p>
-
-            <div className="mt-5 rounded-lg border border-jung-border bg-jung-base p-4">
-              <div className="flex gap-3">
-                <Mail className="mt-0.5 h-4 w-4 flex-none text-jung-accent" />
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-semibold text-jung-dark">
-                        {recoveryEmailPreview ? 'Recovery email ready' : 'Protect this checkout'}
-                      </p>
-                      <p className="mt-1 text-xs leading-5 text-jung-secondary">
-                        {recoveryEmailPreview
-                          ? `Ready for Stripe prefill and one interrupted-checkout recovery link: ${recoveryEmailPreview}`
-                          : 'Add an email now so Stripe can prefill the receipt address and TypeJung can send one recovery link if checkout expires before payment.'}
-                      </p>
-                    </div>
-                    <span className="rounded-lg bg-jung-accent-light px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-jung-accent">
-                      {recoveryEmailPreview ? 'Recoverable' : 'Recommended'}
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setShowRecoveryEmailControls((value) => !value)}
-                    className="mt-3 text-xs font-semibold text-jung-accent hover:underline"
-                  >
-                    {showRecoveryEmailControls ? 'Hide email options' : recoveryEmailPreview ? 'Edit email options' : 'Add email options'}
-                  </button>
-                </div>
-              </div>
-              {showRecoveryEmailControls && (
-                <div className="mt-3">
-                  <label className="sr-only" htmlFor="checkout-recovery-email">
-                    Checkout email
-                  </label>
-                  <input
-                    ref={checkoutEmailInputRef}
-                    id="checkout-recovery-email"
-                    type="email"
-                    value={checkoutRecoveryEmail}
-                    onChange={(event) => {
-                      setCheckoutRecoveryEmail(event.target.value);
-                      if (recoveryEmailError) setRecoveryEmailError(null);
-                    }}
-                    placeholder={user?.email || capturedEmail || 'you@example.com'}
-                    aria-invalid={Boolean(recoveryEmailError)}
-                    aria-describedby={recoveryEmailError ? 'checkout-recovery-email-error' : undefined}
-                    className="h-11 w-full rounded-lg border border-jung-border bg-jung-surface px-3 text-sm text-jung-dark outline-none transition focus:border-jung-accent focus:ring-2 focus:ring-jung-accent/20"
-                  />
-                  {recoveryEmailError && (
-                    <p id="checkout-recovery-email-error" className="mt-2 text-xs leading-5 text-error">
-                      {recoveryEmailError}
-                    </p>
-                  )}
-                  <label className="mt-3 flex items-start gap-3 text-xs leading-5 text-jung-secondary">
-                    <input
-                      type="checkbox"
-                      checked={checkoutRecoveryOptIn}
-                      onChange={(event) => setCheckoutRecoveryOptIn(event.target.checked)}
-                      className="mt-1 h-4 w-4 rounded border-jung-border text-jung-accent focus:ring-jung-accent"
-                    />
-                    <span>
-                      Also use this email for one TypeJung recovery link if checkout expires. No subscription is created.
-                    </span>
-                  </label>
-                  {!checkoutRecoveryOptIn && (
-                    <p className="mt-2 text-xs leading-5 text-jung-muted">
-                      TypeJung recovery emails are off. Stripe will still receive this email for receipt and checkout prefill.
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
-
-            <p className="mt-2 text-center text-xs leading-5 text-jung-muted">
-              Email is required before Stripe for receipt and interrupted-checkout recovery. No subscription is created.
             </p>
 
             <div className="mt-5 border-y border-jung-border py-5">

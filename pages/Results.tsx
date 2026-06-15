@@ -1947,14 +1947,14 @@ export const Results: React.FC = () => {
       </div>
       {!premiumLoading && !isPremium && (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-jung-border bg-jung-surface/95 shadow-[0_-12px_32px_rgba(41,28,18,0.14)] backdrop-blur md:hidden">
-          <div className="mx-auto grid max-w-screen-sm gap-3 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3">
+          <div className="mx-auto grid max-w-screen-sm gap-2 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3">
             <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0">
-                <p className="text-sm font-semibold text-jung-dark">
-                  Developmental edge - {paidTierPrice(intendedTier)}
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold text-jung-dark">
+                  Unlock your {FUNCTION_LABELS[results.inferior].toLowerCase()} edge - {paidTierPrice(intendedTier)}
                 </p>
                 <p className="mt-0.5 text-xs leading-4 text-jung-muted">
-                  {upgradeIntent ? `${intendedTierName} selected. ` : ''}Review before Stripe. No subscription.
+                  Edge, stress map, and practice. 7-day guarantee.
                 </p>
               </div>
               <Button
@@ -1964,16 +1964,26 @@ export const Results: React.FC = () => {
                 onClick={() => openUpgradeCheckout(intendedTier, 'results_mobile_sticky')}
                 rightIcon={<ArrowRight className="h-4 w-4" />}
               >
-                Unlock edge
+                Unlock
               </Button>
             </div>
-            <button
-              type="button"
-              onClick={() => viewSampleReport('results_mobile_sticky')}
-              className="min-h-9 rounded-lg border border-jung-border bg-jung-base px-3 text-xs font-semibold text-jung-secondary transition hover:border-jung-accent hover:text-jung-accent"
-            >
-              Preview before buying
-            </button>
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex min-w-0 flex-wrap gap-1.5">
+                {['Edge', 'Stress', 'Practice'].map((item) => (
+                  <span key={item} className="inline-flex min-h-7 items-center gap-1 rounded-lg border border-jung-border bg-jung-base px-2 text-[11px] font-semibold text-jung-muted">
+                    <Check className="h-3 w-3 text-jung-accent" />
+                    {item}
+                  </span>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => viewSampleReport('results_mobile_sticky')}
+                className="min-h-9 flex-none rounded-lg border border-jung-border bg-jung-base px-3 text-xs font-semibold text-jung-secondary transition hover:border-jung-accent hover:text-jung-accent"
+              >
+                See sample
+              </button>
+            </div>
           </div>
         </div>
       )}

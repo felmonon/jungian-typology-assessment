@@ -522,24 +522,34 @@ export const SampleReport: React.FC = () => {
       </section>
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-jung-border bg-jung-surface/95 shadow-[0_-12px_32px_rgba(41,28,18,0.14)] backdrop-blur md:hidden">
-        <div className="mx-auto flex max-w-screen-sm items-center justify-between gap-3 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3">
-          <div className="min-w-0">
-            <p className="text-sm font-semibold text-jung-dark">
-              {savedResult ? `Get Insight for your map - ${INSIGHT_PRICE}` : `Insight report - ${INSIGHT_PRICE}`}
-            </p>
-            <p className="mt-0.5 text-xs leading-4 text-jung-muted">
-              {savedResult ? 'One-time. 7-day money-back guarantee.' : 'Free map first. One-time upgrade, no subscription.'}
-            </p>
+        <div className="mx-auto grid max-w-screen-sm gap-2 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3">
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold text-jung-dark">
+                {savedResult ? `Unlock your ${FUNCTION_LABELS[savedResult.inferior].toLowerCase()} edge - ${INSIGHT_PRICE}` : `Free map first - Insight is ${INSIGHT_PRICE}`}
+              </p>
+              <p className="mt-0.5 text-xs leading-4 text-jung-muted">
+                {savedResult ? 'Your map is ready. 7-day guarantee.' : 'See your result before checkout. No subscription.'}
+              </p>
+            </div>
+            <Button
+              variant="accent"
+              size="sm"
+              className="flex-none"
+              onClick={() => (savedResult ? getInsightReport('sample_report_mobile_sticky') : startAssessment('sample_report_mobile_sticky'))}
+              rightIcon={<ArrowRight className="h-4 w-4" />}
+            >
+              {savedResult ? 'Unlock' : 'Start free'}
+            </Button>
           </div>
-          <Button
-            variant="accent"
-            size="sm"
-            className="flex-none"
-            onClick={() => (savedResult ? getInsightReport('sample_report_mobile_sticky') : startAssessment('sample_report_mobile_sticky'))}
-            rightIcon={<ArrowRight className="h-4 w-4" />}
-          >
-            {savedResult ? 'Get Insight' : 'Start free'}
-          </Button>
+          <div className="flex min-w-0 flex-wrap gap-1.5">
+            {(savedResult ? ['Your map', 'Edge', 'Practice'] : ['Free result', 'Sample first', 'No card']).map((item) => (
+              <span key={item} className="inline-flex min-h-7 items-center gap-1 rounded-lg border border-jung-border bg-jung-base px-2 text-[11px] font-semibold text-jung-muted">
+                <Check className="h-3 w-3 text-jung-accent" />
+                {item}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </div>

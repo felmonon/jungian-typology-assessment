@@ -286,6 +286,29 @@ export const Checkout: React.FC = () => {
   const mobilePaymentButtonText = isOpeningStripe
     ? 'Opening'
     : !hasCheckoutEmail ? 'Add email' : finalPriceLabel ? `Pay ${finalPriceLabel}` : 'Pay';
+  const checkoutSteps = [
+    {
+      icon: hasCheckoutEmail ? Check : Mail,
+      label: 'Email',
+      caption: hasCheckoutEmail ? 'Ready' : 'Required',
+      state: hasCheckoutEmail ? 'complete' : 'active',
+    },
+    {
+      icon: CreditCard,
+      label: 'Stripe',
+      caption: 'Payment',
+      state: hasCheckoutEmail ? 'active' : 'pending',
+    },
+    {
+      icon: FileText,
+      label: 'Unlock',
+      caption: 'Report',
+      state: 'pending',
+    },
+  ] as const;
+  const mobileStickyHint = hasCheckoutEmail
+    ? `${EMAIL_CAPTURE_OFFER.code} applied. One-time CAD.`
+    : 'Email first. Then secure Stripe.';
 
   const copyDiscountCode = useCallback(async () => {
     try {
@@ -900,14 +923,20 @@ export const Checkout: React.FC = () => {
           <aside className="order-first mx-auto min-w-0 w-full max-w-full rounded-lg border border-jung-border bg-jung-surface p-5 shadow-md sm:p-6 lg:sticky lg:top-28 lg:order-none">
             <p className="text-label">Order summary</p>
             <div className="mt-3 grid grid-cols-3 gap-2 rounded-lg border border-jung-border bg-jung-base p-2 text-center">
-              {[
-                { icon: Check, label: 'Review' },
-                { icon: CreditCard, label: 'Stripe' },
-                { icon: FileText, label: 'Unlock' },
-              ].map(({ icon: Icon, label }) => (
-                <div key={label} className="rounded-lg bg-jung-surface px-2 py-2">
-                  <Icon className="mx-auto h-4 w-4 text-jung-accent" />
+              {checkoutSteps.map(({ icon: Icon, label, caption, state }) => (
+                <div
+                  key={label}
+                  className={`rounded-lg border px-2 py-2 ${
+                    state === 'complete'
+                      ? 'border-jung-accent-muted bg-jung-accent-light'
+                      : state === 'active'
+                        ? 'border-jung-accent bg-jung-surface shadow-sm'
+                        : 'border-transparent bg-jung-surface'
+                  }`}
+                >
+                  <Icon className={`mx-auto h-4 w-4 ${state === 'pending' ? 'text-jung-muted' : 'text-jung-accent'}`} />
                   <p className="mt-1 text-[11px] font-semibold text-jung-secondary">{label}</p>
+                  <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.06em] text-jung-muted">{caption}</p>
                 </div>
               ))}
             </div>
@@ -1059,7 +1088,7 @@ export const Checkout: React.FC = () => {
               {checkoutDetails.packageName} - {finalPriceLabel}
             </p>
             <p className="mt-0.5 text-xs leading-4 text-jung-muted">
-              {EMAIL_CAPTURE_OFFER.code} applied. One-time CAD.
+              {mobileStickyHint}
             </p>
           </div>
           <Button

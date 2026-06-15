@@ -278,10 +278,16 @@ const LockedPremiumPreview: React.FC<{
   const dominantEnergy = results.energy.find((item) => item.channel === results.dominant)?.score ?? results.hierarchy[0]?.score ?? 0;
   const inferiorEnergy = results.energy.find((item) => item.channel === results.inferior)?.score ?? results.hierarchy[3]?.score ?? 0;
   const listPrice = PRICING[intendedTier].price;
+  const offerPrice = paidTierPrice(intendedTier);
   const lockedSections = [
     {
       title: 'Developmental edge',
       eyebrow: `${dominantEnergy}% dominant / ${inferiorEnergy}% edge`,
+      location: 'results_premium_preview_developmental_edge',
+      ctaLabel: `Unlock my edge - ${offerPrice}`,
+      lockedLabel: 'Full edge locked',
+      featured: true,
+      proof: `Start here: this is where the ${dominantLabel} to ${inferiorLabel} map turns into a concrete practice target.`,
       visibleLines: previewSentences(
         results.narrative.developmentalEdge,
         `${inferiorLabel} is the low-energy edge in this map, so the full report starts with what that function asks you to practice.`,
@@ -295,6 +301,11 @@ const LockedPremiumPreview: React.FC<{
     {
       title: 'Stress pattern',
       eyebrow: `${inferiorChannelLabel} under pressure`,
+      location: 'results_premium_preview_stress_pattern',
+      ctaLabel: `Unlock stress map - ${offerPrice}`,
+      lockedLabel: 'Full stress map locked',
+      featured: false,
+      proof: `The full section connects the edge to the pressure loop that usually appears before behavior changes.`,
       visibleLines: previewSentences(
         results.narrative.complexVulnerability,
         `Stress is likely to collect around the ${inferiorChannelLabel.toLowerCase()} side of this result, especially when the dominant pattern has been overextended.`,
@@ -308,6 +319,11 @@ const LockedPremiumPreview: React.FC<{
     {
       title: 'Relationship repair cue',
       eyebrow: `${dominantLabel} to ${inferiorLabel}`,
+      location: 'results_premium_preview_relationship_repair_cue',
+      ctaLabel: `Unlock repair cue - ${offerPrice}`,
+      lockedLabel: 'Full repair cue locked',
+      featured: false,
+      proof: 'The full section gives one repair sentence and one observation prompt tied to this stack.',
       visibleLines: [
         axisCopy[results.dominant],
         `The paid report translates that axis into the moment you are most likely to defend, withdraw, overexplain, or push for control.`,
@@ -334,21 +350,58 @@ const LockedPremiumPreview: React.FC<{
             The free map names the pattern. The locked report previews below use the actual language generated from your scores, then fades where the full interpretation continues.
           </p>
 
-          <div className="mt-6 grid gap-4 xl:grid-cols-3">
+          <div className="mt-6 rounded-lg border border-jung-subtle/20 bg-white/[0.06] p-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-jung-subtle">Most useful first unlock</p>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-white/76">
+                  Read the free map, then decide from the developmental edge. That is the section that explains why this exact inferior side matters.
+                </p>
+              </div>
+              <span className="w-fit rounded-lg bg-white px-3 py-2 text-xs font-semibold text-jung-dark">
+                {offerPrice} today
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-4 grid gap-4 xl:grid-cols-[1.25fr_0.875fr_0.875fr]">
             {lockedSections.map((section) => (
-              <article key={section.title} className="rounded-lg border border-white/10 bg-white/[0.08] p-4">
+              <article
+                key={section.title}
+                className={`rounded-lg border p-4 ${
+                  section.featured
+                    ? 'border-jung-subtle/60 bg-white/[0.14] shadow-[0_18px_50px_rgba(0,0,0,0.22)]'
+                    : 'border-white/10 bg-white/[0.08]'
+                }`}
+              >
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-jung-subtle">{section.eyebrow}</p>
                     <h3 className="mt-2 text-base font-semibold leading-6 text-white">{section.title}</h3>
                   </div>
-                  <Lock className="mt-1 h-4 w-4 flex-none text-jung-subtle" />
+                  {section.featured ? (
+                    <span className="mt-0.5 rounded-lg bg-jung-subtle px-2 py-1 text-[11px] font-semibold text-jung-dark">
+                      Start here
+                    </span>
+                  ) : (
+                    <Lock className="mt-1 h-4 w-4 flex-none text-jung-subtle" />
+                  )}
                 </div>
+                <p className="mt-3 text-xs leading-5 text-jung-subtle/90">{section.proof}</p>
                 <div className="mt-3 space-y-2 text-xs leading-5 text-white/72">
                   {section.visibleLines.map((line) => (
                     <p key={line}>{line}</p>
                   ))}
                 </div>
+                {section.featured && (
+                  <button
+                    type="button"
+                    onClick={() => onUnlock(intendedTier, section.location)}
+                    className="mt-4 min-h-11 w-full rounded-lg bg-white px-4 py-3 text-sm font-semibold text-jung-dark shadow-sm transition hover:-translate-y-px hover:bg-jung-subtle focus:outline-none focus:ring-2 focus:ring-white/60"
+                  >
+                    {section.ctaLabel}
+                  </button>
+                )}
                 <div className="relative mt-4 overflow-hidden rounded-lg border border-white/10 bg-black/[0.18] p-4">
                   <div aria-hidden="true" className="space-y-2 select-none text-xs leading-5 text-white/75 blur-[3px]">
                     {section.lockedLines.map((line) => (
@@ -358,15 +411,17 @@ const LockedPremiumPreview: React.FC<{
                   <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gradient-to-b from-jung-dark/20 via-jung-dark/55 to-jung-dark/85 px-4 text-center">
                     <span className="inline-flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-xs font-semibold text-jung-dark shadow-sm">
                       <Lock className="h-3.5 w-3.5" />
-                      Full section locked
+                      {section.lockedLabel}
                     </span>
-                    <button
-                      type="button"
-                      onClick={() => onUnlock(intendedTier, `results_premium_preview_${section.title.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`)}
-                      className="rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-xs font-semibold text-white transition hover:bg-white/20"
-                    >
-                      Unlock full report - {listPrice}
-                    </button>
+                    {!section.featured && (
+                      <button
+                        type="button"
+                        onClick={() => onUnlock(intendedTier, section.location)}
+                        className="min-h-11 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-xs font-semibold text-white transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/60"
+                      >
+                        {section.ctaLabel}
+                      </button>
+                    )}
                   </div>
                 </div>
               </article>
@@ -377,10 +432,10 @@ const LockedPremiumPreview: React.FC<{
         <div className="border-t border-white/10 bg-white p-5 text-jung-dark sm:p-6 lg:border-l lg:border-t-0">
           <p className="text-label">Keep reading</p>
           <h3 className="mt-2 text-heading text-2xl text-jung-dark">
-            {primaryName} - {paidTierPrice(intendedTier)}
+            {primaryName} - {offerPrice}
           </h3>
           <p className="mt-3 text-sm leading-6 text-jung-secondary">
-            Your free map is already complete. Unlock the report only if the axis feels worth keeping.
+            Your free map is already complete. Unlock the developmental edge only if this axis feels worth keeping.
           </p>
           <div className="mt-5 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-4">
             <p className="text-sm font-semibold text-jung-dark">Built from this result</p>
@@ -395,7 +450,7 @@ const LockedPremiumPreview: React.FC<{
             onClick={() => onUnlock(intendedTier, 'results_locked_preview')}
             rightIcon={<ArrowRight className="h-4 w-4" />}
           >
-            Unlock full report - {listPrice}
+            Unlock my edge - {offerPrice}
           </Button>
           <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] font-semibold text-jung-secondary">
             <span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5 text-jung-accent" />7-day money-back</span>
@@ -410,7 +465,7 @@ const LockedPremiumPreview: React.FC<{
             Continue to review the price before Stripe
           </button>
           <p className="mt-3 text-xs leading-5 text-jung-muted">
-            {EMAIL_CAPTURE_OFFER.code} applies on Stripe. You review the order first; no subscription is created.
+            {listPrice} before {EMAIL_CAPTURE_OFFER.code}. You review the discounted order first; no subscription is created.
           </p>
           <button
             type="button"
@@ -639,6 +694,8 @@ export const Results: React.FC = () => {
       source: location,
       tier: paidTier,
       destination,
+      value: PRICING[paidTier].amount,
+      currency: PRICING[paidTier].currency,
       price_cad: PRICING[paidTier].amount,
       displayed_price: PRICING[paidTier].price,
       discounted_price: paidTierPrice(paidTier),
@@ -732,7 +789,11 @@ export const Results: React.FC = () => {
 
     const previewPayload = {
       source: acquisition?.source || 'unknown',
+      preview_source: 'results_locked_preview',
       intended_tier: intendedTier,
+      tier: intendedTier,
+      value: PRICING[intendedTier].amount,
+      currency: PRICING[intendedTier].currency,
       dominant_function: getFunctionCode(currentResults.dominant, currentResults.attitude.dominant),
       inferior_function: getFunctionCode(
         currentResults.inferior,
@@ -1890,10 +1951,10 @@ export const Results: React.FC = () => {
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-jung-dark">
-                  {intendedTierName} report - {paidTierPrice(intendedTier)}
+                  Developmental edge - {paidTierPrice(intendedTier)}
                 </p>
                 <p className="mt-0.5 text-xs leading-4 text-jung-muted">
-                  {upgradeIntent ? 'Your selected upgrade. ' : ''}{EMAIL_CAPTURE_OFFER.code} applied on Stripe. No subscription.
+                  {upgradeIntent ? `${intendedTierName} selected. ` : ''}Review before Stripe. No subscription.
                 </p>
               </div>
               <Button
@@ -1903,7 +1964,7 @@ export const Results: React.FC = () => {
                 onClick={() => openUpgradeCheckout(intendedTier, 'results_mobile_sticky')}
                 rightIcon={<ArrowRight className="h-4 w-4" />}
               >
-                Unlock report
+                Unlock edge
               </Button>
             </div>
             <button

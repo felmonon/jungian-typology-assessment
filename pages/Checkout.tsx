@@ -30,18 +30,18 @@ type CheckoutTierDetails = {
 const CHECKOUT_DETAILS: Record<PaidTierId, CheckoutTierDetails> = {
   insight: {
     packageName: 'Insight Package',
-    headline: 'Go deeper on the result you already saw.',
+    headline: 'Unlock the developmental edge behind the result you just saw.',
     description:
-      'Insight turns your free TypeJung map into a deeper report with your developmental edge, stress-pattern reflection, relationship-pattern reflection, and practical prompts.',
+      'Insight starts with the dominant-to-inferior axis in your free TypeJung map, then opens the developmental edge, stress-pattern reflection, relationship-pattern reflection, and practical prompts.',
     includes: [
-      'Complete TypeJung depth report',
-      'Developmental edge and inferior-function analysis',
+      'Full developmental edge for this exact result',
+      'Inferior-function analysis tied to your dominant axis',
       'Stress, relationship, and work-pattern interpretation',
-      'Practical reflection prompts',
+      'Practical reflection prompts for the next week',
       'Unlocked result access in this browser, with account restore after sign-in',
     ],
     previewModules: [
-      { title: 'Developmental edge', body: 'A deeper read on what your inferior function may be asking you to build, tolerate, or integrate.' },
+      { title: 'Developmental edge', body: 'The first paid section: what your inferior function may be asking you to build, tolerate, or integrate.' },
       { title: 'Stress-pattern map', body: 'Concrete ways the axis can show up in conflict, pressure, avoidance, and relationship patterns.' },
       { title: 'Practice prompts', body: 'Reflection exercises matched to the pattern in your free map.' },
     ],
@@ -73,6 +73,10 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const APPROX_USD_PRICE: Record<PaidTierId, string> = {
   insight: 'US$7',
   mastery: 'US$21',
+};
+const APPROX_DISCOUNTED_USD_PRICE: Record<PaidTierId, string> = {
+  insight: 'US$5',
+  mastery: 'US$15',
 };
 
 const readCapturedDiscountEmail = (): string | null => {
@@ -157,6 +161,49 @@ export const Checkout: React.FC = () => {
       reliability: savedDepthResult.reliability.label,
     };
   }, [savedDepthResult]);
+  const acquisitionTrace = [
+    acquisitionSource,
+    checkoutAttribution?.source,
+    checkoutAttribution?.parentSource,
+    checkoutAttribution?.sourceChain,
+  ].filter(Boolean).join('>');
+  const cameFromDevelopmentalEdge = acquisitionTrace.includes('results_premium_preview_developmental_edge');
+  const cameFromMobileSticky = acquisitionTrace.includes('results_mobile_sticky');
+  const checkoutContextCallout = useMemo(() => {
+    if (!paidTier) return null;
+
+    const axisPhrase = savedResultAxis
+      ? `${savedResultAxis.dominantLabel} to ${savedResultAxis.inferiorLabel}`
+      : 'your saved result axis';
+
+    if (paidTier === 'insight' && cameFromDevelopmentalEdge) {
+      return {
+        eyebrow: 'Developmental edge selected',
+        title: 'You are unlocking the edge behind this exact result.',
+        body: `You clicked from the developmental-edge preview, so Insight opens the full ${axisPhrase} edge first, then connects it to stress signals, relationship repair, and practice prompts.`,
+        bullets: [
+          'Full edge interpretation first',
+          'Stress map tied to that edge',
+          'Practice prompts for this week',
+        ],
+      };
+    }
+
+    if (paidTier === 'insight' && cameFromMobileSticky) {
+      return {
+        eyebrow: 'Result path continued',
+        title: 'You are still buying the report for the map saved in this browser.',
+        body: `The mobile unlock button brought you here from the results page. Stripe is only the payment step; the report stays attached to the ${axisPhrase} map.`,
+        bullets: [
+          'Review the exact price here',
+          'Pay once on Stripe',
+          'Return to unlock the saved result',
+        ],
+      };
+    }
+
+    return null;
+  }, [cameFromDevelopmentalEdge, cameFromMobileSticky, paidTier, savedResultAxis]);
 
   useEffect(() => {
     if (!checkoutRecoveryEmail && user?.email) {
@@ -232,7 +279,7 @@ export const Checkout: React.FC = () => {
 
   const finalPriceLabel = tierPrice ? discountedPriceLabel(tierPrice.amount) : '';
   const paymentButtonText = finalPriceLabel ? `Pay ${finalPriceLabel} on Stripe` : 'Continue to Stripe';
-  const mobilePaymentButtonText = isOpeningStripe ? 'Opening' : 'Pay';
+  const mobilePaymentButtonText = isOpeningStripe ? 'Opening' : finalPriceLabel ? `Pay ${finalPriceLabel}` : 'Pay';
   const recoveryEmailPreview = checkoutRecoveryEmail.trim() || user?.email || capturedEmail || '';
 
   const copyDiscountCode = useCallback(async () => {
@@ -571,6 +618,29 @@ export const Checkout: React.FC = () => {
               {checkoutDetails.description}
             </p>
 
+            {checkoutContextCallout && (
+              <div className="mt-6 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-5 shadow-sm">
+                <div className="inline-flex items-center gap-2 rounded-lg bg-jung-surface px-3 py-1.5 text-xs font-semibold text-jung-accent">
+                  <Lock className="h-3.5 w-3.5" />
+                  {checkoutContextCallout.eyebrow}
+                </div>
+                <h2 className="mt-4 text-2xl font-semibold leading-tight text-jung-dark">
+                  {checkoutContextCallout.title}
+                </h2>
+                <p className="mt-3 text-sm leading-6 text-jung-secondary">
+                  {checkoutContextCallout.body}
+                </p>
+                <div className="mt-4 grid gap-2 sm:grid-cols-3">
+                  {checkoutContextCallout.bullets.map((bullet) => (
+                    <div key={bullet} className="flex min-h-11 items-center gap-2 rounded-lg border border-jung-border bg-jung-surface px-3 py-2 text-xs font-semibold text-jung-secondary">
+                      <Check className="h-3.5 w-3.5 flex-none text-jung-accent" />
+                      <span className="min-w-0">{bullet}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="mt-6 rounded-lg border border-jung-dark bg-jung-dark p-5 text-white shadow-xl sm:p-6">
               <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center">
                 <div>
@@ -585,7 +655,7 @@ export const Checkout: React.FC = () => {
                     </span>
                   </div>
                   <p className="mt-3 text-sm font-medium text-white/80">
-                    One-time payment, not a subscription.{paidTier ? ` About ${APPROX_USD_PRICE[paidTier]} on non-Canadian cards.` : ''}
+                    One-time payment, not a subscription.{paidTier ? ` About ${APPROX_DISCOUNTED_USD_PRICE[paidTier]} on non-Canadian cards after the discount.` : ''}
                   </p>
                   <p className="mt-2 text-sm leading-6 text-white/60">
                     Secure checkout via Stripe. Apple Pay, Google Pay, and Link appear when your browser supports them.
@@ -738,6 +808,20 @@ export const Checkout: React.FC = () => {
                 <p className="mt-1 text-xs text-jung-muted line-through">{tierPrice.price}</p>
               </div>
             </div>
+
+            {checkoutContextCallout && (
+              <div className="mt-5 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-4 lg:hidden">
+                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-jung-accent">
+                  {checkoutContextCallout.eyebrow}
+                </p>
+                <p className="mt-2 text-sm font-semibold leading-5 text-jung-dark">
+                  {checkoutContextCallout.title}
+                </p>
+                <p className="mt-2 text-xs leading-5 text-jung-secondary">
+                  Review the price here, then Stripe handles payment.
+                </p>
+              </div>
+            )}
 
             <div className="mt-5 grid gap-3 border-b border-jung-border pb-5">
               {orderRows.map(([label, value]) => (

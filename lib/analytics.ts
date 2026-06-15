@@ -112,6 +112,8 @@ const FUNNEL_MIRROR_EVENT_NAMES = new Set([
   'assessment_started',
   'assessment_completed',
   'results_viewed',
+  'results_premium_preview_viewed',
+  'results_unlock_clicked',
   'checkout_review_viewed',
 ]);
 

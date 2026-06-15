@@ -10,8 +10,6 @@ const queryClient = new QueryClient();
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Failed to find the root element');
 
-initAnalytics();
-
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
@@ -20,6 +18,31 @@ root.render(
     </QueryClientProvider>
   </React.StrictMode>
 );
+
+const startAnalytics = () => {
+  initAnalytics();
+};
+
+const scheduleAnalytics = () => {
+  window.setTimeout(() => {
+    const idleWindow = window as typeof window & {
+      requestIdleCallback?: (callback: () => void, options?: { timeout?: number }) => number;
+    };
+
+    if (idleWindow.requestIdleCallback) {
+      idleWindow.requestIdleCallback(startAnalytics, { timeout: 2000 });
+      return;
+    }
+
+    startAnalytics();
+  }, 2500);
+};
+
+if (document.readyState === 'complete') {
+  scheduleAnalytics();
+} else {
+  window.addEventListener('load', scheduleAnalytics, { once: true });
+}
 
 // Signal to prerenderer that the page is ready to be captured
 // This runs after React has finished initial render

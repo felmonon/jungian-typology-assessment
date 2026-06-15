@@ -3,8 +3,8 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
+import { Home } from './pages/Home';
 
-const Home = lazy(() => import('./pages/Home').then(({ Home }) => ({ default: Home })));
 const AuthPage = lazy(() => import('./pages/AuthPage').then(({ AuthPage }) => ({ default: AuthPage })));
 const ProfilePage = lazy(() => import('./pages/ProfilePage').then(({ ProfilePage }) => ({ default: ProfilePage })));
 const Assessment = lazy(() => import('./pages/Assessment').then(({ Assessment }) => ({ default: Assessment })));
@@ -24,7 +24,7 @@ const SampleReport = lazy(() => import('./pages/SampleReport').then(({ SampleRep
 const AIRunStore = lazy(() => import('./pages/AIRunStore').then(({ AIRunStore }) => ({ default: AIRunStore })));
 
 const RouteFallback: React.FC = () => (
-  <div className="lab-container flex min-h-[48vh] items-center justify-center py-16" aria-live="polite" aria-busy="true">
+  <div className="lab-container flex min-h-[calc(100svh-5rem)] items-center justify-center py-16" aria-live="polite" aria-busy="true">
     <div className="inline-flex items-center gap-3 rounded-lg border border-jung-border bg-jung-surface px-4 py-3 text-sm font-semibold text-jung-secondary shadow-sm">
       <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-jung-accent" />
       Loading page

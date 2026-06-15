@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
@@ -11,7 +11,6 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { ErrorBoundary } from '../components/ErrorBoundary';
-import { DiscountCaptureCard } from '../components/discount/DiscountCaptureCard';
 import { Button } from '../components/ui/Button';
 import { FunctionRadial } from '../components/home/FunctionRadial';
 import { PRICING } from '../data/pricing';
@@ -23,6 +22,8 @@ import { writeUpgradeIntent } from '../lib/upgrade-intent';
 import { STORAGE_KEYS } from '../lib/validation';
 import { isDepthAssessmentResult } from '../utils/depthScoring';
 import { PAGE_SEO, useSEO } from '../hooks/useSEO';
+
+const DiscountCaptureCard = lazy(() => import('../components/discount/DiscountCaptureCard').then(({ DiscountCaptureCard }) => ({ default: DiscountCaptureCard })));
 
 const sampleProfile = [
   { name: 'Ti', label: 'Thinking inward', value: 82, role: 'Dominant' },
@@ -526,18 +527,20 @@ export const Home: React.FC = () => {
                   Email yourself the free test link and the paid-report code. The result still stays free to view first.
                 </p>
               </div>
-              <DiscountCaptureCard
-                source="home_post_hero_save_path"
-                compact
-                minimal
-                minimalTitle="Email me the test"
-                minimalDescription={`Get the free assessment link, sample report, and ${EMAIL_CAPTURE_OFFER.code} code in one private email.`}
-                minimalSubmitLabel="Send the link"
-                minimalFootnote="One email with the next step. No subscription."
-                minimalSentMessage="Path sent. The email links back to the free assessment and keeps the upgrade code ready."
-                preferredTier="insight"
-                showCheckoutButtons={false}
-              />
+              <Suspense fallback={<div className="min-h-[148px] rounded-lg border border-jung-border bg-jung-surface" aria-hidden="true" />}>
+                <DiscountCaptureCard
+                  source="home_post_hero_save_path"
+                  compact
+                  minimal
+                  minimalTitle="Email me the test"
+                  minimalDescription={`Get the free assessment link, sample report, and ${EMAIL_CAPTURE_OFFER.code} code in one private email.`}
+                  minimalSubmitLabel="Send the link"
+                  minimalFootnote="One email with the next step. No subscription."
+                  minimalSentMessage="Path sent. The email links back to the free assessment and keeps the upgrade code ready."
+                  preferredTier="insight"
+                  showCheckoutButtons={false}
+                />
+              </Suspense>
             </div>
           </div>
         </section>
@@ -676,7 +679,9 @@ export const Home: React.FC = () => {
               })}
             </div>
 
-            <DiscountCaptureCard source="home_pricing_section" compact className="mx-auto mt-8 max-w-3xl" />
+            <Suspense fallback={<div className="mx-auto mt-8 min-h-[180px] max-w-3xl rounded-lg border border-jung-border bg-jung-surface" aria-hidden="true" />}>
+              <DiscountCaptureCard source="home_pricing_section" compact className="mx-auto mt-8 max-w-3xl" />
+            </Suspense>
           </div>
         </section>
 

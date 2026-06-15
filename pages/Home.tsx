@@ -15,9 +15,13 @@ import { DiscountCaptureCard } from '../components/discount/DiscountCaptureCard'
 import { Button } from '../components/ui/Button';
 import { FunctionRadial } from '../components/home/FunctionRadial';
 import { PRICING } from '../data/pricing';
+import type { PaidTierId, PricingTierId } from '../data/pricing';
 import { discountedPriceLabel, EMAIL_CAPTURE_OFFER } from '../data/discount';
 import { AnalyticsEvents, trackEvent } from '../lib/analytics';
 import { pathWithSource } from '../lib/acquisition-source';
+import { writeUpgradeIntent } from '../lib/upgrade-intent';
+import { STORAGE_KEYS } from '../lib/validation';
+import { isDepthAssessmentResult } from '../utils/depthScoring';
 import { PAGE_SEO, useSEO } from '../hooks/useSEO';
 
 const sampleProfile = [
@@ -104,7 +108,19 @@ const lockedPreview = [
   },
 ];
 
-const pricingTiers = [
+type HomePricingTier = {
+  id: PricingTierId;
+  name: string;
+  price: string;
+  originalPrice?: string;
+  priceNote?: string;
+  description: string;
+  features: string[];
+  cta: string;
+  highlighted?: boolean;
+};
+
+const pricingTiers: HomePricingTier[] = [
   {
     id: 'free',
     name: 'Free',
@@ -136,6 +152,17 @@ const pricingTiers = [
   },
 ];
 
+const hasValidLocalResult = (): boolean => {
+  if (typeof window === 'undefined') return false;
+
+  try {
+    const parsed = JSON.parse(localStorage.getItem(STORAGE_KEYS.RESULTS) || 'null');
+    return isDepthAssessmentResult(parsed);
+  } catch {
+    return false;
+  }
+};
+
 const faqs = [
   {
     question: 'Is this just another MBTI test?',
@@ -162,6 +189,7 @@ const faqs = [
 export const Home: React.FC = () => {
   const navigate = useNavigate();
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [hasLocalResults] = useState(hasValidLocalResult);
 
   useSEO(PAGE_SEO.home);
 
@@ -186,12 +214,31 @@ export const Home: React.FC = () => {
     navigate(destination);
   };
 
-  const goPricing = (tier: string) => {
-    const normalizedTier = tier.toLowerCase();
-    const destination = pathWithSource(`/pricing?tier=${normalizedTier}`, `home_pricing_${normalizedTier}`);
-    AnalyticsEvents.ctaClicked(`view_${normalizedTier}_pricing`, 'pricing_section', {
-      buttonText: `View ${tier}`,
+  const continuePaidTier = (tier: PaidTierId) => {
+    const source = `home_pricing_${tier}`;
+    writeUpgradeIntent(tier, source);
+    trackEvent('upgrade_intent_saved', {
+      source,
+      tier,
+      has_local_results: hasLocalResults,
+    });
+
+    const pricingDestination = `${pathWithSource('/pricing', source, { tier })}#plans`;
+    const destination = hasLocalResults
+      ? pathWithSource(`/checkout/${tier}`, source, { tier })
+      : pricingDestination;
+
+    AnalyticsEvents.ctaClicked(hasLocalResults ? `unlock_${tier}` : `view_${tier}_pricing`, 'home_pricing_section', {
+      buttonText: pricingTiers.find((item) => item.id === tier)?.cta || `View ${PRICING[tier].name}`,
       destination,
+      tier,
+    });
+    AnalyticsEvents.upgradeClicked('home_pricing_section', tier);
+    trackEvent(hasLocalResults ? 'home_result_checkout_clicked' : 'home_pricing_paid_tier_clicked', {
+      source,
+      tier,
+      has_local_results: hasLocalResults,
+      destination: hasLocalResults ? 'checkout_review' : 'pricing_plans',
     });
     navigate(destination);
   };
@@ -606,7 +653,7 @@ export const Home: React.FC = () => {
                       onClick={() =>
                         tier.id === 'free'
                           ? startAssessment('home_pricing_free')
-                          : goPricing(tier.name)
+                          : continuePaidTier(tier.id)
                       }
                       className={`mt-7 inline-flex min-h-12 items-center justify-center rounded-full px-5 text-sm font-semibold transition-all ${
                         highlighted

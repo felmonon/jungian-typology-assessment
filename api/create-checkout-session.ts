@@ -109,7 +109,16 @@ function addCheckoutMetadata(params: URLSearchParams, metadata: Record<string, s
   });
 }
 
-export function applyCheckoutCustomerParams(params: URLSearchParams, checkoutCustomerEmail?: string) {
+export function applyCheckoutCustomerParams(
+  params: URLSearchParams,
+  checkoutCustomerEmail?: string,
+  stripeCustomerId?: string | null,
+) {
+  if (stripeCustomerId) {
+    params.set('customer', stripeCustomerId);
+    return;
+  }
+
   params.set('customer_creation', 'always');
 
   if (checkoutCustomerEmail) {
@@ -215,6 +224,36 @@ async function findActivePromotionCodeId(
     : { id: null, error: `Promotion code ${code} is not active` };
 }
 
+async function findStripeCustomerIdByEmail(
+  stripeSecretKey: string,
+  customerEmail: string | null,
+): Promise<string | null> {
+  if (!customerEmail) return null;
+
+  const query = new URLSearchParams({
+    email: customerEmail,
+    limit: '1',
+  });
+
+  const response = await fetch(`https://api.stripe.com/v1/customers?${query.toString()}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${stripeSecretKey}`,
+    },
+  });
+
+  const payload = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    const error = payload?.error?.message || response.statusText || 'Stripe customer lookup failed';
+    console.warn('Stripe customer lookup failed:', error);
+    return null;
+  }
+
+  const customerId = payload?.data?.[0]?.id;
+  return typeof customerId === 'string' ? customerId : null;
+}
+
 async function getCheckoutCustomerEmail(req: VercelRequest): Promise<string | null> {
   if (!hasSupabaseAdminConfig()) {
     return null;
@@ -263,6 +302,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const checkoutCustomerEmail = suppliedCustomerEmail || customerEmail;
     const checkoutEmailSource = suppliedCustomerEmail ? 'typed_or_captured' : customerEmail ? 'account' : 'none';
     const siteRecoveryEmailConsent = hasSiteRecoveryEmailConsent(req.body?.recoveryEmailOptIn, checkoutCustomerEmail);
+    const stripeCustomerId = await findStripeCustomerIdByEmail(stripeSecretKey, checkoutCustomerEmail);
     const anonymousId = cleanCheckoutToken(req.body?.anonymousId ?? req.body?.anonymous_id, 160);
     const paymentMethodConfigurationId = getStripePaymentMethodConfigurationId();
     const expiresAt = Math.floor(Date.now() / 1000) + CHECKOUT_SESSION_EXPIRATION_SECONDS;
@@ -364,7 +404,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         checkoutParams.set('after_expiration[recovery][allow_promotion_codes]', 'true');
       }
 
-      applyCheckoutCustomerParams(checkoutParams, checkoutCustomerEmail);
+      applyCheckoutCustomerParams(checkoutParams, checkoutCustomerEmail, stripeCustomerId);
 
       return checkoutParams;
     };
@@ -438,6 +478,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             parent_source: checkoutAttribution.parentSource || 'none',
             source_chain: checkoutAttribution.sourceChain || 'none',
             has_customer_email: Boolean(checkoutCustomerEmail),
+            stripe_customer_reused: Boolean(stripeCustomerId),
             site_recovery_email_consent: siteRecoveryEmailConsent,
             checkout_email_source: checkoutEmailSource,
             discount_auto_applied: Boolean(activePromotionCodeId),
@@ -461,6 +502,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       amount_cad: tierPricing.amount,
       site_recovery_email_consent: siteRecoveryEmailConsent,
       checkout_email_source: checkoutEmailSource,
+      stripe_customer_reused: Boolean(stripeCustomerId),
       stripe_promotion_consent_requested: true,
       stripe_promotion_consent_fallback_used: stripePromotionConsentFallbackUsed,
       discount_auto_applied: Boolean(activePromotionCodeId),

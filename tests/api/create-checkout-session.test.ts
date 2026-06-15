@@ -37,4 +37,14 @@ describe('checkout session attribution', () => {
     expect(params.get('customer_creation')).toBe('always');
     expect(params.get('customer_email')).toBe('buyer@example.com');
   });
+
+  it('reuses an existing Stripe Customer instead of creating a duplicate', () => {
+    const params = new URLSearchParams();
+
+    applyCheckoutCustomerParams(params, 'buyer@example.com', 'cus_existing123');
+
+    expect(params.get('customer')).toBe('cus_existing123');
+    expect(params.has('customer_creation')).toBe(false);
+    expect(params.has('customer_email')).toBe(false);
+  });
 });

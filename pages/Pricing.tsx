@@ -175,6 +175,8 @@ export const Pricing: React.FC = () => {
   const promptCloseRef = useRef<HTMLButtonElement>(null);
   const selectedTier = new URLSearchParams(location.search).get('tier');
   const selectedPaidTier = isPaidTierId(selectedTier) ? selectedTier : null;
+  const selectedPlan = selectedPaidTier ? PRICING[selectedPaidTier] : null;
+  const selectedPlanPrice = selectedPaidTier ? discountedPriceLabel(PRICING[selectedPaidTier].amount) : '';
   const [promptTier, setPromptTier] = useState<PaidTierId | null>(selectedPaidTier);
   const [hasLocalResults] = useState(hasValidLocalResult);
   const plansSectionRef = useRef<HTMLElement>(null);
@@ -196,6 +198,16 @@ export const Pricing: React.FC = () => {
   useEffect(() => {
     AnalyticsEvents.pricingViewed('pricing_page', document.referrer || undefined);
   }, []);
+
+  useEffect(() => {
+    if (!selectedPaidTier || hasLocalResults) return;
+
+    trackEvent('pricing_selected_tier_handoff_viewed', {
+      tier: selectedPaidTier,
+      source: 'pricing_selected_tier_handoff',
+      has_local_results: false,
+    });
+  }, [hasLocalResults, selectedPaidTier]);
 
   useEffect(() => {
     const anchor = location.hash.replace('#', '');
@@ -391,6 +403,51 @@ export const Pricing: React.FC = () => {
 
       <section id="plans" ref={plansSectionRef} className="scroll-mt-24 py-10 lg:py-16">
         <div className="editorial-container">
+          {selectedPaidTier && selectedPlan && !hasLocalResults && (
+            <div className="mb-5 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-4 shadow-sm sm:p-5">
+              <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+                <div>
+                  <p className="text-label">Selected path</p>
+                  <h2 className="mt-2 text-heading text-2xl text-jung-dark sm:text-3xl">
+                    {selectedPlan.name} is saved for after your free map.
+                  </h2>
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-jung-secondary">
+                    This report needs your actual function-stack result first. Start the free assessment now; if the map feels accurate, TypeJung keeps {selectedPlan.name} selected for checkout review.
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {[
+                      'Free result first',
+                      `${selectedPlanPrice} one-time with ${EMAIL_CAPTURE_OFFER.code}`,
+                      'Sample report available',
+                    ].map((item) => (
+                      <span key={item} className="inline-flex min-h-8 items-center rounded-lg border border-jung-accent-muted bg-jung-base px-3 text-xs font-semibold text-jung-secondary">
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2 lg:min-w-[27rem]">
+                  <Button
+                    variant="accent"
+                    size="lg"
+                    onClick={() => startAssessment('pricing_selected_tier_start', selectedPaidTier)}
+                    rightIcon={<ArrowRight className="h-5 w-5" />}
+                  >
+                    Start free - {selectedPlan.name}
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="lg"
+                    onClick={() => viewSampleReport('pricing_selected_tier_sample')}
+                    rightIcon={<FileText className="h-5 w-5" />}
+                  >
+                    View sample
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="grid gap-5 lg:grid-cols-3">
             {TIERS.map((tier) => {
               return (

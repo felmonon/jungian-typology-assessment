@@ -678,6 +678,8 @@ export const Results: React.FC = () => {
       ...upgradeOptions.filter((option) => option.tier !== upgradeIntent.tier),
     ];
   }, [upgradeIntent]);
+  const primaryUpgradeOption = orderedUpgradeOptions[0] ?? upgradeOptions[0];
+  const secondaryUpgradeOptions = orderedUpgradeOptions.slice(1);
   const upgradeContext = useMemo(
     () => resultUpgradeContextFromSource(acquisition?.source, {
       parentSource: acquisition?.parentSource,
@@ -1822,51 +1824,71 @@ export const Results: React.FC = () => {
                     </div>
                   ))}
                 </div>
-                <div className="mt-5 divide-y divide-jung-border rounded-lg border border-jung-border bg-jung-base">
-                  {orderedUpgradeOptions.map((option) => (
-                    <div key={option.tier} className="p-4">
-                      <div className="grid gap-4">
-                        <div>
+                <div className="mt-5 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-4">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="rounded-lg bg-jung-dark px-2.5 py-1 text-xs font-semibold text-white">
+                      {upgradeIntent?.tier === primaryUpgradeOption.tier ? 'Selected path' : 'Recommended first unlock'}
+                    </span>
+                    <span className="rounded-lg bg-jung-surface px-2.5 py-1 text-xs font-semibold text-jung-accent">
+                      {paidTierPrice(primaryUpgradeOption.tier)} one-time
+                    </span>
+                    <span className="rounded-lg border border-jung-accent-muted bg-jung-base px-2.5 py-1 text-xs font-semibold text-jung-muted">
+                      <span className="line-through">{PRICING[primaryUpgradeOption.tier].price}</span> before code
+                    </span>
+                  </div>
+                  <h3 className="mt-4 text-xl font-semibold text-jung-dark">
+                    {upgradeIntent?.tier === primaryUpgradeOption.tier ? `Continue to ${primaryUpgradeOption.label}` : `Start with ${primaryUpgradeOption.label}`}
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-jung-secondary">
+                    {primaryUpgradeOption.preview} It opens the paid report from the {dominantLabel} to {inferiorLabel} axis already shown above.
+                  </p>
+                  <div className="mt-4 grid gap-2">
+                    {primaryUpgradeOption.features.map((feature) => (
+                      <div key={feature} className="flex min-h-11 items-center gap-2 rounded-lg border border-jung-accent-muted bg-jung-surface px-3 py-2 text-xs font-semibold text-jung-secondary">
+                        <Check className="h-3.5 w-3.5 flex-none text-jung-accent" />
+                        <span>{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <Button
+                    variant="accent"
+                    size="lg"
+                    className="mt-4 w-full"
+                    onClick={() => openUpgradeCheckout(primaryUpgradeOption.tier, 'results_paid_report_card')}
+                    rightIcon={<ArrowRight className="h-5 w-5" />}
+                  >
+                    Review {primaryUpgradeOption.label} - {paidTierPrice(primaryUpgradeOption.tier)}
+                  </Button>
+                  <p className="mt-3 text-xs leading-5 text-jung-muted">
+                    Next step is the checkout review page, then secure Stripe. 7-day guarantee, no subscription.
+                  </p>
+                </div>
+                {secondaryUpgradeOptions.length > 0 && (
+                  <div className="mt-3 divide-y divide-jung-border rounded-lg border border-jung-border bg-jung-base">
+                    {secondaryUpgradeOptions.map((option) => (
+                      <div key={option.tier} className="grid gap-3 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+                        <div className="min-w-0">
                           <div className="flex flex-wrap items-center gap-2">
-                            <h3 className="text-base font-semibold text-jung-dark">{option.label}</h3>
-                            {upgradeIntent?.tier === option.tier && (
-                              <span className="rounded-lg bg-jung-dark px-2 py-1 text-xs font-semibold text-white">
-                                Selected before assessment
-                              </span>
-                            )}
+                            <h3 className="text-sm font-semibold text-jung-dark">{option.label}</h3>
                             <span className="rounded-lg bg-jung-accent-light px-2 py-1 text-xs font-semibold text-jung-accent">
-                              {paidTierPrice(option.tier)} one-time
-                            </span>
-                            <span className="rounded-lg border border-jung-border bg-jung-surface px-2 py-1 text-xs font-semibold text-jung-muted">
-                              <span className="line-through">{PRICING[option.tier].price}</span> before code
+                              {paidTierPrice(option.tier)}
                             </span>
                           </div>
-                          <p className="mt-2 text-sm leading-6 text-jung-secondary">{option.description}</p>
-                          <div className="mt-3 rounded-lg border border-jung-border bg-jung-surface p-3 text-xs leading-5 text-jung-secondary">
-                            {option.preview}
-                          </div>
-                          <ul className="mt-3 grid gap-2 text-xs text-jung-muted">
-                            {option.features.map((feature) => (
-                              <li key={feature} className="flex gap-2">
-                                <Check className="mt-0.5 h-3.5 w-3.5 flex-none text-jung-accent" />
-                                <span>{feature}</span>
-                              </li>
-                            ))}
-                          </ul>
+                          <p className="mt-2 text-xs leading-5 text-jung-secondary">{option.description}</p>
                         </div>
                         <Button
-                          variant={option.tier === 'insight' ? 'accent' : 'outline'}
+                          variant="outline"
                           size="sm"
-                          className="w-full"
-                          onClick={() => openUpgradeCheckout(option.tier, 'results_paid_report_card')}
+                          className="w-full sm:w-auto"
+                          onClick={() => openUpgradeCheckout(option.tier, 'results_paid_report_card_secondary')}
                           rightIcon={<ArrowRight className="h-4 w-4" />}
                         >
-                          {upgradeIntent?.tier === option.tier ? 'Continue to' : 'Unlock'} {option.label} - {paidTierPrice(option.tier)}
+                          Review {option.label}
                         </Button>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
                 <div className="mt-4 flex flex-col gap-2 sm:flex-row">
                   <Button
                     variant="ghost"

@@ -1389,6 +1389,34 @@ export const Results: React.FC = () => {
                 <p className="my-2 text-sm text-white/45">to</p>
                 <p className="text-2xl font-semibold text-jung-subtle">{inferiorLabel}</p>
               </div>
+              <div className="mt-5 border-t border-white/10 pt-5">
+                <p className="text-sm font-semibold text-white/60">Bring someone into the comparison</p>
+                <p className="mt-2 text-xs leading-5 text-white/55">
+                  Send this map while the result is fresh. Their link opens the free assessment with your map ready to compare.
+                </p>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                  <Button
+                    variant="inverted"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => shareAssessmentInvite('results_compare_banner')}
+                    disabled={isPreparingReferral}
+                    leftIcon={isPreparingReferral ? <Loader2 className="h-4 w-4 animate-spin" /> : inviteCopied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
+                  >
+                    {isPreparingReferral ? 'Preparing invite' : inviteCopied ? 'Invite copied' : 'Share compare invite'}
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="w-full"
+                    onClick={copyResultSummary}
+                    disabled={isPreparingReferral}
+                    leftIcon={isPreparingReferral ? <Loader2 className="h-4 w-4 animate-spin" /> : summaryCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  >
+                    {isPreparingReferral ? 'Preparing post' : summaryCopied ? 'Post copied' : 'Copy share post'}
+                  </Button>
+                </div>
+              </div>
               {!premiumLoading && !isPremium && (
                 <DiscountCaptureCard
                   source="results_hero_axis_save_path"

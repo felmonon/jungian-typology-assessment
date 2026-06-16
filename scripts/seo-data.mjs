@@ -475,6 +475,10 @@ export const pageData = {
     title: 'Cognitive Function Test - Map All 8 Functions | TypeJung',
     description: 'Take a cognitive function test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe in one Jungian function-stack profile.',
   },
+  '/cognitive-functions-test': {
+    title: 'Cognitive Functions Test - Free Jungian 8-Function Map | TypeJung',
+    description: 'Take a free Jungian cognitive functions test for Ni, Ne, Si, Se, Ti, Te, Fi, and Fe. This is a personality-functions map, not a memory screening test.',
+  },
   '/jungian-cognitive-functions-test': {
     title: 'Jungian Cognitive Functions Test - Free Ni Ne Si Se Ti Te Fi Fe Map | TypeJung',
     description: 'Take a free Jungian cognitive functions test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, then explains your dominant-inferior pattern.',
@@ -2410,6 +2414,121 @@ export const seoLandingPages = [
     ],
   },
   {
+    slug: 'cognitive-functions-test',
+    query: 'cognitive functions test',
+    title: 'Cognitive Functions Test - Free Jungian 8-Function Map | TypeJung',
+    description: 'Take a free Jungian cognitive functions test for Ni, Ne, Si, Se, Ti, Te, Fi, and Fe. This is a personality-functions map, not a memory screening test.',
+    keywords: ['cognitive functions test', 'Jungian cognitive functions test', 'free cognitive functions test', '8 cognitive functions test', 'Ni Ne Si Se Ti Te Fi Fe test'],
+    eyebrow: 'Cognitive functions test',
+    h1: 'A cognitive functions test for Jungian personality type',
+    intro: [
+      'TypeJung is a Jungian personality cognitive functions test: it maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe into a function-stack profile you can inspect before paying for anything.',
+      'If you are looking for a clinical memory, dementia, or medical cognition screen, this is not that. If you want to understand the personality functions behind MBTI-style type, start here.',
+    ],
+    intent: {
+      bestFor: 'Searchers who typed "cognitive functions test" and want a Jungian personality result, not a medical cognitive screening test.',
+      measures: 'All 8 Jungian function-attitudes, likely dominant and auxiliary pattern, inferior-function edge, type hypothesis, and result confidence.',
+      privacy: 'No card before the free result. Paid Insight and Mastery reports are optional one-time CAD upgrades after you see the map.',
+    },
+    sections: [
+      {
+        heading: 'Quick answer: what this test is',
+        body: [
+          'This page is for the plural search intent: cognitive functions test as used in Jungian and MBTI-style typology communities. The assessment asks 42 scenario-based questions and returns a free function-stack map.',
+          'The result is educational self-reflection. It does not diagnose memory problems, ADHD, dementia, trauma, anxiety, or any medical condition.',
+        ],
+        table: {
+          headers: ['If you mean...', 'Use TypeJung for...', 'Do not use it for...'],
+          rows: [
+            ['Jungian cognitive functions', 'Ni, Ne, Si, Se, Ti, Te, Fi, and Fe pattern mapping', 'Clinical cognitive screening'],
+            ['MBTI-style type depth', 'Function evidence behind a likely type result', 'Official MBTI certification'],
+            ['Function stack testing', 'Dominant, auxiliary, tertiary, and inferior hypotheses', 'A permanent identity label'],
+            ['Stress and growth edge', 'Inferior-function reflection prompts', 'Mental health diagnosis'],
+          ],
+        },
+        links: [
+          { href: '/assessment', label: 'Start the free cognitive functions test' },
+          { href: '/jungian-cognitive-functions-test', label: 'Compare the Jungian cognitive functions test page' },
+          { href: '/sample-report', label: 'Preview the paid report before checkout' },
+        ],
+      },
+      {
+        heading: 'What the free result shows',
+        body: [
+          'A useful cognitive functions test should show the actual function map, not hide the evidence behind a single type code. TypeJung keeps the result inspectable so you can compare the highest signals, nearby alternatives, and stress-linked edge.',
+          'The paid report is only offered after the free result. That matters because the upgrade should deepen a pattern you already found useful, not force a blind purchase.',
+        ],
+        bullets: [
+          'Scores across all 8 function-attitudes',
+          'Likely function-stack pattern and type hypothesis',
+          'Dominant-inferior axis for stress and development reflection',
+          'Links to the specific function and type guides that match your result',
+          'Optional Insight and Mastery reports after the free map',
+        ],
+      },
+      {
+        heading: 'Why plural "functions" matters',
+        body: [
+          'The plural wording usually means the searcher already knows one score is not enough. They want to see the relationship between functions: which mode leads, which supports it, and which one becomes awkward or reactive under pressure.',
+          'TypeJung is built around those relationships. It gives the map first, then explains how the pattern can be read as a stack hypothesis.',
+        ],
+        table: {
+          headers: ['Result area', 'Question it helps answer', 'Where to go deeper'],
+          rows: [
+            ['Dominant signal', 'What mode of attention or judgment feels most trusted?', 'Dominant function guide'],
+            ['Auxiliary support', 'What balances or supports the leading function?', 'Type result page'],
+            ['Inferior edge', 'What becomes loaded, avoided, or reactive under stress?', 'Inferior function guide'],
+            ['Close alternatives', 'Why do two type results both seem plausible?', 'Type-vs-type comparison page'],
+          ],
+        },
+        links: [
+          { href: '/dominant-function-test', label: 'Dominant function test' },
+          { href: '/inferior-function-test', label: 'Inferior function test' },
+          { href: '/function-stack-test', label: 'Function stack test' },
+        ],
+      },
+      {
+        heading: 'How TypeJung compares to other function tests',
+        body: [
+          'People often compare TypeJung with Sakinorva, Keys2Cognition, Mistype Investigator, Michael Caloz, IDRlabs, and 16Selves. Those tools can be useful; the important question is whether the result is inspectable and whether the interpretation explains real situations.',
+          'TypeJung is strongest when you want a shorter free-first path, a clear function-stack map, stress-edge context, and an optional sample-backed paid report after the result.',
+        ],
+        links: [
+          { href: '/best-cognitive-functions-test', label: 'Best cognitive functions test comparison' },
+          { href: '/sakinorva-alternative', label: 'Sakinorva alternative' },
+          { href: '/keys2cognition-alternative', label: 'Keys2Cognition alternative' },
+          { href: '/idrlabs-cognitive-function-test-alternative', label: 'IDRlabs alternative' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is this a cognitive functions test or a medical cognitive test?',
+        answer: 'It is a Jungian personality cognitive functions test. It maps typology functions like Ni, Ne, Si, Se, Ti, Te, Fi, and Fe. It is not a medical, memory, dementia, ADHD, or clinical screening tool.',
+      },
+      {
+        question: 'Does TypeJung test all 8 cognitive functions?',
+        answer: 'Yes. The assessment maps all 8 Jungian function-attitudes and uses them to form a likely function-stack and type hypothesis.',
+      },
+      {
+        question: 'Can I take the cognitive functions test for free?',
+        answer: 'Yes. The 42-question assessment and core function-stack map are free. Paid reports are optional one-time CAD upgrades after the result is visible.',
+      },
+      {
+        question: 'What is the difference between cognitive function test and cognitive functions test?',
+        answer: 'In typology searches, both usually mean a Jungian function assessment. The plural phrase often signals that the searcher wants all 8 functions mapped rather than one broad result.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free cognitive functions test' },
+      { href: '/cognitive-function-test', label: 'Cognitive function test' },
+      { href: '/jungian-cognitive-functions-test', label: 'Jungian cognitive functions test' },
+      { href: '/free-cognitive-function-test', label: 'Free cognitive function test' },
+      { href: '/function-stack-test', label: 'Function stack test' },
+      { href: '/sample-report', label: 'View sample paid report' },
+    ],
+  },
+  {
     slug: 'cognitive-function-test',
     query: 'cognitive function test',
     title: 'Cognitive Function Test - Map All 8 Functions | TypeJung',
@@ -2486,6 +2605,7 @@ export const seoLandingPages = [
         ],
         links: [
           { href: '/assessment', label: 'Start the free cognitive function test' },
+          { href: '/cognitive-functions-test', label: 'Use the plural cognitive functions test page' },
           { href: '/jungian-cognitive-functions-test', label: 'Compare the Jungian cognitive functions test' },
           { href: '/jungian-typology', label: 'Read the Jungian typology guide' },
           { href: '/inferior-function-test', label: 'Find your inferior-function pattern' },
@@ -2508,6 +2628,7 @@ export const seoLandingPages = [
     ],
     relatedLinks: [
       { href: '/assessment', label: 'Start the test' },
+      { href: '/cognitive-functions-test', label: 'Cognitive functions test' },
       { href: '/jungian-cognitive-functions-test', label: 'Jungian cognitive functions test' },
       { href: '/cognitive-functions', label: 'Cognitive functions guide' },
       { href: '/functions/ni', label: 'Introverted Intuition' },
@@ -2582,6 +2703,7 @@ export const seoLandingPages = [
         links: [
           { href: '/sample-report', label: 'View the sample report' },
           { href: '/pricing', label: 'Compare Insight and Mastery' },
+          { href: '/cognitive-functions-test', label: 'Cognitive functions test' },
           { href: '/free-cognitive-function-test', label: 'Free cognitive function test' },
         ],
       },
@@ -2602,6 +2724,7 @@ export const seoLandingPages = [
     ],
     relatedLinks: [
       { href: '/assessment', label: 'Take the free quiz' },
+      { href: '/cognitive-functions-test', label: 'Cognitive functions test' },
       { href: '/cognitive-function-test', label: 'Cognitive function test' },
       { href: '/free-cognitive-function-test', label: 'Free cognitive function test' },
       { href: '/function-stack-test', label: 'Function stack test' },
@@ -2672,6 +2795,7 @@ export const seoLandingPages = [
         ],
         links: [
           { href: '/pricing', label: 'Compare one-time pricing' },
+          { href: '/cognitive-functions-test', label: 'Cognitive functions test' },
           { href: '/cognitive-function-test', label: 'Read the broader cognitive function test guide' },
         ],
       },
@@ -2693,6 +2817,7 @@ export const seoLandingPages = [
     relatedLinks: [
       { href: '/assessment', label: 'Take the free assessment' },
       { href: '/sample-report', label: 'View sample paid report' },
+      { href: '/cognitive-functions-test', label: 'Cognitive functions test' },
       { href: '/function-stack-test', label: 'Function stack test' },
       { href: '/jungian-cognitive-functions-test', label: 'Jungian cognitive functions test' },
       { href: '/pricing', label: 'See one-time pricing' },

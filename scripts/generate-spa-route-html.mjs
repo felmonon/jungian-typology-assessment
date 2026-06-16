@@ -107,6 +107,7 @@ const guideLinks = [
   ['/mbti-alternative', 'MBTI Alternative'],
   ['/inferior-function-test', 'Inferior Function Test'],
   ['/cognitive-function-test', 'Cognitive Function Test'],
+  ['/cognitive-functions-test', 'Cognitive Functions Test'],
   ['/jungian-cognitive-functions-test', 'Jungian Cognitive Functions Test'],
   ['/mbti-keeps-changing', 'Why MBTI Keeps Changing'],
   ['/shadow-work-test', 'Shadow Work Test'],

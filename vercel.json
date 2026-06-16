@@ -108,6 +108,10 @@
       "destination": "/cognitive-function-test/index.html"
     },
     {
+      "source": "/cognitive-functions-test",
+      "destination": "/cognitive-functions-test/index.html"
+    },
+    {
       "source": "/cognitive-functions-quiz",
       "destination": "/cognitive-functions-quiz/index.html"
     },

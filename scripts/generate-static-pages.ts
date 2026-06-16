@@ -81,6 +81,11 @@ const coreClusterLinks = [
     description: 'See how TypeJung maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe in one function-stack view.',
   },
   {
+    href: '/cognitive-functions-test',
+    label: 'Cognitive functions test',
+    description: 'Use the plural-query page when you want a Jungian personality functions test, not a clinical memory screen.',
+  },
+  {
     href: '/cognitive-functions-quiz',
     label: 'Cognitive functions quiz',
     description: 'Use a quiz-style entry point when you want the function map first, not only a four-letter result.',

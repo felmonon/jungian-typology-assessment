@@ -117,6 +117,76 @@ const ComparisonPrompt: React.FC<{
   </section>
 );
 
+const SharedDepthHero: React.FC<{
+  sharedLabel: string;
+  sharedDetail: string;
+  assessmentHref: string;
+  sampleHref: string;
+  sharedSlug?: string;
+}> = ({ sharedLabel, sharedDetail, assessmentHref, sampleHref, sharedSlug }) => (
+  <section className="mb-8 overflow-hidden rounded-lg border border-jung-border bg-jung-dark text-white shadow-xl">
+    <div className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_26rem]">
+      <div className="p-6 sm:p-9">
+        <div className="flex flex-wrap items-center gap-3">
+          <img src="/logo.svg" alt="TypeJung" className="h-10 w-10 rounded-lg bg-white/10 p-1" />
+          <span className="text-xs font-semibold uppercase tracking-[0.12em] text-white/55">
+            Someone shared their function-stack map
+          </span>
+        </div>
+        <h1 className="mt-6 max-w-3xl text-display text-4xl text-white sm:text-6xl">
+          Their map is only half the comparison.
+        </h1>
+        <p className="mt-5 max-w-3xl text-lg leading-8 text-white/75">
+          This result leads with {sharedLabel}. Take the same free 42-question assessment to see whether your own map shares the axis, flips it, or points somewhere else.
+        </p>
+        <div className="mt-5 flex flex-wrap gap-2">
+          {['Free first', 'No card needed', 'All 8 functions mapped'].map((item) => (
+            <span key={item} className="rounded-lg border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/75">
+              {item}
+            </span>
+          ))}
+        </div>
+        <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:max-w-xl">
+          <Link
+            to={assessmentHref}
+            onClick={() => trackSharedResultCta('shared_depth_hero_start_assessment', 'Compare my free map', assessmentHref, sharedSlug)}
+          >
+            <Button variant="inverted" size="lg" className="w-full min-h-[52px]" rightIcon={<ArrowRight className="h-5 w-5" />}>
+              Compare my free map
+            </Button>
+          </Link>
+          <Link
+            to={sampleHref}
+            onClick={() => trackSharedResultCta('shared_depth_hero_view_sample_report', 'View sample report', sampleHref, sharedSlug)}
+          >
+            <Button variant="secondary" size="lg" className="w-full min-h-[52px]" leftIcon={<FileText className="h-5 w-5" />}>
+              View sample report
+            </Button>
+          </Link>
+        </div>
+      </div>
+
+      <div className="border-t border-white/10 bg-white/10 p-6 sm:p-7 lg:border-l lg:border-t-0">
+        <div className="rounded-lg border border-white/15 bg-white/10 p-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-white/50">Their map</p>
+          <p className="mt-3 text-2xl font-semibold text-white">{sharedLabel}</p>
+          <p className="mt-2 text-sm leading-6 text-white/60">{sharedDetail}</p>
+        </div>
+        <div className="my-4 flex items-center justify-center text-xs font-semibold uppercase tracking-[0.14em] text-white/40">
+          versus
+        </div>
+        <div className="rounded-lg border border-dashed border-jung-accent-muted bg-jung-accent-light p-4 text-jung-dark">
+          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-jung-accent">Your map</p>
+          <p className="mt-3 text-2xl font-semibold">Unknown until you answer</p>
+          <p className="mt-2 text-sm leading-6 text-jung-secondary">
+            Your result may match this axis, invert it, or reveal a completely different dominant-inferior pattern.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
 interface SharedResult {
   id: string;
   scores: Array<{ function: string; score: number }>;
@@ -230,67 +300,21 @@ export const SharePage: React.FC = () => {
 
     return (
       <div className="editorial-container pb-28 pt-8 md:py-12 lg:pb-12">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <img src="/logo.svg" alt="TypeJung" className="w-10 h-10" />
-            <span className="text-xs md:text-sm font-data font-bold tracking-widest uppercase text-jung-secondary">
-              TypeJung Function-Stack Map
-            </span>
-          </div>
-          <p className="text-jung-muted text-sm md:text-base">Someone shared their Jungian function-stack map with you</p>
-        </div>
+        <SharedDepthHero
+          sharedLabel={sharedLabel}
+          sharedDetail={sharedDetail}
+          assessmentHref={assessmentHref}
+          sampleHref={sampleHref}
+          sharedSlug={slug}
+        />
 
-        <section className="mb-8 rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm sm:p-6">
-          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-            <div>
-              <p className="text-label">Shared result</p>
-              <h2 className="mt-2 text-2xl font-semibold text-jung-dark">
-                Compare this map with your own free result.
-              </h2>
-              <p className="mt-3 max-w-3xl text-sm leading-6 text-jung-secondary">
-                Their dominant channel is {ATTITUDE_LABELS[depthResult.attitude.dominant]} {FUNCTION_LABELS[depthResult.dominant]}. Take the same 42-question assessment to see which functions lead in your own map before deciding whether any paid report is useful.
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2 text-xs text-jung-muted">
-                {['Free first', 'No card needed', 'All 8 functions mapped'].map((item) => (
-                  <span key={item} className="rounded-lg border border-jung-border bg-jung-base px-3 py-1.5 font-semibold">
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2 lg:min-w-[23rem]">
-              <Link to={assessmentHref} onClick={() => trackSharedResultCta('shared_depth_start_assessment', 'Take my free assessment', assessmentHref, slug)}>
-                <Button variant="accent" size="lg" className="w-full min-h-[48px]">
-                  Take my free assessment <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              <Link to={sampleHref} onClick={() => trackSharedResultCta('shared_depth_view_sample_report', 'View sample report', sampleHref, slug)}>
-                <Button variant="outline" size="lg" className="w-full min-h-[48px]">
-                  <FileText className="mr-2 h-5 w-5" />
-                  View sample report
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        <div className="rounded-lg border border-jung-border bg-jung-dark p-7 text-white shadow-xl sm:p-10">
-          <p className="text-sm font-semibold text-white/60">Dominant energy channel</p>
-          <h1 className="mt-4 text-display text-5xl text-white sm:text-6xl">
-            {sharedLabel}
-          </h1>
-          <p className="mt-5 max-w-3xl text-lg leading-8 text-white/75">
+        <div className="rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm sm:p-6">
+          <p className="text-label">Shared result details</p>
+          <h2 className="mt-2 text-heading text-3xl text-jung-dark">{sharedLabel}</h2>
+          <p className="mt-4 max-w-3xl text-sm leading-7 text-jung-secondary">
             {depthResult.narrative.energyMap}
           </p>
         </div>
-
-        <ComparisonPrompt
-          sharedLabel={sharedLabel}
-          sharedDetail={sharedDetail}
-          ctaName="shared_depth_comparison_start_assessment"
-          assessmentHref={assessmentHref}
-          sharedSlug={slug}
-        />
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_0.75fr]">
           <div className="card-elevated rounded-lg p-6">

@@ -8,6 +8,7 @@ import { Button } from '../components/ui/Button';
 import { ATTITUDE_LABELS, AttitudeDirection, FUNCTION_LABELS, FunctionChannel, depthLayerMeta } from '../data/depthAssessment';
 import { discountedPriceLabel, EMAIL_CAPTURE_OFFER } from '../data/discount';
 import { DEBRIEF_OFFER } from '../data/debrief';
+import { readAssessmentIntent, INTENT_RESULT_FRAMING } from '../lib/assessment-intent';
 import { PRICING, type PaidTierId } from '../data/pricing';
 import { SUPPORT_EMAIL } from '../data/support';
 import { useAiAnalysis, type AnalysisInput, type PremiumAnalysis } from '../hooks/use-ai-analysis';
@@ -1310,6 +1311,10 @@ export const Results: React.FC = () => {
     })}`
     : null;
   const isPreparingReferral = shareLinkState === 'creating' && !shareSlug;
+  const intentFraming = useMemo(() => {
+    const intent = readAssessmentIntent();
+    return intent ? INTENT_RESULT_FRAMING[intent.id] : null;
+  }, []);
   const dominantLabel = lifecycleEmailSummary?.dominantLabel ?? `${ATTITUDE_LABELS[results.attitude.dominant]} ${FUNCTION_LABELS[results.dominant]}`;
   const inferiorLabel = lifecycleEmailSummary?.inferiorLabel ?? `${ATTITUDE_LABELS[results.hierarchy.find((item) => item.position === 'inferior')?.attitude ?? 'extraverted']} ${FUNCTION_LABELS[results.inferior]}`;
   const chatProfile = legacyInput ? {
@@ -1433,6 +1438,11 @@ export const Results: React.FC = () => {
                 <p className="mt-2 text-sm leading-6 text-jung-secondary">
                   Your free map is complete. Use the branch that matches your actual reaction instead of buying more than you need.
                 </p>
+                {intentFraming && (
+                  <p className="mt-3 rounded-lg border border-jung-accent-muted bg-jung-surface px-4 py-3 text-sm leading-6 text-jung-dark">
+                    {intentFraming.line}
+                  </p>
+                )}
               </div>
               <div className="grid gap-3 lg:grid-cols-3">
                 <article className="flex min-h-full flex-col rounded-lg border border-jung-border bg-jung-surface p-4">

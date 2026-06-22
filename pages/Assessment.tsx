@@ -18,6 +18,7 @@ import {
   writeAssessmentProgress,
 } from '../lib/assessment-progress';
 import { readAcquisitionSource, sourceFromSearch } from '../lib/acquisition-source';
+import { ASSESSMENT_INTENTS, readAssessmentIntent, writeAssessmentIntent, type AssessmentIntentId } from '../lib/assessment-intent';
 import { trackEvent } from '../lib/analytics';
 import { readUpgradeIntent, writeUpgradeIntent } from '../lib/upgrade-intent';
 import { calculateDepthResults } from '../utils/depthScoring';
@@ -123,6 +124,7 @@ export const Assessment: React.FC = () => {
   const [resumedAnswered, setResumedAnswered] = useState<number | null>(null);
   const [isCompactViewport, setIsCompactViewport] = useState(false);
   const [sectionReward, setSectionReward] = useState<{ completed: DepthLayer; next: DepthLayer | null } | null>(null);
+  const [assessmentIntent, setAssessmentIntent] = useState<AssessmentIntentId | null>(() => readAssessmentIntent()?.id ?? null);
   const hasLoadedProgressRef = useRef(false);
   const hasTrackedStartRef = useRef(false);
   const hasTrackedEntryContextRef = useRef(false);
@@ -529,6 +531,39 @@ export const Assessment: React.FC = () => {
                   {entryContext.body}
                 </p>
               )}
+
+              <div className="mt-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-white/55">
+                  What brought you here? <span className="font-normal normal-case text-white/40">(optional)</span>
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {ASSESSMENT_INTENTS.map((intent) => {
+                    const active = assessmentIntent === intent.id;
+                    return (
+                      <button
+                        key={intent.id}
+                        type="button"
+                        aria-pressed={active}
+                        onClick={() => {
+                          const next = active ? null : intent.id;
+                          setAssessmentIntent(next);
+                          if (next) {
+                            writeAssessmentIntent(next);
+                            trackEvent('assessment_intent_selected', { intent: next });
+                          }
+                        }}
+                        className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                          active
+                            ? 'border-jung-accent-muted bg-white text-jung-dark'
+                            : 'border-white/15 bg-white/8 text-white/75 hover:border-white/35 hover:text-white'
+                        }`}
+                      >
+                        {intent.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
 
             <div className="grid gap-3">

@@ -72,11 +72,11 @@ export const Debrief: React.FC = () => {
     trackEvent('debrief_checkout_started', { source: 'debrief_page' });
 
     try {
-      const response = await fetch('/api/create-debrief-session', {
+      const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ ...form, source: 'debrief_page' }),
+        body: JSON.stringify({ ...form, product: 'debrief', source: 'debrief_page' }),
       });
       const data = await response.json().catch(() => null);
 

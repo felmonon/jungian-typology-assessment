@@ -12,6 +12,7 @@ import { getSupabaseAdminClient, hasSupabaseAdminConfig } from './_lib/supabase.
 import { cleanPromotionCode, getAutoPromotionCode, getStripePaymentMethodConfigurationId, getStripeSecretKey, parsePaidTier, resolveCheckoutBaseUrl } from '../server/checkout.js';
 import { PRICING } from '../data/pricing.js';
 import type { PaidTierId } from '../data/pricing.js';
+import { createDebriefCheckoutSession } from './_lib/debrief-checkout.js';
 
 const CHECKOUT_PRODUCT_COPY: Record<PaidTierId, { name: string; description: string }> = {
   insight: {
@@ -268,6 +269,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // Personal Type Debrief is a separate, human-delivered service. Routed here to
+  // stay within the Hobby serverless-function limit; it never grants premium.
+  if (req.body?.product === 'debrief') {
+    return createDebriefCheckoutSession(req, res);
   }
 
   if (enforceRateLimit(req, res, {

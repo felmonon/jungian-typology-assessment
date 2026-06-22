@@ -1,13 +1,13 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getSessionUserFromCookie } from './_lib/auth-utils.js';
-import { enforceRateLimit } from './_lib/rate-limit.js';
-import { getSupabaseAdminClient, hasSupabaseAdminConfig } from './_lib/supabase.js';
+import { getSessionUserFromCookie } from './auth-utils.js';
+import { enforceRateLimit } from './rate-limit.js';
+import { getSupabaseAdminClient, hasSupabaseAdminConfig } from './supabase.js';
 import {
   getStripePaymentMethodConfigurationId,
   getStripeSecretKey,
   resolveCheckoutBaseUrl,
-} from '../server/checkout.js';
-import { DEBRIEF_FIELD_MAX, DEBRIEF_OFFER } from '../data/debrief.js';
+} from '../../server/checkout.js';
+import { DEBRIEF_FIELD_MAX, DEBRIEF_OFFER } from '../../data/debrief.js';
 
 const CHECKOUT_SESSION_EXPIRATION_SECONDS = 24 * 60 * 60;
 
@@ -28,7 +28,11 @@ function randomRequestId(): string {
   return `dbr_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`;
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+// Delegated from create-checkout-session when body.product === 'debrief'.
+// Kept in api/_lib so it does not count against the Hobby serverless-function
+// limit. The Personal Type Debrief is a human-delivered service: no premium
+// unlock and no TYPEJUNG30.
+export async function createDebriefCheckoutSession(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });

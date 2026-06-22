@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Check, ChevronDown, Clock, FileText, RefreshCcw, ShieldCheck, Sparkles, X, Brain, Shield } from 'lucide-react';
+import { ArrowRight, Check, ChevronDown, Clock, FileText, RefreshCcw, ShieldCheck, Sparkles, X, Brain, Shield, UserCheck } from 'lucide-react';
 import { DiscountCaptureCard } from '../components/discount/DiscountCaptureCard';
 import { Button } from '../components/ui/Button';
 import { discountedPriceLabel, discountSavingsLabel, EMAIL_CAPTURE_OFFER } from '../data/discount';
 import { isPaidTierId, PRICING } from '../data/pricing';
 import type { PaidTierId, PricingTierId } from '../data/pricing';
+import { DEBRIEF_OFFER } from '../data/debrief';
 import { SUPPORT_EMAIL } from '../data/support';
 import { AnalyticsEvents, trackEvent } from '../lib/analytics';
 import { pathWithSource } from '../lib/acquisition-source';
@@ -55,7 +56,7 @@ const TIERS: Tier[] = [
     savingsLabel: discountSavingsLabel(PRICING.insight.amount),
     eyebrow: 'Written interpretation',
     summary: 'Unlock a deeper written read of your map: developmental edge, stress-pattern reflection, relationship-pattern reflection, and practical next steps.',
-    bestFor: 'People whose free map feels accurate and who want the meaning behind the scores.',
+    bestFor: 'Choose Insight if you only want the written interpretation of your map.',
     features: [
       'Detailed TypeJung report',
       'Inferior-function growth edge',
@@ -65,7 +66,6 @@ const TIERS: Tier[] = [
     ],
     buttonText: `Review Insight - ${discountedPriceLabel(PRICING.insight.amount)}`,
     tier: 'insight',
-    highlighted: true,
   },
   {
     name: 'Mastery',
@@ -75,7 +75,7 @@ const TIERS: Tier[] = [
     savingsLabel: discountSavingsLabel(PRICING.mastery.amount),
     eyebrow: 'Guide and practice tools',
     summary: 'Add the AI Type Guide, practice roadmap, and follow-up tools for reflecting on your result over time.',
-    bestFor: 'People who want guided follow-up after reading the deeper report.',
+    bestFor: 'Choose Mastery if you want to keep working with the result over time.',
     features: [
       'Everything in Insight',
       'AI Type Guide',
@@ -84,6 +84,7 @@ const TIERS: Tier[] = [
     ],
     buttonText: `Review Mastery - ${discountedPriceLabel(PRICING.mastery.amount)}`,
     tier: 'mastery',
+    highlighted: true,
   },
 ];
 
@@ -462,7 +463,7 @@ export const Pricing: React.FC = () => {
                   {tier.highlighted && (
                     <span className="mb-5 inline-flex w-fit items-center gap-2 rounded-lg bg-jung-accent px-3 py-1.5 text-xs font-semibold text-white">
                       <Sparkles className="h-3.5 w-3.5" />
-                      Most popular
+                      Recommended
                     </span>
                   )}
 
@@ -519,6 +520,42 @@ export const Pricing: React.FC = () => {
                 </article>
               );
             })}
+          </div>
+
+          <div className="mt-6 overflow-hidden rounded-lg border border-jung-accent-muted bg-jung-accent-light/60">
+            <div className="grid gap-5 p-6 sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center">
+              <div>
+                <span className="inline-flex w-fit items-center gap-2 rounded-lg bg-jung-surface px-3 py-1.5 text-xs font-semibold text-jung-accent">
+                  <UserCheck className="h-3.5 w-3.5" />
+                  Human-reviewed
+                </span>
+                <h2 className="mt-3 text-heading text-2xl text-jung-dark sm:text-3xl">
+                  Still confused by your result? Get a Personal Type Debrief.
+                </h2>
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-jung-secondary">
+                  Insight and Mastery are automated. The Debrief answers a different question: <em>can someone help me
+                  interpret this specific result?</em> A founder-reviewed breakdown of your map, likely mistype risks,
+                  and stress edge — a 10-minute video or written debrief within {DEBRIEF_OFFER.deliveryHours} hours.
+                </p>
+                <p className="mt-3 text-xs text-jung-muted">
+                  {DEBRIEF_OFFER.price}, one-time CAD. Limited to {DEBRIEF_OFFER.weeklyCap} per week. {EMAIL_CAPTURE_OFFER.code} does not apply.
+                </p>
+              </div>
+              <div className="flex flex-col items-start gap-2 lg:items-end">
+                <span className="font-display text-3xl font-semibold text-jung-dark">{DEBRIEF_OFFER.price}</span>
+                <Button
+                  onClick={() => {
+                    trackEvent('debrief_cta_clicked', { source: 'pricing_debrief_card' });
+                    navigate('/debrief');
+                  }}
+                  variant="accent"
+                  size="lg"
+                  rightIcon={<ArrowRight className="h-5 w-5" />}
+                >
+                  Get a personal debrief
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>

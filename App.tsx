@@ -22,6 +22,7 @@ const TermsOfService = lazy(() => import('./pages/TermsOfService').then(({ Terms
 const Pricing = lazy(() => import('./pages/Pricing').then(({ Pricing }) => ({ default: Pricing })));
 const SampleReport = lazy(() => import('./pages/SampleReport').then(({ SampleReport }) => ({ default: SampleReport })));
 const Methodology = lazy(() => import('./pages/Methodology').then(({ Methodology }) => ({ default: Methodology })));
+const Debrief = lazy(() => import('./pages/Debrief').then(({ Debrief }) => ({ default: Debrief })));
 const AIRunStore = lazy(() => import('./pages/AIRunStore').then(({ AIRunStore }) => ({ default: AIRunStore })));
 
 const RouteFallback: React.FC = () => (
@@ -87,6 +88,7 @@ const App: React.FC = () => {
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/sample-report" element={<SampleReport />} />
             <Route path="/methodology" element={<Methodology />} />
+            <Route path="/debrief" element={<Debrief />} />
             <Route path="/ai-run-store" element={<AIRunStore />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

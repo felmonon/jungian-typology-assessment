@@ -441,6 +441,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 	              <Link to="/assessment" className="inline-flex min-h-8 items-center hover:text-jung-accent">Assessment</Link>
 	              <Link to="/pricing" className="inline-flex min-h-8 items-center hover:text-jung-accent">Pricing</Link>
 	              <Link to="/methodology" className="inline-flex min-h-8 items-center hover:text-jung-accent">Methodology</Link>
+	              <Link to="/debrief" className="inline-flex min-h-8 items-center hover:text-jung-accent">Personal Type Debrief</Link>
 	              <Link to="/learn" className="inline-flex min-h-8 items-center hover:text-jung-accent">Learn the theory</Link>
 	            </div>
 	          </nav>

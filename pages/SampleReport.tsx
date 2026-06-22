@@ -14,6 +14,7 @@ import {
 import { DiscountCaptureCard } from '../components/discount/DiscountCaptureCard';
 import { Button } from '../components/ui/Button';
 import { discountedPriceLabel, EMAIL_CAPTURE_OFFER } from '../data/discount';
+import { DEBRIEF_OFFER } from '../data/debrief';
 import { PRICING, type PaidTierId } from '../data/pricing';
 import { ATTITUDE_LABELS, FUNCTION_LABELS } from '../data/depthAssessment';
 import { PAGE_SEO, useSEO } from '../hooks/useSEO';
@@ -331,6 +332,19 @@ export const SampleReport: React.FC = () => {
                 </p>
               </div>
             </div>
+            <Link
+              to="/debrief"
+              onClick={() => trackEvent('debrief_cta_clicked', { source: 'sample_report_debrief' })}
+              className="flex items-center justify-between gap-3 rounded-lg border border-jung-border bg-jung-base p-4 transition hover:border-jung-accent-muted"
+            >
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted">Personal Type Debrief</p>
+                <p className="mt-1 text-xs leading-5 text-jung-secondary">
+                  Prefer a human read? Founder-reviewed breakdown within {DEBRIEF_OFFER.deliveryHours}h — {DEBRIEF_OFFER.price}.
+                </p>
+              </div>
+              <ArrowRight className="h-4 w-4 flex-none text-jung-accent" />
+            </Link>
             <div className="rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-4 shadow-sm">
               <DiscountCaptureCard
                 source="sample_report_email_code"

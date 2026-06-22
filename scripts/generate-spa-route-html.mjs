@@ -70,6 +70,19 @@ const routePages = [
     noIndex: true,
   },
   {
+    path: '/debrief',
+    title: 'Personal Type Debrief - Founder-Reviewed Breakdown | TypeJung',
+    description:
+      'Still stuck between two types? Get a founder-reviewed Personal Type Debrief of your TypeJung map, likely mistypes, and stress edge, delivered within 72 hours.',
+    h1: 'Still stuck between two types?',
+    cta: 'Take the free map first',
+    body: [
+      'The Personal Type Debrief is a founder-reviewed interpretation of your TypeJung result for people who have the free map but are still unsure how to read it.',
+      'It includes a likely mistype comparison, a dominant-inferior breakdown in plain language, and a stress-edge explanation tied to your specific result, delivered as a short video or written breakdown within 72 hours.',
+      'It is a one-time CA$129 service limited to a few per week, and it is educational self-reflection rather than a clinical or diagnostic assessment. Start with the free function-stack map first if you have not taken it yet.',
+    ],
+  },
+  {
     path: '/methodology',
     title: 'Methodology - How the Function-Stack Map Is Built | TypeJung',
     description:

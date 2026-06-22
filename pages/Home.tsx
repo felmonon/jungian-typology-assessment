@@ -235,6 +235,7 @@ export const Home: React.FC = () => {
   const navigate = useNavigate();
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [hasLocalResults] = useState(hasValidLocalResult);
+  const [showMobileCta, setShowMobileCta] = useState(false);
 
   useSEO(PAGE_SEO.home);
 
@@ -244,6 +245,15 @@ export const Home: React.FC = () => {
       promise: 'mbti_alternative_function_stack',
       version: '2026_06_remake',
     });
+  }, []);
+
+  // Reveal the persistent mobile CTA once the hero button has scrolled away,
+  // so the primary action is always one tap from the free map on mobile.
+  useEffect(() => {
+    const onScroll = () => setShowMobileCta(window.scrollY > 520);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const startAssessment = (location: string) => {
@@ -307,7 +317,7 @@ export const Home: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <div className="relative overflow-hidden">
+      <div className="relative overflow-hidden pb-20 md:pb-0">
         <section className="relative border-b border-jung-border-light bg-jung-base">
           <div className="lab-container grid gap-8 py-8 md:py-10 lg:grid-cols-[0.86fr_1fr] lg:items-center lg:py-5">
             <div className="max-w-3xl">
@@ -402,7 +412,7 @@ export const Home: React.FC = () => {
                 Free result first. Upgrade only if the map names something you recognize.
               </p>
 
-              <div className="reveal reveal-4 mt-5 hidden flex-wrap gap-2 sm:flex">
+              <div className="reveal reveal-4 mt-5 flex flex-wrap gap-2">
                 {trustPoints.map((point) => (
                   <div key={point} className="flex min-h-9 items-center gap-2 rounded-lg border border-jung-border-light bg-jung-surface px-3 py-1.5 text-xs font-semibold text-jung-secondary sm:text-sm">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-jung-accent" />
@@ -836,6 +846,9 @@ export const Home: React.FC = () => {
                 You will know quickly whether the function-stack map gives you something more precise
                 than another type label.
               </p>
+              <p className="mt-5 max-w-xl font-display text-lg font-semibold italic text-white/90">
+                Stop collecting labels. Read the pattern. Work with the stress edge.
+              </p>
             </div>
             <button
               type="button"
@@ -847,6 +860,30 @@ export const Home: React.FC = () => {
             </button>
           </div>
         </section>
+      </div>
+
+      {/* Persistent mobile CTA: keeps the free-first action reachable on the
+          main entry page, matching the result/sample/checkout pages. */}
+      <div
+        className={`fixed inset-x-0 bottom-0 z-40 border-t border-jung-border bg-jung-surface/95 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_32px_rgba(41,28,18,0.14)] backdrop-blur transition-all duration-300 md:hidden ${
+          showMobileCta ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-full opacity-0'
+        }`}
+      >
+        <div className="flex items-center gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-semibold text-jung-dark">Free function-stack map first</p>
+            <p className="truncate text-xs text-jung-muted">No card before your result.</p>
+          </div>
+          <Button
+            onClick={() => startAssessment('home_sticky_mobile')}
+            variant="accent"
+            size="md"
+            rightIcon={<ArrowRight className="h-4 w-4" />}
+            className="shrink-0"
+          >
+            Get my free map
+          </Button>
+        </div>
       </div>
     </ErrorBoundary>
   );

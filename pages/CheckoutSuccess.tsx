@@ -44,6 +44,7 @@ const POST_PURCHASE_CAMPAIGN = 'customer_referral';
 
 type VerifySessionResponse = {
   paid?: boolean;
+  product?: string;
   tier?: string;
   metadata?: {
     tier?: string;
@@ -66,6 +67,8 @@ export const CheckoutSuccess: React.FC = () => {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [error, setError] = useState<string | null>(null);
   const [purchasedTier, setPurchasedTier] = useState<PaidTierId>('insight');
+  const [isDebrief, setIsDebrief] = useState(false);
+  const [debriefEmail, setDebriefEmail] = useState<string | null>(null);
   const [dominantFunction, setDominantFunction] = useState<string | null>(null);
   const [savedDepthResult, setSavedDepthResult] = useState<DepthAssessmentResult | null>(null);
   const [shareSlug, setShareSlug] = useState<string | null>(() => {
@@ -125,6 +128,18 @@ export const CheckoutSuccess: React.FC = () => {
           body: JSON.stringify({ sessionId: verifiedSessionId })
         });
         const data = await response.json() as VerifySessionResponse;
+
+        if (data.paid && data.product === 'debrief') {
+          // Service purchase: no premium unlock, no referral prompt — just confirm.
+          setIsDebrief(true);
+          setDebriefEmail(data.customerEmail || null);
+          clearPendingCheckout();
+          setStatus('success');
+          trackEvent('debrief_purchase_completed', {
+            transaction_id: data.transactionId || verifiedSessionId,
+          });
+          return;
+        }
 
         if (data.paid) {
           const verifiedTier = data.tier || data.metadata?.tier;
@@ -284,6 +299,41 @@ export const CheckoutSuccess: React.FC = () => {
           <Button variant="outline" onClick={() => window.location.reload()}>
             Try Again
           </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (isDebrief) {
+    return (
+      <div className="min-h-[60vh] bg-jung-base py-12">
+        <div className="editorial-container mx-auto max-w-2xl text-center">
+          <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent shadow-sm">
+            <CheckCircle className="h-8 w-8" />
+          </div>
+          <h1 className="mb-4 text-heading text-4xl text-jung-dark">Your Personal Type Debrief is booked</h1>
+          <p className="mx-auto mb-6 max-w-md text-sm leading-7 text-jung-secondary md:text-base">
+            Thank you — your payment went through and your intake is in. I review each debrief personally and
+            send your founder-reviewed breakdown within 72 hours{debriefEmail ? <> to <span className="font-semibold text-jung-dark">{debriefEmail}</span></> : ''}.
+          </p>
+
+          <div className="mb-8 rounded-lg border border-jung-border bg-jung-surface p-6 text-left shadow-sm">
+            <h2 className="text-lg font-semibold text-jung-dark">What happens next</h2>
+            <ul className="mt-4 space-y-3 text-sm leading-6 text-jung-secondary">
+              <li className="flex items-start gap-3"><CheckCircle className="mt-0.5 h-4 w-4 flex-none text-jung-accent" />I read your result, tested types, and where you feel stuck.</li>
+              <li className="flex items-start gap-3"><CheckCircle className="mt-0.5 h-4 w-4 flex-none text-jung-accent" />I record a 10-minute video or write a breakdown of your map, mistype risks, and stress edge.</li>
+              <li className="flex items-start gap-3"><CheckCircle className="mt-0.5 h-4 w-4 flex-none text-jung-accent" />It lands in your inbox within 72 hours. Reply any time with follow-up questions.</li>
+            </ul>
+          </div>
+
+          <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+            <Button onClick={() => navigate('/results')} variant="accent" size="lg">Back to my result</Button>
+            <Button onClick={() => navigate('/')} variant="outline" size="lg">Return home</Button>
+          </div>
+
+          <p className="mt-8 text-xs text-jung-muted">
+            Educational self-reflection, not a clinical or diagnostic assessment. Questions? Email {SUPPORT_EMAIL}.
+          </p>
         </div>
       </div>
     );

@@ -44,6 +44,10 @@ export const PAGE_SEO: Record<string, SEOConfig> = {
     title: 'Methodology - How the Function-Stack Map Is Built | TypeJung',
     description: 'How TypeJung groups 42 prompts into four evidence layers, infers the dominant and inferior functions, scores reliability, and what it does not claim.',
   },
+  debrief: {
+    title: 'Personal Type Debrief - Founder-Reviewed Breakdown | TypeJung',
+    description: 'Still stuck between two types? Get a founder-reviewed Personal Type Debrief of your TypeJung map, likely mistypes, and stress edge, delivered within 72 hours.',
+  },
   sampleReport: {
     title: 'Sample Paid Report | TypeJung',
     description: 'Preview a fictional TypeJung paid report sample before you buy, including developmental edge, stress-pattern reflection, relationship-pattern reflection, practices, and AI Type Guide examples.',

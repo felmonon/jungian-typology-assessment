@@ -7,6 +7,7 @@ import { DiscountCaptureCard } from '../components/discount/DiscountCaptureCard'
 import { Button } from '../components/ui/Button';
 import { ATTITUDE_LABELS, AttitudeDirection, FUNCTION_LABELS, FunctionChannel, depthLayerMeta } from '../data/depthAssessment';
 import { discountedPriceLabel, EMAIL_CAPTURE_OFFER } from '../data/discount';
+import { DEBRIEF_OFFER } from '../data/debrief';
 import { PRICING, type PaidTierId } from '../data/pricing';
 import { SUPPORT_EMAIL } from '../data/support';
 import { useAiAnalysis, type AnalysisInput, type PremiumAnalysis } from '../hooks/use-ai-analysis';
@@ -1424,6 +1425,31 @@ export const Results: React.FC = () => {
               onUnlock={openUpgradeCheckout}
               onViewSampleReport={viewSampleReport}
             />
+
+            <section className="mb-10 rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm sm:p-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-label">Prefer a human read</p>
+                  <h2 className="mt-2 text-2xl font-semibold text-jung-dark">Still stuck between two types?</h2>
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-jung-secondary">
+                    If you do not trust automated interpretation, get a founder-reviewed Personal Type Debrief of this
+                    exact map, your likely mistypes, and your stress edge — within {DEBRIEF_OFFER.deliveryHours} hours.
+                  </p>
+                </div>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="flex-none"
+                  onClick={() => {
+                    trackEvent('debrief_cta_clicked', { source: 'results_still_confused' });
+                    navigate('/debrief');
+                  }}
+                  rightIcon={<ArrowRight className="h-4 w-4" />}
+                >
+                  Get a debrief - {DEBRIEF_OFFER.price}
+                </Button>
+              </div>
+            </section>
           </>
         )}
 

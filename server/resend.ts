@@ -536,9 +536,82 @@ export async function sendCheckoutRecoveryEmail(input: CheckoutRecoveryEmailInpu
   return { sent: true, id: result.data?.id };
 }
 
+export type DebriefRequestNotificationInput = {
+  requestId: string;
+  customerEmail: string;
+  resultSummary?: string;
+  testedAs?: string;
+  stuckBetween?: string;
+  feltAccurate?: string;
+  feltConfusing?: string;
+  amountLabel?: string;
+  idempotencyKey?: string;
+};
+
+// Notifies the founder of a paid Personal Type Debrief request so it can be
+// fulfilled within the promised window. Sent to DEBRIEF_NOTIFY_EMAIL (falling
+// back to the Resend from-address, which the founder controls).
+export async function sendDebriefRequestNotification(
+  input: DebriefRequestNotificationInput,
+): Promise<LifecycleEmailSendResult> {
+  const credentials = await getCredentials();
+  if (!credentials) {
+    return { sent: false, skipped: true, reason: 'resend_not_configured' };
+  }
+
+  const notifyEmail = getEnvValue('DEBRIEF_NOTIFY_EMAIL') || credentials.fromEmail;
+  const row = (label: string, value?: string) => value
+    ? `<tr><td style="padding:6px 12px 6px 0;color:#6b746c;font-size:13px;vertical-align:top;white-space:nowrap;">${escapeHtml(label)}</td><td style="padding:6px 0;color:#121512;font-size:14px;line-height:1.6;">${escapeHtml(value)}</td></tr>`
+    : '';
+
+  const preview = `Paid Personal Type Debrief from ${input.customerEmail}`;
+  const body = `
+    <h1 style="margin: 0 0 16px; color: #121512; font-size: 26px; line-height: 1.2;">New paid Personal Type Debrief</h1>
+    <p style="color: #4B524C; font-size: 16px; line-height: 1.7;">
+      A Personal Type Debrief${input.amountLabel ? ` (${escapeHtml(input.amountLabel)})` : ''} was paid for. Deliver the founder-reviewed breakdown to the customer.
+    </p>
+    <table style="width:100%;border-collapse:collapse;margin:18px 0;border:1px solid #D2DCD3;border-radius:10px;background:#FAFAF8;">
+      ${row('Reply to', input.customerEmail)}
+      ${row('Request ID', input.requestId)}
+      ${row('TypeJung result', input.resultSummary)}
+      ${row('Tested as', input.testedAs)}
+      ${row('Stuck between', input.stuckBetween)}
+      ${row('Felt accurate', input.feltAccurate)}
+      ${row('Felt confusing', input.feltConfusing)}
+    </table>
+  `;
+
+  const text = [
+    'New paid Personal Type Debrief.',
+    `Reply to: ${input.customerEmail}`,
+    `Request ID: ${input.requestId}`,
+    input.resultSummary ? `TypeJung result: ${input.resultSummary}` : '',
+    input.testedAs ? `Tested as: ${input.testedAs}` : '',
+    input.stuckBetween ? `Stuck between: ${input.stuckBetween}` : '',
+    input.feltAccurate ? `Felt accurate: ${input.feltAccurate}` : '',
+    input.feltConfusing ? `Felt confusing: ${input.feltConfusing}` : '',
+  ].filter(Boolean).join('\n');
+
+  const client = new Resend(credentials.apiKey);
+  const result = await client.emails.send({
+    from: credentials.fromEmail,
+    to: notifyEmail,
+    replyTo: input.customerEmail,
+    subject: `New Personal Type Debrief — ${input.customerEmail}`,
+    html: buildBaseHtml(preview, body, 'Internal TypeJung notification for a paid Personal Type Debrief.'),
+    text,
+  }, input.idempotencyKey ? { idempotencyKey: input.idempotencyKey } : undefined);
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+
+  return { sent: true, id: result.data?.id };
+}
+
 export async function sendPdfEmail(
-  toEmail: string, 
-  pdfBuffer: Buffer, 
+  toEmail: string,
+  pdfBuffer: Buffer,
   userName: string,
   dominantFunction: string
 ) {

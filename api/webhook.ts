@@ -7,6 +7,48 @@ import { markPurchaseStatusByPaymentIntent, recordCheckoutPurchase } from './_li
 import { queueCheckoutRecoveryEmail } from './_lib/recovery-emails.js';
 import { getSupabaseAdminClient, hasSupabaseAdminConfig } from './_lib/supabase.js';
 import { getStripeSecretKey, getStripeWebhookSecret } from '../server/checkout.js';
+import { sendDebriefRequestNotification } from '../server/resend.js';
+import { DEBRIEF_OFFER } from '../data/debrief.js';
+
+// Personal Type Debrief is a human-delivered service, not a premium unlock.
+// Notify the founder with the intake and mark the request paid, but never run
+// the premium-granting purchase path for these sessions.
+async function handleDebriefSessionCompleted(
+  supabase: ReturnType<typeof getSupabaseAdminClient>,
+  session: Stripe.Checkout.Session,
+) {
+  const metadata = session.metadata || {};
+  const requestId = metadata.debrief_request_id || session.id;
+  const customerEmail = session.customer_details?.email || metadata.debrief_email || '';
+  const amountLabel = session.currency === 'cad' && typeof session.amount_total === 'number'
+    ? `CA$${(session.amount_total / 100).toFixed(2)}`
+    : undefined;
+
+  try {
+    await sendDebriefRequestNotification({
+      requestId,
+      customerEmail,
+      resultSummary: metadata.debrief_result_summary,
+      testedAs: metadata.debrief_tested_as,
+      stuckBetween: metadata.debrief_stuck_between,
+      feltAccurate: metadata.debrief_felt_accurate,
+      feltConfusing: metadata.debrief_felt_confusing,
+      amountLabel,
+      idempotencyKey: `debrief-notify:${session.id}`,
+    });
+  } catch (notifyError) {
+    console.error('Debrief founder notification failed:', notifyError instanceof Error ? notifyError.message : 'unknown');
+  }
+
+  try {
+    await supabase
+      .from('debrief_requests')
+      .update({ status: 'paid', stripe_session_id: session.id, paid_at: new Date().toISOString() })
+      .eq('request_id', requestId);
+  } catch (storeError) {
+    console.warn('Debrief request status update skipped:', storeError instanceof Error ? storeError.message : 'unknown');
+  }
+}
 
 // Disable body parsing, need raw body for webhook signature
 export const config = {
@@ -116,6 +158,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const session = await stripe.checkout.sessions.retrieve(checkoutSession.id, {
         expand: ['line_items.data.price'],
       });
+
+      if (session.metadata?.product === DEBRIEF_OFFER.productTag) {
+        await handleDebriefSessionCompleted(supabase, session);
+        await trackCheckoutWebhookEvent('server_debrief_paid', {
+          source: session.metadata?.source || 'unknown',
+          amount_cad: session.currency === 'cad' && session.amount_total ? session.amount_total / 100 : null,
+          status: session.payment_status || 'unknown',
+        });
+        break;
+      }
+
       const purchase = await recordCheckoutPurchase(supabase, session);
       console.log('Payment recorded for session:', session.id);
       if (purchase) {

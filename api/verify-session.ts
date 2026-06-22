@@ -62,7 +62,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(response.status).json({ error: session.error?.message || 'Stripe error' });
     }
 
+    const isDebrief = session.metadata?.product === 'typejung_debrief';
+
     if (session.payment_status === 'paid') {
+      // Debrief is a human-delivered service: never run the premium-granting
+      // purchase path for it; just confirm the request was received.
+      if (isDebrief) {
+        return res.status(200).json({
+          success: true,
+          paid: true,
+          product: 'debrief',
+          tier: null,
+          metadata: { product: 'debrief' },
+          amountTotal: typeof session.amount_total === 'number' ? session.amount_total : null,
+          amountPaid: centsToAmount(session.amount_total),
+          currency: normalizedCurrency(session.currency),
+          customerEmail: session.customer_details?.email,
+        });
+      }
+
       const tier = resolveTierFromCheckoutSession(session);
       const transactionId = resolveCheckoutTransactionId(session);
       if (hasSupabaseAdminConfig()) {
@@ -74,6 +92,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json({
         success: true,
         paid: true,
+        product: 'premium',
         tier,
         metadata: { tier },
         transactionId,

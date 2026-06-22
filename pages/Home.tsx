@@ -95,6 +95,30 @@ const steps = [
   ['03', 'Upgrade for depth', 'Unlock guided interpretation, growth practices, and the AI Type Guide when useful.'],
 ];
 
+const painPaths = [
+  {
+    eyebrow: 'Changing result',
+    title: '“My MBTI keeps changing.”',
+    body: 'Start with the free map. The goal is not another label — it is seeing which function pattern keeps producing the confusion.',
+    cta: 'Map the pattern',
+    source: 'home_path_changing_type',
+  },
+  {
+    eyebrow: 'Mistype tension',
+    title: '“I am stuck between two types.”',
+    body: 'Take the map first. If the result still feels hard to interpret, use the Personal Type Debrief for a human second read.',
+    cta: 'Start free, then compare',
+    source: 'home_path_stuck_between_types',
+  },
+  {
+    eyebrow: 'Stress edge',
+    title: '“I want to know what happens under pressure.”',
+    body: 'TypeJung reads the dominant-inferior axis so your result points to the edge that tends to tighten under stress.',
+    cta: 'Find the stress edge',
+    source: 'home_path_stress_edge',
+  },
+];
+
 const reportQuestions = [
   'Your developmental edge starts from the dominant-inferior axis in your actual scores.',
   'Your stress pattern is framed as concrete signals, not vague type lore.',
@@ -338,12 +362,15 @@ export const Home: React.FC = () => {
               </div>
 
               <h1 className="reveal reveal-1 max-w-4xl text-balance font-display text-[34px] font-semibold leading-[0.98] tracking-[-0.015em] text-jung-dark sm:text-5xl lg:text-[72px]">
-                Your type keeps changing. Map the pattern underneath.
+                Your MBTI keeps changing because the label is hiding the pattern.
               </h1>
 
               <p className="reveal reveal-2 mt-4 max-w-2xl text-[15px] leading-6 text-jung-secondary md:text-lg md:leading-8">
-                TypeJung turns a 12-minute assessment into a visible function-stack map: dominant signal,
-                inferior pressure, reliability, and paid depth you can preview before buying.
+                TypeJung maps all 8 cognitive functions, your dominant-inferior axis, and the stress edge behind your result.
+                Take the free 42-question assessment first. Upgrade only if the map explains something real.
+              </p>
+              <p className="mt-3 max-w-xl text-sm font-semibold leading-6 text-jung-dark">
+                Stop retaking tests. Read the function pattern that keeps creating the confusion.
               </p>
 
               <div className="mt-5 rounded-lg border border-jung-dark bg-jung-dark p-3 text-white shadow-lg shadow-jung-dark/10 lg:hidden">
@@ -554,10 +581,42 @@ export const Home: React.FC = () => {
           </div>
         </section>
 
+        <section className="border-b border-jung-border-light bg-jung-base py-10 lg:py-14">
+          <div className="lab-container">
+            <div className="mb-7 max-w-3xl">
+              <p className="figure-label">Fig. 03 — Choose your path</p>
+              <h2 className="mt-3 font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
+                Start from the problem that brought you here.
+              </h2>
+              <p className="mt-4 max-w-2xl text-sm leading-7 text-jung-secondary">
+                Different searches need different next steps. TypeJung keeps the first move the same: free map first, then the right interpretation path.
+              </p>
+            </div>
+            <div className="grid gap-4 lg:grid-cols-3">
+              {painPaths.map((path) => (
+                <article key={path.title} className="flex min-h-full flex-col rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm">
+                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted">{path.eyebrow}</p>
+                  <h3 className="mt-3 font-display text-2xl font-semibold leading-tight text-jung-dark">{path.title}</h3>
+                  <p className="mt-3 flex-1 text-sm leading-7 text-jung-secondary">{path.body}</p>
+                  <Button
+                    onClick={() => startAssessment(path.source)}
+                    variant="secondary"
+                    size="md"
+                    className="mt-5 w-full"
+                    rightIcon={<ArrowRight className="h-4 w-4" />}
+                  >
+                    {path.cta}
+                  </Button>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section className="bg-jung-base py-12 lg:py-20">
           <div className="lab-container grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
             <div>
-              <p className="figure-label">Fig. 03 — How it works</p>
+              <p className="figure-label">Fig. 04 — How it works</p>
               <h2 className="mt-4 max-w-xl font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                 A clear path from curiosity to usable insight.
               </h2>
@@ -582,7 +641,7 @@ export const Home: React.FC = () => {
           <div className="lab-container">
             <div className="grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
               <div>
-                <p className="figure-label">Fig. 04 — Search paths</p>
+                <p className="figure-label">Fig. 05 — Search paths</p>
                 <h2 className="mt-4 max-w-xl font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                   Pick the guide closest to the question you searched.
                 </h2>
@@ -666,7 +725,7 @@ export const Home: React.FC = () => {
               <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
                 <FileText className="h-5 w-5" />
               </div>
-              <p className="figure-label">Fig. 05 — Paid report preview</p>
+              <p className="figure-label">Fig. 06 — Paid report preview</p>
               <h2 className="mt-4 max-w-xl font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                 The upgrade has to earn its place.
               </h2>
@@ -771,7 +830,7 @@ export const Home: React.FC = () => {
         <section id="pricing" className="border-b border-jung-border-light bg-white py-12 lg:py-20">
           <div className="lab-container">
             <div className="mb-10 max-w-2xl">
-              <p className="figure-label">Fig. 06 — Pricing</p>
+              <p className="figure-label">Fig. 07 — Pricing</p>
               <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                 Buy the interpretation only if the free map makes sense.
               </h2>
@@ -847,7 +906,7 @@ export const Home: React.FC = () => {
         <section className="bg-jung-base py-12 lg:py-20">
           <div className="lab-container grid gap-10 lg:grid-cols-[0.88fr_1.12fr]">
             <div>
-              <p className="figure-label">Fig. 07 — Before you start</p>
+              <p className="figure-label">Fig. 08 — Before you start</p>
               <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                 Straight answers, no personality-test hype.
               </h2>

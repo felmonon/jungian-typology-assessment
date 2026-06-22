@@ -146,6 +146,25 @@ const PREVIEW_MODULES = [
   },
 ];
 
+const OUTCOME_PATHS = [
+  {
+    title: 'Free answers: what pattern showed up?',
+    body: 'Use this when you are not sure TypeJung will be useful yet. You get the map before any checkout.',
+  },
+  {
+    title: 'Insight answers: what does it mean?',
+    body: 'Use this when the map feels accurate and you want the written interpretation behind the scores.',
+  },
+  {
+    title: 'Mastery answers: how do I work with it?',
+    body: 'Use this when you want the report plus guided follow-up, practice roadmap, and AI Type Guide.',
+  },
+  {
+    title: 'Debrief answers: can someone read this with me?',
+    body: 'Use this when you are still stuck between two types and want a founder-reviewed second read.',
+  },
+];
+
 const IncludedIcon: React.FC<{ included: boolean }> = ({ included }) => (
   <span
     className={`inline-flex h-7 w-7 items-center justify-center rounded-lg ${
@@ -293,8 +312,12 @@ export const Pricing: React.FC = () => {
           <div>
             <p className="text-label">Pricing</p>
             <h1 className="mt-4 text-display text-[40px] text-jung-dark sm:text-6xl">
-              Take the map first. Buy depth only if it earns trust.
+              Start free. Pay only if the map earns trust.
             </h1>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-jung-secondary sm:text-base">
+              The first purchase decision is not money — it is whether your function-stack map names something real.
+              Read the free result, then choose the smallest next step that matches your actual question.
+            </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <Button
                 variant="accent"
@@ -401,6 +424,26 @@ export const Pricing: React.FC = () => {
           </div>
         </section>
       )}
+
+      <section className="editorial-container pt-10">
+        <div className="rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm sm:p-6">
+          <div className="mb-5 max-w-2xl">
+            <p className="text-label">Pick by outcome</p>
+            <h2 className="mt-2 text-heading text-3xl text-jung-dark">Do not buy the wrong thing.</h2>
+            <p className="mt-2 text-sm leading-6 text-jung-secondary">
+              TypeJung has one free starting point and three paid paths. Choose by the question you are trying to answer.
+            </p>
+          </div>
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+            {OUTCOME_PATHS.map((path) => (
+              <div key={path.title} className="rounded-lg border border-jung-border bg-jung-base p-4">
+                <h3 className="text-sm font-semibold leading-6 text-jung-dark">{path.title}</h3>
+                <p className="mt-2 text-xs leading-5 text-jung-secondary">{path.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <section id="plans" ref={plansSectionRef} className="scroll-mt-24 py-10 lg:py-16">
         <div className="editorial-container">

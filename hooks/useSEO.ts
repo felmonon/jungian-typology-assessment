@@ -17,7 +17,7 @@ const SITE_NAME = 'TypeJung';
 export const PAGE_SEO: Record<string, SEOConfig> = {
   home: {
     title: 'Free Cognitive Function Test - MBTI Test Alternative | TypeJung',
-    description: 'Take a free 42-question Jungian cognitive functions test for people comparing MBTI tests, Sakinorva, and 16Personalities. See the function-stack map first.',
+    description: 'When your MBTI keeps changing, map the pattern underneath. Take a free 42-question Jungian cognitive functions test and see the function-stack map before any paid report.',
   },
   assessment: {
     title: 'Take the Free Jungian Cognitive Function Assessment | TypeJung',

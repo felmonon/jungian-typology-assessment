@@ -49,7 +49,7 @@ export type DiscountLeadFollowupEmailInput = {
   percentOff: number;
   actionUrl: string;
   actionLabel: string;
-  stage?: 'first' | 'second';
+  stage?: 'first' | 'second' | 'third' | 'fourth';
   tier?: PaidTierId;
   source?: string;
   dominantLabel?: string;
@@ -378,6 +378,71 @@ export async function sendDiscountLeadEmail(input: DiscountLeadEmailInput): Prom
   return { sent: true, id: result.data?.id };
 }
 
+// Late drip steps (emails 4 and 5): kept as a self-contained template so the
+// established first/second follow-up copy stays untouched. Email 4 explains what
+// the paid interpretation adds; email 5 points still-stuck readers to the Debrief.
+async function sendDiscountSequenceLateEmail(
+  input: DiscountLeadFollowupEmailInput,
+  credentials: ResendCredentials,
+): Promise<LifecycleEmailSendResult> {
+  const isFourth = input.stage === 'fourth';
+  const safeCode = escapeHtml(input.discountCode);
+  const sampleUrl = urlForPath(input.actionUrl, '/sample-report');
+  const debriefUrl = urlForPath(input.actionUrl, '/debrief');
+
+  const subject = isFourth
+    ? 'Still stuck between two types?'
+    : 'What the paid interpretation actually adds';
+  const preview = isFourth
+    ? 'If you are still unsure how to read your result, you may need a second read.'
+    : 'Free shows the pattern. Insight explains it. Mastery helps you work with it.';
+
+  const body = isFourth
+    ? `
+      <h1 style="margin: 0 0 16px; color: #121512; font-size: 28px; line-height: 1.2;">Still stuck between two types?</h1>
+      <p style="color: #4B524C; font-size: 16px; line-height: 1.7;">
+        If your result is interesting but you are still unsure how to interpret it, you may not need another test. You may need a second read.
+      </p>
+      <p style="color: #4B524C; font-size: 16px; line-height: 1.7;">
+        The Personal Type Debrief is a founder-reviewed read of your TypeJung map, your likely mistype risks, and your dominant-inferior stress edge, delivered within 72 hours. It is a one-time service, limited to a few per week, and it is educational self-reflection rather than a clinical or diagnostic assessment.
+      </p>
+      ${buildActionLink(debriefUrl, 'Get a Personal Type Debrief')}
+    `
+    : `
+      <h1 style="margin: 0 0 16px; color: #121512; font-size: 28px; line-height: 1.2;">What the paid interpretation actually adds</h1>
+      <p style="color: #4B524C; font-size: 16px; line-height: 1.7;">
+        The free map answers: what pattern showed up? Insight answers: what does it mean? Mastery answers: how do I keep working with it?
+      </p>
+      <p style="color: #4B524C; font-size: 16px; line-height: 1.7;">
+        Insight adds the developmental edge, stress-pattern reflection, relationship-pattern reflection, and practical prompts. ${safeCode} is ${input.percentOff}% off Insight or Mastery on the secure Stripe step. Only unlock it if your free map feels worth keeping.
+      </p>
+      <p style="color: #4B524C; font-size: 16px; line-height: 1.7;">
+        Still stuck between two types? The Personal Type Debrief is the human-reviewed path: a founder-reviewed read of your exact map.
+      </p>
+      ${buildActionLink(sampleUrl, 'View the sample report')}
+      ${buildActionLink(debriefUrl, 'See the Personal Type Debrief')}
+    `;
+
+  const text = isFourth
+    ? `If your result is interesting but you are still unsure how to interpret it, the Personal Type Debrief is a founder-reviewed second read of your TypeJung map, likely mistype risks, and stress edge, delivered within 72 hours. Get a Personal Type Debrief: ${debriefUrl}`
+    : `Free shows the pattern; Insight explains it; Mastery helps you keep working with it. Insight adds the developmental edge, stress-pattern reflection, relationship reflection, and practice prompts. ${input.discountCode} is ${input.percentOff}% off on Stripe. Sample report: ${sampleUrl} Personal Type Debrief: ${debriefUrl}`;
+
+  const client = new Resend(credentials.apiKey);
+  const result = await client.emails.send({
+    from: credentials.fromEmail,
+    to: input.toEmail,
+    subject,
+    html: buildBaseHtml(preview, body),
+    text,
+  }, input.idempotencyKey ? { idempotencyKey: input.idempotencyKey } : undefined);
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+
+  return { sent: true, id: result.data?.id };
+}
+
 export async function sendDiscountLeadFollowupEmail(input: DiscountLeadFollowupEmailInput): Promise<LifecycleEmailSendResult> {
   if (!input.toEmail) {
     return { sent: false, skipped: true, reason: 'missing_email' };
@@ -387,6 +452,10 @@ export async function sendDiscountLeadFollowupEmail(input: DiscountLeadFollowupE
 
   if (!credentials) {
     return { sent: false, skipped: true, reason: 'resend_not_configured' };
+  }
+
+  if (input.stage === 'third' || input.stage === 'fourth') {
+    return sendDiscountSequenceLateEmail(input, credentials);
   }
 
   const tierName = input.tier ? PRICING[input.tier].name : null;

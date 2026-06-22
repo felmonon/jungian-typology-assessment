@@ -37,6 +37,10 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const EMAIL_CAPTURE_DISCOUNT_CODE = process.env.EMAIL_CAPTURE_DISCOUNT_CODE || EMAIL_CAPTURE_OFFER.code;
 const DISCOUNT_FOLLOWUP_MIN_AGE_HOURS = 18;
 const DISCOUNT_SECOND_FOLLOWUP_MIN_AGE_HOURS = 72;
+// Late drip steps (emails 4 and 5), each gated on the prior step's send time so
+// the cadence lands roughly on day 5 and day 7.
+const DISCOUNT_THIRD_FOLLOWUP_MIN_AGE_HOURS = 48;
+const DISCOUNT_FOURTH_FOLLOWUP_MIN_AGE_HOURS = 48;
 const DISCOUNT_FOLLOWUP_LIMIT = 20;
 const lifecycleKinds = new Set<LifecycleEmailKind>([
   'abandoned-assessment',
@@ -864,23 +868,36 @@ async function markDiscountLeadFollowupProcessed(
   supabase: SupabaseClient,
   leadId: string,
   status: { sent: boolean; sentId?: string; error?: string },
-  stage: 'first' | 'second' = 'first',
+  stage: 'first' | 'second' | 'third' | 'fourth' = 'first',
 ) {
-  const fields = stage === 'second'
-    ? {
-      second_followup_email_sent: status.sent,
-      second_followup_email_sent_id: status.sentId || null,
-      second_followup_email_error: status.error || null,
-      second_followup_email_sent_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    }
-    : {
-      followup_email_sent: status.sent,
-      followup_email_sent_id: status.sentId || null,
-      followup_email_error: status.error || null,
-      followup_email_sent_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
+  const now = new Date().toISOString();
+  const stageColumns: Record<typeof stage, (s: typeof status) => Record<string, unknown>> = {
+    first: (s) => ({
+      followup_email_sent: s.sent,
+      followup_email_sent_id: s.sentId || null,
+      followup_email_error: s.error || null,
+      followup_email_sent_at: now,
+    }),
+    second: (s) => ({
+      second_followup_email_sent: s.sent,
+      second_followup_email_sent_id: s.sentId || null,
+      second_followup_email_error: s.error || null,
+      second_followup_email_sent_at: now,
+    }),
+    third: (s) => ({
+      third_followup_email_sent: s.sent,
+      third_followup_email_sent_id: s.sentId || null,
+      third_followup_email_error: s.error || null,
+      third_followup_email_sent_at: now,
+    }),
+    fourth: (s) => ({
+      fourth_followup_email_sent: s.sent,
+      fourth_followup_email_sent_id: s.sentId || null,
+      fourth_followup_email_error: s.error || null,
+      fourth_followup_email_sent_at: now,
+    }),
+  };
+  const fields = { ...stageColumns[stage](status), updated_at: now };
 
   const { error } = await supabase
     .from('discount_leads')
@@ -1068,7 +1085,108 @@ async function handleDiscountFollowups(req: VercelRequest, res: VercelResponse) 
     }
   }
 
-  return res.status(200).json({ ok: true, dryRun, ...counters });
+  // Late drip steps (emails 4 and 5). Fully isolated: any error here — including
+  // a missing migration for the third/fourth columns — is logged and skipped so
+  // it can never break the established first/second follow-ups above.
+  const lateCounters: Record<string, number> = {};
+  try {
+    const lateStages: Array<{
+      key: 'third' | 'fourth';
+      stage: 'third' | 'fourth';
+      prevSentColumn: string;
+      prevSentAtColumn: string;
+      sentColumn: string;
+      minAgeHours: number;
+      idempotencyPrefix: string;
+    }> = [
+      {
+        key: 'third', stage: 'third',
+        prevSentColumn: 'second_followup_email_sent', prevSentAtColumn: 'second_followup_email_sent_at',
+        sentColumn: 'third_followup_email_sent', minAgeHours: DISCOUNT_THIRD_FOLLOWUP_MIN_AGE_HOURS,
+        idempotencyPrefix: 'discount-third-followup',
+      },
+      {
+        key: 'fourth', stage: 'fourth',
+        prevSentColumn: 'third_followup_email_sent', prevSentAtColumn: 'third_followup_email_sent_at',
+        sentColumn: 'fourth_followup_email_sent', minAgeHours: DISCOUNT_FOURTH_FOLLOWUP_MIN_AGE_HOURS,
+        idempotencyPrefix: 'discount-fourth-followup',
+      },
+    ];
+
+    for (const cfg of lateStages) {
+      const stageCutoff = new Date(Date.now() - cfg.minAgeHours * 60 * 60 * 1000).toISOString();
+      const { data: stageLeads, error: stageError } = await supabase
+        .from('discount_leads')
+        .select('id, email, source, discount_code, percent_off, dominant_label, inferior_label, tier_intent, utm_source, utm_campaign, parent_source, source_chain, created_at')
+        .eq('email_sent', true)
+        .eq(cfg.prevSentColumn, true)
+        .eq(cfg.sentColumn, false)
+        .not(cfg.prevSentAtColumn, 'is', null)
+        .lt(cfg.prevSentAtColumn, stageCutoff)
+        .order(cfg.prevSentAtColumn, { ascending: true })
+        .limit(DISCOUNT_FOLLOWUP_LIMIT);
+
+      if (stageError) {
+        // Most likely the 0018 migration is not applied yet. Skip silently.
+        console.warn(`Late discount drip (${cfg.key}) inactive:`, stageError.message);
+        continue;
+      }
+
+      lateCounters[`${cfg.key}Considered`] = stageLeads?.length || 0;
+      lateCounters[`${cfg.key}Sent`] = 0;
+      lateCounters[`${cfg.key}Failed`] = 0;
+
+      for (const lead of (stageLeads || []) as DiscountLeadFollowupRow[]) {
+        const email = cleanEmail(lead.email);
+        if (!email) {
+          await markDiscountLeadFollowupProcessed(supabase, lead.id, { sent: true, error: 'skipped_invalid_email' }, cfg.stage);
+          continue;
+        }
+        if (await leadHasCompletedPurchase(supabase, email)) {
+          await markDiscountLeadFollowupProcessed(supabase, lead.id, { sent: true, error: 'skipped_already_purchased' }, cfg.stage);
+          continue;
+        }
+        if (dryRun) {
+          lateCounters[`${cfg.key}WouldSend`] = (lateCounters[`${cfg.key}WouldSend`] || 0) + 1;
+          continue;
+        }
+
+        const action = followupActionForLead(req, lead);
+        try {
+          const sendResult = await sendDiscountLeadFollowupEmail({
+            toEmail: email,
+            discountCode: lead.discount_code || EMAIL_CAPTURE_DISCOUNT_CODE,
+            percentOff: lead.percent_off || EMAIL_CAPTURE_OFFER.percentOff,
+            actionUrl: action.url,
+            actionLabel: action.label,
+            stage: cfg.stage,
+            tier: action.tier,
+            source: cleanSource(lead.source),
+            dominantLabel: lead.dominant_label || undefined,
+            inferiorLabel: lead.inferior_label || undefined,
+            idempotencyKey: `${cfg.idempotencyPrefix}:${lead.id}`,
+          });
+
+          if (sendResult.sent) {
+            lateCounters[`${cfg.key}Sent`] += 1;
+            await markDiscountLeadFollowupProcessed(supabase, lead.id, { sent: true, sentId: 'id' in sendResult ? sendResult.id : undefined }, cfg.stage);
+          } else {
+            lateCounters[`${cfg.key}Failed`] += 1;
+            await markDiscountLeadFollowupProcessed(supabase, lead.id, { sent: false, error: 'reason' in sendResult ? sendResult.reason : 'not_sent' }, cfg.stage);
+          }
+        } catch (error) {
+          lateCounters[`${cfg.key}Failed`] += 1;
+          const message = error instanceof Error ? error.message : 'Unknown send error';
+          console.error(`Late discount drip (${cfg.key}) send failed:`, message);
+          await markDiscountLeadFollowupProcessed(supabase, lead.id, { sent: false, error: message }, cfg.stage);
+        }
+      }
+    }
+  } catch (lateError) {
+    console.error('Late discount drip skipped:', lateError instanceof Error ? lateError.message : 'unknown');
+  }
+
+  return res.status(200).json({ ok: true, dryRun, ...counters, ...lateCounters });
 }
 
 async function handleCheckoutRecoveryEmails(req: VercelRequest, res: VercelResponse) {

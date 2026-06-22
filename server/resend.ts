@@ -231,6 +231,7 @@ function buildLifecycleEmail(input: LifecycleEmailInput): LifecycleEmailTemplate
 
   if (input.kind === 'free-result-upgrade') {
     const sampleReportUrl = urlForPath(upgradeUrl, '/sample-report');
+    const debriefUrl = urlForPath(upgradeUrl, '/debrief');
     const discountCode = escapeHtml(EMAIL_CAPTURE_OFFER.code);
     const axisCopy = dominantLabel && inferiorLabel
       ? ` Your current map centers on ${dominantLabel} with ${inferiorLabel} as the developmental edge.`
@@ -244,6 +245,9 @@ function buildLifecycleEmail(input: LifecycleEmailInput): LifecycleEmailTemplate
       <p style="color: #4B524C; font-size: 16px; line-height: 1.7;">
         Insight gives you the developmental edge, stress-pattern reflection, relationship-pattern reflection, and practice prompts. Mastery adds the AI Type Guide and a practice roadmap. Both are one-time CAD purchases with no subscription.
       </p>
+      <p style="color: #4B524C; font-size: 16px; line-height: 1.7;">
+        Still stuck between two types? The Personal Type Debrief is the human-reviewed path: a founder-reviewed read of your actual map, likely mistype risks, and stress edge.
+      </p>
       <div style="margin: 24px 0; border: 1px solid #D2DCD3; border-radius: 10px; background: #FAFAF8; padding: 18px;">
         <p style="margin: 0 0 8px; color: #6b746c; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">Upgrade code</p>
         <p style="margin: 0; color: #121512; font-family: 'SFMono-Regular', Consolas, monospace; font-size: 24px; font-weight: 800; letter-spacing: 0.08em;">${discountCode}</p>
@@ -253,17 +257,19 @@ function buildLifecycleEmail(input: LifecycleEmailInput): LifecycleEmailTemplate
       </div>
       ${buildActionLink(sampleReportUrl, 'View a sample report')}
       ${buildActionLink(upgradeUrl, 'Compare report options')}
+      ${buildActionLink(debriefUrl, 'Get a Personal Type Debrief')}
     `;
 
     return {
       subject: 'Your TypeJung map can go deeper',
       preview,
       html: buildBaseHtml(preview, body),
-      text: `If your free TypeJung map felt accurate enough to keep, the paid report turns it into a practical read.${axisCopy} Use code ${EMAIL_CAPTURE_OFFER.code} for ${EMAIL_CAPTURE_OFFER.percentOff}% off Insight or Mastery on Stripe. Sample report: ${sampleReportUrl} Compare options: ${upgradeUrl}`,
+      text: `If your free TypeJung map felt accurate enough to keep, the paid report turns it into a practical read.${axisCopy} Use code ${EMAIL_CAPTURE_OFFER.code} for ${EMAIL_CAPTURE_OFFER.percentOff}% off Insight or Mastery on Stripe. If you are still stuck between two types, the Personal Type Debrief is the human-reviewed path. Sample report: ${sampleReportUrl} Compare options: ${upgradeUrl} Personal Type Debrief: ${debriefUrl}`,
     };
   }
 
   const completedCopy = formatCompletedAt(input.completedAt);
+  const debriefUrl = urlForPath(resultUrl, '/debrief');
   const axisCopy = dominantLabel && inferiorLabel
     ? ` Your dominant-inferior axis is ${dominantLabel} to ${inferiorLabel}.`
     : '';
@@ -276,14 +282,18 @@ function buildLifecycleEmail(input: LifecycleEmailInput): LifecycleEmailTemplate
     <p style="color: #4B524C; font-size: 16px; line-height: 1.7;">
       Open the result while the answers are still fresh. Start with the free map, then decide whether you want the deeper report after you have read the pattern.
     </p>
+    <p style="color: #4B524C; font-size: 16px; line-height: 1.7;">
+      If the map is interesting but you are still stuck between two types, use the Personal Type Debrief for a human-reviewed second read.
+    </p>
     ${buildActionLink(resultUrl, 'Read your map')}
+    ${buildActionLink(debriefUrl, 'See the Personal Type Debrief')}
   `;
 
   return {
     subject: 'Your TypeJung map is ready',
     preview,
     html: buildBaseHtml(preview, body),
-    text: `Your TypeJung assessment was completed ${completedCopy}.${axisCopy} Read your map here: ${resultUrl}`,
+    text: `Your TypeJung assessment was completed ${completedCopy}.${axisCopy} Read your map here: ${resultUrl}. If you are still stuck between two types, see the Personal Type Debrief: ${debriefUrl}`,
   };
 }
 

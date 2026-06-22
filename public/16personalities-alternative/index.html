@@ -112,6 +112,14 @@
   .cluster-link { display: block; min-height: 100%; padding: 14px; border-radius: 8px; background: rgba(255,255,255,0.72); border: 1px solid var(--jung-border-light); color: var(--jung-dark); text-decoration: none; }
   .cluster-link strong { display: block; margin-bottom: 6px; font-family: "Schibsted Grotesk", Verdana, sans-serif; }
   .cluster-link span { display: block; color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; font-size: 0.95rem; line-height: 1.45; }
+  .debrief-cta { margin: 30px 0 36px; padding: clamp(22px, 4vw, 30px); border: 1px solid var(--jung-accent-muted); border-radius: 8px; background: linear-gradient(135deg, color-mix(in srgb, var(--jung-accent-light) 64%, white), var(--jung-surface)); box-shadow: 0 18px 54px -42px rgb(29 38 32 / 0.52); }
+  .debrief-cta-grid { display: grid; gap: 18px; align-items: center; grid-template-columns: minmax(0, 1fr) auto; }
+  .debrief-cta h2 { border: 0; margin: 0; padding: 0; font-size: clamp(1.45rem, 3vw, 2rem); }
+  .debrief-cta p { margin: 10px 0 0; }
+  .debrief-cta ul { display: grid; gap: 7px; margin: 16px 0 0; padding-left: 20px; }
+  .debrief-price-card { min-width: 176px; padding: 16px; border: 1px solid var(--jung-border); border-radius: 8px; background: white; text-align: right; }
+  .debrief-price-card strong { display: block; color: var(--jung-dark); font-family: "Fraunces", Georgia, serif; font-size: 2rem; line-height: 1; }
+  .debrief-price-card span { display: block; margin-top: 8px; color: var(--jung-muted); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
   .context-links { margin: 18px 0 0; padding: 14px 16px; background: var(--jung-surface); border: 1px solid var(--jung-border-light); border-radius: 8px; }
   .context-links strong { display: block; margin-bottom: 8px; font-family: "Schibsted Grotesk", Verdana, sans-serif; font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--jung-muted); }
   .context-links ul { margin: 0; padding-left: 20px; }
@@ -139,6 +147,8 @@
     .save-link-form-row { grid-template-columns: 1fr; }
     .copy-action-row button { width: 100%; }
     .text-link { display: inline-block; margin: 14px 0 0; }
+    .debrief-cta-grid { grid-template-columns: 1fr; }
+    .debrief-price-card { text-align: left; }
   }
 </style>
 
@@ -292,6 +302,32 @@
     <div class="intent-card">
       <strong>Privacy</strong>
       <span>No card required for the core map. Paid reports are optional one-time upgrades.</span>
+    </div>
+  </section>
+
+  <section class="debrief-cta" aria-labelledby="16personalities-alternative-debrief-title">
+    <div class="debrief-cta-grid">
+      <div>
+        <p class="eyebrow">Human-reviewed option</p>
+        <h2 id="16personalities-alternative-debrief-title">Still stuck between two types?</h2>
+        <p>
+          If this guide sounds familiar but you still do not know how to read your result, get a Personal Type Debrief.
+          I review your TypeJung map, likely mistype risks, and stress edge, then send a 10-minute video or written breakdown within 72 hours.
+        </p>
+        <ul>
+          <li>Best for INFJ vs INFP, INTJ vs INTP, or Sakinorva/16Personalities confusion.</li>
+          <li>Start with the free map first; use the Debrief when you want a second read.</li>
+          <li>Educational self-reflection, not a clinical or diagnostic assessment.</li>
+        </ul>
+        <div class="cta-actions">
+          <a href="/debrief?source=seo_16personalities_alternative_guide_debrief" class="btn">Get a personal debrief</a>
+          <a href="/assessment?source=seo_16personalities_alternative_guide_debrief_assessment" class="secondary-btn">Take the free map first</a>
+        </div>
+      </div>
+      <div class="debrief-price-card">
+        <strong>CA$129</strong>
+        <span>Limited to 5/week</span>
+      </div>
     </div>
   </section>
 

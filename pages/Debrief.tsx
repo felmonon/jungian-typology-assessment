@@ -129,6 +129,23 @@ export const Debrief: React.FC = () => {
             No result yet?{' '}
             <Link to="/assessment" className="font-semibold text-jung-accent hover:underline">Take the free map first</Link>.
           </p>
+
+          <section className="mt-8 rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm">
+            <p className="text-label">Sample debrief excerpt</p>
+            <h2 className="mt-2 text-heading text-2xl text-jung-dark">What the read can sound like</h2>
+            <p className="mt-3 text-sm leading-7 text-jung-secondary">
+              Fictional example: “Your TypeJung map points toward Ni-Fe-Ti-Se, but the INFP confusion makes sense
+              because your language around values is strong. The question is whether the pattern starts from
+              personal value judgment, or from convergent pattern perception that then checks relational impact.
+              In your answers, the stress edge matters: the result keeps circling back to embodiment, limits, and
+              concrete follow-through rather than Te-style external execution. That is why I would treat INFJ vs
+              INFP as a real comparison, but read the current map as Ni-first unless your lived examples show
+              value judgment arriving before pattern synthesis.”
+            </p>
+            <p className="mt-3 text-xs leading-5 text-jung-muted">
+              Your debrief is written from your own map and intake answers. It is a second read, not a promise of a final true type.
+            </p>
+          </section>
         </header>
 
         <form onSubmit={handleSubmit} className="card-premium p-6 sm:p-8">

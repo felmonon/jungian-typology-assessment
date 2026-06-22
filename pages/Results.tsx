@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Check, Copy, CreditCard, Download, FileText, Link2, Loader2, Lock, LogIn, RefreshCcw, Save, Share2, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, Check, Copy, CreditCard, Download, FileText, Link2, Loader2, Lock, LogIn, RefreshCcw, Save, Share2, ShieldCheck, Sparkles, UserCheck } from 'lucide-react';
 import { ChatBot } from '../components/ChatBot';
 import { DiscountCaptureCard } from '../components/discount/DiscountCaptureCard';
 import { Button } from '../components/ui/Button';
@@ -1425,6 +1425,77 @@ export const Results: React.FC = () => {
               onUnlock={openUpgradeCheckout}
               onViewSampleReport={viewSampleReport}
             />
+
+            <section className="mb-10 rounded-lg border border-jung-accent-muted bg-jung-accent-light/60 p-5 shadow-sm sm:p-6">
+              <div className="mb-5 max-w-3xl">
+                <p className="text-label">Choose the right next step</p>
+                <h2 className="mt-2 text-2xl font-semibold text-jung-dark">Did this result settle the typing question?</h2>
+                <p className="mt-2 text-sm leading-6 text-jung-secondary">
+                  Your free map is complete. Use the branch that matches your actual reaction instead of buying more than you need.
+                </p>
+              </div>
+              <div className="grid gap-3 lg:grid-cols-3">
+                <article className="flex min-h-full flex-col rounded-lg border border-jung-border bg-jung-surface p-4">
+                  <div className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
+                    <FileText className="h-4 w-4" />
+                  </div>
+                  <h3 className="text-base font-semibold text-jung-dark">It helped, but I want the meaning.</h3>
+                  <p className="mt-2 flex-1 text-sm leading-6 text-jung-secondary">
+                    Unlock Insight when the map feels accurate and you want the developmental edge, stress pattern, and practice prompts.
+                  </p>
+                  <Button
+                    variant="accent"
+                    size="sm"
+                    className="mt-4 w-full"
+                    onClick={() => openUpgradeCheckout('insight', 'results_branch_meaning')}
+                    rightIcon={<ArrowRight className="h-4 w-4" />}
+                  >
+                    Insight - {paidTierPrice('insight')}
+                  </Button>
+                </article>
+
+                <article className="flex min-h-full flex-col rounded-lg border border-jung-border bg-jung-surface p-4">
+                  <div className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
+                    <Sparkles className="h-4 w-4" />
+                  </div>
+                  <h3 className="text-base font-semibold text-jung-dark">I want to keep working with it.</h3>
+                  <p className="mt-2 flex-1 text-sm leading-6 text-jung-secondary">
+                    Choose Mastery if you want the deeper report plus AI Type Guide, practice roadmap, and follow-up support.
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-4 w-full"
+                    onClick={() => openUpgradeCheckout('mastery', 'results_branch_practice')}
+                    rightIcon={<ArrowRight className="h-4 w-4" />}
+                  >
+                    Mastery - {paidTierPrice('mastery')}
+                  </Button>
+                </article>
+
+                <article className="flex min-h-full flex-col rounded-lg border border-jung-accent-muted bg-jung-base p-4">
+                  <div className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-jung-surface text-jung-accent">
+                    <UserCheck className="h-4 w-4" />
+                  </div>
+                  <h3 className="text-base font-semibold text-jung-dark">I am still stuck between two types.</h3>
+                  <p className="mt-2 flex-1 text-sm leading-6 text-jung-secondary">
+                    Get a founder-reviewed Debrief when the automated map is interesting but you want a second read.
+                  </p>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="mt-4 w-full"
+                    onClick={() => {
+                      trackEvent('debrief_cta_clicked', { source: 'results_branch_still_stuck' });
+                      navigate(pathWithSource('/debrief', 'results_branch_still_stuck'));
+                    }}
+                    rightIcon={<ArrowRight className="h-4 w-4" />}
+                  >
+                    Debrief - {DEBRIEF_OFFER.price}
+                  </Button>
+                </article>
+              </div>
+            </section>
 
             <section className="mb-10 rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm sm:p-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

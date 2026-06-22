@@ -9,6 +9,7 @@ import {
   FileText,
   Lock,
   ShieldCheck,
+  UserCheck,
 } from 'lucide-react';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Button } from '../components/ui/Button';
@@ -16,6 +17,7 @@ import { FunctionRadial } from '../components/home/FunctionRadial';
 import { PRICING } from '../data/pricing';
 import type { PaidTierId, PricingTierId } from '../data/pricing';
 import { discountedPriceLabel, EMAIL_CAPTURE_OFFER } from '../data/discount';
+import { DEBRIEF_OFFER } from '../data/debrief';
 import { AnalyticsEvents, trackEvent } from '../lib/analytics';
 import { pathWithSource } from '../lib/acquisition-source';
 import { writeUpgradeIntent } from '../lib/upgrade-intent';
@@ -29,6 +31,7 @@ const DiscountCaptureCard = lazy(() => import('../components/discount/DiscountCa
 // charged at checkout (TYPEJUNG30 applied before Stripe). Keeps homepage copy
 // consistent with the discounted "today" framing used on every other page.
 const INSIGHT_PRICE_TODAY = discountedPriceLabel(PRICING.insight.amount);
+const DEBRIEF_PRICE = DEBRIEF_OFFER.price;
 
 const sampleProfile = [
   { name: 'Ti', label: 'Thinking inward', value: 82, role: 'Dominant' },
@@ -717,6 +720,49 @@ export const Home: React.FC = () => {
                     ))}
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-b border-jung-border-light bg-jung-base py-10 lg:py-14">
+          <div className="lab-container">
+            <div className="grid gap-6 rounded-lg border border-jung-accent-muted bg-jung-accent-light/60 p-6 shadow-sm md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:p-8">
+              <div>
+                <span className="inline-flex w-fit items-center gap-2 rounded-lg bg-jung-surface px-3 py-1.5 text-xs font-semibold text-jung-accent">
+                  <UserCheck className="h-3.5 w-3.5" />
+                  Human-reviewed option
+                </span>
+                <h2 className="mt-4 max-w-2xl font-display text-3xl font-semibold leading-tight text-jung-dark md:text-4xl">
+                  Still stuck after the map?
+                </h2>
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-jung-secondary">
+                  Most people only need the free result or Insight. But if you are still stuck between two types,
+                  the Personal Type Debrief gives you a founder-reviewed read of your map, likely mistypes, and stress edge.
+                </p>
+                <p className="mt-2 text-xs leading-5 text-jung-muted">
+                  {DEBRIEF_PRICE}, one-time CAD. Limited to 5 per week. Educational self-reflection, not a clinical assessment.
+                </p>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2 md:min-w-[25rem]">
+                <Button
+                  onClick={() => {
+                    trackEvent('debrief_cta_clicked', { source: 'home_debrief_section' });
+                    navigate(pathWithSource('/debrief', 'home_debrief_section'));
+                  }}
+                  variant="accent"
+                  size="lg"
+                  rightIcon={<ArrowRight className="h-5 w-5" />}
+                >
+                  Get a debrief — {DEBRIEF_PRICE}
+                </Button>
+                <Button
+                  onClick={() => startAssessment('home_debrief_section_free_map')}
+                  variant="secondary"
+                  size="lg"
+                >
+                  Take free map first
+                </Button>
               </div>
             </div>
           </div>

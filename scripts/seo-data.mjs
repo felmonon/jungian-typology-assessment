@@ -919,6 +919,21 @@ const competitorLandingPages = [
           { href: '/cognitive-function-test', label: 'Cognitive function test' },
         ],
       },
+      {
+        heading: 'Which one to choose',
+        body: [
+          'These two tools answer different questions. Pick the one that matches what you are trying to learn.',
+        ],
+        table: {
+          headers: ['Choose 16Personalities if…', 'Choose TypeJung if…'],
+          rows: [
+            ['You want a fast, friendly trait portrait and percentages', 'You want the underlying Jungian function stack, not a trait percentage'],
+            ['You like a polished summary you can share immediately', 'You want the dominant-inferior axis and stress edge you can verify'],
+            ['You are exploring personality for the first time', 'Your result keeps changing and you want evidence layers behind it'],
+            ['A descriptive overview is enough', 'You want optional, result-tied depth only after a free map you trust'],
+          ],
+        },
+      },
     ],
     faqs: [
       {
@@ -990,6 +1005,21 @@ const competitorLandingPages = [
             ['Result decision', 'Compare scores and formulas', 'Read the free map, then decide whether depth is worth it'],
             ['Upgrade pressure', 'Varies by tool path', 'No payment before the core TypeJung map'],
             ['Best next action', 'Use if you want another function-test reference point', 'Use if you want the result interpreted after the map feels accurate'],
+          ],
+        },
+      },
+      {
+        heading: 'Which one to choose',
+        body: [
+          'Neither tool is the single right answer. Pick based on what you actually want to walk away with.',
+        ],
+        table: {
+          headers: ['Choose Sakinorva if…', 'Choose TypeJung if…'],
+          rows: [
+            ['You enjoy comparing multiple scoring formulas and long-form function batteries', 'You want one readable map you can check against real behaviour'],
+            ['You are happy to interpret raw function scores yourself', 'You want the dominant-inferior axis and stress edge explained in plain language'],
+            ['You already know your type and want another data point', 'Your type keeps shifting and you want four evidence layers, not a single label'],
+            ['You do not need a guided next step', 'You want optional, result-tied depth only after the free map earns trust'],
           ],
         },
       },
@@ -1077,6 +1107,21 @@ const competitorLandingPages = [
           'You want source-tracked links back to the exact assessment path',
           'You want one-time pricing rather than a subscription model',
         ],
+      },
+      {
+        heading: 'Which one to choose',
+        body: [
+          'Both stay at the function level. The difference is what you do with the scores once you have them.',
+        ],
+        table: {
+          headers: ['Choose Keys2Cognition if…', 'Choose TypeJung if…'],
+          rows: [
+            ['You want a quick cognitive-process score as a reference point', 'You want a readable map with the dominant-inferior axis made explicit'],
+            ['You are comfortable interpreting the numbers on your own', 'You want stress-edge and reliability context in plain language'],
+            ['You only need the raw process ranking', 'You want optional, result-tied interpretation after a free map'],
+            ['You are gathering multiple data points to compare', 'Your type keeps shifting and you want four agreeing evidence layers'],
+          ],
+        },
       },
       {
         heading: 'Start with the free map',

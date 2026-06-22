@@ -860,6 +860,9 @@ export const Checkout: React.FC = () => {
                   <p className="mt-2 text-xs leading-5 text-white/65">
                     If the paid report does not feel useful, email {SUPPORT_EMAIL} with the Stripe receipt within 7 days for a full refund.
                   </p>
+                  <p className="mt-3 border-t border-white/10 pt-3 text-[11px] leading-5 text-white/50">
+                    Educational self-reflection, not a clinical or diagnostic assessment.
+                  </p>
                 </div>
               </div>
               <ul className="mt-5 grid gap-3 text-sm leading-6 text-white/75 sm:grid-cols-2">

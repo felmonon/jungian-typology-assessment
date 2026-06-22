@@ -30,6 +30,7 @@ const entries: SitemapEntry[] = [
   { loc: '/learn', lastmod: TODAY, changefreq: 'monthly', priority: 0.8 },
   { loc: '/pricing', lastmod: TODAY, changefreq: 'monthly', priority: 0.7 },
   { loc: '/sample-report', lastmod: TODAY, changefreq: 'monthly', priority: 0.7 },
+  { loc: '/methodology', lastmod: TODAY, changefreq: 'monthly', priority: 0.7 },
   { loc: '/leaderboard', lastmod: TODAY, changefreq: 'daily', priority: 0.6 },
   { loc: '/ai-run-store', lastmod: TODAY, changefreq: 'weekly', priority: 0.6 },
   { loc: '/about', lastmod: TODAY, changefreq: 'monthly', priority: 0.5 },

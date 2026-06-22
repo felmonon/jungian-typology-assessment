@@ -13,6 +13,7 @@
     "generate:ai-index": "node scripts/generate-ai-index.mjs",
     "generate:spa-routes": "node scripts/generate-spa-route-html.mjs",
     "generate:sitemap": "npx tsx scripts/generate-sitemap.ts",
+    "fonts": "node scripts/fetch-fonts.mjs",
     "start": "node --import tsx server-prod.ts",
     "preview": "vite preview",
     "db:push": "drizzle-kit push",

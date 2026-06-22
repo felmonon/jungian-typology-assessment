@@ -122,10 +122,12 @@ export const Assessment: React.FC = () => {
   const [flagUnanswered, setFlagUnanswered] = useState(false);
   const [resumedAnswered, setResumedAnswered] = useState<number | null>(null);
   const [isCompactViewport, setIsCompactViewport] = useState(false);
+  const [sectionReward, setSectionReward] = useState<{ completed: DepthLayer; next: DepthLayer | null } | null>(null);
   const hasLoadedProgressRef = useRef(false);
   const hasTrackedStartRef = useRef(false);
   const hasTrackedEntryContextRef = useRef(false);
   const autoAdvanceTimerRef = useRef<number | null>(null);
+  const sectionRewardTimerRef = useRef<number | null>(null);
   const [upgradeIntent] = useState(() => {
     const savedIntent = readUpgradeIntent();
     if (savedIntent) return savedIntent;
@@ -176,6 +178,11 @@ export const Assessment: React.FC = () => {
 
   const totalAnswered = countAssessmentAnswers(answers);
   const overallProgress = Math.round((totalAnswered / depthQuestions.length) * 100);
+  // Rough pace estimate: ~20s/prompt (the 42-prompt map averages ~14 minutes).
+  // Only surfaced past the halfway point so it reads as encouragement, not pressure.
+  const remainingQuestions = depthQuestions.length - totalAnswered;
+  const minutesLeft = Math.max(1, Math.round((remainingQuestions * 20) / 60));
+  const showTimeEstimate = overallProgress >= 50 && remainingQuestions > 0;
   const isPageComplete = currentQuestions.every((question) => answers[question.id]);
   const currentLayer = currentQuestions[0]?.layer ?? 'behavioral';
   const currentLayerMeta = depthLayerMeta[currentLayer];
@@ -210,6 +217,36 @@ export const Assessment: React.FC = () => {
     if (autoAdvanceTimerRef.current !== null) {
       window.clearTimeout(autoAdvanceTimerRef.current);
     }
+    if (sectionRewardTimerRef.current !== null) {
+      window.clearTimeout(sectionRewardTimerRef.current);
+    }
+  }, []);
+
+  const celebrateSectionIfComplete = useCallback((
+    questionLayer: DepthLayer,
+    nextAnswers: Record<string, string>,
+    prevAnswers: Record<string, string>,
+  ) => {
+    const layerQuestions = depthQuestions.filter((question) => question.layer === questionLayer);
+    const wasComplete = layerQuestions.every((question) => prevAnswers[question.id]);
+    const nowComplete = layerQuestions.every((question) => nextAnswers[question.id]);
+    if (wasComplete || !nowComplete) return;
+
+    const layerIndex = layerOrder.indexOf(questionLayer);
+    const next = layerIndex >= 0 ? layerOrder[layerIndex + 1] ?? null : null;
+    setSectionReward({ completed: questionLayer, next });
+    trackEvent('assessment_section_completed', {
+      layer: questionLayer,
+      answered: countAssessmentAnswers(nextAnswers),
+    });
+
+    if (sectionRewardTimerRef.current !== null) {
+      window.clearTimeout(sectionRewardTimerRef.current);
+    }
+    sectionRewardTimerRef.current = window.setTimeout(() => {
+      sectionRewardTimerRef.current = null;
+      setSectionReward(null);
+    }, 2800);
   }, []);
 
   useEffect(() => {
@@ -306,6 +343,7 @@ export const Assessment: React.FC = () => {
 
   const handleAnswer = useCallback((questionId: string, answerId: string, questionNumber: number) => {
     const nextAnswers = { ...answers, [questionId]: answerId };
+    const answeredLayer = depthQuestions.find((question) => question.id === questionId)?.layer;
 
     if (autoAdvanceTimerRef.current !== null) {
       window.clearTimeout(autoAdvanceTimerRef.current);
@@ -314,6 +352,9 @@ export const Assessment: React.FC = () => {
     setAnswers(nextAnswers);
     persist(nextAnswers);
     trackProgress(questionNumber, depthQuestions.length);
+    if (answeredLayer) {
+      celebrateSectionIfComplete(answeredLayer, nextAnswers, answers);
+    }
 
     if (isCompactViewport && currentPage < totalPages - 1) {
       autoAdvanceTimerRef.current = window.setTimeout(() => {
@@ -325,8 +366,26 @@ export const Assessment: React.FC = () => {
         persist(nextAnswers, nextPage);
         window.scrollTo({ top: 0, behavior: scrollBehavior });
       }, prefersReducedMotion ? 80 : 260);
+      return;
     }
-  }, [answers, currentPage, isCompactViewport, persist, prefersReducedMotion, scrollBehavior, totalPages, trackProgress]);
+
+    // Desktop (multi-question page): glide to the next still-unanswered prompt
+    // that comes after this one, so answering in order keeps its momentum
+    // without jumping backward when an earlier answer is revised.
+    if (!isCompactViewport && typeof document !== 'undefined') {
+      const answeredIndex = currentQuestions.findIndex((question) => question.id === questionId);
+      const nextUnanswered = currentQuestions.find(
+        (question, index) => index > answeredIndex && !nextAnswers[question.id],
+      );
+      if (nextUnanswered) {
+        window.requestAnimationFrame(() => {
+          document
+            .getElementById(`assessment-q-${nextUnanswered.id}`)
+            ?.scrollIntoView({ behavior: scrollBehavior, block: 'center' });
+        });
+      }
+    }
+  }, [answers, celebrateSectionIfComplete, currentPage, currentQuestions, isCompactViewport, persist, prefersReducedMotion, scrollBehavior, totalPages, trackProgress]);
 
   const completeAssessment = useCallback(() => {
     setShowCompletion(true);
@@ -423,6 +482,30 @@ export const Assessment: React.FC = () => {
         )}
       </AnimatePresence>
 
+      <AnimatePresence>
+        {sectionReward && !showCompletion && (
+          <motion.div
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.24 }}
+            className="pointer-events-none fixed inset-x-0 top-[68px] z-[60] flex justify-center px-4 sm:top-[80px]"
+            role="status"
+            aria-live="polite"
+          >
+            <div className="pointer-events-auto inline-flex items-center gap-2.5 rounded-full border border-jung-accent-muted bg-jung-dark px-4 py-2 text-sm font-semibold text-white shadow-lg">
+              <Sparkles className="h-4 w-4 flex-none text-jung-accent-muted" />
+              <span>
+                {depthLayerMeta[sectionReward.completed].shortLabel} layer complete.
+                {sectionReward.next
+                  ? ` Next: ${depthLayerMeta[sectionReward.next].label.toLowerCase()}.`
+                  : ' Last section — build your map.'}
+              </span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {showPreflight && (
         <section className="border-b border-jung-border bg-jung-dark text-white">
           <div className="mx-auto grid w-full max-w-5xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_0.9fr] lg:items-end lg:py-10">
@@ -437,6 +520,9 @@ export const Assessment: React.FC = () => {
                 TypeJung is an independent Jungian self-reflection tool, not an official MBTI instrument.
                 It looks for a repeatable function pattern across four evidence layers, then shows the free
                 map before any optional upgrade.
+              </p>
+              <p className="mt-3 max-w-3xl text-xs leading-6 text-white/55">
+                Educational self-reflection, not a clinical or diagnostic assessment.
               </p>
               {entryContext && (
                 <p className="mt-4 rounded-lg border border-white/12 bg-white/8 px-4 py-3 text-xs leading-5 text-white/70">
@@ -482,6 +568,9 @@ export const Assessment: React.FC = () => {
                 <div className="flex flex-none items-baseline gap-1 rounded-lg border border-jung-border bg-jung-surface px-2.5 py-1 text-jung-dark lg:hidden">
                   <span className="text-lg font-semibold leading-none">{overallProgress}%</span>
                   <span className="text-[11px] text-jung-muted">done</span>
+                  {showTimeEstimate && (
+                    <span className="ml-1 border-l border-jung-border pl-1.5 text-[11px] font-medium text-jung-accent">~{minutesLeft}m</span>
+                  )}
                 </div>
               </div>
               <h1 className="mt-1 truncate text-heading text-xl text-jung-dark sm:text-3xl">{currentLayerMeta.label}</h1>
@@ -493,6 +582,9 @@ export const Assessment: React.FC = () => {
             <div className="hidden min-w-[10rem] text-left lg:block lg:text-right">
               <p className="text-3xl font-semibold text-jung-dark">{overallProgress}%</p>
               <p className="text-sm text-jung-muted">{totalAnswered} of {depthQuestions.length} answered</p>
+              {showTimeEstimate && (
+                <p className="mt-1 text-xs font-medium text-jung-accent">~{minutesLeft} min left</p>
+              )}
             </div>
           </div>
 
@@ -720,7 +812,7 @@ export const Assessment: React.FC = () => {
             rightIcon={<ArrowRight className="h-4 w-4" />}
             className="w-full px-4 sm:w-auto"
           >
-            {currentPage === totalPages - 1 ? 'See function-stack map' : isCompactViewport ? 'Next' : 'Continue'}
+            {currentPage === totalPages - 1 ? 'Build my free map' : isCompactViewport ? 'Next' : 'Continue'}
           </Button>
           </div>
         </div>

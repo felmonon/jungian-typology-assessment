@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useLayoutEffect } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
@@ -21,6 +21,7 @@ const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy').then(({ Privacy
 const TermsOfService = lazy(() => import('./pages/TermsOfService').then(({ TermsOfService }) => ({ default: TermsOfService })));
 const Pricing = lazy(() => import('./pages/Pricing').then(({ Pricing }) => ({ default: Pricing })));
 const SampleReport = lazy(() => import('./pages/SampleReport').then(({ SampleReport }) => ({ default: SampleReport })));
+const Methodology = lazy(() => import('./pages/Methodology').then(({ Methodology }) => ({ default: Methodology })));
 const AIRunStore = lazy(() => import('./pages/AIRunStore').then(({ AIRunStore }) => ({ default: AIRunStore })));
 
 const RouteFallback: React.FC = () => (
@@ -32,6 +33,27 @@ const RouteFallback: React.FC = () => (
   </div>
 );
 
+// Reset scroll to the top of the page on every route change so users land on
+// the new view's headline (e.g. the result) instead of the previous page's
+// scroll position. Honors in-page hash anchors when present.
+const ScrollToTop: React.FC = () => {
+  const { pathname, search, hash } = useLocation();
+
+  useLayoutEffect(() => {
+    if (hash) {
+      const target = document.getElementById(hash.slice(1));
+      if (target) {
+        target.scrollIntoView({ behavior: 'auto', block: 'start' });
+        return;
+      }
+    }
+
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [pathname, search, hash]);
+
+  return null;
+};
+
 const VercelAnalyticsRouter: React.FC = () => {
   const location = useLocation();
   const path = location.pathname;
@@ -42,6 +64,7 @@ const VercelAnalyticsRouter: React.FC = () => {
 const App: React.FC = () => {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Layout>
         <Suspense fallback={<RouteFallback />}>
           <Routes>
@@ -63,6 +86,7 @@ const App: React.FC = () => {
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/sample-report" element={<SampleReport />} />
+            <Route path="/methodology" element={<Methodology />} />
             <Route path="/ai-run-store" element={<AIRunStore />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

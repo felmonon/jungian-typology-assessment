@@ -435,17 +435,18 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             </p>
           </div>
 
-	          <div>
-	            <h4 className="text-label mb-4">Explore</h4>
+	          <nav aria-label="Explore">
+	            <h2 className="text-label mb-4">Explore</h2>
 	            <div className="grid gap-2 text-sm text-jung-secondary">
 	              <Link to="/assessment" className="inline-flex min-h-8 items-center hover:text-jung-accent">Assessment</Link>
 	              <Link to="/pricing" className="inline-flex min-h-8 items-center hover:text-jung-accent">Pricing</Link>
+	              <Link to="/methodology" className="inline-flex min-h-8 items-center hover:text-jung-accent">Methodology</Link>
 	              <Link to="/learn" className="inline-flex min-h-8 items-center hover:text-jung-accent">Learn the theory</Link>
 	            </div>
-	          </div>
+	          </nav>
 
-	          <div>
-	            <h4 className="text-label mb-4">Guides</h4>
+	          <nav aria-label="Guides">
+	            <h2 className="text-label mb-4">Guides</h2>
 	            <div className="grid gap-2 text-sm text-jung-secondary">
 	              <a href="/guides" className="inline-flex min-h-8 items-center hover:text-jung-accent">All guides</a>
 	              <a href="/jungian-cognitive-functions-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">Jungian cognitive functions test</a>
@@ -459,16 +460,16 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 	              <a href="/infj-vs-infp-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">INFJ vs INFP test</a>
 	              <a href="/intj-vs-intp-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">INTJ vs INTP test</a>
 	            </div>
-	          </div>
+	          </nav>
 
-	          <div>
-	            <h4 className="text-label mb-4">Account</h4>
+	          <nav aria-label="Account">
+	            <h2 className="text-label mb-4">Account</h2>
 	            <div className="grid gap-2 text-sm text-jung-secondary">
 	              <Link to="/auth" className="inline-flex min-h-8 items-center hover:text-jung-accent">Sign in</Link>
 	              <Link to="/privacy" className="inline-flex min-h-8 items-center hover:text-jung-accent">Privacy</Link>
 	              <Link to="/terms" className="inline-flex min-h-8 items-center hover:text-jung-accent">Terms</Link>
 	            </div>
-	          </div>
+	          </nav>
         </div>
         <div className="lab-container mt-10 flex flex-col gap-3 border-t border-jung-border pt-6 text-xs text-jung-muted sm:flex-row sm:items-center sm:justify-between">
           <span>&copy; {new Date().getFullYear()} TypeJung</span>

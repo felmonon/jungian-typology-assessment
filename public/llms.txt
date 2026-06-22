@@ -46,6 +46,7 @@ TypeJung is an educational self-reflection tool based on Jungian psychological t
 - [Jungian test](https://typejung.com/jungian-test): Take a Jungian test that maps all 8 cognitive functions, shows your likely type pattern, and supports educational self-reflection.
 - [MBTI alternative](https://typejung.com/mbti-alternative): Compare TypeJung as an MBTI alternative for people who want Jungian function evidence, a free function-stack map, and optional paid interpretation after the result.
 - [inferior function test](https://typejung.com/inferior-function-test): Find your likely inferior function and understand how it can show up under stress with TypeJung's cognitive function assessment.
+- [cognitive functions test](https://typejung.com/cognitive-functions-test): Take a free Jungian cognitive functions test for Ni, Ne, Si, Se, Ti, Te, Fi, and Fe. This is a personality-functions map, not a memory screening test.
 - [cognitive function test](https://typejung.com/cognitive-function-test): Take a cognitive function test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe in one Jungian function-stack profile.
 - [cognitive functions quiz](https://typejung.com/cognitive-functions-quiz): Take a cognitive functions quiz that maps all 8 Jungian functions, shows the dominant-inferior axis, and gives the free result before any paid report.
 - [free cognitive function test](https://typejung.com/free-cognitive-function-test): Take a free cognitive function test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe before any optional paid report.
@@ -68,7 +69,7 @@ TypeJung is an educational self-reflection tool based on Jungian psychological t
 - [ESTP vs ENTP test](https://typejung.com/estp-vs-entp-test): Use TypeJung as an ESTP vs ENTP test by comparing Se-Ti and Ne-Ti function evidence before choosing a label.
 - [MBTI mistype test](https://typejung.com/mbti-mistype-test): Use TypeJung as an MBTI mistype test when your type result keeps changing or two labels both feel partly true.
 - [why does my MBTI keep changing](https://typejung.com/mbti-keeps-changing): If your MBTI type keeps changing, TypeJung can help you compare the cognitive function pattern behind shifting labels.
-- [Jungian cognitive functions test](https://typejung.com/jungian-cognitive-functions-test): Take a free Jungian cognitive functions test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, then explains your dominant-inferior pattern.
+- [Jungian cognitive functions test](https://typejung.com/jungian-cognitive-functions-test): Take a free 42-question Jungian cognitive functions test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, then shows your function stack and dominant-inferior pattern.
 - [Jungian typology](https://typejung.com/jungian-typology): Learn Jungian typology through cognitive functions, attitude direction, dominant-inferior patterns, and practical self-reflection.
 - [Jungian cognitive functions](https://typejung.com/cognitive-functions): Understand the 8 Jungian cognitive functions: Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, plus how they shape type and stress patterns.
 - [shadow work test](https://typejung.com/shadow-work-test): Use a Jungian self-observation test to explore inferior-function pressure and stress reactions without clinical diagnosis.

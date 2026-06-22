@@ -25,6 +25,11 @@ import { PAGE_SEO, useSEO } from '../hooks/useSEO';
 
 const DiscountCaptureCard = lazy(() => import('../components/discount/DiscountCaptureCard').then(({ DiscountCaptureCard }) => ({ default: DiscountCaptureCard })));
 
+// Single source of truth for the price shown to users: the post-code amount
+// charged at checkout (TYPEJUNG30 applied before Stripe). Keeps homepage copy
+// consistent with the discounted "today" framing used on every other page.
+const INSIGHT_PRICE_TODAY = discountedPriceLabel(PRICING.insight.amount);
+
 const sampleProfile = [
   { name: 'Ti', label: 'Thinking inward', value: 82, role: 'Dominant' },
   { name: 'Ne', label: 'Possibility scanning', value: 71, role: 'Auxiliary' },
@@ -39,7 +44,7 @@ const sampleProfile = [
 const trustPoints = [
   '42 prompts, usually 12-16 minutes',
   'No card before the free result',
-  'CA$10 depth only after the map',
+  `Optional ${INSIGHT_PRICE_TODAY} depth only after the map`,
 ];
 
 const valueCards = [
@@ -59,7 +64,7 @@ const valueCards = [
     icon: ShieldCheck,
     title: 'Review before Stripe',
     description:
-      'Checkout starts with a clear CA$10 one-time review, 7-day guarantee, and secure Stripe payment handoff.',
+      `Checkout starts with a clear ${INSIGHT_PRICE_TODAY} one-time review (${PRICING.insight.price} before ${EMAIL_CAPTURE_OFFER.code}), 7-day guarantee, and secure Stripe payment handoff.`,
   },
 ];
 
@@ -476,7 +481,7 @@ export const Home: React.FC = () => {
                       <p className="text-xs font-semibold uppercase text-jung-muted">Locked paid depth</p>
                       <h3 className="mt-1 font-display text-xl font-semibold">Preview first, then review checkout.</h3>
                       <p className="mt-1 max-w-lg text-sm leading-6 text-jung-secondary">
-                        The results page shows a real excerpt from your developmental edge and stress pattern before the CA$10 Stripe step.
+                        The results page shows a real excerpt from your developmental edge and stress pattern before the {INSIGHT_PRICE_TODAY} Stripe step.
                       </p>
                     </div>
                     <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
@@ -486,7 +491,7 @@ export const Home: React.FC = () => {
 
                   <div className="mt-4 flex flex-col gap-3 border-t border-jung-border-light pt-4 sm:flex-row sm:items-center sm:justify-between">
                     <p className="text-xs leading-5 text-jung-secondary">
-                      This is the paywall moment: personalized preview first, CA$10 checkout review second.
+                      This is the paywall moment: personalized preview first, {INSIGHT_PRICE_TODAY} checkout review second.
                     </p>
                     <Button
                       onClick={() => viewSampleReport('home_hero_locked_preview')}

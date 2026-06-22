@@ -474,6 +474,9 @@ const LockedPremiumPreview: React.FC<{
           >
             See a full sample report
           </button>
+          <p className="mt-4 border-t border-jung-border-light pt-3 text-[11px] leading-5 text-jung-muted">
+            Educational self-reflection, not a clinical or diagnostic assessment.
+          </p>
         </div>
       </div>
     </section>
@@ -1361,7 +1364,7 @@ export const Results: React.FC = () => {
                   compact
                   minimal
                   minimalTone="dark"
-                  minimalTitle="Send yourself this map"
+                  minimalTitle="Email yourself this result before checkout"
                   minimalDescription={`Email the ${dominantLabel} to ${inferiorLabel} axis, the ${EMAIL_CAPTURE_OFFER.code} code, and the ${intendedTierName} checkout path before you leave.`}
                   minimalSubmitLabel="Send map"
                   minimalFootnote="One private email with this result path and code. No subscription."
@@ -1389,34 +1392,6 @@ export const Results: React.FC = () => {
                 <p className="my-2 text-sm text-white/45">to</p>
                 <p className="text-2xl font-semibold text-jung-subtle">{inferiorLabel}</p>
               </div>
-              <div className="mt-5 border-t border-white/10 pt-5">
-                <p className="text-sm font-semibold text-white/60">Bring someone into the comparison</p>
-                <p className="mt-2 text-xs leading-5 text-white/55">
-                  Send this map while the result is fresh. Their link opens the free assessment with your map ready to compare.
-                </p>
-                <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-                  <Button
-                    variant="inverted"
-                    size="sm"
-                    className="w-full"
-                    onClick={() => shareAssessmentInvite('results_compare_banner')}
-                    disabled={isPreparingReferral}
-                    leftIcon={isPreparingReferral ? <Loader2 className="h-4 w-4 animate-spin" /> : inviteCopied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
-                  >
-                    {isPreparingReferral ? 'Preparing invite' : inviteCopied ? 'Invite copied' : 'Share compare invite'}
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    className="w-full"
-                    onClick={copyResultSummary}
-                    disabled={isPreparingReferral}
-                    leftIcon={isPreparingReferral ? <Loader2 className="h-4 w-4 animate-spin" /> : summaryCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                  >
-                    {isPreparingReferral ? 'Preparing post' : summaryCopied ? 'Post copied' : 'Copy share post'}
-                  </Button>
-                </div>
-              </div>
               {!premiumLoading && !isPremium && (
                 <DiscountCaptureCard
                   source="results_hero_axis_save_path"
@@ -1425,7 +1400,7 @@ export const Results: React.FC = () => {
                   compact
                   minimal
                   minimalTone="dark"
-                  minimalTitle="Send yourself this map"
+                  minimalTitle="Email yourself this result before checkout"
                   minimalDescription={`Email the ${dominantLabel} to ${inferiorLabel} axis, the ${EMAIL_CAPTURE_OFFER.code} code, and the ${intendedTierName} checkout path before you leave.`}
                   minimalSubmitLabel="Send map"
                   minimalFootnote="One private email with this result path and code. No subscription."
@@ -1518,7 +1493,11 @@ export const Results: React.FC = () => {
 
             <div className="card-premium p-6 sm:p-8">
               <p className="text-label">Attitude</p>
-              <h2 className="mt-2 text-2xl font-semibold text-jung-dark">{ATTITUDE_LABELS[results.attitude.dominant]} direction</h2>
+              <h2 className="mt-2 text-2xl font-semibold text-jung-dark">
+                {(results.attitude.balanced ?? Math.abs(results.attitude.introverted - results.attitude.extraverted) <= 6)
+                  ? 'Balanced direction'
+                  : `${ATTITUDE_LABELS[results.attitude.dominant]} direction`}
+              </h2>
               <div className="mt-5 grid grid-cols-2 gap-3">
                 <div className="rounded-lg border border-jung-border bg-jung-surface p-4">
                   <p className="text-sm text-jung-muted">Introverted</p>

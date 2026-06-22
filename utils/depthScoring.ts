@@ -38,6 +38,8 @@ export interface DepthAssessmentResult {
     introverted: number;
     extraverted: number;
     dominant: AttitudeDirection;
+    /** True when the I/E split is within a few points (no defensible winner). Optional for older saved results. */
+    balanced?: boolean;
     summary: string;
   };
   layerSignals: Record<DepthLayer, FunctionChannel | AttitudeDirection | null>;
@@ -290,6 +292,9 @@ export const calculateDepthResults = (answers: Record<string, string>): DepthAss
   const introverted = attitudeTotal > 0 ? Math.round((attitudeScores.introverted / attitudeTotal) * 100) : 50;
   const extraverted = 100 - introverted;
   const dominantAttitude: AttitudeDirection = introverted >= extraverted ? 'introverted' : 'extraverted';
+  // When the split is within a few points (including an exact 50/50 tie) the
+  // result has no defensible directional winner, so copy must not claim one.
+  const attitudeBalanced = Math.abs(introverted - extraverted) <= 6;
 
   const hierarchy = selectHierarchy(energy, inferredInferior, dominantAttitude);
   const dominant = hierarchy[0].channel;
@@ -347,7 +352,10 @@ export const calculateDepthResults = (answers: Record<string, string>): DepthAss
       introverted,
       extraverted,
       dominant: dominantAttitude,
-      summary: `${ATTITUDE_LABELS[dominantAttitude]} energy is stronger in this result (${dominantAttitude === 'introverted' ? introverted : extraverted}%).`,
+      balanced: attitudeBalanced,
+      summary: attitudeBalanced
+        ? `Introversion and extraversion are balanced here (${introverted}% / ${extraverted}%). Read the stack direction as a working hypothesis, not a fixed identity claim.`
+        : `${ATTITUDE_LABELS[dominantAttitude]} energy is stronger in this result (${dominantAttitude === 'introverted' ? introverted : extraverted}%).`,
     },
     layerSignals: {
       behavioral: behaviorTop,

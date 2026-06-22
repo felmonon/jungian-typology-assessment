@@ -133,12 +133,14 @@ function generateHomepageNoscript() {
         </div>
         <div style="padding: 15px; border: 2px solid #b45309; border-radius: 8px; background: #fffbeb;">
           <h3 style="margin-top: 0;">Insight</h3>
-          <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 8px 0;">CA$10</p>
+          <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 8px 0;">CA$7 today</p>
+          <p style="color: #57534e; margin: 0 0 8px;">CA$10 regular price. TYPEJUNG30 before Stripe.</p>
           <ul style="padding-left: 18px; margin: 0;"><li>Developmental edge report</li><li>Stress-pattern map</li><li>Practice prompts</li></ul>
         </div>
         <div style="padding: 15px; border: 2px solid #451a03; border-radius: 8px; background: #fef3c7;">
           <h3 style="margin-top: 0;">Mastery</h3>
-          <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 8px 0;">CA$29</p>
+          <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 8px 0;">CA$20.30 today</p>
+          <p style="color: #57534e; margin: 0 0 8px;">CA$29 regular price. TYPEJUNG30 before Stripe.</p>
           <ul style="padding-left: 18px; margin: 0;"><li>AI Type Guide</li><li>Practice roadmap</li><li>Account-based guide access</li></ul>
         </div>
       </div>

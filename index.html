@@ -145,13 +145,11 @@
     }
     </script>
 
-    <!-- Fonts: Fraunces (display/serif), Schibsted Grotesk (UI), Spline Sans Mono (labels/data) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&family=Spline+Sans+Mono:wght@300..700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript>
-      <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&family=Spline+Sans+Mono:wght@300..700&display=swap" rel="stylesheet">
-    </noscript>
+    <!-- Fonts: self-hosted latin subset of Fraunces (display/serif), Schibsted Grotesk (UI), Spline Sans Mono (labels/data) -->
+    <!-- Preload the two above-the-fold faces so the hero headline and chrome paint without a CDN round-trip. -->
+    <link rel="preload" href="/fonts/fraunces-latin-1.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/schibsted-latin-1.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/fonts/fonts.css">
 
     <script type="importmap">
 {
@@ -311,7 +309,8 @@
 
             <div style="padding: 20px; border: 2px solid #b45309; border-radius: 10px; background: #fffbeb;">
               <h3 style="margin-top: 0;">Insight</h3>
-              <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 10px 0;">CA$10</p>
+              <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 10px 0;">CA$7 today</p>
+              <p style="color: #57534e; margin: 0 0 10px;">CA$10 regular price. TYPEJUNG30 applied before Stripe. One-time CAD, no subscription.</p>
               <ul style="padding-left: 20px;">
                 <li>Everything in Free</li>
                 <li>Developmental edge report</li>
@@ -323,7 +322,8 @@
 
             <div style="padding: 20px; border: 2px solid #451a03; border-radius: 10px; background: #fef3c7;">
               <h3 style="margin-top: 0;">Mastery</h3>
-              <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 10px 0;">CA$29</p>
+              <p style="font-size: 2em; font-weight: bold; color: #451a03; margin: 10px 0;">CA$20.30 today</p>
+              <p style="color: #57534e; margin: 0 0 10px;">CA$29 regular price. TYPEJUNG30 applied before Stripe. One-time CAD, no subscription.</p>
               <ul style="padding-left: 20px;">
                 <li>Everything in Insight</li>
                 <li>AI Type Guide chat</li>

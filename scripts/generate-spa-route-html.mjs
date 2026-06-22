@@ -70,6 +70,19 @@ const routePages = [
     noIndex: true,
   },
   {
+    path: '/methodology',
+    title: 'Methodology - How the Function-Stack Map Is Built | TypeJung',
+    description:
+      'How TypeJung groups 42 prompts into four evidence layers, infers the dominant and inferior functions, scores reliability, and what it does not claim.',
+    h1: 'How TypeJung reads 42 answers into a function-stack map',
+    cta: 'Start the free assessment',
+    body: [
+      'The assessment gathers four kinds of evidence — behavioural scenarios, inferior-function stress signals, somatic indicators, and Jungian attitude direction — and looks for the function pattern they agree on, instead of asking you to self-label.',
+      'The strongest function channel becomes the candidate dominant; the inferior is detected from stress triggers opposite the dominant rather than simply the lowest score; attitude direction then orients the stack into function-attitude codes. A near-even attitude split is reported as balanced.',
+      'Every result carries a reliability label — High, Moderate, or Exploratory — based on how much the four layers agreed. TypeJung is educational self-reflection, not a clinical or diagnostic assessment, and a function-stack code is a working hypothesis, not a fixed identity.',
+    ],
+  },
+  {
     path: '/leaderboard',
     title: 'Community Jungian Function Results | TypeJung',
     description:

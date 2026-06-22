@@ -643,6 +643,64 @@ const UpgradeStrip: React.FC<{
   );
 };
 
+// Lightweight reaction prompt seeded as analytics (and a trust signal). Kept as
+// its own component so its hooks stay valid regardless of the parent's early
+// returns. Stores the answer per-result so it is asked once.
+const ResultReaction: React.FC<{ completedAt: string }> = ({ completedAt }) => {
+  const storageKey = `typejung_result_reaction_${completedAt}`;
+  const [reaction, setReaction] = useState<string | null>(null);
+
+  useEffect(() => {
+    try { setReaction(localStorage.getItem(storageKey)); } catch { /* storage unavailable */ }
+  }, [storageKey]);
+
+  const submit = (value: 'yes' | 'somewhat' | 'not_yet') => {
+    try { localStorage.setItem(storageKey, value); } catch { /* storage unavailable */ }
+    setReaction(value);
+    trackEvent('result_reaction_submitted', { reaction: value });
+  };
+
+  const options: Array<{ value: 'yes' | 'somewhat' | 'not_yet'; label: string }> = [
+    { value: 'yes', label: 'Yes' },
+    { value: 'somewhat', label: 'Somewhat' },
+    { value: 'not_yet', label: 'Not yet' },
+  ];
+
+  return (
+    <section className="mb-10 rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm sm:p-6">
+      {reaction ? (
+        <div className="flex items-start gap-3">
+          <Check className="mt-0.5 h-5 w-5 flex-none text-jung-accent" />
+          <div>
+            <p className="text-sm font-semibold text-jung-dark">Thanks — that helps tune the map.</p>
+            <p className="mt-1 text-sm leading-6 text-jung-secondary">
+              {reaction === 'not_yet'
+                ? 'If the map missed you, the dominant–inferior axis and reliability signal below are the best places to inspect why.'
+                : 'Glad it named something real. Read the evidence layers below to see why the pattern resolved this way.'}
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm font-semibold text-jung-dark">Did this map name something real?</p>
+          <div className="flex flex-wrap gap-2">
+            {options.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => submit(option.value)}
+                className="rounded-full border border-jung-border bg-jung-base px-4 py-1.5 text-sm font-medium text-jung-dark transition-colors hover:border-jung-accent hover:text-jung-accent"
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
+  );
+};
+
 export const Results: React.FC = () => {
   const navigate = useNavigate();
   const [state, setState] = useState<ResultsState>({ status: 'loading' });
@@ -1311,10 +1369,10 @@ export const Results: React.FC = () => {
     })}`
     : null;
   const isPreparingReferral = shareLinkState === 'creating' && !shareSlug;
-  const intentFraming = useMemo(() => {
-    const intent = readAssessmentIntent();
-    return intent ? INTENT_RESULT_FRAMING[intent.id] : null;
-  }, []);
+  // Plain const (not a hook) — this runs after the early returns above, so it
+  // must not be useMemo. readAssessmentIntent is a cheap localStorage read.
+  const resultIntent = readAssessmentIntent();
+  const intentFraming = resultIntent ? INTENT_RESULT_FRAMING[resultIntent.id] : null;
   const dominantLabel = lifecycleEmailSummary?.dominantLabel ?? `${ATTITUDE_LABELS[results.attitude.dominant]} ${FUNCTION_LABELS[results.dominant]}`;
   const inferiorLabel = lifecycleEmailSummary?.inferiorLabel ?? `${ATTITUDE_LABELS[results.hierarchy.find((item) => item.position === 'inferior')?.attitude ?? 'extraverted']} ${FUNCTION_LABELS[results.inferior]}`;
   const chatProfile = legacyInput ? {
@@ -1419,6 +1477,8 @@ export const Results: React.FC = () => {
             </div>
           </div>
         </section>
+
+        <ResultReaction completedAt={results.completedAt} />
 
         {!premiumLoading && !isPremium && (
           <>

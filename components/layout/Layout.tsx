@@ -450,8 +450,12 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 	              <a href="/guides" className="inline-flex min-h-8 items-center hover:text-jung-accent">All guides</a>
 	              <a href="/jungian-cognitive-functions-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">Jungian cognitive functions test</a>
 	              <a href="/free-cognitive-function-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">Free cognitive function test</a>
+	              <a href="/cognitive-function-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">Cognitive function test</a>
+	              <a href="/inferior-function-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">Inferior function test</a>
+	              <a href="/best-cognitive-functions-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">Best cognitive functions test</a>
 	              <a href="/mbti-test-alternative" className="inline-flex min-h-8 items-center hover:text-jung-accent">MBTI test alternative</a>
 	              <a href="/sakinorva-alternative" className="inline-flex min-h-8 items-center hover:text-jung-accent">Sakinorva alternative</a>
+	              <a href="/16personalities-alternative" className="inline-flex min-h-8 items-center hover:text-jung-accent">16Personalities alternative</a>
 	              <a href="/infj-vs-infp-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">INFJ vs INFP test</a>
 	              <a href="/intj-vs-intp-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">INTJ vs INTP test</a>
 	            </div>

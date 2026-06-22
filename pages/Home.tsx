@@ -109,6 +109,45 @@ const lockedPreview = [
   },
 ];
 
+const searchPathCards = [
+  {
+    href: '/jungian-cognitive-functions-test',
+    eyebrow: 'Main test page',
+    title: 'Jungian cognitive functions test',
+    description: 'Start here if you want the full Ni, Ne, Si, Se, Ti, Te, Fi, and Fe map.',
+  },
+  {
+    href: '/cognitive-function-test',
+    eyebrow: 'High-impression query',
+    title: 'Cognitive function test',
+    description: 'A direct entry for people searching for a test that measures all eight functions.',
+  },
+  {
+    href: '/inferior-function-test',
+    eyebrow: 'Stress pattern',
+    title: 'Inferior function test',
+    description: 'Use this when your search is about grip stress, pressure, or the weak edge of type.',
+  },
+  {
+    href: '/best-cognitive-functions-test',
+    eyebrow: 'Comparison intent',
+    title: 'Best cognitive functions test',
+    description: 'Compare TypeJung with Sakinorva, Keys2Cognition, and other function tests.',
+  },
+  {
+    href: '/mbti-test-alternative',
+    eyebrow: 'Switching from MBTI',
+    title: 'MBTI test alternative',
+    description: 'For people whose four-letter label keeps changing and who want the function pattern.',
+  },
+  {
+    href: '/guides',
+    eyebrow: 'All public guides',
+    title: 'Browse the TypeJung guides',
+    description: 'Find type comparisons, function guides, MBTI alternatives, and stress-pattern pages.',
+  },
+];
+
 type HomePricingTier = {
   id: PricingTierId;
   name: string;
@@ -251,6 +290,14 @@ export const Home: React.FC = () => {
       destination,
     });
     navigate(destination);
+  };
+
+  const trackGuideClick = (href: string, title: string) => {
+    trackEvent('home_seo_path_clicked', {
+      source: 'home_search_paths',
+      destination: href,
+      title,
+    });
   };
 
   return (
@@ -513,6 +560,56 @@ export const Home: React.FC = () => {
           </div>
         </section>
 
+        <section className="border-y border-jung-border-light bg-jung-surface py-10 lg:py-14">
+          <div className="lab-container">
+            <div className="grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
+              <div>
+                <p className="figure-label">Fig. 04 — Search paths</p>
+                <h2 className="mt-4 max-w-xl font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
+                  Pick the guide closest to the question you searched.
+                </h2>
+                <p className="mt-4 max-w-lg text-sm leading-7 text-jung-secondary">
+                  TypeJung has public pages for the main search paths: cognitive-function tests,
+                  Jungian alternatives, inferior-function stress, and common comparison questions.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => startAssessment('home_search_paths')}
+                  className="mt-6 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-jung-dark px-5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-jung-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jung-accent"
+                >
+                  Start with the free map
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                {searchPathCards.map((card) => (
+                  <a
+                    key={card.href}
+                    href={card.href}
+                    onClick={() => trackGuideClick(card.href, card.title)}
+                    className="group flex min-h-[12rem] flex-col rounded-lg border border-jung-border bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-jung-accent hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jung-accent"
+                  >
+                    <span className="text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted">
+                      {card.eyebrow}
+                    </span>
+                    <span className="mt-3 font-display text-2xl font-semibold leading-tight text-jung-dark">
+                      {card.title}
+                    </span>
+                    <span className="mt-3 text-sm leading-6 text-jung-secondary">
+                      {card.description}
+                    </span>
+                    <span className="mt-auto inline-flex items-center gap-2 pt-5 text-sm font-semibold text-jung-accent">
+                      Open guide
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section className="border-b border-jung-border-light bg-white py-6">
           <div className="lab-container">
             <div className="grid gap-4 rounded-lg border border-jung-border bg-jung-base p-5 md:grid-cols-[minmax(0,1fr)_minmax(20rem,0.9fr)] md:items-center">
@@ -551,7 +648,7 @@ export const Home: React.FC = () => {
               <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
                 <FileText className="h-5 w-5" />
               </div>
-              <p className="figure-label">Fig. 04 — Paid report preview</p>
+              <p className="figure-label">Fig. 05 — Paid report preview</p>
               <h2 className="mt-4 max-w-xl font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                 The upgrade has to earn its place.
               </h2>
@@ -613,7 +710,7 @@ export const Home: React.FC = () => {
         <section id="pricing" className="border-b border-jung-border-light bg-white py-12 lg:py-20">
           <div className="lab-container">
             <div className="mb-10 max-w-2xl">
-              <p className="figure-label">Fig. 05 — Pricing</p>
+              <p className="figure-label">Fig. 06 — Pricing</p>
               <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                 Buy the interpretation only if the free map makes sense.
               </h2>
@@ -689,7 +786,7 @@ export const Home: React.FC = () => {
         <section className="bg-jung-base py-12 lg:py-20">
           <div className="lab-container grid gap-10 lg:grid-cols-[0.88fr_1.12fr]">
             <div>
-              <p className="figure-label">Fig. 06 — Before you start</p>
+              <p className="figure-label">Fig. 07 — Before you start</p>
               <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                 Straight answers, no personality-test hype.
               </h2>

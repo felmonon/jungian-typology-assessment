@@ -4,7 +4,12 @@ import { Check, CheckCircle, Copy, Loader2, XCircle, FileText, Layers, AlertTria
 import { TypeJungMark } from '../components/brand/TypeJungMark';
 import { Button } from '../components/ui/Button';
 import { isPaidTierId, PRICING, type PaidTierId } from '../data/pricing';
+import { discountedAmount, formatCadAmount } from '../data/discount';
 import { SUPPORT_EMAIL } from '../data/support';
+
+const MASTERY_UPGRADE_LABEL = formatCadAmount(
+  Math.round((discountedAmount(PRICING.mastery.amount) - discountedAmount(PRICING.insight.amount)) * 100) / 100,
+);
 import { FUNCTION_DESCRIPTIONS } from '../data/questions';
 import { ATTITUDE_LABELS, FUNCTION_LABELS } from '../data/depthAssessment';
 import { AnalyticsEvents, trackEvent } from '../lib/analytics';
@@ -77,6 +82,31 @@ export const CheckoutSuccess: React.FC = () => {
   });
   const [isPreparingInvite, setIsPreparingInvite] = useState(false);
   const [inviteCopied, setInviteCopied] = useState(false);
+  const [upgrading, setUpgrading] = useState(false);
+  const [upgradeError, setUpgradeError] = useState<string | null>(null);
+
+  const startMasteryUpgrade = useCallback(async () => {
+    setUpgrading(true);
+    setUpgradeError(null);
+    trackEvent('mastery_upgrade_clicked', { source: 'success_upsell' });
+    try {
+      const email = (typeof window !== 'undefined' && localStorage.getItem('jungian_assessment_customer_email')) || undefined;
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ product: 'mastery_upgrade', email, source: 'success_upsell' }),
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok || !data?.url) {
+        throw new Error(data?.error || 'Could not start the upgrade. Please try again.');
+      }
+      window.location.href = data.url;
+    } catch (error) {
+      setUpgradeError(error instanceof Error ? error.message : 'Something went wrong. Please try again.');
+      setUpgrading(false);
+    }
+  }, []);
 
   useEffect(() => {
     // Try multiple ways to get session_id (hash routing can be tricky)
@@ -369,6 +399,36 @@ export const CheckoutSuccess: React.FC = () => {
             You can return to this unlocked result from this browser. Sign in with the purchase email to restore access across devices{purchasedTier === 'mastery' ? ' and use the AI Type Guide' : ''}.
           </p>
         </div>
+
+        {purchasedTier === 'insight' && (
+          <div className="mb-8 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-5 shadow-sm sm:p-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <div className="mb-2 inline-flex items-center gap-2 rounded-lg bg-jung-surface px-3 py-1.5 text-xs font-semibold text-jung-accent">
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Upgrade to Mastery
+                </div>
+                <h2 className="text-heading text-2xl text-jung-dark">Keep working with your result for {MASTERY_UPGRADE_LABEL} more.</h2>
+                <p className="mt-2 max-w-xl text-sm leading-6 text-jung-secondary">
+                  Add the AI Type Guide, individuation roadmap, growth exercises, and practice support. You only pay the difference from Insight.
+                </p>
+                {upgradeError && (
+                  <p className="mt-2 text-sm font-medium text-error" role="alert">{upgradeError}</p>
+                )}
+              </div>
+              <Button
+                onClick={startMasteryUpgrade}
+                disabled={upgrading}
+                variant="accent"
+                size="lg"
+                className="flex-none"
+                rightIcon={upgrading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Sparkles className="h-5 w-5" />}
+              >
+                {upgrading ? 'Starting checkout' : `Add Mastery — ${MASTERY_UPGRADE_LABEL}`}
+              </Button>
+            </div>
+          </div>
+        )}
 
         {!user && (
           <div className="mb-8 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-5">

@@ -13,6 +13,7 @@ import { cleanPromotionCode, getAutoPromotionCode, getStripePaymentMethodConfigu
 import { PRICING } from '../data/pricing.js';
 import type { PaidTierId } from '../data/pricing.js';
 import { createDebriefCheckoutSession } from './_lib/debrief-checkout.js';
+import { createMasteryUpgradeSession } from './_lib/mastery-upgrade.js';
 
 const CHECKOUT_PRODUCT_COPY: Record<PaidTierId, { name: string; description: string }> = {
   insight: {
@@ -275,6 +276,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // stay within the Hobby serverless-function limit; it never grants premium.
   if (req.body?.product === 'debrief') {
     return createDebriefCheckoutSession(req, res);
+  }
+
+  // Post-purchase Insight -> Mastery upgrade charges only the price difference.
+  if (req.body?.product === 'mastery_upgrade') {
+    return createMasteryUpgradeSession(req, res);
   }
 
   if (enforceRateLimit(req, res, {

@@ -10,6 +10,9 @@ A production full-stack SaaS that applies Jungian cognitive-function theory to h
 
 **[Try the Live App](https://typejung.com)**
 
+[![TypeJung — live product preview](preview.jpg)](https://typejung.com)
+
+
 ![TypeJung social preview](public/og-image.png)
 
 ## What Is Live Today

@@ -3656,4 +3656,263 @@ export const seoLandingPages = [
       { href: '/pricing', label: 'See one-time pricing' },
     ],
   },
+  {
+    slug: 'why-do-i-get-different-mbti-results',
+    query: 'why do I get different MBTI results',
+    title: 'Why Do I Get Different MBTI Results? | TypeJung',
+    description: 'Different MBTI results usually mean the test read your behaviour, not your function stack. Map all 8 cognitive functions to see the stable pattern underneath.',
+    keywords: ['why do I get different MBTI results', 'MBTI result keeps changing', 'different personality test results', 'mistype cognitive functions'],
+    eyebrow: 'Why results change',
+    h1: 'Why do I get different MBTI results?',
+    intro: [
+      'Taking the same kind of test twice and getting INFJ, then INFP, then INTJ is one of the most common typology experiences. It usually is not a sign that you do not know yourself.',
+      'Letter-first tests measure surface behaviour, which shifts with mood, context, and how you read each question. The function stack underneath tends to be more stable, which is what TypeJung tries to map.',
+    ],
+    saveLink: {
+      title: 'Email yourself the free map path',
+      body: 'Send yourself the free assessment link and TYPEJUNG30 code. Map the function pattern first, then decide whether a deeper read is worth it.',
+      button: 'Email the free map path',
+      tier: 'insight',
+    },
+    intent: {
+      bestFor: 'People who keep getting different four-letter results and want to find the stable pattern underneath the labels.',
+      measures: 'All 8 Jungian function-attitudes, likely function-stack order, dominant-inferior axis, attitude direction, and an answer-consistency signal.',
+      privacy: 'The free function-stack map requires no card. Paid reports are optional one-time CAD upgrades after the result is visible.',
+    },
+    sections: [
+      {
+        heading: 'Why the letters move but the pattern often does not',
+        body: [
+          'A four-letter result is a summary, and summaries are easy to flip. Answer a few "judging" questions in a tidy week versus a chaotic one and J can become P, even though nothing fundamental about you changed.',
+          'Cognitive functions describe the order in which you actually process attention and decisions: what you notice first, how you judge, and what shows up under stress. That order is harder to fake from mood alone, so it is a steadier reference point.',
+        ],
+        bullets: [
+          'Letter tests reward how you answer today; function order reflects a repeatable pattern',
+          'Two "nearby" types can share visible behaviour but use different function stacks',
+          'A result that swaps between adjacent types is a signal to look at functions, not retake the same test',
+        ],
+        links: [
+          { href: '/assessment', label: 'Map your function stack for free' },
+          { href: '/cognitive-function-test', label: 'What a cognitive function test measures' },
+        ],
+      },
+      {
+        heading: 'A worked example: INFJ vs INFP',
+        body: [
+          'These two look almost identical from the outside — both reflective, values-driven, and private. The difference is in the stack, not the vibe.',
+          'INFJ leads with introverted intuition (Ni) supported by extraverted feeling (Fe): pattern first, then relational impact. INFP leads with introverted feeling (Fi) supported by extraverted intuition (Ne): personal value first, then branching possibilities. A test that only sees "quiet and idealistic" can land on either.',
+        ],
+        table: {
+          headers: ['Signal', 'INFJ (Ni-Fe-Ti-Se)', 'INFP (Fi-Ne-Si-Te)'],
+          rows: [
+            ['Starts from', 'A converging pattern or read of the situation', 'A personal value judgment about it'],
+            ['Stress edge', 'Inferior Se: overwhelm, sensory excess, impulsive release', 'Inferior Te: harsh external control, blunt logic, list-making'],
+            ['Looks similar because', 'Both are introverted, future-leaning, and values-aware', 'Both dislike rigid systems and value authenticity'],
+          ],
+        },
+        links: [
+          { href: '/infj-vs-infp-test', label: 'INFJ vs INFP function comparison' },
+          { href: '/am-i-infj-or-infp', label: 'Am I INFJ or INFP?' },
+        ],
+      },
+      {
+        heading: 'What to do instead of retaking another letter test',
+        body: [
+          'Map the functions once, then read the dominant-inferior axis and the reliability signal. If the signal is low or two functions are close, treat the result as a working hypothesis and inspect the evidence rather than collecting another label.',
+          'TypeJung keeps all eight functions visible for exactly this reason: when nearby types blur, you can see which signals are close instead of being handed a single letter code.',
+        ],
+        links: [
+          { href: '/sample-report', label: 'See what the deeper read adds' },
+          { href: '/debrief', label: 'Get a human second read if you are still stuck' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does a changing MBTI result mean the test is wrong?',
+        answer: 'Not exactly. Letter-first tests measure behaviour that shifts with context, so the result moves. Mapping the function stack gives a steadier reference point.',
+      },
+      {
+        question: 'Will TypeJung give me a fixed type?',
+        answer: 'TypeJung shows a likely function-stack pattern and a reliability signal. It is designed to be inspected as a hypothesis, not treated as a final identity claim.',
+      },
+      {
+        question: 'Is the function-stack map free?',
+        answer: 'Yes. The 42-question assessment and the all-8-function map are free. Insight and Mastery are optional one-time CAD upgrades.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/mbti-keeps-changing', label: 'Why MBTI keeps changing' },
+      { href: '/cognitive-function-test', label: 'Cognitive function test' },
+      { href: '/sample-report', label: 'View sample report' },
+    ],
+  },
+  {
+    slug: 'am-i-infj-or-infp',
+    query: 'am I INFJ or INFP',
+    title: 'Am I INFJ or INFP? Read the Function Stack | TypeJung',
+    description: 'Stuck between INFJ and INFP? The difference is Ni-Fe vs Fi-Ne, not who is more emotional. Map your function stack free and see which pattern fits.',
+    keywords: ['am I INFJ or INFP', 'INFJ or INFP', 'INFJ vs INFP which am I', 'INFP INFJ mistype'],
+    eyebrow: 'Stuck between two types',
+    h1: 'Am I INFJ or INFP?',
+    intro: [
+      'INFJ and INFP is the most common "stuck between two types" pair, because from the outside they look nearly the same: reflective, idealistic, private, and values-driven.',
+      'The decision is not about who is more emotional or more organized. It is about which judging function leads — extraverted feeling (Fe) for INFJ or introverted feeling (Fi) for INFP — and which perceiving function pairs with it.',
+    ],
+    saveLink: {
+      title: 'Email yourself the comparison path',
+      body: 'Send yourself the free assessment link and TYPEJUNG30 code, then compare your own stack against both types before deciding.',
+      button: 'Email the comparison path',
+      tier: 'insight',
+    },
+    intent: {
+      bestFor: 'People deciding between INFJ and INFP who want a function-level answer instead of another vibe-based quiz.',
+      measures: 'Whether judgment starts from relational impact (Fe) or personal value (Fi), the perceiving pair (Ni vs Ne), the dominant-inferior axis, and a reliability signal.',
+      privacy: 'The free map requires no card. Optional paid reports come after you can see the result.',
+    },
+    sections: [
+      {
+        heading: 'The real fork: Fe-first or Fi-first',
+        body: [
+          'INFJ leads with introverted intuition (Ni) and judges with extraverted feeling (Fe). Decisions tend to start from a read of the shared emotional field: what keeps the group or relationship coherent.',
+          'INFP leads with introverted feeling (Fi) and perceives with extraverted intuition (Ne). Decisions tend to start from an internal value check — does this fit who I am — and then branch outward into possibilities.',
+        ],
+        bullets: [
+          'Ask: in conflict, do you first sense the relational temperature (Fe) or check it against your personal values (Fi)?',
+          'Ask: do your ideas converge toward one read (Ni) or branch into many tangents (Ne)?',
+          'Ask: under stress, do you overdo sensory escape (inferior Se) or get harsh and controlling with logic (inferior Te)?',
+        ],
+      },
+      {
+        heading: 'Why quizzes keep flip-flopping you',
+        body: [
+          'Most quizzes score adjectives — "sensitive," "creative," "deep" — that both types share, so a small change in mood tips the result. Function-based mapping looks at process order, which is steadier.',
+          'If your result keeps alternating between INFJ and INFP, that alternation is itself information: it usually means the judging axis (Fe vs Fi) was not clearly captured.',
+        ],
+        table: {
+          headers: ['Under stress', 'INFJ — inferior Se', 'INFP — inferior Te'],
+          rows: [
+            ['Looks like', 'Sensory overload, impulsive indulgence, sudden physical focus', 'Cold, blunt logic, aggressive list-making, harsh efficiency'],
+            ['Inner experience', 'Loss of the usual long-range vision', 'Loss of the usual gentle value-led tone'],
+          ],
+        },
+        links: [
+          { href: '/inferior-function-test', label: 'Find your inferior function' },
+          { href: '/infj-vs-infp-test', label: 'Full INFJ vs INFP comparison' },
+        ],
+      },
+      {
+        heading: 'Get a function-level answer',
+        body: [
+          'Rather than re-reading type descriptions, map your stack once and look at whether Fe or Fi sits higher, and whether Ni or Ne is your perceiving lead. TypeJung shows all eight functions so the close call is visible.',
+          'If the map is interesting but still feels 50/50, that is exactly the case a human second read is built for.',
+        ],
+        links: [
+          { href: '/assessment', label: 'Map my stack free' },
+          { href: '/debrief', label: 'Get a Personal Type Debrief' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is INFJ just more organized than INFP?',
+        answer: 'No. That is a common myth. The difference is the function stack: Ni-Fe versus Fi-Ne, not tidiness or emotional intensity.',
+      },
+      {
+        question: 'What if my result is balanced between the two?',
+        answer: 'TypeJung reports a balanced or low-confidence result as a working hypothesis rather than forcing a winner. The dominant-inferior axis and stress edge are the best tiebreakers.',
+      },
+      {
+        question: 'Can I get a person to help me decide?',
+        answer: 'Yes. The optional Personal Type Debrief is a founder-reviewed read of your map, likely mistypes, and stress edge, delivered within 72 hours.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/infj-vs-infp-test', label: 'INFJ vs INFP test' },
+      { href: '/debrief', label: 'Personal Type Debrief' },
+      { href: '/why-do-i-get-different-mbti-results', label: 'Why results keep changing' },
+    ],
+  },
+  {
+    slug: 'mbti-changes-with-mood',
+    query: 'MBTI changes depending on mood',
+    title: 'Does MBTI Change With Your Mood? | TypeJung',
+    description: 'If your MBTI result changes with your mood, you are measuring state, not type. Map the function stack underneath to find the pattern that stays put.',
+    keywords: ['MBTI changes with mood', 'personality test changes depending on mood', 'MBTI state vs trait', 'why my type changes when sad'],
+    eyebrow: 'State vs pattern',
+    h1: 'Does your MBTI change with your mood?',
+    intro: [
+      'A lot of people notice they test as one type when calm and energized, and another when tired, low, or stressed. That is real — but it usually reflects your current state, not a change in your underlying type.',
+      'Cognitive functions give a way to separate the two: the order of your functions stays relatively stable, while which ones are loud or quiet shifts with mood and stress.',
+    ],
+    saveLink: {
+      title: 'Email yourself the free map path',
+      body: 'Send yourself the free assessment link and TYPEJUNG30 code, then take it on a neutral day to read the steadier pattern.',
+      button: 'Email the free map path',
+      tier: 'insight',
+    },
+    intent: {
+      bestFor: 'People whose result swings with mood and who want to tell state apart from a stable function pattern.',
+      measures: 'Function-stack order, dominant-inferior axis, an inferior-function stress signal, and an answer-consistency score that flags low-confidence results.',
+      privacy: 'Free map, no card required. Optional one-time paid reports after the result is visible.',
+    },
+    sections: [
+      {
+        heading: 'State versus pattern',
+        body: [
+          'Mood changes which functions are amplified. When you are stressed, the inferior function gets loud, which can make you answer like a different type entirely — for example a thinker who suddenly answers every emotion question intensely while in the grip.',
+          'The function stack is the order, not the volume. Reading the order is how you separate "I am low today" from "this is my type."',
+        ],
+        bullets: [
+          'Mood amplifies the inferior function, which can mimic a different type on a quiz',
+          'Function order is steadier than the four-letter summary it produces',
+          'A low reliability signal is a cue to retake on a neutral day, not to pick a new label',
+        ],
+        links: [
+          { href: '/assessment', label: 'Map the steadier pattern free' },
+          { href: '/inferior-function-test', label: 'See how stress changes your answers' },
+        ],
+      },
+      {
+        heading: 'How TypeJung handles a mood-skewed result',
+        body: [
+          'TypeJung blends four evidence layers — behaviour, inferior-function stress, somatic signals, and attitude direction — and reports a consistency signal. When mood skews your answers, those layers disagree, and the reliability label drops to flag it.',
+          'That is more useful than a confident wrong answer: a low signal tells you to read the result as a hypothesis and, if you want, retake it when your baseline is steadier.',
+        ],
+        table: {
+          headers: ['Reliability signal', 'What it suggests', 'What to do'],
+          rows: [
+            ['High', 'Layers agreed; mood likely did not distort much', 'Read the map with confidence'],
+            ['Moderate', 'Some disagreement across layers', 'Treat the stack direction as a working hypothesis'],
+            ['Exploratory', 'Layers diverged; possibly mood- or stress-skewed', 'Re-read the evidence, or retake on a neutral day'],
+          ],
+        },
+        links: [
+          { href: '/methodology', label: 'How the reliability signal works' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Can stress really change my MBTI result?',
+        answer: 'It can change the result of a letter-first test, because stress amplifies your inferior function and changes how you answer. The underlying function order is steadier.',
+      },
+      {
+        question: 'Should I take the test when calm or stressed?',
+        answer: 'For the steadiest read, take it on a neutral day. If you take it while stressed, the reliability signal will usually flag the result as lower confidence.',
+      },
+      {
+        question: 'Is the assessment free?',
+        answer: 'Yes. The 42-question map is free, with optional one-time CAD upgrades afterward.',
+      },
+    ],
+    relatedLinks: [
+      { href: '/assessment', label: 'Take the free assessment' },
+      { href: '/mbti-keeps-changing', label: 'Why MBTI keeps changing' },
+      { href: '/methodology', label: 'How the map is built' },
+      { href: '/why-do-i-get-different-mbti-results', label: 'Why results differ' },
+    ],
+  },
 ];

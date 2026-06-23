@@ -73,6 +73,9 @@ TypeJung is an educational self-reflection tool based on Jungian psychological t
 - [Jungian typology](https://typejung.com/jungian-typology): Learn Jungian typology through cognitive functions, attitude direction, dominant-inferior patterns, and practical self-reflection.
 - [Jungian cognitive functions](https://typejung.com/cognitive-functions): Understand the 8 Jungian cognitive functions: Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, plus how they shape type and stress patterns.
 - [shadow work test](https://typejung.com/shadow-work-test): Use a Jungian self-observation test to explore inferior-function pressure and stress reactions without clinical diagnosis.
+- [why do I get different MBTI results](https://typejung.com/why-do-i-get-different-mbti-results): Different MBTI results usually mean the test read your behaviour, not your function stack. Map all 8 cognitive functions to see the stable pattern underneath.
+- [am I INFJ or INFP](https://typejung.com/am-i-infj-or-infp): Stuck between INFJ and INFP? The difference is Ni-Fe vs Fi-Ne, not who is more emotional. Map your function stack free and see which pattern fits.
+- [MBTI changes depending on mood](https://typejung.com/mbti-changes-with-mood): If your MBTI result changes with your mood, you are measuring state, not type. Map the function stack underneath to find the pattern that stays put.
 
 ## Growth Articles
 

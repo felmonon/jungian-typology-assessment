@@ -277,8 +277,9 @@ const getHead = (title: string, description: string, path: string, keywords?: st
   .trait-list li { break-inside: avoid; margin-bottom: 10px; }
   footer { margin-top: 50px; padding-top: 22px; border-top: 1px solid var(--jung-border); color: var(--jung-muted); text-align: center; }
   nav { background: rgba(255,255,255,0.88); padding: 12px; border: 1px solid var(--jung-border); border-radius: 8px; margin-bottom: 30px; box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
-  nav a { color: var(--jung-secondary); text-decoration: none; margin-right: 18px; font-weight: 700; font-size: 0.92rem; }
+  nav a { display: inline-flex; align-items: center; min-height: 40px; padding: 0 6px; color: var(--jung-secondary); text-decoration: none; margin-right: 12px; font-weight: 700; font-size: 0.92rem; }
   nav a:hover { color: var(--jung-accent); }
+  .breadcrumb a { display: inline-flex; align-items: center; min-height: 36px; }
   @media (max-width: 640px) {
     body { padding: 20px 16px 40px; }
     nav { display: flex; flex-wrap: wrap; gap: 10px 14px; }
@@ -306,6 +307,9 @@ const debriefGuideSlugs = new Set([
   'mbti-keeps-changing',
   'mbti-mistype-test',
   'best-cognitive-functions-test',
+  'why-do-i-get-different-mbti-results',
+  'am-i-infj-or-infp',
+  'mbti-changes-with-mood',
 ]);
 
 function renderDebriefGuideCta(page: any) {

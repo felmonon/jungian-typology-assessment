@@ -1,6 +1,6 @@
 # TypeJung - Map All 8 Cognitive Functions
 # Website: https://typejung.com
-# Last Updated: 2026-06-22
+# Last Updated: 2026-06-23
 
 ================================================================================
 ABOUT
@@ -352,6 +352,24 @@ Understand the 8 Jungian cognitive functions: Ni, Ne, Si, Se, Ti, Te, Fi, and Fe
 shadow work test:
 https://typejung.com/shadow-work-test
 Use a Jungian self-observation test to explore inferior-function pressure and stress reactions without clinical diagnosis.
+
+why do I get different MBTI results:
+https://typejung.com/why-do-i-get-different-mbti-results
+Different MBTI results usually mean the test read your behaviour, not your function stack. Map all 8 cognitive functions to see the stable pattern underneath.
+Best for: People who keep getting different four-letter results and want to find the stable pattern underneath the labels.
+Maps: All 8 Jungian function-attitudes, likely function-stack order, dominant-inferior axis, attitude direction, and an answer-consistency signal.
+
+am I INFJ or INFP:
+https://typejung.com/am-i-infj-or-infp
+Stuck between INFJ and INFP? The difference is Ni-Fe vs Fi-Ne, not who is more emotional. Map your function stack free and see which pattern fits.
+Best for: People deciding between INFJ and INFP who want a function-level answer instead of another vibe-based quiz.
+Maps: Whether judgment starts from relational impact (Fe) or personal value (Fi), the perceiving pair (Ni vs Ne), the dominant-inferior axis, and a reliability signal.
+
+MBTI changes depending on mood:
+https://typejung.com/mbti-changes-with-mood
+If your MBTI result changes with your mood, you are measuring state, not type. Map the function stack underneath to find the pattern that stays put.
+Best for: People whose result swings with mood and who want to tell state apart from a stable function pattern.
+Maps: Function-stack order, dominant-inferior axis, an inferior-function stress signal, and an answer-consistency score that flags low-confidence results.
 
 ================================================================================
 GROWTH ARTICLES

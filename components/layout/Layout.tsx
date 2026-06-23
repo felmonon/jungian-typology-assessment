@@ -421,7 +421,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
       <main>{children}</main>
 
-      <footer className="rule-double bg-jung-surface/70 py-12">
+      <footer className="rule-double bg-jung-surface/70 pt-12 pb-28 md:pb-12">
         <div className="lab-container grid gap-8 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
           <div>
             <Link to="/" className="mb-4 inline-flex min-h-11 items-center gap-3">
@@ -438,37 +438,37 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 	          <nav aria-label="Explore">
 	            <h2 className="text-label mb-4">Explore</h2>
 	            <div className="grid gap-2 text-sm text-jung-secondary">
-	              <Link to="/assessment" className="inline-flex min-h-8 items-center hover:text-jung-accent">Assessment</Link>
-	              <Link to="/pricing" className="inline-flex min-h-8 items-center hover:text-jung-accent">Pricing</Link>
-	              <Link to="/methodology" className="inline-flex min-h-8 items-center hover:text-jung-accent">Methodology</Link>
-	              <Link to="/debrief" className="inline-flex min-h-8 items-center hover:text-jung-accent">Personal Type Debrief</Link>
-	              <Link to="/learn" className="inline-flex min-h-8 items-center hover:text-jung-accent">Learn the theory</Link>
+	              <Link to="/assessment" className="inline-flex min-h-11 items-center hover:text-jung-accent">Assessment</Link>
+	              <Link to="/pricing" className="inline-flex min-h-11 items-center hover:text-jung-accent">Pricing</Link>
+	              <Link to="/methodology" className="inline-flex min-h-11 items-center hover:text-jung-accent">Methodology</Link>
+	              <Link to="/debrief" className="inline-flex min-h-11 items-center hover:text-jung-accent">Personal Type Debrief</Link>
+	              <Link to="/learn" className="inline-flex min-h-11 items-center hover:text-jung-accent">Learn the theory</Link>
 	            </div>
 	          </nav>
 
 	          <nav aria-label="Guides">
 	            <h2 className="text-label mb-4">Guides</h2>
 	            <div className="grid gap-2 text-sm text-jung-secondary">
-	              <a href="/guides" className="inline-flex min-h-8 items-center hover:text-jung-accent">All guides</a>
-	              <a href="/jungian-cognitive-functions-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">Jungian cognitive functions test</a>
-	              <a href="/free-cognitive-function-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">Free cognitive function test</a>
-	              <a href="/cognitive-function-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">Cognitive function test</a>
-	              <a href="/inferior-function-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">Inferior function test</a>
-	              <a href="/best-cognitive-functions-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">Best cognitive functions test</a>
-	              <a href="/mbti-test-alternative" className="inline-flex min-h-8 items-center hover:text-jung-accent">MBTI test alternative</a>
-	              <a href="/sakinorva-alternative" className="inline-flex min-h-8 items-center hover:text-jung-accent">Sakinorva alternative</a>
-	              <a href="/16personalities-alternative" className="inline-flex min-h-8 items-center hover:text-jung-accent">16Personalities alternative</a>
-	              <a href="/infj-vs-infp-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">INFJ vs INFP test</a>
-	              <a href="/intj-vs-intp-test" className="inline-flex min-h-8 items-center hover:text-jung-accent">INTJ vs INTP test</a>
+	              <a href="/guides" className="inline-flex min-h-11 items-center hover:text-jung-accent">All guides</a>
+	              <a href="/jungian-cognitive-functions-test" className="inline-flex min-h-11 items-center hover:text-jung-accent">Jungian cognitive functions test</a>
+	              <a href="/free-cognitive-function-test" className="inline-flex min-h-11 items-center hover:text-jung-accent">Free cognitive function test</a>
+	              <a href="/cognitive-function-test" className="inline-flex min-h-11 items-center hover:text-jung-accent">Cognitive function test</a>
+	              <a href="/inferior-function-test" className="inline-flex min-h-11 items-center hover:text-jung-accent">Inferior function test</a>
+	              <a href="/best-cognitive-functions-test" className="inline-flex min-h-11 items-center hover:text-jung-accent">Best cognitive functions test</a>
+	              <a href="/mbti-test-alternative" className="inline-flex min-h-11 items-center hover:text-jung-accent">MBTI test alternative</a>
+	              <a href="/sakinorva-alternative" className="inline-flex min-h-11 items-center hover:text-jung-accent">Sakinorva alternative</a>
+	              <a href="/16personalities-alternative" className="inline-flex min-h-11 items-center hover:text-jung-accent">16Personalities alternative</a>
+	              <a href="/infj-vs-infp-test" className="inline-flex min-h-11 items-center hover:text-jung-accent">INFJ vs INFP test</a>
+	              <a href="/intj-vs-intp-test" className="inline-flex min-h-11 items-center hover:text-jung-accent">INTJ vs INTP test</a>
 	            </div>
 	          </nav>
 
 	          <nav aria-label="Account">
 	            <h2 className="text-label mb-4">Account</h2>
 	            <div className="grid gap-2 text-sm text-jung-secondary">
-	              <Link to="/auth" className="inline-flex min-h-8 items-center hover:text-jung-accent">Sign in</Link>
-	              <Link to="/privacy" className="inline-flex min-h-8 items-center hover:text-jung-accent">Privacy</Link>
-	              <Link to="/terms" className="inline-flex min-h-8 items-center hover:text-jung-accent">Terms</Link>
+	              <Link to="/auth" className="inline-flex min-h-11 items-center hover:text-jung-accent">Sign in</Link>
+	              <Link to="/privacy" className="inline-flex min-h-11 items-center hover:text-jung-accent">Privacy</Link>
+	              <Link to="/terms" className="inline-flex min-h-11 items-center hover:text-jung-accent">Terms</Link>
 	            </div>
 	          </nav>
         </div>

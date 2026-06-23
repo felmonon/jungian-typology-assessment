@@ -553,7 +553,7 @@ export const Pricing: React.FC = () => {
 
                   <Button
                     onClick={() => handleCheckout(tier.tier)}
-                    variant={tier.highlighted ? 'accent' : 'primary'}
+                    variant={tier.tier === 'free' ? 'outline' : tier.highlighted ? 'accent' : 'primary'}
                     size="lg"
                     className="mt-8 w-full"
                     rightIcon={<ArrowRight className="h-5 w-5" />}

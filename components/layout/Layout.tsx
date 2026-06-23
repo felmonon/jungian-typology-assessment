@@ -225,6 +225,12 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
   return (
     <div className="min-h-screen bg-jung-base text-jung-dark">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:border focus:border-jung-accent focus:bg-jung-surface focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-jung-dark focus:shadow-lg"
+      >
+        Skip to content
+      </a>
       <header
         className={`sticky top-0 z-50 border-b transition-all duration-300 ${
           scrolled
@@ -419,7 +425,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         </section>
       )}
 
-      <main>{children}</main>
+      <main id="main-content">{children}</main>
 
       <footer className="rule-double bg-jung-surface/70 pt-12 pb-28 md:pb-12">
         <div className="lab-container grid gap-8 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">

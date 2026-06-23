@@ -600,7 +600,7 @@ export const Home: React.FC = () => {
                   <p className="mt-3 flex-1 text-sm leading-7 text-jung-secondary">{path.body}</p>
                   <Button
                     onClick={() => startAssessment(path.source)}
-                    variant="secondary"
+                    variant="primary"
                     size="md"
                     className="mt-5 w-full"
                     rightIcon={<ArrowRight className="h-4 w-4" />}
@@ -878,7 +878,9 @@ export const Home: React.FC = () => {
                       className={`mt-7 inline-flex min-h-12 items-center justify-center rounded-full px-5 text-sm font-semibold transition-all ${
                         highlighted
                           ? 'bg-white text-jung-accent hover:bg-white/92'
-                          : 'bg-jung-dark text-white hover:bg-jung-accent'
+                          : tier.id === 'free'
+                            ? 'border border-jung-border bg-jung-surface text-jung-dark hover:border-jung-accent hover:text-jung-accent'
+                            : 'bg-jung-dark text-white hover:bg-jung-accent'
                       }`}
                     >
                       {tier.id === 'free' ? 'Get my free map' : tier.cta}

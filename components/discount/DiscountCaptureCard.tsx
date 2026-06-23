@@ -270,7 +270,7 @@ export const DiscountCaptureCard: React.FC<DiscountCaptureCardProps> = ({
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="you@example.com"
-              className={`h-10 w-full rounded-lg border px-3 text-sm outline-none transition focus:ring-2 ${minimalInputStyles}`}
+              className={`h-12 w-full rounded-lg border px-3 text-sm outline-none transition focus:ring-2 ${minimalInputStyles}`}
             />
             <Button
               type="submit"

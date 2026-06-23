@@ -1,0 +1,4 @@
+# Keep static SEO / marketing HTML out of GitHub language stats.
+# The app source is TypeScript/React; these are generated landing pages.
+*.html linguist-vendored
+public/** linguist-vendored

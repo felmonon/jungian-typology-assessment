@@ -1399,17 +1399,18 @@ export const Results: React.FC = () => {
   const hasMasteryAccess = tier === 'mastery';
 
   return (
-    <div className={`min-h-screen bg-jung-base ${!premiumLoading && !isPremium ? 'pb-36 md:pb-20' : 'pb-20'}`}>
+    <div className={`min-h-screen bg-jung-base ${!premiumLoading && !isPremium ? 'pb-28 md:pb-20' : 'pb-20'}`}>
       <div className="editorial-container py-10 lg:py-16">
-        <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <Button variant="ghost" onClick={() => navigate('/')} className="justify-start px-0 text-jung-muted hover:text-jung-accent">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-2 sm:mb-10">
+          <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="min-h-11 justify-start px-0 text-jung-muted hover:text-jung-accent">
             Return home
           </Button>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Button variant="outline" onClick={downloadResults} leftIcon={<Download className="h-4 w-4" />}>
-              Download result file
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={downloadResults} leftIcon={<Download className="h-4 w-4" />} className="min-h-11">
+              <span className="sm:hidden">Download</span>
+              <span className="hidden sm:inline">Download result file</span>
             </Button>
-            <Button variant="outline" onClick={() => navigate('/assessment')} leftIcon={<RefreshCcw className="h-4 w-4" />}>
+            <Button variant="outline" size="sm" onClick={() => navigate('/assessment')} leftIcon={<RefreshCcw className="h-4 w-4" />} className="min-h-11">
               Retake
             </Button>
           </div>
@@ -2143,43 +2144,31 @@ export const Results: React.FC = () => {
       </div>
       {!premiumLoading && !isPremium && (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-jung-border bg-jung-surface/95 shadow-[0_-12px_32px_rgba(41,28,18,0.14)] backdrop-blur md:hidden">
-          <div className="mx-auto grid max-w-screen-sm gap-2 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3">
-            <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-jung-dark">
-                  Unlock your {FUNCTION_LABELS[results.inferior].toLowerCase()} edge - {paidTierPrice(intendedTier)}
-                </p>
-                <p className="mt-0.5 text-xs leading-4 text-jung-muted">
-                  Edge, stress map, and practice. 7-day guarantee.
-                </p>
-              </div>
-              <Button
-                variant="accent"
-                size="sm"
-                className="flex-none"
-                onClick={() => openUpgradeCheckout(intendedTier, 'results_mobile_sticky')}
-                rightIcon={<ArrowRight className="h-4 w-4" />}
-              >
-                Unlock
-              </Button>
+          <div className="mx-auto flex max-w-screen-sm items-center gap-3 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3">
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold leading-5 text-jung-dark">
+                Unlock {FUNCTION_LABELS[results.inferior].toLowerCase()} edge — {paidTierPrice(intendedTier)}
+              </p>
+              <p className="mt-0.5 text-xs leading-4 text-jung-muted">
+                7-day guarantee ·{' '}
+                <button
+                  type="button"
+                  onClick={() => viewSampleReport('results_mobile_sticky')}
+                  className="link-ink font-semibold text-jung-secondary underline-offset-2 transition hover:text-jung-accent"
+                >
+                  See sample
+                </button>
+              </p>
             </div>
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex min-w-0 flex-wrap gap-1.5">
-                {['Edge', 'Stress', 'Practice'].map((item) => (
-                  <span key={item} className="inline-flex min-h-7 items-center gap-1 rounded-lg border border-jung-border bg-jung-base px-2 text-[11px] font-semibold text-jung-muted">
-                    <Check className="h-3 w-3 text-jung-accent" />
-                    {item}
-                  </span>
-                ))}
-              </div>
-              <button
-                type="button"
-                onClick={() => viewSampleReport('results_mobile_sticky')}
-                className="min-h-9 flex-none rounded-lg border border-jung-border bg-jung-base px-3 text-xs font-semibold text-jung-secondary transition hover:border-jung-accent hover:text-jung-accent"
-              >
-                See sample
-              </button>
-            </div>
+            <Button
+              variant="accent"
+              size="sm"
+              className="min-h-11 flex-none"
+              onClick={() => openUpgradeCheckout(intendedTier, 'results_mobile_sticky')}
+              rightIcon={<ArrowRight className="h-4 w-4" />}
+            >
+              Unlock
+            </Button>
           </div>
         </div>
       )}

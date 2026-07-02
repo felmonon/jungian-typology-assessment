@@ -19,8 +19,14 @@ export const ShareSection: React.FC<ShareSectionProps> = ({
 
   const getShareUrl = useCallback(() => {
     if (!shareSlug) return '';
-    return `${window.location.origin}/share/${shareSlug}`;
+    return `${window.location.origin}/share/${shareSlug}?source=result_share_section&utm_campaign=result_share`;
   }, [shareSlug]);
+
+  const getShareText = useCallback(() => {
+    const dominant = results.stack.dominant.function;
+    const inferior = results.stack.inferior.function;
+    return `I mapped my Jungian function-stack pattern with TypeJung. Dominant ${dominant}, inferior ${inferior}. Free result before payment — compare your map:`;
+  }, [results.stack.dominant.function, results.stack.inferior.function]);
 
   const copyLink = useCallback(async () => {
     const url = getShareUrl();
@@ -32,6 +38,26 @@ export const ShareSection: React.FC<ShareSectionProps> = ({
       console.error('Failed to copy link:', err);
     }
   }, [getShareUrl]);
+
+  const shareOnX = useCallback(() => {
+    const url = getShareUrl();
+    const text = getShareText();
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+    window.open(twitterUrl, '_blank', 'noopener,noreferrer,width=550,height=420');
+  }, [getShareUrl, getShareText]);
+
+  const shareOnLinkedIn = useCallback(() => {
+    const url = getShareUrl();
+    const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+    window.open(linkedInUrl, '_blank', 'noopener,noreferrer,width=600,height=500');
+  }, [getShareUrl]);
+
+  const shareByEmail = useCallback(() => {
+    const url = getShareUrl();
+    const text = getShareText();
+    const subject = 'My TypeJung function-stack map';
+    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text + '\n\n' + url)}`;
+  }, [getShareUrl, getShareText]);
 
   if (!shareSlug) return null;
 
@@ -91,13 +117,28 @@ export const ShareSection: React.FC<ShareSectionProps> = ({
         </div>
 
         <div className="flex justify-center gap-6">
-          <button className="text-jung-muted hover:text-jung-accent transition-colors p-2" aria-label="Share on X">
+          <button
+            onClick={shareOnX}
+            className="text-jung-muted hover:text-jung-accent transition-colors p-2 rounded-lg hover:bg-jung-surface-alt"
+            aria-label="Share on X"
+            title="Share on X (Twitter)"
+          >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
           </button>
-          <button className="text-jung-muted hover:text-jung-accent transition-colors p-2" aria-label="Share on LinkedIn">
+          <button
+            onClick={shareOnLinkedIn}
+            className="text-jung-muted hover:text-jung-accent transition-colors p-2 rounded-lg hover:bg-jung-surface-alt"
+            aria-label="Share on LinkedIn"
+            title="Share on LinkedIn"
+          >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452z" /></svg>
           </button>
-          <button className="text-jung-muted hover:text-jung-accent transition-colors p-2" aria-label="Send via Email">
+          <button
+            onClick={shareByEmail}
+            className="text-jung-muted hover:text-jung-accent transition-colors p-2 rounded-lg hover:bg-jung-surface-alt"
+            aria-label="Send via Email"
+            title="Send via email"
+          >
             <Send className="w-5 h-5" />
           </button>
         </div>

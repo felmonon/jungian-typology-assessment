@@ -16,6 +16,13 @@ const siteConfig = {
   url: 'https://typejung.com',
   name: 'TypeJung',
   description: 'Free Jungian function-stack map that shows cognitive functions, dominant-inferior tension, and stress patterns for educational self-reflection',
+  sameAs: [
+    'https://x.com/typejung',
+    'https://www.reddit.com/user/typejung',
+    'https://github.com/felmonon/jungian-typology-assessment',
+    'https://github.com/felmonon',
+    'https://www.linkedin.com/in/felmonfekadu/',
+  ],
 };
 const buildDate = new Date().toISOString().split('T')[0];
 
@@ -688,6 +695,7 @@ function generateLandingPage(page: any) {
       name: siteConfig.name,
       url: siteConfig.url,
       logo: `${siteConfig.url}/logo.png`,
+      sameAs: siteConfig.sameAs,
     },
   };
 
@@ -885,8 +893,8 @@ ${getHead(seo.title, seo.description, path)}
   "description": "${seo.description}",
   "url": "${siteConfig.url}${path}",
   "dateModified": "${buildDate}",
-  "author": { "@type": "Organization", "name": "TypeJung" },
-  "publisher": { "@type": "Organization", "name": "TypeJung", "logo": { "@type": "ImageObject", "url": "${siteConfig.url}/logo.png" } },
+  "author": { "@type": "Organization", "name": "TypeJung", "url": "${siteConfig.url}", "sameAs": ${JSON.stringify(siteConfig.sameAs)} },
+  "publisher": { "@type": "Organization", "name": "TypeJung", "url": "${siteConfig.url}", "sameAs": ${JSON.stringify(siteConfig.sameAs)}, "logo": { "@type": "ImageObject", "url": "${siteConfig.url}/logo.png" } },
   "mainEntityOfPage": { "@type": "WebPage", "@id": "${siteConfig.url}${path}" }
 }
 </script>
@@ -1012,8 +1020,8 @@ ${getHead(seo.title, seo.description, path)}
   "description": "${seo.description}",
   "url": "${siteConfig.url}${path}",
   "dateModified": "${buildDate}",
-  "author": { "@type": "Organization", "name": "TypeJung" },
-  "publisher": { "@type": "Organization", "name": "TypeJung", "logo": { "@type": "ImageObject", "url": "${siteConfig.url}/logo.png" } },
+  "author": { "@type": "Organization", "name": "TypeJung", "url": "${siteConfig.url}", "sameAs": ${JSON.stringify(siteConfig.sameAs)} },
+  "publisher": { "@type": "Organization", "name": "TypeJung", "url": "${siteConfig.url}", "sameAs": ${JSON.stringify(siteConfig.sameAs)}, "logo": { "@type": "ImageObject", "url": "${siteConfig.url}/logo.png" } },
   "mainEntityOfPage": { "@type": "WebPage", "@id": "${siteConfig.url}${path}" }
 }
 </script>

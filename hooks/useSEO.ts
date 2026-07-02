@@ -37,8 +37,8 @@ export const PAGE_SEO: Record<string, SEOConfig> = {
     description: 'Learn why TypeJung maps all 8 cognitive functions, inferior-function pressure, somatic signals, and attitude direction instead of forcing a four-letter label.',
   },
   pricing: {
-    title: 'Pricing | TypeJung',
-    description: 'Start with the free TypeJung assessment, then unlock Insight for CA$7 or Mastery for CA$20.30 with TYPEJUNG30 applied on Stripe.',
+    title: 'TypeJung Pricing - Free Map, Insight CA$7, Mastery CA$20.30 | TypeJung',
+    description: 'Start with the free TypeJung assessment, then unlock Insight for CA$7 or Mastery for CA$20.30 with TYPEJUNG30 applied on Stripe. One-time CAD upgrades, no subscription.',
   },
   methodology: {
     title: 'Methodology - How the Function-Stack Map Is Built | TypeJung',

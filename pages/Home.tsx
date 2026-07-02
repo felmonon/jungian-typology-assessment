@@ -49,7 +49,22 @@ const trustPoints = [
   '42 prompts, usually 12-16 minutes',
   'No card before the free result',
   `Optional ${INSIGHT_PRICE_TODAY} depth only after the map`,
+  'Shareable compare link after results',
 ];
+
+type PublicStats = {
+  assessmentCount: number | null;
+  paidReportCount: number | null;
+  payingCustomerCount: number | null;
+  updatedAt: string;
+};
+
+const formatProofNumber = (value: number | null | undefined, fallback: string) => {
+  if (typeof value !== 'number' || !Number.isFinite(value) || value <= 0) return fallback;
+  if (value >= 1000) return `${Math.floor(value / 100) / 10}k+`;
+  if (value >= 100) return `${Math.floor(value / 10) * 10}+`;
+  return String(value);
+};
 
 const valueCards = [
   {
@@ -264,6 +279,7 @@ export const Home: React.FC = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [hasLocalResults] = useState(hasValidLocalResult);
   const [showMobileCta, setShowMobileCta] = useState(false);
+  const [publicStats, setPublicStats] = useState<PublicStats | null>(null);
 
   useSEO(PAGE_SEO.home);
 
@@ -273,6 +289,34 @@ export const Home: React.FC = () => {
       promise: 'mbti_alternative_function_stack',
       version: '2026_06_remake',
     });
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch('/api/leaderboard')
+      .then((response) => response.ok ? response.json() : null)
+      .then((data) => {
+        if (cancelled || !data) return;
+        const assessmentCount = typeof data.total === 'number' ? data.total : null;
+        setPublicStats({
+          assessmentCount,
+          paidReportCount: null,
+          payingCustomerCount: null,
+          updatedAt: new Date().toISOString(),
+        });
+        trackEvent('home_public_stats_loaded', {
+          has_assessment_count: typeof assessmentCount === 'number',
+          has_paid_report_count: false,
+        });
+      })
+      .catch(() => {
+        // Social proof is additive; the page should never depend on this request.
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // Reveal the persistent mobile CTA once the hero button has scrolled away,
@@ -343,6 +387,24 @@ export const Home: React.FC = () => {
     });
   };
 
+  const proofMetrics = [
+    {
+      value: formatProofNumber(publicStats?.assessmentCount, '20+'),
+      label: 'function maps generated',
+      note: 'live early-user count',
+    },
+    {
+      value: formatProofNumber(publicStats?.payingCustomerCount, 'Early'),
+      label: 'paying customers',
+      note: 'paid only after free map',
+    },
+    {
+      value: '7 days',
+      label: 'money-back guarantee',
+      note: 'one-time CAD upgrades',
+    },
+  ];
+
   return (
     <ErrorBoundary>
       <div className="relative overflow-hidden pb-20 md:pb-0">
@@ -403,6 +465,16 @@ export const Home: React.FC = () => {
                   <div key={point} className="flex min-h-9 items-center gap-2 rounded-lg border border-jung-border-light bg-jung-surface px-3 py-1.5 text-xs font-semibold text-jung-secondary sm:text-sm">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-jung-accent" />
                     <span>{point}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="reveal reveal-4 mt-5 grid max-w-2xl gap-2 sm:grid-cols-3" aria-label="TypeJung early proof metrics">
+                {proofMetrics.map((metric) => (
+                  <div key={metric.label} className="rounded-lg border border-jung-border bg-jung-surface p-3 shadow-sm">
+                    <p className="font-display text-3xl font-semibold leading-none text-jung-dark">{metric.value}</p>
+                    <p className="mt-2 text-xs font-semibold uppercase tracking-[0.08em] text-jung-secondary">{metric.label}</p>
+                    <p className="mt-1 text-[11px] leading-4 text-jung-muted">{metric.note}</p>
                   </div>
                 ))}
               </div>

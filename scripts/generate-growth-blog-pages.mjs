@@ -8,6 +8,13 @@ import { growthBlogArticles } from './growth-blog-data.mjs';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const publicBlogDir = join(__dirname, '..', 'public', 'blog');
 const baseUrl = 'https://typejung.com';
+const sameAs = [
+  'https://x.com/typejung',
+  'https://www.reddit.com/user/typejung',
+  'https://github.com/felmonon/jungian-typology-assessment',
+  'https://github.com/felmonon',
+  'https://www.linkedin.com/in/felmonfekadu/',
+];
 const buildDate = new Date().toISOString().split('T')[0];
 
 const escapeHtml = (value) =>
@@ -50,10 +57,13 @@ const articleSchema = (article) => JSON.stringify({
         '@type': 'Organization',
         name: 'TypeJung',
         url: baseUrl,
+        sameAs,
       },
       publisher: {
         '@type': 'Organization',
         name: 'TypeJung',
+        url: baseUrl,
+        sameAs,
         logo: {
           '@type': 'ImageObject',
           url: `${baseUrl}/logo.png`,

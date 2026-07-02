@@ -25,6 +25,12 @@ const navigation = [
   { to: '/pricing', label: 'Pricing' },
 ];
 
+const externalProofLinks = [
+  { href: 'https://github.com/felmonon/jungian-typology-assessment', label: 'GitHub source' },
+  { href: 'https://github.com/felmonon', label: 'Creator GitHub' },
+  { href: 'https://www.linkedin.com/in/felmonfekadu/', label: 'Creator LinkedIn' },
+];
+
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -475,15 +481,47 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 	              <Link to="/auth" className="inline-flex min-h-11 items-center hover:text-jung-accent">Sign in</Link>
 	              <Link to="/privacy" className="inline-flex min-h-11 items-center hover:text-jung-accent">Privacy</Link>
 	              <Link to="/terms" className="inline-flex min-h-11 items-center hover:text-jung-accent">Terms</Link>
+                  {externalProofLinks.map((link) => (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex min-h-11 items-center hover:text-jung-accent"
+                    >
+                      {link.label}
+                    </a>
+                  ))}
+	              <a
+	                href="https://x.com/typejung"
+	                target="_blank"
+	                rel="noopener noreferrer"
+	                className="inline-flex min-h-11 items-center gap-1.5 hover:text-jung-accent"
+	              >
+	                <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+	                @typejung on X
+	              </a>
 	            </div>
 	          </nav>
         </div>
         <div className="lab-container mt-10 flex flex-col gap-3 border-t border-jung-border pt-6 text-xs text-jung-muted sm:flex-row sm:items-center sm:justify-between">
           <span>&copy; {new Date().getFullYear()} TypeJung</span>
-          <span className="inline-flex items-center gap-2">
-            <BookOpen className="h-3.5 w-3.5" />
-            Not a four-letter label
-          </span>
+          <div className="flex items-center gap-4">
+            <a
+              href="https://x.com/typejung"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-jung-muted hover:text-jung-accent transition-colors"
+              aria-label="TypeJung on X"
+            >
+              <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+              @typejung
+            </a>
+            <span className="inline-flex items-center gap-2">
+              <BookOpen className="h-3.5 w-3.5" />
+              Not a four-letter label
+            </span>
+          </div>
         </div>
       </footer>
     </div>

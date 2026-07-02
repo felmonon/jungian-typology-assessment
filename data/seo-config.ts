@@ -18,6 +18,13 @@ export const siteConfig = {
   ],
   author: 'TypeJung',
   twitterHandle: '@typejung',
+  sameAs: [
+    'https://x.com/typejung',
+    'https://www.reddit.com/user/typejung',
+    'https://github.com/felmonon/jungian-typology-assessment',
+    'https://github.com/felmonon',
+    'https://www.linkedin.com/in/felmonfekadu/',
+  ],
 }
 
 export const functionSEO: Record<string, {

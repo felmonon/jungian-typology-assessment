@@ -58,7 +58,7 @@ export const growthBlogArticles = [
     slug: 'infj-vs-infp-cognitive-functions',
     title: 'INFJ vs INFP: Cognitive Functions, Not Stereotypes',
     description: 'A practical Jungian comparison of INFJ and INFP through Ni-Fe and Fi-Ne rather than vague personality stereotypes.',
-    date: '2026-05-18',
+    date: '2026-04-20',
     readTime: '9 min read',
     tags: ['INFJ', 'INFP', 'Mistyping'],
     related: [
@@ -113,7 +113,7 @@ export const growthBlogArticles = [
     slug: 'intj-vs-intp-ni-te-vs-ti-ne',
     title: 'INTJ vs INTP: Ni-Te vs Ti-Ne',
     description: 'How to tell INTJ and INTP apart through Jungian function dynamics instead of stereotypes about intelligence or introversion.',
-    date: '2026-05-18',
+    date: '2026-04-05',
     readTime: '8 min read',
     tags: ['INTJ', 'INTP', 'Cognitive functions'],
     related: [
@@ -168,7 +168,7 @@ export const growthBlogArticles = [
     slug: 'what-is-the-inferior-function',
     title: 'What Is the Inferior Function?',
     description: 'A clear explanation of the inferior function in Jungian typology and why it often reveals stress, growth, and shadow patterns.',
-    date: '2026-05-18',
+    date: '2026-03-05',
     readTime: '9 min read',
     tags: ['Inferior function', 'Jungian typology', 'Growth'],
     related: [
@@ -223,7 +223,7 @@ export const growthBlogArticles = [
     slug: 'what-does-it-mean-to-be-in-the-grip',
     title: 'What Does It Mean to Be in the Grip?',
     description: 'A practical guide to grip stress in Jungian typology and how the inferior function can take over under pressure.',
-    date: '2026-05-18',
+    date: '2026-03-20',
     readTime: '8 min read',
     tags: ['The grip', 'Stress', 'Inferior function'],
     related: [
@@ -271,7 +271,7 @@ export const growthBlogArticles = [
     slug: 'jungian-shadow-work-prompts-by-cognitive-function',
     title: 'Jungian Shadow Work Prompts by Cognitive Function',
     description: 'Shadow work prompts for each Jungian cognitive function, designed for reflection rather than diagnosis.',
-    date: '2026-05-18',
+    date: '2026-02-15',
     readTime: '10 min read',
     tags: ['Shadow work', 'Prompts', 'Cognitive functions'],
     related: [
@@ -334,7 +334,7 @@ export const growthBlogArticles = [
     slug: 'best-mbti-alternative-tests',
     title: 'Best MBTI and 16Personalities Alternative Tests',
     description: 'What to look for in an MBTI or 16Personalities alternative if you want cognitive functions, stress patterns, and a result you can inspect.',
-    date: '2026-05-18',
+    date: '2026-05-05',
     readTime: '8 min read',
     tags: ['MBTI alternative', 'Personality tests', 'Jungian test'],
     related: [

@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Button } from '../components/ui/Button';
+import { FunctionAtlas } from '../components/home/FunctionAtlas';
 import { FunctionRadial } from '../components/home/FunctionRadial';
 import { PRICING } from '../data/pricing';
 import type { PaidTierId, PricingTierId } from '../data/pricing';
@@ -209,7 +210,7 @@ const pricingTiers: HomePricingTier[] = [
     priceNote: `${EMAIL_CAPTURE_OFFER.code} auto-applies on Stripe`,
     description: 'Turn your result into a practical interpretation.',
     features: ['Developmental edge', 'Stress-pattern map', 'Relationship pattern', 'Practice prompts'],
-    cta: `View Insight - ${discountedPriceLabel(PRICING.insight.amount)}`,
+    cta: `View Insight — ${discountedPriceLabel(PRICING.insight.amount)}`,
     highlighted: true,
   },
   {
@@ -220,7 +221,7 @@ const pricingTiers: HomePricingTier[] = [
     priceNote: `${EMAIL_CAPTURE_OFFER.code} auto-applies on Stripe`,
     description: 'Use the report with guided follow-up support.',
     features: ['Everything in Insight', 'AI Type Guide', 'Growth exercises', 'Individuation roadmap'],
-    cta: `View Mastery - ${discountedPriceLabel(PRICING.mastery.amount)}`,
+    cta: `View Mastery — ${discountedPriceLabel(PRICING.mastery.amount)}`,
   },
 ];
 
@@ -373,7 +374,40 @@ export const Home: React.FC = () => {
                 Stop retaking tests. Read the function pattern that keeps creating the confusion.
               </p>
 
-              <div className="mt-5 rounded-lg border border-jung-dark bg-jung-dark p-3 text-white shadow-lg shadow-jung-dark/10 lg:hidden">
+              <div className="reveal reveal-3 mt-7 flex flex-col gap-3 sm:flex-row">
+                <Button
+                  onClick={() => startAssessment('home_hero')}
+                  variant="accent"
+                  size="lg"
+                  rightIcon={<ArrowRight className="h-4 w-4" />}
+                  className="w-full sm:w-auto"
+                >
+                  Get my free map
+                </Button>
+                <Button
+                  onClick={() => viewSampleReport('home_hero')}
+                  variant="inverted"
+                  size="lg"
+                  className="w-full border border-jung-border sm:w-auto"
+                  rightIcon={<FileText className="h-4 w-4" />}
+                >
+                  View paid sample
+                </Button>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-jung-muted">
+                Free result first. Upgrade only if the map names something you recognize.
+              </p>
+
+              <div className="reveal reveal-4 mt-5 flex flex-wrap gap-2">
+                {trustPoints.map((point) => (
+                  <div key={point} className="flex min-h-9 items-center gap-2 rounded-lg border border-jung-border-light bg-jung-surface px-3 py-1.5 text-xs font-semibold text-jung-secondary sm:text-sm">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-jung-accent" />
+                    <span>{point}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="reveal reveal-5 mt-8 rounded-lg border border-jung-dark bg-jung-dark p-3 text-white shadow-lg shadow-jung-dark/10 lg:hidden">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-[11px] font-semibold uppercase text-white/50">Mobile result preview</p>
@@ -416,39 +450,6 @@ export const Home: React.FC = () => {
                     <span className="ml-1 text-jung-muted blur-[2px]">full stress map unlocks after review.</span>
                   </p>
                 </div>
-              </div>
-
-              <div className="reveal reveal-3 mt-7 flex flex-col gap-3 sm:flex-row">
-                <Button
-                  onClick={() => startAssessment('home_hero')}
-                  variant="accent"
-                  size="lg"
-                  rightIcon={<ArrowRight className="h-4 w-4" />}
-                  className="w-full sm:w-auto"
-                >
-                  Get my free map
-                </Button>
-                <Button
-                  onClick={() => viewSampleReport('home_hero')}
-                  variant="inverted"
-                  size="lg"
-                  className="w-full border border-jung-border sm:w-auto"
-                  rightIcon={<FileText className="h-4 w-4" />}
-                >
-                  View paid sample
-                </Button>
-              </div>
-              <p className="mt-3 text-sm leading-6 text-jung-muted">
-                Free result first. Upgrade only if the map names something you recognize.
-              </p>
-
-              <div className="reveal reveal-4 mt-5 flex flex-wrap gap-2">
-                {trustPoints.map((point) => (
-                  <div key={point} className="flex min-h-9 items-center gap-2 rounded-lg border border-jung-border-light bg-jung-surface px-3 py-1.5 text-xs font-semibold text-jung-secondary sm:text-sm">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-jung-accent" />
-                    <span>{point}</span>
-                  </div>
-                ))}
               </div>
             </div>
 
@@ -637,84 +638,64 @@ export const Home: React.FC = () => {
           </div>
         </section>
 
-        <section className="border-y border-jung-border-light bg-jung-surface py-10 lg:py-14">
+        <FunctionAtlas
+          figure="Fig. 05"
+          onStart={() => startAssessment('home_function_atlas')}
+          onGuideClick={() => trackGuideClick('/cognitive-functions', 'Jungian cognitive functions guide')}
+        />
+
+        <section className="border-b border-jung-border-light bg-jung-base py-12 lg:py-16">
           <div className="lab-container">
-            <div className="grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
+            <div className="mb-8 grid gap-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
               <div>
-                <p className="figure-label">Fig. 05 — Search paths</p>
-                <h2 className="mt-4 max-w-xl font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
+                <p className="figure-label">Fig. 06 — Search paths</p>
+                <h2 className="mt-3 max-w-2xl font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                   Pick the guide closest to the question you searched.
                 </h2>
-                <p className="mt-4 max-w-lg text-sm leading-7 text-jung-secondary">
+                <p className="mt-4 max-w-2xl text-sm leading-7 text-jung-secondary">
                   TypeJung has public pages for the main search paths: cognitive-function tests,
                   Jungian alternatives, inferior-function stress, and common comparison questions.
                 </p>
-                <button
-                  type="button"
-                  onClick={() => startAssessment('home_search_paths')}
-                  className="mt-6 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-jung-dark px-5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-jung-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jung-accent"
-                >
-                  Start with the free map
-                  <ArrowRight className="h-4 w-4" />
-                </button>
               </div>
+              <button
+                type="button"
+                onClick={() => startAssessment('home_search_paths')}
+                className="inline-flex min-h-12 w-fit items-center justify-center gap-2 rounded-full bg-jung-dark px-5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-jung-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jung-accent"
+              >
+                Start with the free map
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
 
-              <div className="grid gap-3 sm:grid-cols-2">
-                {searchPathCards.map((card) => (
-                  <a
-                    key={card.href}
-                    href={card.href}
-                    onClick={() => trackGuideClick(card.href, card.title)}
-                    className="group flex min-h-[12rem] flex-col rounded-lg border border-jung-border bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-jung-accent hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jung-accent"
-                  >
-                    <span className="text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted">
+            <div className="overflow-hidden rounded-lg border border-jung-border bg-jung-surface shadow-sm">
+              {searchPathCards.map((card, index) => (
+                <a
+                  key={card.href}
+                  href={card.href}
+                  onClick={() => trackGuideClick(card.href, card.title)}
+                  className="group grid items-center gap-x-6 gap-y-1 border-b border-jung-border-light px-5 py-4 transition-colors last:border-b-0 hover:bg-jung-accent-light/60 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-jung-accent sm:grid-cols-[2.25rem_minmax(0,0.9fr)_minmax(0,1.1fr)_auto] sm:px-6"
+                >
+                  <span className="hidden font-mono text-xs font-semibold text-jung-subtle sm:block">
+                    0{index + 1}
+                  </span>
+                  <span className="flex flex-col gap-0.5">
+                    <span className="text-mono text-[10px] font-medium uppercase tracking-[0.14em] text-jung-muted">
                       {card.eyebrow}
                     </span>
-                    <span className="mt-3 font-display text-2xl font-semibold leading-tight text-jung-dark">
+                    <span className="font-display text-xl font-semibold leading-tight text-jung-dark sm:text-2xl">
                       {card.title}
                     </span>
-                    <span className="mt-3 text-sm leading-6 text-jung-secondary">
-                      {card.description}
-                    </span>
-                    <span className="mt-auto inline-flex items-center gap-2 pt-5 text-sm font-semibold text-jung-accent">
-                      Open guide
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </span>
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="border-b border-jung-border-light bg-white py-6">
-          <div className="lab-container">
-            <div className="grid gap-4 rounded-lg border border-jung-border bg-jung-base p-5 md:grid-cols-[minmax(0,1fr)_minmax(20rem,0.9fr)] md:items-center">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted">
-                  Save the path
-                </p>
-                <h2 className="mt-2 font-display text-2xl font-semibold text-jung-dark">
-                  Not ready for a 12-minute assessment right now?
-                </h2>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-jung-secondary">
-                  Email yourself the free test link and the paid-report code. The result still stays free to view first.
-                </p>
-              </div>
-              <Suspense fallback={<div className="min-h-[148px] rounded-lg border border-jung-border bg-jung-surface" aria-hidden="true" />}>
-                <DiscountCaptureCard
-                  source="home_post_hero_save_path"
-                  compact
-                  minimal
-                  minimalTitle="Email me the test"
-                  minimalDescription={`Get the free assessment link, sample report, and ${EMAIL_CAPTURE_OFFER.code} code in one private email.`}
-                  minimalSubmitLabel="Send the link"
-                  minimalFootnote="One email with the next step. No subscription."
-                  minimalSentMessage="Path sent. The email links back to the free assessment and keeps the upgrade code ready."
-                  preferredTier="insight"
-                  showCheckoutButtons={false}
-                />
-              </Suspense>
+                  </span>
+                  <span className="hidden text-sm leading-6 text-jung-secondary md:block">
+                    {card.description}
+                  </span>
+                  <span className="mt-1 inline-flex items-center gap-2 text-sm font-semibold text-jung-accent sm:mt-0">
+                    <span className="sm:hidden">Open guide</span>
+                    <span className="hidden sm:inline">Open</span>
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </span>
+                </a>
+              ))}
             </div>
           </div>
         </section>
@@ -725,7 +706,7 @@ export const Home: React.FC = () => {
               <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
                 <FileText className="h-5 w-5" />
               </div>
-              <p className="figure-label">Fig. 06 — Paid report preview</p>
+              <p className="figure-label">Fig. 07 — Paid report preview</p>
               <h2 className="mt-4 max-w-xl font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                 The upgrade has to earn its place.
               </h2>
@@ -786,7 +767,7 @@ export const Home: React.FC = () => {
 
         <section className="border-b border-jung-border-light bg-jung-base py-10 lg:py-14">
           <div className="lab-container">
-            <div className="grid gap-6 rounded-lg border border-jung-accent-muted bg-jung-accent-light/60 p-6 shadow-sm md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:p-8">
+            <div className="grid gap-6 rounded-lg border border-jung-accent-muted bg-jung-accent-light/60 p-6 shadow-sm md:p-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
               <div>
                 <span className="inline-flex w-fit items-center gap-2 rounded-lg bg-jung-surface px-3 py-1.5 text-xs font-semibold text-jung-accent">
                   <UserCheck className="h-3.5 w-3.5" />
@@ -803,7 +784,7 @@ export const Home: React.FC = () => {
                   {DEBRIEF_PRICE}, one-time CAD. Limited to 5 per week. Educational self-reflection, not a clinical assessment.
                 </p>
               </div>
-              <div className="grid gap-3 sm:grid-cols-2 md:min-w-[25rem]">
+              <div className="grid gap-3 sm:grid-cols-2 lg:min-w-[25rem]">
                 <Button
                   onClick={() => {
                     trackEvent('debrief_cta_clicked', { source: 'home_debrief_section' });
@@ -817,8 +798,8 @@ export const Home: React.FC = () => {
                 </Button>
                 <Button
                   onClick={() => startAssessment('home_debrief_section_free_map')}
-                  variant="secondary"
-                  size="lg"
+                  variant="ghost"
+                  size="md"
                 >
                   Take free map first
                 </Button>
@@ -830,7 +811,7 @@ export const Home: React.FC = () => {
         <section id="pricing" className="border-b border-jung-border-light bg-white py-12 lg:py-20">
           <div className="lab-container">
             <div className="mb-10 max-w-2xl">
-              <p className="figure-label">Fig. 07 — Pricing</p>
+              <p className="figure-label">Fig. 08 — Pricing</p>
               <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                 Buy the interpretation only if the free map makes sense.
               </h2>
@@ -865,7 +846,7 @@ export const Home: React.FC = () => {
                     </div>
                     {tier.originalPrice && (
                       <p className={`mt-2 text-xs leading-5 ${highlighted ? 'text-white/70' : 'text-jung-muted'}`}>
-                        <span className="line-through">{tier.originalPrice}</span> before code. {tier.priceNote}.
+                        List price <span className="line-through">{tier.originalPrice}</span> — {tier.priceNote}.
                       </p>
                     )}
                     <button
@@ -908,7 +889,7 @@ export const Home: React.FC = () => {
         <section className="bg-jung-base py-12 lg:py-20">
           <div className="lab-container grid gap-10 lg:grid-cols-[0.88fr_1.12fr]">
             <div>
-              <p className="figure-label">Fig. 08 — Before you start</p>
+              <p className="figure-label">Fig. 09 — Before you start</p>
               <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                 Straight answers, no personality-test hype.
               </h2>
@@ -978,8 +959,8 @@ export const Home: React.FC = () => {
       >
         <div className="flex items-center gap-3">
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold text-jung-dark">Free function-stack map first</p>
-            <p className="truncate text-xs text-jung-muted">No card before your result.</p>
+            <p className="text-sm font-semibold leading-5 text-jung-dark">Free map first</p>
+            <p className="text-xs leading-4 text-jung-muted">No card before results</p>
           </div>
           <Button
             onClick={() => startAssessment('home_sticky_mobile')}

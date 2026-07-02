@@ -64,7 +64,7 @@ const TIERS: Tier[] = [
       'Practical reflection prompts',
       'One-time CAD purchase',
     ],
-    buttonText: `Review Insight - ${discountedPriceLabel(PRICING.insight.amount)}`,
+    buttonText: `Review Insight — ${discountedPriceLabel(PRICING.insight.amount)}`,
     tier: 'insight',
   },
   {
@@ -82,7 +82,7 @@ const TIERS: Tier[] = [
       'Growth exercises',
       'Individuation roadmap',
     ],
-    buttonText: `Review Mastery - ${discountedPriceLabel(PRICING.mastery.amount)}`,
+    buttonText: `Review Mastery — ${discountedPriceLabel(PRICING.mastery.amount)}`,
     tier: 'mastery',
     highlighted: true,
   },
@@ -526,7 +526,7 @@ export const Pricing: React.FC = () => {
                   </div>
                   {tier.originalPrice && (
                     <p className={`mt-2 text-xs leading-5 ${tier.highlighted ? 'text-white/65' : 'text-jung-muted'}`}>
-                      <span className="line-through">{tier.originalPrice}</span> before code. {tier.savingsLabel}. {tier.priceNote}.
+                      List price <span className="line-through">{tier.originalPrice}</span> — {tier.savingsLabel}. {tier.priceNote}.
                     </p>
                   )}
 

@@ -454,7 +454,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
 	          <nav aria-label="Guides">
 	            <h2 className="text-label mb-4">Guides</h2>
-	            <div className="grid gap-2 text-sm text-jung-secondary">
+	            <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-jung-secondary lg:grid-cols-1 lg:gap-2">
 	              <a href="/guides" className="inline-flex min-h-11 items-center hover:text-jung-accent">All guides</a>
 	              <a href="/jungian-cognitive-functions-test" className="inline-flex min-h-11 items-center hover:text-jung-accent">Jungian cognitive functions test</a>
 	              <a href="/free-cognitive-function-test" className="inline-flex min-h-11 items-center hover:text-jung-accent">Free cognitive function test</a>

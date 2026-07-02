@@ -539,17 +539,21 @@ async function startServer() {
 
   app.use(serveGeneratedStaticPages(path.join(process.cwd(), 'public')));
 
+  const PORT = parseInt(process.env.PORT || '3000', 10);
+
   const vite = await createViteServer({
-    server: { 
+    server: {
       middlewareMode: true,
       allowedHosts: true,
+      // Tie the HMR websocket to the HTTP port so two dev checkouts
+      // can run side by side without fighting over vite's default 24678.
+      hmr: { port: PORT + 1 },
     },
     appType: 'spa',
   });
 
   app.use(vite.middlewares);
 
-  const PORT = parseInt(process.env.PORT || '3000', 10);
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });

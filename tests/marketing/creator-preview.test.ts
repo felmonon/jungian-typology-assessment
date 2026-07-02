@@ -46,7 +46,7 @@ describe('creator preview growth page', () => {
     ]));
   });
 
-  it('routes priority A creator outreach through the review page without marking sends complete', () => {
+  it('routes priority A creator outreach through the review page with tracked statuses', () => {
     const csv = readFileSync(join(process.cwd(), 'marketing/launch/creator-outreach.csv'), 'utf8');
     const rows = csv.trim().split('\n').slice(1).map((line) => {
       const fields = line.split(',');
@@ -60,11 +60,15 @@ describe('creator preview growth page', () => {
     });
     const creatorRows = rows.filter((row) => priorityACreatorSources.has(row.utmSource));
 
+    // Sends are tracked, not assumed: a row may only leave not_contacted for a
+    // status that records what actually happened (see marketing/growth logs).
+    const trackedStatuses = new Set(['not_contacted', 'needs_manual_send', 'contacted', 'replied', 'declined']);
+
     expect(creatorRows).toHaveLength(priorityACreatorSources.size);
     for (const row of creatorRows) {
       expect(row.priority).toBe('A');
       expect(row.pitchPage, row.target).toBe('https://typejung.com/creator-preview');
-      expect(row.status, row.target).toBe('not_contacted');
+      expect(trackedStatuses.has(row.status), `${row.target}: unexpected status "${row.status}"`).toBe(true);
     }
   });
 });

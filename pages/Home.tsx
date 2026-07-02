@@ -45,13 +45,6 @@ const sampleProfile = [
   { name: 'Fe', label: 'Interpersonal attunement', value: 24, role: 'Inferior' },
 ];
 
-const trustPoints = [
-  '42 prompts, usually 12-16 minutes',
-  'No card before the free result',
-  `Optional ${INSIGHT_PRICE_TODAY} depth only after the map`,
-  'Shareable compare link after results',
-];
-
 type PublicStats = {
   assessmentCount: number | null;
   paidReportCount: number | null;
@@ -65,27 +58,6 @@ const formatProofNumber = (value: number | null | undefined, fallback: string) =
   if (value >= 100) return `${Math.floor(value / 10) * 10}+`;
   return String(value);
 };
-
-const valueCards = [
-  {
-    icon: BarChart3,
-    title: 'Free map first',
-    description:
-      'See all eight functions, stack shape, reliability, and the dominant-inferior axis before any checkout screen.',
-  },
-  {
-    icon: Eye,
-    title: 'Preview the paid depth',
-    description:
-      'The results page shows real personalized excerpts from your developmental edge and stress pattern before you unlock.',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Review before Stripe',
-    description:
-      `Checkout starts with a clear ${INSIGHT_PRICE_TODAY} one-time review (${PRICING.insight.price} before ${EMAIL_CAPTURE_OFFER.code}), 7-day guarantee, and secure Stripe payment handoff.`,
-  },
-];
 
 const diagnosticSignals = [
   {
@@ -457,19 +429,10 @@ export const Home: React.FC = () => {
                 </Button>
               </div>
               <p className="mt-3 text-sm leading-6 text-jung-muted">
-                Free result first. Upgrade only if the map names something you recognize.
+                42 prompts, usually 12-16 minutes. No card before the free result.
               </p>
 
-              <div className="reveal reveal-4 mt-5 flex flex-wrap gap-2">
-                {trustPoints.map((point) => (
-                  <div key={point} className="flex min-h-9 items-center gap-2 rounded-lg border border-jung-border-light bg-jung-surface px-3 py-1.5 text-xs font-semibold text-jung-secondary sm:text-sm">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-jung-accent" />
-                    <span>{point}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="reveal reveal-4 mt-5 grid max-w-2xl gap-2 sm:grid-cols-3" aria-label="TypeJung early proof metrics">
+              <div className="reveal reveal-4 mt-6 grid max-w-2xl gap-2 sm:grid-cols-3" aria-label="TypeJung early proof metrics">
                 {proofMetrics.map((metric) => (
                   <div key={metric.label} className="rounded-lg border border-jung-border bg-jung-surface p-3 shadow-sm">
                     <p className="font-display text-3xl font-semibold leading-none text-jung-dark">{metric.value}</p>
@@ -622,42 +585,10 @@ export const Home: React.FC = () => {
         </section>
 
 
-        <section className="border-b border-jung-border-light bg-jung-surface py-10 lg:py-12">
-          <div className="lab-container grid gap-8 lg:grid-cols-[0.7fr_1fr] lg:items-start">
-            <div>
-              <p className="figure-label">Fig. 02 — Funnel promise</p>
-              <h2 className="mt-3 max-w-lg font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
-                The sale waits until the result has emotional weight.
-              </h2>
-            </div>
-            <div className="grid gap-3">
-              {valueCards.map((card, index) => {
-                const Icon = card.icon;
-                return (
-                  <div key={card.title} className="grid gap-4 rounded-lg border border-jung-border bg-jung-base p-4 shadow-sm sm:grid-cols-[auto_1fr] sm:items-start">
-                    <div className="flex items-center gap-3 sm:block">
-                      <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-jung-accent text-white">
-                        <Icon className="h-5 w-5" />
-                      </span>
-                      <span className="font-mono text-xs font-semibold text-jung-muted sm:mt-3 sm:block">
-                        0{index + 1}
-                      </span>
-                    </div>
-                    <div>
-                      <h3 className="font-display text-2xl font-semibold text-jung-dark">{card.title}</h3>
-                      <p className="mt-2 text-sm leading-7 text-jung-secondary">{card.description}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
         <section className="border-b border-jung-border-light bg-jung-base py-10 lg:py-14">
           <div className="lab-container">
             <div className="mb-7 max-w-3xl">
-              <p className="figure-label">Fig. 03 — Choose your path</p>
+              <p className="figure-label">Fig. 02 — Choose your path</p>
               <h2 className="mt-3 font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                 Start from the problem that brought you here.
               </h2>
@@ -689,7 +620,7 @@ export const Home: React.FC = () => {
         <section className="bg-jung-base py-12 lg:py-20">
           <div className="lab-container grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
             <div>
-              <p className="figure-label">Fig. 04 — How it works</p>
+              <p className="figure-label">Fig. 03 — How it works</p>
               <h2 className="mt-4 max-w-xl font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                 A clear path from curiosity to usable insight.
               </h2>
@@ -711,7 +642,7 @@ export const Home: React.FC = () => {
         </section>
 
         <FunctionAtlas
-          figure="Fig. 05"
+          figure="Fig. 04"
           onStart={() => startAssessment('home_function_atlas')}
           onGuideClick={() => trackGuideClick('/cognitive-functions', 'Jungian cognitive functions guide')}
         />
@@ -720,7 +651,7 @@ export const Home: React.FC = () => {
           <div className="lab-container">
             <div className="mb-8 grid gap-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
               <div>
-                <p className="figure-label">Fig. 06 — Search paths</p>
+                <p className="figure-label">Fig. 05 — Search paths</p>
                 <h2 className="mt-3 max-w-2xl font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                   Pick the guide closest to the question you searched.
                 </h2>
@@ -778,7 +709,7 @@ export const Home: React.FC = () => {
               <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
                 <FileText className="h-5 w-5" />
               </div>
-              <p className="figure-label">Fig. 07 — Paid report preview</p>
+              <p className="figure-label">Fig. 06 — Paid report preview</p>
               <h2 className="mt-4 max-w-xl font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                 The upgrade has to earn its place.
               </h2>
@@ -837,56 +768,16 @@ export const Home: React.FC = () => {
           </div>
         </section>
 
-        <section className="border-b border-jung-border-light bg-jung-base py-10 lg:py-14">
-          <div className="lab-container">
-            <div className="grid gap-6 rounded-lg border border-jung-accent-muted bg-jung-accent-light/60 p-6 shadow-sm md:p-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-              <div>
-                <span className="inline-flex w-fit items-center gap-2 rounded-lg bg-jung-surface px-3 py-1.5 text-xs font-semibold text-jung-accent">
-                  <UserCheck className="h-3.5 w-3.5" />
-                  Human-reviewed option
-                </span>
-                <h2 className="mt-4 max-w-2xl font-display text-3xl font-semibold leading-tight text-jung-dark md:text-4xl">
-                  Still stuck after the map?
-                </h2>
-                <p className="mt-3 max-w-2xl text-sm leading-7 text-jung-secondary">
-                  Most people only need the free result or Insight. But if you are still stuck between two types,
-                  the Personal Type Debrief gives you a founder-reviewed read of your map, likely mistypes, and stress edge.
-                </p>
-                <p className="mt-2 text-xs leading-5 text-jung-muted">
-                  {DEBRIEF_PRICE}, one-time CAD. Limited to 5 per week. Educational self-reflection, not a clinical assessment.
-                </p>
-              </div>
-              <div className="grid gap-3 sm:grid-cols-2 lg:min-w-[25rem]">
-                <Button
-                  onClick={() => {
-                    trackEvent('debrief_cta_clicked', { source: 'home_debrief_section' });
-                    navigate(pathWithSource('/debrief', 'home_debrief_section'));
-                  }}
-                  variant="accent"
-                  size="lg"
-                  rightIcon={<ArrowRight className="h-5 w-5" />}
-                >
-                  Get a debrief — {DEBRIEF_PRICE}
-                </Button>
-                <Button
-                  onClick={() => startAssessment('home_debrief_section_free_map')}
-                  variant="ghost"
-                  size="md"
-                >
-                  Take free map first
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <section id="pricing" className="border-b border-jung-border-light bg-white py-12 lg:py-20">
           <div className="lab-container">
             <div className="mb-10 max-w-2xl">
-              <p className="figure-label">Fig. 08 — Pricing</p>
+              <p className="figure-label">Fig. 07 — Pricing</p>
               <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                 Buy the interpretation only if the free map makes sense.
               </h2>
+              <p className="mt-4 text-sm leading-6 text-jung-muted">
+                One-time CAD payments · 7-day money-back guarantee · Secure Stripe checkout
+              </p>
             </div>
 
             <div className="grid gap-4 lg:grid-cols-3">
@@ -957,11 +848,54 @@ export const Home: React.FC = () => {
           </div>
         </section>
 
+        <section className="border-b border-jung-border-light bg-jung-base py-10 lg:py-14">
+          <div className="lab-container">
+            <div className="grid gap-6 rounded-lg border border-jung-accent-muted bg-jung-accent-light/60 p-6 shadow-sm md:p-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+              <div>
+                <span className="inline-flex w-fit items-center gap-2 rounded-lg bg-jung-surface px-3 py-1.5 text-xs font-semibold text-jung-accent">
+                  <UserCheck className="h-3.5 w-3.5" />
+                  Human-reviewed option
+                </span>
+                <h2 className="mt-4 max-w-2xl font-display text-3xl font-semibold leading-tight text-jung-dark md:text-4xl">
+                  Still stuck after the map?
+                </h2>
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-jung-secondary">
+                  Most people only need the free result or Insight. But if you are still stuck between two types,
+                  the Personal Type Debrief gives you a founder-reviewed read of your map, likely mistypes, and stress edge.
+                </p>
+                <p className="mt-2 text-xs leading-5 text-jung-muted">
+                  {DEBRIEF_PRICE}, one-time CAD. Limited to 5 per week. Educational self-reflection, not a clinical assessment.
+                </p>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2 lg:min-w-[25rem]">
+                <Button
+                  onClick={() => {
+                    trackEvent('debrief_cta_clicked', { source: 'home_debrief_section' });
+                    navigate(pathWithSource('/debrief', 'home_debrief_section'));
+                  }}
+                  variant="accent"
+                  size="lg"
+                  rightIcon={<ArrowRight className="h-5 w-5" />}
+                >
+                  Get a debrief — {DEBRIEF_PRICE}
+                </Button>
+                <Button
+                  onClick={() => startAssessment('home_debrief_section_free_map')}
+                  variant="ghost"
+                  size="md"
+                >
+                  Take free map first
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
 
         <section className="bg-jung-base py-12 lg:py-20">
           <div className="lab-container grid gap-10 lg:grid-cols-[0.88fr_1.12fr]">
             <div>
-              <p className="figure-label">Fig. 09 — Before you start</p>
+              <p className="figure-label">Fig. 08 — Before you start</p>
               <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-jung-dark md:text-5xl">
                 Straight answers, no personality-test hype.
               </h2>

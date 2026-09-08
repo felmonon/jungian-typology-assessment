@@ -34,6 +34,7 @@ describe('optional report offer', () => {
     const button = screen.getByRole('button', { name: `Get my report — ${price}` });
     fireEvent.click(button);
     expect(onUnlock).toHaveBeenCalledExactlyOnceWith(tier, 'results_locked_preview');
+    fireEvent.click(screen.getByText('How this connects to your free map'));
     expect(screen.getByText(results.narrative.developmentalEdge)).toBeVisible();
     expect(screen.getByText(/Your free map is complete. No subscription./)).toBeVisible();
     expect(screen.getByText(/7-day refund policy/)).toBeVisible();

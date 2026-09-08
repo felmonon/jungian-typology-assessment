@@ -30,6 +30,7 @@ export function useOfferImpression<T extends HTMLElement = HTMLElement>({
     let observer: IntersectionObserver | undefined;
     const reportIfVisible = () => {
       if (!active || !intersects || document.visibilityState === 'hidden' || seenKeys.current.has(impressionKey)) return;
+      if (element.closest('[hidden], [inert], [aria-hidden="true"]')) return;
       seenKeys.current.add(impressionKey);
       observer?.disconnect();
       onImpressionRef.current();

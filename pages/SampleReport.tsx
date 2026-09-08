@@ -2,7 +2,7 @@ import { ArrowRight, FileText } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { REPORT_SAMPLE_EXCERPTS as excerpts } from '../data/report-sample';
-import { FunctionStackArtwork } from '../components/brand/FunctionStackArtwork';
+import { useActiveSection } from '../hooks/useActiveSection';
 import { Button } from '../components/ui/Button';
 import { discountedPriceLabel } from '../data/discount';
 import { PRICING } from '../data/pricing';
@@ -16,6 +16,7 @@ import { isDepthAssessmentResult } from '../utils/depthScoring';
 
 export const SampleReport: React.FC = () => {
   const navigate = useNavigate();
+  const activeSection = useActiveSection(excerpts.map(section => `sample-${section.id}`));
   const [hasResults] = useState(() => {
     try {
       return isDepthAssessmentResult(
@@ -54,21 +55,20 @@ export const SampleReport: React.FC = () => {
     navigate(destination);
   };
   return (
-    <div className="lab-container py-10 sm:py-16">
+    <div className="studio-sample-report lab-container py-8 sm:py-14">
       <header className="mx-auto max-w-3xl">
         <p className="journey-eyebrow">Inside an Insight report</p>
         <h1 className="mt-4 font-display text-4xl leading-tight sm:text-6xl">
-          A map becomes useful
+          From a function map
           <br />
-          <span className="font-normal italic text-jung-accent">
-            when you can live with it.
+          <span className="text-jung-accent">
+            to moments you recognize.
           </span>
         </h1>
         <p className="mt-5 max-w-2xl text-base leading-7 text-jung-secondary">
           Read four illustrative excerpts below. Your paid report contains ten
           AI-generated sections based on your own assessment result.
         </p>
-        <div className="mt-8 max-w-xl"><FunctionStackArtwork compact /></div>
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-y border-jung-border py-4">
           <span className="font-display text-xl text-jung-accent">
             Ti · Ne · Si · Fe
@@ -79,9 +79,22 @@ export const SampleReport: React.FC = () => {
         </div>
       </header>
       <div className="mx-auto mt-10 grid max-w-5xl items-start gap-10 lg:grid-cols-[15rem_1fr] lg:gap-12">
+        <details className="rounded-xl border border-jung-border bg-white p-4 lg:hidden">
+          <summary className="cursor-pointer text-sm font-semibold">Explore the four sample chapters</summary>
+          <ol className="mt-3">
+            {excerpts.map(section => <li key={section.id}>
+              <a className="flex min-h-11 items-center gap-3 text-sm text-jung-secondary" href={`#sample-${section.id}`}>
+                <span className="text-xs text-jung-accent">
+                  {section.number}
+                </span>
+                {section.category}
+              </a>
+            </li>)}
+          </ol>
+        </details>
         <nav
           aria-label="Sample report contents"
-          className="rounded-xl bg-jung-surface-alt p-5 lg:sticky lg:top-28"
+          className="hidden rounded-xl bg-jung-surface-alt p-5 lg:sticky lg:top-28 lg:block"
         >
           <p className="journey-eyebrow">In this sample</p>
           <ol className="mt-3">
@@ -89,6 +102,7 @@ export const SampleReport: React.FC = () => {
               <li key={section.id}>
                 <a
                   href={`#sample-${section.id}`}
+                  aria-current={activeSection === `sample-${section.id}` ? "location" : undefined}
                   className="flex min-h-11 items-center gap-3 text-xs leading-5 text-jung-secondary hover:text-jung-accent"
                 >
                   <span className="font-mono text-jung-gold">
@@ -100,9 +114,14 @@ export const SampleReport: React.FC = () => {
             ))}
           </ol>
           <div className="mt-5 border-t border-jung-border pt-5">
-            <p className="font-display text-3xl">{price}<span className="ml-2 font-sans text-xs text-jung-muted">once · CAD</span></p>
+            <p className="font-display text-3xl">
+              {price}
+              <span className="ml-2 font-sans text-xs text-jung-muted">once · CAD</span>
+            </p>
             <p className="mt-2 text-xs leading-6 text-jung-secondary">Ten AI-generated sections based on your result, plus the Function Stack in Depth PDF guide.</p>
-            <Button variant="accent" className="mt-4 w-full" onClick={continueToReport}>{hasResults ? 'Get my Insight report' : 'Start with my free map'}</Button>
+            <Button variant="accent" className="mt-4 w-full" onClick={continueToReport}>
+              {hasResults ? 'Get my Insight report' : 'Start with my free map'}
+            </Button>
             <p className="mt-3 text-[11px] leading-6 text-jung-muted">Free map first. No subscription.<br />7-day refund policy.</p>
           </div>
           <p className="mt-4 border-t border-jung-border pt-4 text-xs leading-6 text-jung-muted">

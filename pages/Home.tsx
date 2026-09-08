@@ -5,9 +5,9 @@ import {
   Clock3,
   FileText,
 } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FunctionStackArtwork } from '../components/brand/FunctionStackArtwork';
+import { PatternLens } from '../components/brand/PatternLens';
 import { FunctionEmblem } from '../components/brand/FunctionEmblem';
 import { ReportSamplePreview } from '../components/results/ReportSamplePreview';
 import { Button } from '../components/ui/Button';
@@ -18,23 +18,6 @@ import { pathWithSource } from '../lib/acquisition-source';
 import { AnalyticsEvents, trackEvent } from '../lib/analytics';
 
 const insightPrice = discountedPriceLabel(PRICING.insight.amount);
-const exampleReadings = [
-  {
-    label: 'Everyday',
-    title: 'You want it to make sense.',
-    text: 'You might check the reasoning behind an idea before deciding whether to trust it. A clear explanation can matter more to you than a confident delivery.',
-  },
-  {
-    label: 'Under stress',
-    title: 'Clarity can turn into distance.',
-    text: 'When a conversation gets tense, you might keep explaining your point while missing the need for reassurance. Notice whether more analysis is helping you reconnect.',
-  },
-  {
-    label: 'Try this',
-    title: 'Make room for one more question.',
-    text: 'Before offering your explanation, ask: “What matters most to you here?” Then reflect back what you heard. Observe what changes in the conversation.',
-  },
-];
 const guides = [
   [
     '/jungian-cognitive-functions-test',
@@ -84,13 +67,12 @@ const faqs = [
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
-  const [exampleIndex, setExampleIndex] = useState(0);
   useSEO(PAGE_SEO.home);
   useEffect(() => {
     trackEvent('home_wedge_viewed', {
       source: 'home',
       promise: 'mbti_alternative_function_stack',
-      version: '2026_09_clarity',
+      version: '2026_09_pattern_studio',
     });
   }, []);
   const start = (source: string) => {
@@ -108,202 +90,82 @@ export const Home: React.FC = () => {
 
   return (
     <div className="journey-home">
-      <section className="lab-container grid items-start gap-12 py-10 md:py-12 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
-        <div>
-          <p className="journey-eyebrow">
-            The free Jungian cognitive functions test
-          </p>
-          <h1 className="mt-6 max-w-2xl font-display text-[43px] leading-[1.07] tracking-[-0.035em] text-jung-dark sm:text-6xl lg:text-[64px]">
-            Your type keeps changing.
-            <br />
-            <span className="font-normal italic text-jung-accent">
-              Find the pattern underneath.
-            </span>
-          </h1>
-          <p className="mt-6 max-w-lg text-base leading-7 text-jung-secondary sm:leading-8">
-            Explore how you take in the world, make decisions, and respond to
-            stress. Get a map of your cognitive functions—and a clearer place to
-            begin.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
-            <Button
-              variant="accent"
-              size="lg"
-              onClick={() => start('home_hero')}
-              rightIcon={<ArrowRight className="h-4 w-4" />}
-            >
-              Find my pattern
-            </Button>
-            <a
-              href="#example-map"
-              className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-jung-secondary underline decoration-jung-border underline-offset-4 hover:text-jung-accent"
-            >
-              Explore an example <ArrowRight className="h-4 w-4" />
-            </a>
+      <section className="studio-hero lab-container">
+        <div className="studio-hero-copy">
+          <p className="studio-kicker"><span /> A little more self-understanding</p>
+          <h1>You’re more<br />than <span>four letters.</span></h1>
+          <p className="studio-hero-description">Your type keeps changing. Your everyday patterns can tell you more. Explore how you think, connect, and respond to stress with a free function map.</p>
+          <div className="studio-hero-actions">
+            <Button variant="accent" size="lg" onClick={() => start('home_hero')} rightIcon={<ArrowRight className="h-4 w-4" />}>Find my pattern</Button>
+            <a href="#how-it-works">How it works <span aria-hidden="true">↓</span></a>
           </div>
-          <p className="mt-5 flex items-center gap-2 text-xs leading-6 text-jung-muted sm:text-sm">
-            <Clock3 className="h-4 w-4 shrink-0" />
-            42 questions · 20–25 minutes · Saves as you go
-          </p>
-          <p className="mt-1 text-xs leading-6 text-jung-muted sm:text-sm">
-            Free results. No signup or card required.
-          </p>
+          <p className="studio-reassurance"><Check size={15} /> Free results. No signup. No card.</p>
+          <div className="studio-time">
+            <Clock3 size={15} />
+            <span>42 questions · 20–25 minutes<br /><small>Take your time. Your progress saves as you go.</small></span>
+          </div>
         </div>
-        <div
-          id="example-map"
-          className="journey-example scroll-mt-28 rounded-2xl border border-jung-border bg-jung-surface p-5 sm:p-8"
-        >
-          <div className="flex items-center justify-between gap-3 border-b border-jung-border-light pb-5">
-            <div>
-              <p className="journey-eyebrow">A map you can read</p>
-              <h2 className="mt-2 font-display text-2xl">
-                The thoughtful explorer
-              </h2>
-            </div>
-            <span className="rounded-full bg-jung-surface-alt px-3 py-1.5 text-[11px] font-medium text-jung-secondary">
-              Illustrative example
-            </span>
-          </div>
-          <div className="my-6" aria-label="Illustrative Ti–Ne–Si–Fe pattern, not a personal result">
-            <FunctionStackArtwork />
-          </div>
-          <div className="rounded-xl bg-jung-accent-light p-4 sm:p-5">
-            <div
-              className="flex gap-1 border-b border-jung-accent/15 pb-3"
-              aria-label="Explore the example"
-            >
-              {exampleReadings.map((item, i) => (
-                <button
-                  key={item.label}
-                  type="button"
-                  aria-pressed={exampleIndex === i}
-                  onClick={() => {
-                    setExampleIndex(i);
-                    trackEvent('home_preview_explored', { topic: item.label });
-                  }}
-                  className={`min-h-11 flex-1 rounded-lg px-2 text-xs font-semibold transition-colors ${exampleIndex === i ? 'bg-jung-accent text-white' : 'text-jung-accent hover:bg-white/70'}`}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-            <div
-              className="min-h-[145px] pt-4"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              <h3 className="font-display text-xl text-jung-accent">
-                {exampleReadings[exampleIndex].title}
-              </h3>
-              <p className="mt-2 text-sm leading-6 text-jung-secondary">
-                {exampleReadings[exampleIndex].text}
-              </p>
-            </div>
-          </div>
-          <p className="mt-4 text-[11px] leading-5 text-jung-muted">
-            An example of the reading experience. Your map comes from your own
-            answers.
-          </p>
+        <div id="example-map" className="studio-hero-art">
+          <PatternLens illustrative />
         </div>
       </section>
-      <section className="lab-container pb-12" aria-label="Explore the eight cognitive functions">
-        <div className="mb-4 flex items-baseline justify-between gap-4"><p className="journey-eyebrow">Eight functions. Your own pattern.</p><span className="text-xs text-jung-muted">Explore the theory ↗</span></div>
-        <div className="function-legend">{['Ti', 'Te', 'Ni', 'Ne', 'Si', 'Se', 'Fi', 'Fe'].map(code => <a key={code} href={`/functions/${code.toLowerCase()}`} aria-label={`Learn about ${code}`}><FunctionEmblem code={code} /><span>{code}</span></a>)}</div>
-      </section>
-      <section className="border-y border-jung-border-light bg-jung-surface">
-        <div className="lab-container grid gap-7 py-10 md:grid-cols-3 md:gap-12">
+      <section id="how-it-works" className="studio-steps lab-container">
+        <div className="studio-section-intro">
+          <p className="journey-eyebrow">A clear path from here</p>
+          <h2>Get curious. Get your map.<br />Make it useful.</h2>
+          <Link to="/methodology">See how the assessment works <ArrowUpRight size={16} /></Link>
+        </div>
+        <ol>
           {[
-            [
-              '01',
-              'Notice your natural strengths.',
-              'See which ways of thinking and noticing you rely on most.',
-            ],
-            [
-              '02',
-              'Recognize the stress pattern.',
-              'Explore the less familiar side that may surface under pressure.',
-            ],
-            [
-              '03',
-              'Give yourself a starting point.',
-              'Use your map as a prompt for observation in everyday life.',
-            ],
-          ].map(([number, title, body]) => (
-            <div key={number} className="flex gap-4">
-              <span className="pt-1 font-mono text-xs text-jung-gold">
-                {number}
-              </span>
-              <div>
-                <h2 className="font-display text-xl">{title}</h2>
-                <p className="mt-2 text-sm leading-6 text-jung-secondary">
-                  {body}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-      <section className="lab-container grid gap-10 py-16 md:py-24 lg:grid-cols-[0.85fr_1fr] lg:gap-24">
-        <div>
-          <p className="journey-eyebrow">From curiosity to clarity</p>
-          <h2 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
-            Begin with your
-            <br className="hidden sm:block" /> everyday life.
-          </h2>
-          <p className="mt-5 max-w-md text-base leading-7 text-jung-secondary">
-            No theory to memorize. Choose what feels closest to your actual
-            experience.
-          </p>
-          <Link
-            to="/methodology"
-            className="mt-5 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-jung-accent underline underline-offset-4"
-          >
-            Read how the map is made <ArrowUpRight className="h-4 w-4" />
-          </Link>
-        </div>
-        <ol className="divide-y divide-jung-border">
-          {[
-            [
-              'Answer 42 real-life questions',
-              'Work through decisions, relationships, attention, and stress. Pause whenever you need; your answers save on this device.',
-            ],
-            [
-              'Read your free function map',
-              'Explore your leading patterns, supporting functions, and growth edge. Treat the result as something to test against your experience.',
-            ],
-            [
-              'Go deeper if it feels useful',
-              `Keep the free map, or add a personalized Insight report for ${insightPrice}. Read a sample before you decide.`,
-            ],
-          ].map(([title, body], i) => (
-            <li key={title} className="flex gap-5 py-6 first:pt-0">
-              <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-jung-border text-sm text-jung-accent">
-                {i + 1}
-              </span>
-              <div>
-                <h3 className="font-display text-2xl">{title}</h3>
-                <p className="mt-2 text-sm leading-7 text-jung-secondary">
-                  {body}
-                </p>
-              </div>
-            </li>
-          ))}
+            ['01', 'Start with everyday life.', 'Answer 42 questions about decisions, attention, and stress. Choose what sounds like you—there’s no theory to learn.', 'Answer at your own pace'],
+            ['02', 'Meet your pattern.', 'Get your free map, all eight functions, and an introductory interpretation. Explore what feels familiar and what surprises you.', 'Your complete core map is free'],
+            ['03', 'Choose your next step.', `Keep exploring your map, or add an Insight report for ${insightPrice} to reflect on relationships, work, and growth.`, 'The report is always optional'],
+          ].map(([n, title, body, note]) => <li key={n}>
+            <span className="studio-step-number">
+              {n}
+            </span>
+            <h3>
+              {title}
+            </h3>
+            <p>
+              {body}
+            </p>
+            <span className="studio-step-note">
+              <Check size={14} />
+              {note}
+            </span>
+          </li>)}
         </ol>
       </section>
-      <section id="pricing" className="bg-jung-accent text-white">
+      <section className="studio-functions lab-container">
+        <div>
+          <p className="journey-eyebrow">The ideas behind your map</p>
+          <h2>Eight ways to meet the world.</h2>
+          <p>Thinking, feeling, sensing, and intuition—each directed inward or outward.</p>
+        </div>
+        <div className="studio-function-list">
+          {['Ti', 'Te', 'Ni', 'Ne', 'Si', 'Se', 'Fi', 'Fe'].map(code => <a key={code} href={`/functions/${code.toLowerCase()}`} aria-label={`Learn about ${code}`}>
+            <FunctionEmblem code={code} />
+            <span>
+              {code}
+            </span>
+          </a>)}
+        </div>
+      </section>
+      <section id="pricing" className="studio-home-report">
         <div className="lab-container grid items-center gap-10 py-14 md:py-20 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12">
           <div>
-            <p className="journey-eyebrow !text-white/70">From your map to everyday life</p>
-            <h2 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">See what deeper<br />understanding looks like.</h2>
-            <p className="mt-5 mb-7 max-w-lg text-base leading-7 text-white/80">Explore an example before you decide. Insight connects your pattern to the moments that matter: stress, relationships, work, and growth.</p>
+            <p className="journey-eyebrow">Optional depth · Insight report</p>
+            <h2 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">Turn a little insight<br />into something useful.</h2>
+            <p className="mt-5 mb-7 max-w-lg text-base leading-7 text-jung-secondary">Explore an example before you decide. Insight connects your pattern to the moments that matter: stress, relationships, work, and growth.</p>
             <ReportSamplePreview onExplore={topic => trackEvent('home_report_sample_explored', { topic, source: 'home_paid_preview' })} />
           </div>
-          <div className="rounded-2xl bg-jung-surface p-6 text-jung-dark sm:p-8">
+          <div className="studio-insight-card">
             <div className="flex items-center justify-between">
               <span className="text-sm font-semibold">Insight</span>
               <FileText className="h-5 w-5 text-jung-accent" />
             </div>
-            <p className="mt-4 font-display text-5xl">
+            <p className="mt-4 font-display text-6xl font-semibold tracking-tight">
               {insightPrice}
               <span className="ml-3 font-sans text-sm text-jung-muted">
                 one time · CAD
@@ -382,7 +244,9 @@ export const Home: React.FC = () => {
                 <h3 className="font-display text-xl group-hover:text-jung-accent">
                   {title}
                 </h3>
-                <p className="mt-1 text-xs text-jung-muted">{subtitle}</p>
+                <p className="mt-1 text-xs text-jung-muted">
+                  {subtitle}
+                </p>
               </div>
               <ArrowUpRight className="h-4 w-4 shrink-0 text-jung-accent" />
             </a>
@@ -458,10 +322,10 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
-      <section className="lab-container py-14 text-center md:py-20">
+      <section className="studio-final-cta lab-container">
         <p className="journey-eyebrow">Your next step</p>
         <h2 className="mx-auto mt-4 max-w-2xl font-display text-4xl leading-tight sm:text-5xl">
-          Start with one honest answer.
+          A clearer view of you starts here.
         </h2>
         <Button
           variant="accent"

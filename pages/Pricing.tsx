@@ -97,10 +97,10 @@ export const Pricing: React.FC = () => {
       tier === 'free'
         ? pathWithSource(hasResults ? '/results' : '/assessment', source)
         : pathWithSource(
-            hasResults ? `/checkout/${tier}` : '/assessment',
-            source,
-            { tier },
-          );
+          hasResults ? `/checkout/${tier}` : '/assessment',
+          source,
+          { tier },
+        );
     AnalyticsEvents.ctaClicked(
       tier === 'free' ? 'start_assessment' : `unlock_${tier}`,
       source,
@@ -110,14 +110,14 @@ export const Pricing: React.FC = () => {
     navigate(destination);
   };
   return (
-    <div className="lab-container pb-16">
+    <div className="studio-pricing lab-container pb-16">
       <header className="mx-auto max-w-2xl py-12 text-center sm:py-16">
         <p className="journey-eyebrow">Simple, one-time pricing</p>
-        <h1 className="mt-4 font-display text-5xl leading-[1.08] sm:text-6xl">
-          Your map is free.
+        <h1 className="mt-4 font-display text-5xl font-semibold leading-[1.08] sm:text-6xl">
+          Start free.
           <br />
-          <span className="font-normal italic text-jung-accent">
-            The next step is yours.
+          <span className="text-jung-accent">
+            Choose your depth.
           </span>
         </h1>
         <p className="mx-auto mt-5 max-w-lg text-base leading-7 text-jung-secondary">
@@ -140,17 +140,21 @@ export const Pricing: React.FC = () => {
         id="plans"
         className="mx-auto grid max-w-4xl scroll-mt-28 gap-5 md:grid-cols-2"
       >
-        {plans.map((plan) => (
+        {(hasResults ? [plans[1], plans[0]] : plans).map((plan) => (
           <article
             key={plan.id}
-            className={`flex flex-col rounded-2xl border p-6 sm:p-8 ${plan.id === 'insight' ? 'border-jung-accent bg-jung-surface shadow-lg' : 'border-jung-border bg-jung-surface/60'}`}
+            className={`flex flex-col rounded-2xl border p-6 sm:p-8 ${plan.id === 'insight' ? 'border-jung-accent bg-jung-accent-light' : 'border-jung-border bg-jung-surface/60'}`}
           >
-            <p className="journey-eyebrow">{plan.eyebrow}</p>
-            <h2 className="mt-3 font-display text-3xl">{plan.name}</h2>
+            <p className="journey-eyebrow">
+              {plan.eyebrow}
+            </p>
+            <h2 className="mt-3 font-display text-3xl">
+              {plan.name}
+            </h2>
             <p className="mt-3 min-h-12 text-sm leading-6 text-jung-secondary">
               {plan.description}
             </p>
-            <p className="mt-6 font-display text-5xl">
+            <p className="mt-6 font-display text-5xl font-semibold">
               {plan.price}
               <span className="ml-2 font-sans text-xs text-jung-muted">
                 {plan.id === 'free' ? 'always free' : 'one time · CAD'}
@@ -230,7 +234,9 @@ export const Pricing: React.FC = () => {
           <p className="journey-eyebrow">Look inside before you decide</p>
           <h2 className="mt-3 font-display text-3xl leading-tight sm:text-4xl">A report you can<br />put into practice.</h2>
           <p className="mt-4 text-sm leading-7 text-jung-secondary">Explore a fictional example of the reading experience. Your free map is yours to keep; paid depth adds interpretation across ten sections.</p>
-          <Button variant="accent" className="mt-5" onClick={() => choose('insight')}>{hasResults ? `Get Insight — ${discountedPriceLabel(PRICING.insight.amount)}` : 'Start with my free map'}</Button>
+          <Button variant="accent" className="mt-5" onClick={() => choose('insight')}>
+            {hasResults ? `Get Insight — ${discountedPriceLabel(PRICING.insight.amount)}` : 'Start with my free map'}
+          </Button>
           <p className="mt-3 text-xs leading-6 text-jung-muted">Insight: {discountedPriceLabel(PRICING.insight.amount)} once · CAD · 7-day refund</p>
           <Link to="/sample-report" className="mt-3 inline-flex min-h-11 items-center text-xs font-semibold text-jung-accent underline underline-offset-4">Read all four sample excerpts</Link>
         </div>

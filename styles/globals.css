@@ -1,40 +1,38 @@
 @import "tailwindcss";
 
 /* ============================================================
-   TypeJung — "The Analyst's Archive"
-   A depth-psychology monograph: warm paper, green ink,
-   hairline rules, mono specimen labels, one oxide-red accent
-   reserved for the dominant–inferior tension.
+   TypeJung — Pattern Studio
+   Clear reading, expressive function symbols, and a guided journey.
    ============================================================ */
 
 @theme {
   /* Typography */
-  --font-display: "Fraunces", Georgia, serif;
+  --font-display: "Schibsted Grotesk", "Helvetica Neue", sans-serif;
   --font-serif: "Fraunces", Georgia, serif;
   --font-sans: "Schibsted Grotesk", "Helvetica Neue", sans-serif;
   --font-mono: "Spline Sans Mono", "Menlo", monospace;
 
   /* Paper and ink */
-  --color-jung-base: #faf8f2;
-  --color-jung-surface: #fffefa;
-  --color-jung-surface-elevated: #fffefa;
-  --color-jung-surface-alt: #f3f0e7;
+  --color-jung-base: #f8f9fc;
+  --color-jung-surface: #ffffff;
+  --color-jung-surface-elevated: #ffffff;
+  --color-jung-surface-alt: #eef0f6;
 
-  --color-jung-dark: #15190f;
-  --color-jung-secondary: #4a5142;
-  --color-jung-muted: #646b5b;
-  --color-jung-subtle: #a8ae9c;
+  --color-jung-dark: #202230;
+  --color-jung-secondary: #515566;
+  --color-jung-muted: #656a7a;
+  --color-jung-subtle: #a8afc0;
 
-  --color-jung-border: #d8d4c4;
-  --color-jung-border-light: #e8e5da;
+  --color-jung-border: #dce0eb;
+  --color-jung-border-light: #e9ecf2;
 
   /* Green ink */
-  --color-jung-primary: #1d3f28;
-  --color-jung-accent: #20492f;
-  --color-jung-accent-hover: #16341f;
-  --color-jung-accent-light: #ecf2e9;
-  --color-jung-accent-muted: #647f60;
-  --color-jung-gold: #8c6827;
+  --color-jung-primary: #4144b8;
+  --color-jung-accent: #4144b8;
+  --color-jung-accent-hover: #323494;
+  --color-jung-accent-light: #eeeefe;
+  --color-jung-accent-muted: #8589d5;
+  --color-jung-gold: #785435;
 
   /* The tension accent — used sparingly, like red ink on a proof */
   --color-jung-tension: #b23c1a;
@@ -98,31 +96,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Soft top-light wash, like a reading lamp on paper */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse at 78% -4%, rgba(32, 73, 47, 0.07) 0, transparent 34rem),
-    radial-gradient(ellipse at 4% 2%, rgba(140, 104, 39, 0.05) 0, transparent 26rem),
-    linear-gradient(180deg, rgba(255, 254, 250, 0.85), rgba(250, 248, 242, 0));
-}
-
-/* Paper grain over everything, barely-there */
-body::after {
-  content: "";
-  display: block;
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  pointer-events: none;
-  opacity: 0.3;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.05'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
-}
+body::before, body::after { content: none; }
 
 button,
 a,
@@ -542,7 +516,7 @@ select {
 
 /* The function alphabet: shared across the map, report, and share preview. */
 .function-artwork { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px; overflow: hidden; border-radius: 2px; }
-.function-tile { min-width: 0; display: flex; flex-direction: column; padding: 18px; color: #20492f; }
+.function-tile { min-width: 0; display: flex; flex-direction: column; padding: 18px; color: #4144b8; }
 .function-tile--0 { background: #244b35; color: #f6f3e8; }
 .function-tile--1 { background: #dce7c6; }
 .function-tile--2 { background: #eee6d5; }
@@ -564,11 +538,11 @@ select {
 .report-sample-toolbar { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 15px 20px; background: #173924; color: #eceedd; font: 9px/1.5 var(--font-mono); letter-spacing: .08em; }
 .report-sample-tabs { display: flex; border-bottom: 1px solid #bcc7b5; padding: 0 14px; background: #edf0e7; }
 .report-sample-tabs button { display: flex; flex: 1; justify-content: space-between; gap: 8px; align-items: center; min-height: 52px; border-bottom: 3px solid transparent; padding: 10px 12px; color: #52624d; font-size: 12px; font-weight: 600; }
-.report-sample-tabs button[aria-selected="true"] { border-color: #20492f; color: #173924; }
+.report-sample-tabs button[aria-selected="true"] { border-color: #4144b8; color: #173924; }
 .report-sample-tabs button:hover { background: #dfe8d5; }
 .report-sample-paper { margin: 20px; padding: 24px; background: #fffdf7; box-shadow: 0 6px 18px -10px #334c3a55; }
 .report-sample-folio { display: flex; gap: 10px; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid #d9dcd0; color: #59634f; font: 9px/1.5 var(--font-mono); letter-spacing: .05em; }
-.report-sample-practice { margin-top: 22px; padding: 18px 0 0 18px; border-top: 1px solid #d9dcd0; border-left: 2px solid #8c6827; }
+.report-sample-practice { margin-top: 22px; padding: 18px 0 0 18px; border-top: 1px solid #d9dcd0; border-left: 2px solid #785435; }
 .report-sample-disclosure { margin-top: 24px; border-top: 1px solid #d9dcd0; padding-top: 14px; font-size: 11px; line-height: 1.7; color: #65705c; }
 .function-legend { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); border-top: 1px solid var(--color-jung-border); border-bottom: 1px solid var(--color-jung-border); }
 .function-legend a { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 80px; color: var(--color-jung-accent); font-size: 13px; border-right: 1px solid var(--color-jung-border); }

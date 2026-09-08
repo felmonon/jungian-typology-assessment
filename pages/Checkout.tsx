@@ -798,11 +798,11 @@ export const Checkout: React.FC = () => {
   }
 
   return (
-    <div className="mx-auto max-w-5xl px-5 py-10 sm:px-8 sm:py-14">
+    <div className="studio-checkout mx-auto max-w-5xl px-5 py-10 sm:px-8 sm:py-14">
       <div className="mb-8">
         <p className="journey-eyebrow">One last look</p>
         <h1 className="mt-3 font-display text-4xl leading-tight sm:text-5xl">
-          Your map. A deeper understanding.
+          Make room for a deeper look.
         </h1>
         <p className="mt-4 max-w-xl text-base leading-7 text-jung-secondary">
           Add {checkoutDetails.packageName} to the result you have already

@@ -66,6 +66,7 @@ describe('assessment navigation', () => {
       ).toBeVisible(),
     );
     expect(screen.getAllByRole('group')).toHaveLength(1);
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Next question' })).toBeEnabled());
     fireEvent.click(screen.getByRole('button', { name: 'Next question' }));
     expect(screen.getByRole('alert')).toHaveTextContent('Choose an answer');
     await waitFor(() =>
@@ -77,6 +78,7 @@ describe('assessment navigation', () => {
 
   it('keeps a selected answer when the user goes forward and back', async () => {
     openAssessment();
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Next question' })).toBeEnabled());
     const answer = screen.getAllByRole('radio')[0] as HTMLInputElement;
     const label = answer.closest('label')!.textContent!;
     fireEvent.click(answer);
@@ -88,6 +90,7 @@ describe('assessment navigation', () => {
     );
     fireEvent.click(screen.getByRole('button', { name: 'Next question' }));
     await screen.findByRole('heading', { name: depthQuestions[1].prompt });
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Back' })).toBeEnabled());
     fireEvent.click(screen.getByRole('button', { name: 'Back' }));
     await screen.findByRole('heading', { name: depthQuestions[0].prompt });
     await waitFor(() =>
@@ -112,5 +115,39 @@ describe('assessment navigation', () => {
       '12',
     );
     expect(screen.getByText(/Your 12 answers are saved/)).toBeVisible();
+  });
+
+  it('selects the displayed option with number keys without skipping the prompt or answering during its transition', async () => {
+    openAssessment();
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Next question' })).toBeEnabled());
+    const first = screen.getByRole('heading', { name: depthQuestions[0].prompt });
+    first.focus();
+    const displayedAnswer = screen.getAllByRole('radio')[1] as HTMLInputElement;
+    fireEvent.keyDown(first, { key: '2' });
+    expect(displayedAnswer).toBeChecked();
+    expect(screen.getByRole('heading', { name: depthQuestions[0].prompt })).toBeVisible();
+    expect(JSON.parse(localStorage.getItem(ASSESSMENT_PROGRESS_STORAGE_KEY)!).answers[depthQuestions[0].id])
+      .toBe(displayedAnswer.value);
+
+    fireEvent.keyDown(first, { key: 'Enter' });
+    fireEvent.keyDown(document, { key: '1' });
+    fireEvent.keyDown(document, { key: 'Enter' });
+    expect(JSON.parse(localStorage.getItem(ASSESSMENT_PROGRESS_STORAGE_KEY)!).answers[depthQuestions[1].id])
+      .toBeUndefined();
+    const second = await screen.findByRole('heading', { name: depthQuestions[1].prompt });
+    await waitFor(() => expect(second).toHaveFocus());
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Next question' })).toBeEnabled());
+    expect(screen.getAllByRole('radio').every((radio) => !(radio as HTMLInputElement).checked)).toBe(true);
+
+    fireEvent.keyDown(second, { key: '1' });
+    expect(screen.getAllByRole('radio')[0]).toBeChecked();
+    const continueButton = screen.getByRole('button', { name: 'Next question' });
+    continueButton.focus();
+    expect(fireEvent.keyDown(continueButton, { key: 'Enter' })).toBe(true);
+    expect(screen.getByRole('heading', { name: depthQuestions[1].prompt })).toBeVisible();
+    // Simulate the button's native activation separately: the page shortcut
+    // must not already have advanced before that click arrives.
+    fireEvent.click(continueButton);
+    await screen.findByRole('heading', { name: depthQuestions[2].prompt });
   });
 });

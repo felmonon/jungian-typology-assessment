@@ -333,7 +333,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
         Skip to content
       </a>
       <header
-        className={`sticky top-0 z-50 border-b transition-all duration-300 ${
+        className={`studio-header sticky top-0 z-50 border-b transition-all duration-300 ${
           scrolled
             ? 'glass border-jung-border py-3 shadow-sm'
             : 'border-jung-border/60 bg-jung-base/95 py-4'
@@ -345,16 +345,14 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
             className="flex min-h-11 items-center gap-3"
             aria-label="TypeJung home"
           >
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-jung-border bg-jung-surface shadow-sm sm:h-10 sm:w-10">
+            <span className="flex h-8 w-8 items-center justify-center sm:h-10 sm:w-10">
               <TypeJungMark size="sm" />
             </span>
             <span className="flex flex-col">
-              <span className="font-display text-xl leading-none text-jung-dark sm:text-2xl">
+              <span className="studio-wordmark font-display text-xl leading-none text-jung-dark sm:text-2xl">
                 TypeJung
               </span>
-              <span className="text-[11px] font-medium text-jung-muted sm:text-xs">
-                Free function-stack map
-              </span>
+
             </span>
           </Link>
 
@@ -377,10 +375,10 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
             ) : (
               accountAction
             )}
-            <div className="hidden sm:block">
+            <div className="block">
               <Link
                 to="/assessment"
-                className="btn-premium !min-h-10 !py-2 text-sm"
+                className="btn-premium !min-h-11 !px-4 !py-2 text-xs sm:text-sm"
               >
                 Start free
               </Link>

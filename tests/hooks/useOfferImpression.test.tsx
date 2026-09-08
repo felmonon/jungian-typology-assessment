@@ -95,6 +95,18 @@ describe('offer impressions', () => {
     expect(onImpression).not.toHaveBeenCalled();
   });
 
+  it('rejects a queued intersecting notification after its containing tab is hidden', () => {
+    const onImpression = vi.fn();
+    const view = render(<div><Offer onImpression={onImpression} /></div>);
+    const observer = ObserverMock.instances[0];
+    view.rerender(<div hidden><Offer onImpression={onImpression} /></div>);
+    act(() => observer.emit(true));
+    expect(onImpression).not.toHaveBeenCalled();
+    view.rerender(<div><Offer onImpression={onImpression} /></div>);
+    act(() => observer.emit(true));
+    expect(onImpression).toHaveBeenCalledTimes(1);
+  });
+
   it('waits for a background tab to become visible', () => {
     const visibility = vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('hidden');
     const onImpression = vi.fn();

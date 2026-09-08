@@ -1,3 +1,4 @@
+import { useAssessmentKeyboard } from '../hooks/useAssessmentKeyboard';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
   ArrowLeft,
@@ -124,6 +125,7 @@ export const Assessment: React.FC = () => {
     [entryAttribution, entrySource],
   );
   const [currentPage, setCurrentPage] = useState(0);
+  const [questionReadyPage, setQuestionReadyPage] = useState<number | null>(null);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [showCompletion, setShowCompletion] = useState(false);
   const [flagUnanswered, setFlagUnanswered] = useState(false);
@@ -402,6 +404,7 @@ export const Assessment: React.FC = () => {
   }, [answers, navigate, trackComplete]);
 
   const handleNext = useCallback(() => {
+    if (questionReadyPage !== currentPage) return;
     if (!isPageComplete) {
       const firstUnanswered = currentQuestions.find(
         (question) => !answers[question.id],
@@ -426,6 +429,7 @@ export const Assessment: React.FC = () => {
 
     if (currentPage < totalPages - 1) {
       const nextPage = currentPage + 1;
+      setQuestionReadyPage(null);
       setCurrentPage(nextPage);
       persist(answers, nextPage);
       window.scrollTo({ top: 0, behavior: scrollBehavior });
@@ -436,6 +440,7 @@ export const Assessment: React.FC = () => {
       (question) => !answers[question.id],
     );
     if (firstMissing >= 0) {
+      setQuestionReadyPage(null);
       setCurrentPage(firstMissing);
       setFlagUnanswered(true);
       persist(answers, firstMissing);
@@ -449,22 +454,38 @@ export const Assessment: React.FC = () => {
     currentQuestions,
     isPageComplete,
     persist,
+    questionReadyPage,
     scrollBehavior,
     totalPages,
   ]);
 
   const handleBack = useCallback(() => {
+    if (questionReadyPage !== currentPage) return;
     if (currentPage > 0) {
       const nextPage = currentPage - 1;
       setFlagUnanswered(false);
+      setQuestionReadyPage(null);
       setCurrentPage(nextPage);
       persist(answers, nextPage);
       window.scrollTo({ top: 0, behavior: scrollBehavior });
     }
-  }, [answers, currentPage, persist, scrollBehavior]);
+  }, [answers, currentPage, persist, questionReadyPage, scrollBehavior]);
+
+  useAssessmentKeyboard({
+    enabled: !showCompletion && questionReadyPage === currentPage,
+    optionCount: currentQuestions[0]?.options.length ?? 0,
+    selectByIndex: index => {
+      const question = currentQuestions[0];
+      const option = question?.options[index];
+      if (question && option) handleAnswer(question.id, option.id, currentPage + 1);
+    },
+    canContinue: isPageComplete,
+    onContinue: handleNext,
+    isDialogOpen: showCompletion,
+  });
 
   return (
-    <div className="bg-jung-base">
+    <div className="studio-assessment bg-jung-base">
       <AnimatePresence>
         {showCompletion && (
           <motion.div
@@ -516,7 +537,9 @@ export const Assessment: React.FC = () => {
 
       <header className="mx-auto w-full max-w-3xl px-5 pb-5 pt-7 sm:px-8 sm:pt-10">
         <div className="flex items-center justify-between gap-4">
-          <p className="journey-eyebrow">{pageLabel}</p>
+          <p className="journey-eyebrow">
+            {pageLabel}
+          </p>
           <p className="text-xs text-jung-muted">
             {totalAnswered > 0
               ? 'Progress saved on this device'
@@ -536,14 +559,20 @@ export const Assessment: React.FC = () => {
             style={{ width: `${overallProgress}%` }}
           />
         </div>
+        <ol className="studio-chapters" aria-label="Assessment chapters">
+          {layerOrder.map((layer, index) => <li key={layer} aria-current={currentQuestions[0]?.layer === layer ? 'step' : undefined}>
+            <span>
+              {index + 1}
+            </span>
+            {['Everyday life', 'Under stress', 'Body cues', 'Attention'][index]}
+          </li>)}
+        </ol>
         <div className="mt-4 flex items-baseline justify-between gap-3">
-          <h1 className="text-sm font-medium text-jung-secondary">
+          <h1 className="text-xs font-medium text-jung-secondary">
             {currentLayerMeta.shortLabel}
           </h1>
           <p className="text-xs text-jung-muted">
-            {showTimeEstimate
-              ? `About ${minutesLeft} min left`
-              : `${totalAnswered} of 42 answered`}
+            {showTimeEstimate ? `About ${minutesLeft} min left` : `${totalAnswered} of 42 answered`}
           </p>
         </div>
       </header>
@@ -586,7 +615,9 @@ export const Assessment: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: prefersReducedMotion ? 0 : 0.15 }}
-            onAnimationComplete={() => {
+            onAnimationComplete={(definition) => {
+              if (typeof definition !== 'object' || Array.isArray(definition) || definition.opacity !== 1) return;
+              setQuestionReadyPage(currentPage);
               if (currentPage > 0)
                 document
                   .getElementById(`prompt-${currentQuestions[0]?.id}`)
@@ -653,7 +684,9 @@ export const Assessment: React.FC = () => {
                               <Circle className="h-5 w-5 text-jung-border" />
                             )}
                           </span>
-                          <span>{option.label}</span>
+                          <span>
+                            {option.label}
+                          </span>
                         </span>
                       </label>
                     ))}
@@ -676,7 +709,7 @@ export const Assessment: React.FC = () => {
               variant="outline"
               size="md"
               onClick={handleBack}
-              disabled={currentPage === 0}
+              disabled={currentPage === 0 || questionReadyPage !== currentPage || showCompletion}
               leftIcon={<ArrowLeft className="h-4 w-4" />}
               className="w-full px-4 sm:w-auto"
             >
@@ -691,6 +724,7 @@ export const Assessment: React.FC = () => {
               variant={isPageComplete ? 'accent' : 'secondary'}
               size="md"
               onClick={handleNext}
+              disabled={questionReadyPage !== currentPage || showCompletion}
               aria-disabled={!isPageComplete}
               rightIcon={<ArrowRight className="h-4 w-4" />}
               className="w-full px-4 sm:w-auto"
@@ -701,6 +735,7 @@ export const Assessment: React.FC = () => {
             </Button>
           </div>
         </div>
+        <p className="studio-keyboard-note">You can also use <kbd>1</kbd>–<kbd>5</kbd> to select · <kbd>Enter</kbd> to continue</p>
       </section>
     </div>
   );

@@ -299,7 +299,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
               className="flex min-h-11 items-center gap-2"
             >
               <TypeJungMark size="sm" />
-              <span className="font-display text-xl">TypeJung</span>
+              <span className="studio-wordmark font-display text-xl">TypeJung</span>
             </Link>
             <Link
               to={location.pathname === '/assessment' ? '/' : '/results'}
@@ -562,7 +562,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
           <div>
             <Link to="/" className="inline-flex min-h-11 items-center gap-2">
               <TypeJungMark size="sm" />
-              <span className="font-display text-2xl">TypeJung</span>
+              <span className="studio-wordmark font-display text-2xl">TypeJung</span>
             </Link>
             <p className="mt-3 max-w-xs text-sm leading-6 text-jung-muted">
               Explore the pattern behind your personality. A tool for

@@ -40,8 +40,8 @@ export const ShareCard: React.FC<ShareCardProps> = ({ dominantFunction, scores, 
             <div className="flex items-center gap-3 mb-8">
               <img src="/logo.svg" alt="" className="w-10 h-10" />
               <span
-                className="text-sm font-semibold tracking-[0.2em] uppercase"
-                style={{ color: '#5C4033', fontFamily: '"DM Sans", sans-serif' }}
+                className="text-2xl font-bold tracking-tight"
+                style={{ color: '#202230', fontFamily: '"Schibsted Grotesk", sans-serif' }}
               >
                 TypeJung
               </span>

@@ -67,3 +67,9 @@ Question data, option rotation, scoring, saved-answer/completion behavior, auth 
 The ignored `.codex/preview.mjs` harness uses an empty environment directory and local API fixtures. Production credentials are not loaded. AI free interpretation is clearly labeled as local preview content. Purchases, account services, and emails are disconnected. The actual production checkout/generation code was preserved, but no real charge, outgoing email, account login, or newly generated paid report was exercised during this redesign.
 
 The implementation is ready for review and a subsequent production deployment request. Conversion performance should be assessed from real funnel data after release; this redesign does not establish a sales result.
+
+## Logo refinement
+
+The previous fine-line orbit mark was replaced after review with a folded compass: four paired shapes, eight indigo facets, and an open center. Three original vector studies were compared at 16, 24, 32, and 40 pixels; the folded compass retained the clearest silhouette. The symbol is decorative brand identity, not a chart of assessment scores.
+
+`public/logo.svg` is the canonical transparent vector, reused by the React mark and existing share/learning pages. Matching favicon, Apple touch icon, maskable app icon, and social image assets use the same geometry. The wordmark treatment is consistent across the main header, focused journey header, and footer. The social image now matches the Pattern Studio homepage rather than the previous serif identity.

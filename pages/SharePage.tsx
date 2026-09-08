@@ -129,7 +129,7 @@ const SharedDepthHero: React.FC<{
     <div className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_26rem]">
       <div className="p-6 sm:p-9">
         <div className="flex flex-wrap items-center gap-3">
-          <img src="/logo.svg" alt="TypeJung" className="h-10 w-10 rounded-lg bg-white/10 p-1" />
+          <img src="/logo.svg" alt="TypeJung" className="h-10 w-10 rounded-lg bg-white p-1" />
           <span className="text-xs font-semibold uppercase tracking-[0.12em] text-white/55">
             Someone shared their function-stack map
           </span>

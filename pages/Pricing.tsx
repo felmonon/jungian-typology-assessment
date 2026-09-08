@@ -1,6 +1,7 @@
 import { ArrowRight, Check, Minus, ShieldCheck } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { ReportSamplePreview } from '../components/results/ReportSamplePreview';
 import { Button } from '../components/ui/Button';
 import { discountedPriceLabel, EMAIL_CAPTURE_OFFER } from '../data/discount';
 import { PRICING, type PaidTierId } from '../data/pricing';
@@ -224,6 +225,17 @@ export const Pricing: React.FC = () => {
         <ShieldCheck className="mt-1 h-4 w-4 shrink-0" />
         Payments in Canadian dollars. No subscription. 7-day refund policy.
       </p>
+      <section className="mx-auto mt-14 grid max-w-4xl items-center gap-8 lg:grid-cols-[1fr_1.45fr]">
+        <div>
+          <p className="journey-eyebrow">Look inside before you decide</p>
+          <h2 className="mt-3 font-display text-3xl leading-tight sm:text-4xl">A report you can<br />put into practice.</h2>
+          <p className="mt-4 text-sm leading-7 text-jung-secondary">Explore a fictional example of the reading experience. Your free map is yours to keep; paid depth adds interpretation across ten sections.</p>
+          <Button variant="accent" className="mt-5" onClick={() => choose('insight')}>{hasResults ? `Get Insight — ${discountedPriceLabel(PRICING.insight.amount)}` : 'Start with my free map'}</Button>
+          <p className="mt-3 text-xs leading-6 text-jung-muted">Insight: {discountedPriceLabel(PRICING.insight.amount)} once · CAD · 7-day refund</p>
+          <Link to="/sample-report" className="mt-3 inline-flex min-h-11 items-center text-xs font-semibold text-jung-accent underline underline-offset-4">Read all four sample excerpts</Link>
+        </div>
+        <ReportSamplePreview onExplore={topic => trackEvent('pricing_report_sample_explored', { topic, source: 'pricing_preview' })} />
+      </section>
       <section id="compare" className="mx-auto mt-14 max-w-4xl scroll-mt-28">
         <details className="rounded-xl border border-jung-border bg-jung-surface p-5 sm:p-7">
           <summary className="cursor-pointer font-display text-2xl">

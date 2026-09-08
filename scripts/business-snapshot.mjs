@@ -73,6 +73,7 @@ const report = {
     'Refunds are the current refunded amounts for those sales, not all refund cash flows occurring in the window.',
     'Revenue is before processor fees, tax remittances, hosting and AI costs. Untagged charges are excluded.',
     'Browser counts are unique first-party anonymous IDs per event; they are not people or an ordered conversion cohort.',
+    'Browser funnel counts exclude events tagged codex_billing_recovery_check in their source or anonymous ID.',
     'Source labels identify entry links; a home_hero label alone does not identify the external acquisition channel.',
     'Unavailable sources are null, never zero. No customer identifiers are saved in this report.',
   ],
@@ -83,7 +84,8 @@ for (const days of [7, 30, 90]) {
   const start = new Date(now.getTime() - days * 864e5).toISOString();
   const filter = (name, column = 'created_at') => data[name]?.filter(r => r[column] >= start) ?? null;
   const sales = filter('sales', 'date');
-  const events = filter('events', 'occurred_at');
+  const events = filter('events', 'occurred_at')?.filter(event =>
+    event.source !== 'codex_billing_recovery_check' && event.anonymous_id !== 'codex_billing_recovery_check') ?? null;
   const purchases = filter('purchases')?.filter(p => p.status === 'completed' && p.amount > 0) ?? null;
   const browsers = events ? Object.fromEntries([...new Set(events.map(e => e.event_name))].map(name => [name,
     new Set(events.filter(e => e.event_name === name && e.anonymous_id).map(e => e.anonymous_id)).size])) : null;

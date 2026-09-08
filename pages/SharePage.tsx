@@ -3,6 +3,7 @@ import { useParams, Link, useLocation } from 'react-router-dom';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 import { FUNCTION_DESCRIPTIONS } from '../data/questions';
 import { ATTITUDE_LABELS, FUNCTION_LABELS } from '../data/depthAssessment';
+import { FunctionStackArtwork } from '../components/brand/FunctionStackArtwork';
 import { Button } from '../components/ui/Button';
 import { ArrowRight, FileText, Loader2 } from 'lucide-react';
 import { extractDepthResult } from '../utils/depthCompatibility';
@@ -309,6 +310,7 @@ export const SharePage: React.FC = () => {
         />
 
         <div className="rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm sm:p-6">
+          <div className="mb-6 max-w-2xl"><FunctionStackArtwork items={depthResult.hierarchy.map(item => ({ code: `${item.channel === 'thinking' ? 'T' : item.channel === 'feeling' ? 'F' : item.channel === 'sensation' ? 'S' : 'N'}${item.attitude === 'introverted' ? 'i' : 'e'}`, role: item.position.charAt(0).toUpperCase() + item.position.slice(1) }))} compact /></div>
           <p className="text-label">Shared result details</p>
           <h2 className="mt-2 text-heading text-3xl text-jung-dark">{sharedLabel}</h2>
           <p className="mt-4 max-w-3xl text-sm leading-7 text-jung-secondary">

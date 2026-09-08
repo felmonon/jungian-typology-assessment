@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { track as trackVercelEvent } from '@vercel/analytics';
 import { setAnalyticsEnabled, trackEvent } from '../../lib/analytics';
 
@@ -8,10 +8,17 @@ const beacon = vi.fn();
 
 describe('result-feedback mirroring', () => {
   beforeEach(() => {
+    vi.stubEnv('DEV', false);
+    vi.stubGlobal('window', { location: new URL('https://typejung.com/results'), crypto: window.crypto });
     vi.mocked(trackVercelEvent).mockReset();
     beacon.mockReset().mockReturnValue(false);
     Object.defineProperty(navigator, 'sendBeacon', { configurable: true, value: beacon });
     setAnalyticsEnabled(true);
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
   });
 
   it('falls back to fetch when a beacon is not queued, without sending personal properties', () => {

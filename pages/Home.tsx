@@ -7,6 +7,9 @@ import {
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { FunctionStackArtwork } from '../components/brand/FunctionStackArtwork';
+import { FunctionEmblem } from '../components/brand/FunctionEmblem';
+import { ReportSamplePreview } from '../components/results/ReportSamplePreview';
 import { Button } from '../components/ui/Button';
 import { discountedPriceLabel } from '../data/discount';
 import { PRICING } from '../data/pricing';
@@ -15,12 +18,6 @@ import { pathWithSource } from '../lib/acquisition-source';
 import { AnalyticsEvents, trackEvent } from '../lib/analytics';
 
 const insightPrice = discountedPriceLabel(PRICING.insight.amount);
-const exampleStack = [
-  { code: 'Ti', role: 'Lead', name: 'Find the logic', width: 86 },
-  { code: 'Ne', role: 'Support', name: 'Explore possibilities', width: 68 },
-  { code: 'Si', role: 'Balance', name: 'Draw on experience', width: 47 },
-  { code: 'Fe', role: 'Growth', name: 'Connect with others', width: 28 },
-];
 const exampleReadings = [
   {
     label: 'Everyday',
@@ -111,19 +108,19 @@ export const Home: React.FC = () => {
 
   return (
     <div className="journey-home">
-      <section className="lab-container grid items-center gap-12 py-12 md:py-20 lg:grid-cols-[1.05fr_1fr] lg:gap-20">
+      <section className="lab-container grid items-start gap-12 py-10 md:py-12 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
         <div>
           <p className="journey-eyebrow">
             The free Jungian cognitive functions test
           </p>
-          <h1 className="mt-6 max-w-2xl font-display text-[43px] leading-[1.07] tracking-[-0.035em] text-jung-dark sm:text-6xl lg:text-[72px]">
+          <h1 className="mt-6 max-w-2xl font-display text-[43px] leading-[1.07] tracking-[-0.035em] text-jung-dark sm:text-6xl lg:text-[64px]">
             Your type keeps changing.
             <br />
             <span className="font-normal italic text-jung-accent">
               Find the pattern underneath.
             </span>
           </h1>
-          <p className="mt-6 max-w-lg text-base leading-7 text-jung-secondary sm:text-lg sm:leading-8">
+          <p className="mt-6 max-w-lg text-base leading-7 text-jung-secondary sm:leading-8">
             Explore how you take in the world, make decisions, and respond to
             stress. Get a map of your cognitive functions—and a clearer place to
             begin.
@@ -167,33 +164,8 @@ export const Home: React.FC = () => {
               Illustrative example
             </span>
           </div>
-          <div
-            className="my-6 space-y-4"
-            aria-label="Illustrative Ti–Ne–Si–Fe pattern, not a personal result"
-          >
-            {exampleStack.map((fn, i) => (
-              <div key={fn.code} className="flex items-center gap-4">
-                <span
-                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl font-display text-xl ${i === 0 ? 'bg-jung-accent text-white' : 'bg-jung-surface-alt text-jung-accent'}`}
-                >
-                  {fn.code}
-                </span>
-                <div className="flex-1">
-                  <div className="mb-2 flex items-baseline justify-between gap-2">
-                    <span className="text-sm font-medium">{fn.name}</span>
-                    <span className="text-[11px] text-jung-muted">
-                      {fn.role}
-                    </span>
-                  </div>
-                  <div className="h-1.5 rounded-full bg-jung-border-light">
-                    <div
-                      className={`h-full rounded-full ${i === 3 ? 'bg-jung-gold/70' : 'bg-jung-accent'}`}
-                      style={{ width: `${fn.width}%`, opacity: 1 - i * 0.13 }}
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="my-6" aria-label="Illustrative Ti–Ne–Si–Fe pattern, not a personal result">
+            <FunctionStackArtwork />
           </div>
           <div className="rounded-xl bg-jung-accent-light p-4 sm:p-5">
             <div
@@ -233,6 +205,10 @@ export const Home: React.FC = () => {
             answers.
           </p>
         </div>
+      </section>
+      <section className="lab-container pb-12" aria-label="Explore the eight cognitive functions">
+        <div className="mb-4 flex items-baseline justify-between gap-4"><p className="journey-eyebrow">Eight functions. Your own pattern.</p><span className="text-xs text-jung-muted">Explore the theory ↗</span></div>
+        <div className="function-legend">{['Ti', 'Te', 'Ni', 'Ne', 'Si', 'Se', 'Fi', 'Fe'].map(code => <a key={code} href={`/functions/${code.toLowerCase()}`} aria-label={`Learn about ${code}`}><FunctionEmblem code={code} /><span>{code}</span></a>)}</div>
       </section>
       <section className="border-y border-jung-border-light bg-jung-surface">
         <div className="lab-container grid gap-7 py-10 md:grid-cols-3 md:gap-12">
@@ -315,27 +291,12 @@ export const Home: React.FC = () => {
         </ol>
       </section>
       <section id="pricing" className="bg-jung-accent text-white">
-        <div className="lab-container grid items-center gap-10 py-14 md:py-20 lg:grid-cols-[1fr_0.85fr] lg:gap-24">
+        <div className="lab-container grid items-center gap-10 py-14 md:py-20 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12">
           <div>
-            <p className="journey-eyebrow !text-white/70">
-              The optional Insight report
-            </p>
-            <h2 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
-              Make the map
-              <br />
-              mean something to you.
-            </h2>
-            <p className="mt-5 max-w-lg text-base leading-7 text-white/80">
-              Ten AI-generated sections connect your result to stress,
-              relationships, work, and growth. Practical reflections you can
-              return to at your own pace.
-            </p>
-            <Link
-              to={pathWithSource('/sample-report', 'home_paid_preview')}
-              className="mt-6 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-white underline decoration-white/40 underline-offset-4"
-            >
-              Read the sample report <ArrowRight className="h-4 w-4" />
-            </Link>
+            <p className="journey-eyebrow !text-white/70">From your map to everyday life</p>
+            <h2 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">See what deeper<br />understanding looks like.</h2>
+            <p className="mt-5 mb-7 max-w-lg text-base leading-7 text-white/80">Explore an example before you decide. Insight connects your pattern to the moments that matter: stress, relationships, work, and growth.</p>
+            <ReportSamplePreview onExplore={topic => trackEvent('home_report_sample_explored', { topic, source: 'home_paid_preview' })} />
           </div>
           <div className="rounded-2xl bg-jung-surface p-6 text-jung-dark sm:p-8">
             <div className="flex items-center justify-between">
@@ -384,6 +345,7 @@ export const Home: React.FC = () => {
             >
               Compare all options
             </Link>
+            <Link to={pathWithSource('/sample-report', 'home_paid_preview')} className="mt-2 flex min-h-11 items-center justify-center text-xs font-semibold text-jung-accent underline underline-offset-4">Read the full illustrative sample</Link>
           </div>
         </div>
       </section>

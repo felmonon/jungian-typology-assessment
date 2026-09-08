@@ -13,6 +13,13 @@ declare global {
 const DEFAULT_GA_MEASUREMENT_ID = 'G-3CQKPQZ942';
 const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID || DEFAULT_GA_MEASUREMENT_ID;
 
+function isAnalyticsEnvironmentAllowed(): boolean {
+  if (import.meta.env.DEV || typeof window === 'undefined') return false;
+  // Browser URL.hostname includes brackets around IPv6 literals.
+  const hostname = window.location.hostname.toLowerCase().replace(/^\[|\]$/g, '');
+  return !['localhost', '127.0.0.1', '::1'].includes(hostname);
+}
+
 // Validation schemas for analytics events
 const EventParamsSchema = z.record(
   z.string(),
@@ -114,7 +121,9 @@ const FUNNEL_MIRROR_EVENT_NAMES = new Set([
   'assessment_completed',
   'results_viewed',
   'results_premium_preview_viewed',
+  'result_report_sample_explored',
   'results_unlock_clicked',
+  'results_direct_checkout_failed',
   'checkout_review_viewed',
 ]);
 
@@ -188,7 +197,7 @@ function safeTrackEvent(
   params?: Record<string, any>,
   schema?: z.ZodSchema<any>
 ): boolean {
-  if (!analyticsEnabled || !canTrackEvent() || typeof window === 'undefined') {
+  if (!isAnalyticsEnabled() || !canTrackEvent()) {
     return false;
   }
 
@@ -233,6 +242,7 @@ function safeTrackEvent(
 
 // Initialize Google Analytics
 export function initAnalytics(): boolean {
+  if (!isAnalyticsEnabled()) return false;
   if (!GA_MEASUREMENT_ID || typeof window === 'undefined') {
     console.warn('Analytics: GA_MEASUREMENT_ID not configured');
     return false;
@@ -278,6 +288,7 @@ export function initAnalytics(): boolean {
 
 // Track page views (call on route change)
 export function trackPageView(path: string, title?: string): boolean {
+  if (!isAnalyticsEnabled()) return false;
   const params = {
     page_path: path,
     page_title: title || document.title,
@@ -612,5 +623,5 @@ export function setAnalyticsEnabled(enabled: boolean): void {
 }
 
 export function isAnalyticsEnabled(): boolean {
-  return analyticsEnabled;
+  return analyticsEnabled && isAnalyticsEnvironmentAllowed();
 }

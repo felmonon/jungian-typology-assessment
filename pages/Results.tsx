@@ -20,6 +20,11 @@ import React, {
 import { useNavigate } from 'react-router-dom';
 import { ChatBot } from '../components/ChatBot';
 import { DiscountCaptureCard } from '../components/discount/DiscountCaptureCard';
+import { FunctionEmblem } from '../components/brand/FunctionEmblem';
+import { FunctionStackArtwork } from '../components/brand/FunctionStackArtwork';
+import { PersonalReportReader } from '../components/results/PersonalReportReader';
+import { ReportSamplePreview } from '../components/results/ReportSamplePreview';
+import { useOfferImpression } from '../hooks/useOfferImpression';
 import { Button } from '../components/ui/Button';
 import {
   ATTITUDE_LABELS,
@@ -253,15 +258,16 @@ const EnergyBars: React.FC<{ results: DepthAssessmentResult }> = ({
 const Hierarchy: React.FC<{ results: DepthAssessmentResult }> = ({
   results,
 }) => (
-  <div className="grid gap-4 lg:grid-cols-4">
+  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
     {results.hierarchy.map((item) => (
       <div
         key={item.position}
         className={`rounded-lg border p-5 ${item.position === 'dominant' ? 'border-jung-accent-muted bg-jung-accent-light/70' : 'border-jung-border bg-jung-surface'}`}
       >
-        <p className="text-sm font-semibold text-jung-muted">
-          {positionLabels[item.position]}
-        </p>
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-xs font-semibold text-jung-muted">{positionLabels[item.position]}</p>
+          <FunctionEmblem code={getFunctionCode(item.channel, item.attitude)} className="h-9 w-9 shrink-0 text-jung-accent" />
+        </div>
         <h3 className="mt-3 text-2xl font-semibold text-jung-dark">
           {item.label}
         </h3>
@@ -325,9 +331,10 @@ const SignalGrid: React.FC<{ results: DepthAssessmentResult }> = ({
   );
 };
 
-const LockedPremiumPreview: React.FC<{
+export const LockedPremiumPreview: React.FC<{
   results: DepthAssessmentResult;
   inferiorLabel: string;
+  offerRef?: React.Ref<HTMLElement>;
   intendedTier: PaidTierId;
   onUnlock: (tier: PaidTierId, location: string) => void;
   onViewSampleReport: (location: string) => void;
@@ -336,6 +343,7 @@ const LockedPremiumPreview: React.FC<{
 }> = ({
   results,
   inferiorLabel,
+  offerRef,
   intendedTier,
   onUnlock,
   onViewSampleReport,
@@ -347,29 +355,22 @@ const LockedPremiumPreview: React.FC<{
   return (
     <section
       id="report-offer"
+      ref={offerRef}
       className="mb-8 scroll-mt-28 overflow-hidden rounded-2xl border border-jung-accent bg-jung-surface"
     >
-      <div className="grid lg:grid-cols-[1fr_0.85fr]">
-        <div className="bg-jung-accent p-6 text-white sm:p-8">
-          <p className="journey-eyebrow !text-white/70">Your next question</p>
-          <h2 className="mt-4 font-display text-3xl leading-tight sm:text-4xl">
-            How does this show up in my life?
-          </h2>
-          <p className="mt-4 text-sm leading-7 text-white/80">
-            Your map points to {inferiorLabel.toLowerCase()} as a growth edge.
-            The {PRICING[intendedTier].name} report explores this pattern in
-            stress, relationships, work, and everyday choices.
-          </p>
-          <div className="mt-6 border-t border-white/20 pt-5">
-            <p className="text-xs font-semibold text-white/65">
-              A starting reflection from your free map
-            </p>
-            <p className="mt-3 font-display text-xl leading-8 text-white">
-              {results.narrative.developmentalEdge}
-            </p>
-          </div>
+      <div className="grid lg:grid-cols-[1.15fr_0.85fr]">
+        <div className="bg-jung-accent-light p-4 sm:p-7">
+          <div className="flex flex-wrap items-center justify-between gap-2"><p className="journey-eyebrow">Your map is a beginning</p><a href="#report-purchase" className="inline-flex min-h-11 items-center text-xs font-semibold text-jung-accent underline underline-offset-4 lg:hidden">{offerPrice} once · See the offer ↓</a></div>
+          <h2 className="mt-3 font-display text-3xl leading-tight sm:text-4xl">Bring the pattern<br />into your everyday life.</h2>
+          <p className="mt-4 mb-6 text-sm leading-7 text-jung-secondary">Your map points to {inferiorLabel.toLowerCase()} as a growth edge. Explore what a report can help you notice in stress, relationships, and work.</p>
+          <ReportSamplePreview onExplore={topic => trackEvent('result_report_sample_explored', { topic, source: 'results_locked_preview', tier: intendedTier })} />
         </div>
-        <div className="p-6 sm:p-8">
+        <div id="report-purchase" className="scroll-mt-28 p-6 sm:p-8 lg:self-center">
+          <div className="mb-7 border-b border-jung-border pb-6">
+            <p className="journey-eyebrow">From your own free map</p>
+            <p className="mt-3 font-display text-xl leading-8 text-jung-dark">{results.narrative.developmentalEdge}</p>
+            <p className="mt-3 text-xs leading-6 text-jung-muted">Your paid report develops this pattern across ten sections, using your assessment result.</p>
+          </div>
           <p className="journey-eyebrow">
             Optional {PRICING[intendedTier].name} report
           </p>
@@ -432,7 +433,7 @@ const LockedPremiumPreview: React.FC<{
             className="mt-2 w-full"
             onClick={() => onViewSampleReport('results_locked_preview')}
           >
-            Read the sample first
+            Read the full illustrative sample
           </Button>
           <p className="mt-3 text-center text-xs leading-6 text-jung-muted">
             Your free map is complete. No subscription.
@@ -548,9 +549,6 @@ export const Results: React.FC = () => {
     useState<PaidTierId | null>(null);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const referralPromptTrackedRef = useRef<string | null>(null);
-  const upgradeOfferTrackedRef = useRef<string | null>(null);
-  const upgradeContextTrackedRef = useRef<string | null>(null);
-  const lockedPreviewTrackedRef = useRef<string | null>(null);
   const inboundSharedResultSlug =
     acquisition?.sharedResult && acquisition.sharedResult !== shareSlug
       ? acquisition.sharedResult
@@ -632,7 +630,7 @@ export const Results: React.FC = () => {
         trackEvent('results_direct_checkout_failed', {
           source: ctaSource,
           tier: paidTier,
-          reason: message.slice(0, 120),
+          reason: 'checkout_unavailable',
         });
       }
     },
@@ -706,13 +704,11 @@ export const Results: React.FC = () => {
     inboundSharedResultSlug,
   ]);
 
-  useEffect(() => {
-    if (!currentResults || premiumLoading || isPremium) return;
-
-    const trackedKey = `${currentResults.completedAt}_${intendedTier}_${upgradeContext?.category || 'default'}`;
-    if (upgradeOfferTrackedRef.current === trackedKey) return;
-    upgradeOfferTrackedRef.current = trackedKey;
-
+  const offerRef = useOfferImpression<HTMLElement>({
+    impressionKey: currentResults ? `${currentResults.completedAt}_${intendedTier}_${upgradeContext?.category || 'default'}` : null,
+    enabled: Boolean(currentResults) && !premiumLoading && !isPremium,
+    onImpression: () => {
+      if (!currentResults) return;
     trackEvent('result_upgrade_offer_viewed', {
       source: acquisition?.source || 'unknown',
       intended_tier: intendedTier,
@@ -734,23 +730,6 @@ export const Results: React.FC = () => {
         ? { source_chain: acquisition.sourceChain }
         : {}),
     });
-  }, [
-    acquisition,
-    currentResults,
-    intendedTier,
-    isPremium,
-    premiumLoading,
-    upgradeContext,
-    upgradeIntent,
-  ]);
-
-  useEffect(() => {
-    if (!currentResults || premiumLoading || isPremium) return;
-
-    const trackedKey = `${currentResults.completedAt}_${intendedTier}`;
-    if (lockedPreviewTrackedRef.current === trackedKey) return;
-    lockedPreviewTrackedRef.current = trackedKey;
-
     const previewPayload = {
       source: acquisition?.source || 'unknown',
       preview_source: 'results_locked_preview',
@@ -784,42 +763,7 @@ export const Results: React.FC = () => {
 
     trackEvent('results_premium_preview_viewed', previewPayload);
     trackEvent('result_locked_preview_viewed', previewPayload);
-  }, [
-    acquisition,
-    currentResults,
-    intendedTier,
-    isPremium,
-    premiumLoading,
-    upgradeContext?.category,
-    upgradeIntent,
-  ]);
-
-  useEffect(() => {
-    if (!currentResults) return;
-
-    const trackedKey = `${currentResults.completedAt}_${shareSlug || 'no_share_slug'}`;
-    if (referralPromptTrackedRef.current === trackedKey) return;
-    referralPromptTrackedRef.current = trackedKey;
-
-    trackEvent('result_referral_prompt_viewed', {
-      source: 'results_page',
-      dominant_function: getFunctionCode(
-        currentResults.dominant,
-        currentResults.attitude.dominant,
-      ),
-      has_share_slug: Boolean(shareSlug),
-      invite_goal: REFERRAL_INVITE_GOAL,
-    });
-  }, [currentResults, shareSlug]);
-
-  useEffect(() => {
-    if (!currentResults || premiumLoading || isPremium || !upgradeContext)
-      return;
-
-    const trackedKey = `${currentResults.completedAt}_${upgradeContext.category}`;
-    if (upgradeContextTrackedRef.current === trackedKey) return;
-    upgradeContextTrackedRef.current = trackedKey;
-
+    if (upgradeContext) {
     trackEvent('result_upgrade_context_viewed', {
       source: acquisition?.source || 'unknown',
       context_category: upgradeContext.category,
@@ -839,14 +783,27 @@ export const Results: React.FC = () => {
         ? { source_chain: acquisition.sourceChain }
         : {}),
     });
-  }, [
-    acquisition,
-    currentResults,
-    intendedTier,
-    isPremium,
-    premiumLoading,
-    upgradeContext,
-  ]);
+    }
+    },
+  });
+
+  useEffect(() => {
+    if (!currentResults) return;
+
+    const trackedKey = `${currentResults.completedAt}_${shareSlug || 'no_share_slug'}`;
+    if (referralPromptTrackedRef.current === trackedKey) return;
+    referralPromptTrackedRef.current = trackedKey;
+
+    trackEvent('result_referral_prompt_viewed', {
+      source: 'results_page',
+      dominant_function: getFunctionCode(
+        currentResults.dominant,
+        currentResults.attitude.dominant,
+      ),
+      has_share_slug: Boolean(shareSlug),
+      invite_goal: REFERRAL_INVITE_GOAL,
+    });
+  }, [currentResults, shareSlug]);
 
   const lifecycleEmailSummary = useMemo(() => {
     if (!currentResults) return null;
@@ -1440,13 +1397,9 @@ export const Results: React.FC = () => {
                 {results.narrative.energyMap}
               </p>
             </div>
-            <div className="rounded-xl bg-jung-accent-light p-5 sm:p-6">
-              <p className="text-xs font-medium text-jung-accent">
-                Your suggested function stack
-              </p>
-              <p className="mt-3 break-words font-display text-3xl text-jung-accent sm:text-4xl">
-                {functionStackCodes.join(' · ')}
-              </p>
+            <div className="rounded-xl bg-jung-accent-light p-4 sm:p-5">
+              <p className="mb-4 text-xs font-medium text-jung-accent">Your suggested function stack</p>
+              <FunctionStackArtwork items={results.hierarchy.map(item => ({ code: getFunctionCode(item.channel, item.attitude), role: positionLabels[item.position] }))} compact />
               <p className="mt-4 text-sm leading-6 text-jung-secondary">
                 A working interpretation of your answers. Compare it with the
                 patterns you notice in everyday life.
@@ -1524,21 +1477,7 @@ export const Results: React.FC = () => {
             {!isLoadingPremium &&
               !premiumError &&
               premiumReportSections.length > 0 && (
-                <div className="grid gap-4 lg:grid-cols-2">
-                  {premiumReportSections.map((section) => (
-                    <article
-                      key={section.key}
-                      className="rounded-lg border border-jung-border bg-jung-base p-5"
-                    >
-                      <h3 className="text-lg font-semibold text-jung-dark">
-                        {section.title}
-                      </h3>
-                      <p className="mt-3 whitespace-pre-line text-sm leading-7 text-jung-secondary">
-                        {section.body}
-                      </p>
-                    </article>
-                  ))}
-                </div>
+                <PersonalReportReader sections={premiumReportSections} functionCodes={functionStackCodes} />
               )}
 
             {!isLoadingPremium &&
@@ -1773,6 +1712,7 @@ export const Results: React.FC = () => {
             )}
             <LockedPremiumPreview
               results={results}
+              offerRef={offerRef}
               inferiorLabel={inferiorLabel}
               intendedTier={intendedTier}
               onUnlock={openUpgradeCheckout}
@@ -1783,29 +1723,23 @@ export const Results: React.FC = () => {
           </>
         )}
 
-        <div className="my-8 flex flex-col justify-between gap-4 border-y border-jung-border py-6 sm:flex-row sm:items-center">
+        <section className="my-10 grid items-center gap-7 rounded-2xl border border-jung-border bg-jung-surface p-5 sm:p-8 lg:grid-cols-[1fr_1fr]">
           <div>
-            <h2 className="font-display text-2xl">
-              Compare with someone you know.
-            </h2>
-            <p className="mt-2 text-sm leading-6 text-jung-secondary">
-              Create a public map link, then invite them to explore their own
-              pattern.
-            </p>
+            <p className="journey-eyebrow">A conversation worth having</p>
+            <h2 className="mt-3 font-display text-3xl">Different patterns.<br />More to understand.</h2>
+            <p className="mt-4 max-w-sm text-sm leading-7 text-jung-secondary">Share your map with someone you know. Compare how you approach decisions, attention, and stress.</p>
+            <Button variant="accent" className="mt-5" onClick={() => shareAssessmentInvite('results_compare_banner')} disabled={isPreparingReferral} leftIcon={<Share2 className="h-4 w-4" />}>
+              {isPreparingReferral ? 'Preparing link…' : inviteCopied ? 'Invite copied' : 'Share my map'}
+            </Button>
+            <p className="mt-3 text-xs leading-6 text-jung-muted">Creates a public result link. Share only if you are comfortable making your map public.</p>
           </div>
-          <Button
-            variant="outline"
-            onClick={() => shareAssessmentInvite('results_compare_banner')}
-            disabled={isPreparingReferral}
-            leftIcon={<Share2 className="h-4 w-4" />}
-          >
-            {isPreparingReferral
-              ? 'Preparing link…'
-              : inviteCopied
-                ? 'Invite copied'
-                : 'Share my map'}
-          </Button>
-        </div>
+          <div className="overflow-hidden rounded-xl border border-jung-border bg-jung-base p-4 sm:p-5">
+            <div className="mb-4 flex justify-between gap-3 text-xs text-jung-accent"><span className="font-semibold">TypeJung</span><span>My function-stack map</span></div>
+            <FunctionStackArtwork items={results.hierarchy.map(item => ({ code: getFunctionCode(item.channel, item.attitude), role: positionLabels[item.position] }))} compact />
+            <p className="mt-4 font-display text-xl">{dominantLabel}</p>
+            <p className="mt-2 text-xs text-jung-muted">A pattern to explore. A conversation to begin.</p>
+          </div>
+        </section>
 
         <section className="mt-8 grid gap-5 lg:grid-cols-2 lg:items-start">
           <div className="rounded-xl border border-jung-border bg-jung-surface p-6">

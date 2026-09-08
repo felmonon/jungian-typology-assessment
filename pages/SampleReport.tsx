@@ -1,6 +1,8 @@
 import { ArrowRight, FileText } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { REPORT_SAMPLE_EXCERPTS as excerpts } from '../data/report-sample';
+import { FunctionStackArtwork } from '../components/brand/FunctionStackArtwork';
 import { Button } from '../components/ui/Button';
 import { discountedPriceLabel } from '../data/discount';
 import { PRICING } from '../data/pricing';
@@ -10,56 +12,7 @@ import { AnalyticsEvents, trackEvent } from '../lib/analytics';
 import { writeUpgradeIntent } from '../lib/upgrade-intent';
 import { isDepthAssessmentResult } from '../utils/depthScoring';
 
-const excerpts = [
-  {
-    id: 'strength',
-    number: '01',
-    title: 'The strength you reach for first',
-    category: 'Function dynamics',
-    paragraphs: [
-      'You may feel most at ease when you can take an idea apart and understand how its pieces fit. In this example, introverted thinking (Ti) leads the pattern: an explanation earns your trust when it holds together, even if it comes from an unexpected person.',
-      'That preference can give you patience for difficult problems and an eye for contradictions. It can also make it easy to stay in analysis after you have enough information to act. Notice the difference between a question that brings new clarity and one that postpones a decision you already understand.',
-    ],
-    practice:
-      'Pick a decision you have been revisiting. Write down what you know, what is still uncertain, and the smallest step you could take without settling every question.',
-  },
-  {
-    id: 'stress',
-    number: '02',
-    title: 'When clarity becomes distance',
-    category: 'Stress and recovery',
-    paragraphs: [
-      'Imagine a colleague says your feedback sounded dismissive. Your first response might be to explain why the feedback was technically correct. As the conversation becomes more tense, you find yourself rehearsing a better argument while becoming increasingly concerned about what the colleague thinks of you.',
-      'A Ti–Fe interpretation invites you to notice that shift: precision is still important, but the conversation may now need reassurance. More explanation can leave both people feeling unheard. This is a possibility to observe, not a prediction that every stressful conversation will follow the same sequence.',
-    ],
-    practice:
-      'Pause before defending the conclusion. Try: “I want to understand how that landed. Which part felt dismissive?” Listen for the impact before returning to your reasoning.',
-  },
-  {
-    id: 'relationships',
-    number: '03',
-    title: 'Let people see the care behind the thought',
-    category: 'Relationships',
-    paragraphs: [
-      'You might show care by solving a problem, making an explanation clearer, or noticing something another person overlooked. The other person may be looking for a different sign of care: a moment of listening, an acknowledgment, or an invitation to say more.',
-      'Neither response tells the whole story about your relationship. The useful question is whether your intention is reaching the other person. The feeling side of this sample pattern offers a practice in making that intention explicit, without having to abandon the careful thinking you value.',
-    ],
-    practice:
-      'In your next difficult conversation, ask: “Would it help more if I listened, or if we worked through possible solutions?” Check what they actually need.',
-  },
-  {
-    id: 'practice',
-    number: '04',
-    title: 'A small experiment for the coming week',
-    category: 'Growth practices',
-    paragraphs: [
-      'Choose one ordinary situation where you tend to stay in your head: giving feedback, asking for help, or responding to disagreement. Keep the experiment small enough that you can try it more than once.',
-      'Afterward, write three short notes: what happened, what you assumed, and what you could ask next time. Look for examples that challenge the interpretation as well as examples that fit. A useful map should help you observe more clearly; it should not become a reason to explain away every experience with your type.',
-    ],
-    practice:
-      'At the end of the week, keep one thing that helped and drop one assumption that did not fit. Your observations matter more than making the report sound right.',
-  },
-];
+
 
 export const SampleReport: React.FC = () => {
   const navigate = useNavigate();
@@ -115,7 +68,8 @@ export const SampleReport: React.FC = () => {
           Read four illustrative excerpts below. Your paid report contains ten
           AI-generated sections based on your own assessment result.
         </p>
-        <div className="mt-7 flex flex-wrap items-center justify-between gap-3 border-y border-jung-border py-4">
+        <div className="mt-8 max-w-xl"><FunctionStackArtwork compact /></div>
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-y border-jung-border py-4">
           <span className="font-display text-xl text-jung-accent">
             Ti · Ne · Si · Fe
           </span>
@@ -124,7 +78,7 @@ export const SampleReport: React.FC = () => {
           </span>
         </div>
       </header>
-      <div className="mx-auto mt-10 grid max-w-5xl items-start gap-10 lg:grid-cols-[12rem_1fr] lg:gap-16">
+      <div className="mx-auto mt-10 grid max-w-5xl items-start gap-10 lg:grid-cols-[15rem_1fr] lg:gap-12">
         <nav
           aria-label="Sample report contents"
           className="rounded-xl bg-jung-surface-alt p-5 lg:sticky lg:top-28"
@@ -145,6 +99,12 @@ export const SampleReport: React.FC = () => {
               </li>
             ))}
           </ol>
+          <div className="mt-5 border-t border-jung-border pt-5">
+            <p className="font-display text-3xl">{price}<span className="ml-2 font-sans text-xs text-jung-muted">once · CAD</span></p>
+            <p className="mt-2 text-xs leading-6 text-jung-secondary">Ten AI-generated sections based on your result, plus the Function Stack in Depth PDF guide.</p>
+            <Button variant="accent" className="mt-4 w-full" onClick={continueToReport}>{hasResults ? 'Get my Insight report' : 'Start with my free map'}</Button>
+            <p className="mt-3 text-[11px] leading-6 text-jung-muted">Free map first. No subscription.<br />7-day refund policy.</p>
+          </div>
           <p className="mt-4 border-t border-jung-border pt-4 text-xs leading-6 text-jung-muted">
             Educational self-reflection. This is a format example, not a
             diagnosis or a customer testimonial.

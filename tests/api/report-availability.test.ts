@@ -24,8 +24,13 @@ describe('report availability before payment', () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
-  it('allows checkout to proceed once generation is available again', async () => {
-    vi.mocked(generateGeminiText).mockResolvedValue('READY');
+  it('allows recovered generation using a deadline accepted by Gemini', async () => {
+    vi.mocked(generateGeminiText).mockImplementation(async (_prompt, options) => {
+      if (options?.timeoutMs !== undefined && options.timeoutMs < 10000) {
+        throw new Error('Minimum allowed deadline is 10s.');
+      }
+      return 'READY';
+    });
     const res = response();
     expect(await guardPaidReportCheckout(res)).toBe(true);
     expect(res.body).toBeNull();

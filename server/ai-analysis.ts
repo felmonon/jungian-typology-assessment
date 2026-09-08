@@ -139,6 +139,12 @@ Keep the tone direct, psychologically grounded, and useful. Use second person ("
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: [{ role: "user", parts: [{ text: prompt }] }],
+      config: {
+        temperature: 0.7,
+        // Match the free-analysis endpoint's bounded, non-thinking response.
+        maxOutputTokens: 768,
+        thinkingConfig: { thinkingBudget: 0 },
+      },
     });
 
     return response.text || "Unable to generate analysis at this time.";

@@ -194,7 +194,9 @@ Keep the tone direct, psychologically grounded, and useful. Use second person ("
   try {
     const generated = await generateGeminiText(prompt, {
       temperature: 0.7,
-      maxOutputTokens: 500,
+      // Reserve the short generation budget for the 150–200 word response.
+      maxOutputTokens: 768,
+      thinkingBudget: 0,
     });
 
     if (isUsableFreeAnalysis(generated)) {

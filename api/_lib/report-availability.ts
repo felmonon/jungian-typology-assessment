@@ -9,7 +9,8 @@ export async function guardPaidReportCheckout(res: VercelResponse): Promise<bool
       temperature: 0,
       maxOutputTokens: 16,
       thinkingBudget: 0,
-      timeoutMs: 8000,
+      // Gemini rejects deadlines below 10 seconds, even for a one-word probe.
+      timeoutMs: 15000,
     });
     if (/^READY[.!]?$/i.test(response.trim())) return true;
   } catch {

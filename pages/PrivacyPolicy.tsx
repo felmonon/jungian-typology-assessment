@@ -1,47 +1,61 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Shield, CreditCard, Mail, ArrowLeft } from 'lucide-react';
+import { Shield, Database, CreditCard, Mail, Cookie, Trash2, ExternalLink, ArrowLeft } from 'lucide-react';
 
 export const PrivacyPolicy: React.FC = () => {
   return (
-    <div className="editorial-container pb-12 md:pb-16">
-      <header className="page-head">
-        <Link to="/" className="page-back">
-          <ArrowLeft className="w-4 h-4" aria-hidden="true" />
-          Back to Home
-        </Link>
-        <h1 className="page-title">Privacy Policy</h1>
-        <p className="page-meta">Last updated: October 14, 2026</p>
+    <div className="editorial-container py-8 md:py-12">
+      <Link
+        to="/"
+        className="inline-flex items-center gap-2 text-jung-secondary hover:text-jung-accent transition-colors mb-8 font-serif"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Back to Home
+      </Link>
+
+      <header className="mb-12 text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-jung-accent/10 mb-4">
+          <Shield className="w-8 h-8 text-jung-accent" />
+        </div>
+        <h1 className="text-display text-jung-dark mb-4">
+          Privacy Policy
+        </h1>
+        <p className="text-jung-muted text-sm font-serif">
+          Last updated: October 14, 2026
+        </p>
       </header>
 
-      <div className="max-w-3xl">
-        <p className="text-lg text-jung-secondary leading-relaxed mb-10">
+      <div className="max-w-none">
+        <p className="text-lg text-jung-secondary leading-relaxed mb-8 font-body">
           At TypeJung, we are committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your personal information when you use our assessment service.
         </p>
 
         <section className="mb-12">
-          <div className="mb-4">
-            <h2 className="text-2xl font-semibold tracking-tight text-jung-dark m-0">Information We Collect</h2>
+          <div className="flex items-start gap-4 mb-4">
+            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-jung-accent/10 flex items-center justify-center">
+              <Database className="w-5 h-5 text-jung-accent" />
+            </div>
+            <h2 className="text-2xl font-serif font-bold text-jung-dark m-0">Information We Collect</h2>
           </div>
 
-          <div className="space-y-2">
-            <div className="bg-jung-surface p-5">
-              <h3 className="font-semibold text-jung-dark mb-2">Account Information</h3>
-              <p className="text-jung-secondary m-0">
+          <div className="space-y-4 pl-14">
+            <div className="card-elevated rounded-2xl p-5">
+              <h3 className="font-semibold text-jung-dark mb-2 font-serif">Account Information</h3>
+              <p className="text-jung-secondary text-sm m-0 font-body">
                 When you create an account, we collect your email address and basic profile information provided through email sign-in, Google OAuth, or Apple sign-in when enabled. This can include your name and profile picture if available.
               </p>
             </div>
 
-            <div className="bg-jung-surface p-5">
-              <h3 className="font-semibold text-jung-dark mb-2">Assessment Responses</h3>
-              <p className="text-jung-secondary m-0">
+            <div className="card-elevated rounded-2xl p-5">
+              <h3 className="font-semibold text-jung-dark mb-2 font-serif">Assessment Responses</h3>
+              <p className="text-jung-secondary text-sm m-0 font-body">
                 We store your responses to the typology assessment questions and the calculated results. This data is used to generate your personalized educational results and is linked to your account.
               </p>
             </div>
 
-            <div className="bg-jung-surface p-5">
-              <h3 className="font-semibold text-jung-dark mb-2">Payment Information</h3>
-              <p className="text-jung-secondary m-0">
+            <div className="card-elevated rounded-2xl p-5">
+              <h3 className="font-semibold text-jung-dark mb-2 font-serif">Payment Information</h3>
+              <p className="text-jung-secondary text-sm m-0 font-body">
                 When you purchase one-time CAD premium access, payment processing is handled by Stripe. We do not store your credit card details. We receive confirmation of successful payment and your purchase status.
               </p>
             </div>
@@ -49,11 +63,14 @@ export const PrivacyPolicy: React.FC = () => {
         </section>
 
         <section className="mb-12">
-          <div className="mb-4">
-            <h2 className="text-2xl font-semibold tracking-tight text-jung-dark m-0">How We Use Your Information</h2>
+          <div className="flex items-start gap-4 mb-4">
+            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-jung-accent/10 flex items-center justify-center">
+              <Mail className="w-5 h-5 text-jung-accent" />
+            </div>
+            <h2 className="text-2xl font-serif font-bold text-jung-dark m-0">How We Use Your Information</h2>
           </div>
 
-          <ul className="space-y-3 text-jung-secondary">
+          <ul className="pl-14 space-y-3 text-jung-secondary font-body">
             <li><strong className="text-jung-dark">Account Management:</strong> To create and maintain your user account, authenticate your identity, and provide access to your assessment history.</li>
             <li><strong className="text-jung-dark">Assessment Delivery:</strong> To process your assessment responses, calculate your typology scores, and generate your personalized results.</li>
             <li><strong className="text-jung-dark">Email Communications:</strong> To send you requested discount codes, assessment result follow-ups, purchase confirmations, and important account notifications via Resend.</li>
@@ -62,43 +79,46 @@ export const PrivacyPolicy: React.FC = () => {
         </section>
 
         <section className="mb-12">
-          <div className="mb-4">
-            <h2 className="text-2xl font-semibold tracking-tight text-jung-dark m-0">Third-Party Services</h2>
+          <div className="flex items-start gap-4 mb-4">
+            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-jung-accent/10 flex items-center justify-center">
+              <ExternalLink className="w-5 h-5 text-jung-accent" />
+            </div>
+            <h2 className="text-2xl font-serif font-bold text-jung-dark m-0">Third-Party Services</h2>
           </div>
 
-          <div className="space-y-2">
-            <div className="bg-jung-surface p-5">
-              <h3 className="font-semibold text-jung-dark mb-2">OpenRouter and Microsoft Azure (AI Interpretations)</h3>
-              <p className="text-jung-secondary m-0">
-                To generate AI interpretations and coach responses, we send your assessment scores, function-stack map, and any coach messages to OpenAI’s GPT-4.1 Mini model hosted on Microsoft Azure through OpenRouter. We do not include account email addresses or payment details in these prompts. Coach messages can contain personal information you choose to enter. We request only provider endpoints with zero data retention and no training on prompts; requests fail rather than route to an endpoint that does not meet these settings. These services may process data outside Canada. OpenRouter retains operational metadata such as token counts and costs. See <a href="https://openrouter.ai/privacy" target="_blank" rel="noopener noreferrer" className="text-jung-accent-text underline underline-offset-2">OpenRouter’s privacy policy</a> and <a href="https://privacy.microsoft.com/privacystatement" target="_blank" rel="noopener noreferrer" className="text-jung-accent-text underline underline-offset-2">Microsoft’s privacy statement</a>.
+          <div className="space-y-4 pl-14">
+            <div className="card-elevated rounded-2xl p-5">
+              <h3 className="font-semibold text-jung-dark mb-2 font-serif">OpenRouter and Microsoft Azure (AI Interpretations)</h3>
+              <p className="text-jung-secondary text-sm m-0 font-body">
+                To generate AI interpretations and coach responses, we send your assessment scores, function-stack map, and any coach messages to OpenAI’s GPT-4.1 Mini model hosted on Microsoft Azure through OpenRouter. We do not include account email addresses or payment details in these prompts. Coach messages can contain personal information you choose to enter. We request only provider endpoints with zero data retention and no training on prompts; requests fail rather than route to an endpoint that does not meet these settings. These services may process data outside Canada. OpenRouter retains operational metadata such as token counts and costs. See <a href="https://openrouter.ai/privacy" target="_blank" rel="noopener noreferrer" className="text-jung-accent hover:underline">OpenRouter’s privacy policy</a> and <a href="https://privacy.microsoft.com/privacystatement" target="_blank" rel="noopener noreferrer" className="text-jung-accent hover:underline">Microsoft’s privacy statement</a>.
               </p>
             </div>
-            <div className="bg-jung-surface p-5">
-              <h3 className="font-semibold text-jung-dark mb-2 flex items-center gap-2">
+            <div className="card-elevated rounded-2xl p-5">
+              <h3 className="font-semibold text-jung-dark mb-2 flex items-center gap-2 font-serif">
                 <CreditCard className="w-4 h-4 text-jung-muted" />
                 Stripe (Payment Processing)
               </h3>
-              <p className="text-jung-secondary m-0">
-                We use Stripe to process payments securely. Stripe's privacy policy governs the collection and use of your payment information. Visit <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" className="text-jung-accent-text underline underline-offset-2">stripe.com/privacy</a> for details.
+              <p className="text-jung-secondary text-sm m-0 font-body">
+                We use Stripe to process payments securely. Stripe's privacy policy governs the collection and use of your payment information. Visit <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" className="text-jung-accent hover:underline">stripe.com/privacy</a> for details.
               </p>
             </div>
 
-            <div className="bg-jung-surface p-5">
-              <h3 className="font-semibold text-jung-dark mb-2 flex items-center gap-2">
+            <div className="card-elevated rounded-2xl p-5">
+              <h3 className="font-semibold text-jung-dark mb-2 flex items-center gap-2 font-serif">
                 <Shield className="w-4 h-4 text-jung-muted" />
                 Google and Apple (Authentication)
               </h3>
-              <p className="text-jung-secondary m-0">
+              <p className="text-jung-secondary text-sm m-0 font-body">
                 We use OAuth providers for secure authentication. When you sign in with Google or Apple, we receive your verified email and basic profile information the provider makes available. The provider's privacy policy applies to data collected during authentication.
               </p>
             </div>
 
-            <div className="bg-jung-surface p-5">
-              <h3 className="font-semibold text-jung-dark mb-2 flex items-center gap-2">
+            <div className="card-elevated rounded-2xl p-5">
+              <h3 className="font-semibold text-jung-dark mb-2 flex items-center gap-2 font-serif">
                 <Mail className="w-4 h-4 text-jung-muted" />
                 Resend (Email Delivery)
               </h3>
-              <p className="text-jung-secondary m-0">
+              <p className="text-jung-secondary text-sm m-0 font-body">
                 We use Resend to deliver email reports and notifications. Resend processes your email address solely for the purpose of sending communications on our behalf.
               </p>
             </div>
@@ -106,11 +126,14 @@ export const PrivacyPolicy: React.FC = () => {
         </section>
 
         <section className="mb-12">
-          <div className="mb-4">
-            <h2 className="text-2xl font-semibold tracking-tight text-jung-dark m-0">Cookies</h2>
+          <div className="flex items-start gap-4 mb-4">
+            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-jung-accent/10 flex items-center justify-center">
+              <Cookie className="w-5 h-5 text-jung-accent" />
+            </div>
+            <h2 className="text-2xl font-serif font-bold text-jung-dark m-0">Cookies</h2>
           </div>
 
-          <div className="text-jung-secondary">
+          <div className="pl-14 text-jung-secondary font-body">
             <p>
               We use essential session cookies to maintain your authentication state and provide a seamless experience. Account sessions expire after 30 days or when you sign out. These cookies are necessary for the service to function and cannot be disabled.
             </p>
@@ -121,11 +144,14 @@ export const PrivacyPolicy: React.FC = () => {
         </section>
 
         <section className="mb-12">
-          <div className="mb-4">
-            <h2 className="text-2xl font-semibold tracking-tight text-jung-dark m-0">Data Retention & Deletion</h2>
+          <div className="flex items-start gap-4 mb-4">
+            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-jung-accent/10 flex items-center justify-center">
+              <Trash2 className="w-5 h-5 text-jung-accent" />
+            </div>
+            <h2 className="text-2xl font-serif font-bold text-jung-dark m-0">Data Retention & Deletion</h2>
           </div>
 
-          <div className="text-jung-secondary">
+          <div className="pl-14 text-jung-secondary font-body">
             <p>
               We retain your account information and assessment data for as long as your account is active. You may request deletion of your account and all associated data at any time through your profile settings or by contacting us.
             </p>
@@ -136,35 +162,38 @@ export const PrivacyPolicy: React.FC = () => {
         </section>
 
         <section className="mb-12">
-          <div className="mb-4">
-            <h2 className="text-2xl font-semibold tracking-tight text-jung-dark m-0">Data Security</h2>
+          <div className="flex items-start gap-4 mb-4">
+            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-jung-accent/10 flex items-center justify-center">
+              <Shield className="w-5 h-5 text-jung-accent" />
+            </div>
+            <h2 className="text-2xl font-serif font-bold text-jung-dark m-0">Data Security</h2>
           </div>
 
-          <div className="text-jung-secondary">
+          <div className="pl-14 text-jung-secondary font-body">
             <p>
               We use established platform security controls to protect your personal information against unauthorized access, alteration, disclosure, or destruction. This includes encrypted connections, managed database protections, secure authentication practices, and periodic review of access and configuration.
             </p>
           </div>
         </section>
 
-        <section className="mb-12 bg-jung-surface p-6">
-          <h2 className="text-xl font-semibold text-jung-dark mb-4">Contact Us</h2>
-          <p className="text-jung-secondary m-0">
+        <section className="mb-12 bg-jung-accent/10 rounded-2xl p-6 border border-jung-accent/20">
+          <h2 className="text-xl font-serif font-bold text-jung-dark mb-4">Contact Us</h2>
+          <p className="text-jung-secondary m-0 font-body">
             If you have any questions about this Privacy Policy or wish to exercise your data rights, please contact us at:
           </p>
-          <p className="text-jung-dark font-semibold mt-3 m-0">
+          <p className="text-jung-accent font-medium mt-3 m-0 font-serif">
             support@typejung.com
           </p>
         </section>
 
-        <section className="pt-8">
-          <p className="text-jung-muted text-sm">
+        <section className="text-center pt-8 border-t border-jung-border">
+          <p className="text-jung-muted text-sm font-body">
             By using our service, you acknowledge that you have read and understood this Privacy Policy.
           </p>
           <div className="mt-6">
             <Link
               to="/terms"
-              className="inline-flex min-h-11 items-center font-medium text-jung-accent-text underline underline-offset-2"
+              className="text-jung-accent hover:underline transition-colors font-medium font-serif"
             >
               View Terms of Service →
             </Link>

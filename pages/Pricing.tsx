@@ -110,221 +110,237 @@ export const Pricing: React.FC = () => {
     navigate(destination);
   };
   return (
-    <div className="pr">
-      <header className="wrap pr-head">
-        <h1 className="pr-title">
+    <div className="studio-pricing lab-container pb-16">
+      <header className="mx-auto max-w-2xl py-12 text-center sm:py-16">
+        <p className="journey-eyebrow">Simple, one-time pricing</p>
+        <h1 className="mt-4 font-display text-5xl font-semibold leading-[1.08] sm:text-6xl">
           Start free.
           <br />
-          Choose your depth.
+          <span className="text-jung-accent">
+            Choose your depth.
+          </span>
         </h1>
-        <p className="pr-lead">
+        <p className="mx-auto mt-5 max-w-lg text-base leading-7 text-jung-secondary">
           Read your result first. Add a deeper interpretation when you want to
           explore what it could mean in your life.
         </p>
       </header>
-      <div className="wrap">
-        {hasResults && (
-          <div className="pr-saved">
-            <span>Your map is saved on this device.</span>
-            <Link
-              to="/results"
-              className="text-link"
-            >
-              Read my result <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-          </div>
-        )}
-        <section
-          id="plans"
-          className="pr-plans scroll-mt-28"
-        >
-          {(hasResults ? [plans[1], plans[0]] : plans).map((plan) => (
-            <article
-              key={plan.id}
-              className={`pr-plan ${plan.id === 'insight' ? 'is-paid on-night' : 'is-free'}`}
-            >
-              <h2 className="pr-plan-name">
-                {plan.name}
-              </h2>
-              <p className="pr-plan-tag">
-                {plan.eyebrow}
-              </p>
-              <p className="pr-plan-desc">
-                {plan.description}
-              </p>
-              <p className="pr-plan-price">
-                {plan.price}
-                <span className="pr-plan-unit">
-                  {plan.id === 'free' ? 'always free' : 'one time · CAD'}
-                </span>
-              </p>
-              <p className="pr-plan-note">
-                {plan.id === 'insight'
-                  ? `Current offer · ${PRICING.insight.price} regular price`
-                  : 'No payment needed to see your result'}
-              </p>
-              <ul className="list-diamond pr-plan-list">
-                {plan.features.map((feature) => (
-                  <li key={feature}>{feature}</li>
-                ))}
-              </ul>
-              <Button
-                variant={plan.id === 'insight' ? 'accent' : 'primary'}
-                size="lg"
-                className="w-full"
-                onClick={() => choose(plan.id)}
-                rightIcon={<ArrowRight className="h-4 w-4" />}
-              >
-                {plan.id === 'free'
-                  ? hasResults
-                    ? 'Read my free map'
-                    : 'Start free assessment'
-                  : hasResults
-                    ? `Get Insight — ${plan.price}`
-                    : 'Start free, decide after'}
-              </Button>
-              {plan.id === 'insight' && (
-                <Link
-                  to={pathWithSource('/sample-report', 'pricing_paid_preview')}
-                  className="pr-plan-sample on-night-link"
-                >
-                  Read the sample first
-                </Link>
-              )}
-            </article>
-          ))}
-        </section>
-        <section className="pr-mastery">
-          <div>
-            <h2 className="pr-mastery-name">
-              Mastery{' '}
-              <span className="pr-mastery-price">
-                {discountedPriceLabel(PRICING.mastery.amount)} once
-              </span>
-            </h2>
-            <p className="pr-mastery-text">
-              Everything in Insight, plus the AI Type Guide, growth exercises, and
-              an individuation roadmap. An account is required for guide access.
-            </p>
-          </div>
-          <Button
-            variant="outline"
-            className="shrink-0"
-            onClick={() => choose('mastery')}
-            rightIcon={<ArrowRight className="h-4 w-4" />}
+      {hasResults && (
+        <div className="mx-auto mb-6 flex max-w-4xl flex-wrap items-center justify-between gap-3 rounded-xl bg-jung-accent-light px-5 py-4 text-sm">
+          <span>Your map is saved on this device.</span>
+          <Link
+            to="/results"
+            className="inline-flex min-h-11 items-center gap-2 font-semibold text-jung-accent"
           >
-            Explore Mastery
-          </Button>
-        </section>
-        <p className="pr-terms">
-          <ShieldCheck className="h-4 w-4 flex-none" aria-hidden="true" />
-          Payments in Canadian dollars. No subscription. 7-day refund policy.
-        </p>
-        <section className="pr-sample">
-          <div>
-            <h2 className="pr-h2">A report you can put into practice.</h2>
-            <p className="pr-text">Explore a fictional example of the reading experience. Your free map is yours to keep; paid depth adds interpretation across ten sections.</p>
-            <Button variant="accent" size="lg" className="mt-6" onClick={() => choose('insight')}>
-              {hasResults ? `Get Insight — ${discountedPriceLabel(PRICING.insight.amount)}` : 'Start with my free map'}
+            Read my result <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      )}
+      <section
+        id="plans"
+        className="mx-auto grid max-w-4xl scroll-mt-28 gap-5 md:grid-cols-2"
+      >
+        {(hasResults ? [plans[1], plans[0]] : plans).map((plan) => (
+          <article
+            key={plan.id}
+            className={`flex flex-col rounded-2xl border p-6 sm:p-8 ${plan.id === 'insight' ? 'border-jung-accent bg-jung-accent-light' : 'border-jung-border bg-jung-surface/60'}`}
+          >
+            <p className="journey-eyebrow">
+              {plan.eyebrow}
+            </p>
+            <h2 className="mt-3 font-display text-3xl">
+              {plan.name}
+            </h2>
+            <p className="mt-3 min-h-12 text-sm leading-6 text-jung-secondary">
+              {plan.description}
+            </p>
+            <p className="mt-6 font-display text-5xl font-semibold">
+              {plan.price}
+              <span className="ml-2 font-sans text-xs tracking-normal text-jung-muted">
+                {plan.id === 'free' ? 'always free' : 'one time · CAD'}
+              </span>
+            </p>
+            <p className="mt-2 min-h-5 text-xs text-jung-muted">
+              {plan.id === 'insight'
+                ? `Current offer · ${PRICING.insight.price} regular price`
+                : 'No payment needed to see your result'}
+            </p>
+            <ul className="my-7 flex-1 space-y-3">
+              {plan.features.map((feature) => (
+                <li
+                  key={feature}
+                  className="flex gap-3 text-sm leading-6 text-jung-secondary"
+                >
+                  <Check className="mt-1 h-4 w-4 shrink-0 text-jung-accent" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <Button
+              variant={plan.id === 'insight' ? 'accent' : 'outline'}
+              size="lg"
+              className="w-full"
+              onClick={() => choose(plan.id)}
+              rightIcon={<ArrowRight className="h-4 w-4" />}
+            >
+              {plan.id === 'free'
+                ? hasResults
+                  ? 'Read my free map'
+                  : 'Start free assessment'
+                : hasResults
+                  ? `Get Insight — ${plan.price}`
+                  : 'Start free, decide after'}
             </Button>
-            <p className="pr-fine">Insight: {discountedPriceLabel(PRICING.insight.amount)} once · CAD · 7-day refund</p>
-            <Link to="/sample-report" className="text-link mt-2">Read all four sample excerpts</Link>
-          </div>
-          <ReportSamplePreview onExplore={topic => trackEvent('pricing_report_sample_explored', { topic, source: 'pricing_preview' })} />
-        </section>
-        <section id="compare" className="pr-compare scroll-mt-28">
-          <details className="rs-how">
-            <summary>
-              Compare everything included
-            </summary>
-            <div className="pr-table-wrap">
-              <table className="pr-table">
-                <caption className="sr-only">
-                  Features included in Free, Insight, and Mastery
-                </caption>
-                <thead>
-                  <tr>
-                    <th scope="col">Included</th>
-                    {['Free', 'Insight', 'Mastery'].map((tier) => (
-                      <th key={tier} scope="col">
-                        {tier}
-                      </th>
+            {plan.id === 'insight' && (
+              <Link
+                to={pathWithSource('/sample-report', 'pricing_paid_preview')}
+                className="mt-2 flex min-h-11 items-center justify-center text-xs font-semibold text-jung-accent underline underline-offset-4"
+              >
+                Read the sample first
+              </Link>
+            )}
+          </article>
+        ))}
+      </section>
+      <section className="mx-auto mt-5 flex max-w-4xl flex-col justify-between gap-5 rounded-2xl border border-jung-border bg-jung-surface-alt p-6 sm:flex-row sm:items-center sm:p-8">
+        <div className="max-w-lg">
+          <p className="journey-eyebrow">For continued reflection</p>
+          <h2 className="mt-2 font-display text-2xl">
+            Mastery{' '}
+            <span className="ml-2 whitespace-nowrap font-sans text-sm font-normal text-jung-secondary">
+              {discountedPriceLabel(PRICING.mastery.amount)} once
+            </span>
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-jung-secondary">
+            Everything in Insight, plus the AI Type Guide, growth exercises, and
+            an individuation roadmap. An account is required for guide access.
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          className="shrink-0"
+          onClick={() => choose('mastery')}
+          rightIcon={<ArrowRight className="h-4 w-4" />}
+        >
+          Explore Mastery
+        </Button>
+      </section>
+      <p className="mx-auto mt-6 flex max-w-4xl items-start justify-center gap-2 text-center text-xs leading-6 text-jung-muted">
+        <ShieldCheck className="mt-1 h-4 w-4 shrink-0" />
+        Payments in Canadian dollars. No subscription. 7-day refund policy.
+      </p>
+      <section className="mx-auto mt-14 grid max-w-4xl items-center gap-8 lg:grid-cols-[1fr_1.45fr]">
+        <div>
+          <p className="journey-eyebrow">Look inside before you decide</p>
+          <h2 className="mt-3 font-display text-3xl leading-tight sm:text-4xl">A report you can<br />put into practice.</h2>
+          <p className="mt-4 text-sm leading-7 text-jung-secondary">Explore a fictional example of the reading experience. Your free map is yours to keep; paid depth adds interpretation across ten sections.</p>
+          <Button variant="accent" className="mt-5" onClick={() => choose('insight')}>
+            {hasResults ? `Get Insight — ${discountedPriceLabel(PRICING.insight.amount)}` : 'Start with my free map'}
+          </Button>
+          <p className="mt-3 text-xs leading-6 text-jung-muted">Insight: {discountedPriceLabel(PRICING.insight.amount)} once · CAD · 7-day refund</p>
+          <Link to="/sample-report" className="mt-3 inline-flex min-h-11 items-center text-xs font-semibold text-jung-accent underline underline-offset-4">Read all four sample excerpts</Link>
+        </div>
+        <ReportSamplePreview onExplore={topic => trackEvent('pricing_report_sample_explored', { topic, source: 'pricing_preview' })} />
+      </section>
+      <section id="compare" className="mx-auto mt-14 max-w-4xl scroll-mt-28">
+        <details className="rounded-xl border border-jung-border bg-jung-surface p-5 sm:p-7">
+          <summary className="cursor-pointer font-display text-2xl">
+            Compare everything included
+          </summary>
+          <div className="mt-6 overflow-x-auto">
+            <table className="w-full text-left text-xs sm:text-sm">
+              <caption className="sr-only">
+                Features included in Free, Insight, and Mastery
+              </caption>
+              <thead>
+                <tr className="border-b border-jung-border">
+                  <th className="py-3 font-medium">Included</th>
+                  {['Free', 'Insight', 'Mastery'].map((tier) => (
+                    <th
+                      key={tier}
+                      className="px-2 py-3 text-center font-medium"
+                    >
+                      {tier}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {COMPARISON_FEATURES.map((feature) => (
+                  <tr
+                    key={feature.name}
+                    className="border-b border-jung-border-light last:border-0"
+                  >
+                    <th
+                      scope="row"
+                      className="py-4 pr-4 font-normal text-jung-secondary"
+                    >
+                      {feature.name}
+                    </th>
+                    {(['free', 'insight', 'mastery'] as const).map((tier) => (
+                      <td key={tier} className="px-2 text-center">
+                        {feature[tier] ? (
+                          <Check
+                            aria-label="Included"
+                            className="mx-auto h-4 w-4 text-jung-accent"
+                          />
+                        ) : (
+                          <Minus
+                            aria-label="Not included"
+                            className="mx-auto h-4 w-4 text-jung-muted"
+                          />
+                        )}
+                      </td>
                     ))}
                   </tr>
-                </thead>
-                <tbody>
-                  {COMPARISON_FEATURES.map((feature) => (
-                    <tr key={feature.name}>
-                      <th scope="row">
-                        {feature.name}
-                      </th>
-                      {(['free', 'insight', 'mastery'] as const).map((tier) => (
-                        <td key={tier}>
-                          {feature[tier] ? (
-                            <Check
-                              aria-label="Included"
-                              className="mx-auto h-5 w-5"
-                            />
-                          ) : (
-                            <Minus
-                              aria-label="Not included"
-                              className="mx-auto h-5 w-5 text-jung-muted"
-                            />
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </details>
-        </section>
-        <section className="pr-faq">
-          <h2 className="pr-h2">
-            Good to know before you buy.
-          </h2>
-          <div className="faq-tiles">
-            {[
-              [
-                'How is my report written?',
-                'The paid report uses AI to interpret your assessment result across ten sections. It is an educational reflection tool. Read it critically and compare it with your own experience.',
-              ],
-              [
-                'What happens after payment?',
-                'Stripe confirms payment, then returns you to TypeJung to generate your report from the map saved in this browser. Use the purchase email when signing in to restore paid access. Keep your receipt.',
-              ],
-              [
-                'Do I need a discount code?',
-                `The ${EMAIL_CAPTURE_OFFER.code} offer is applied automatically. Insight is ${discountedPriceLabel(PRICING.insight.amount)} and Mastery is ${discountedPriceLabel(PRICING.mastery.amount)}. Review the final amount on Stripe before paying.`,
-              ],
-              [
-                'What if the report is not useful?',
-                `Email ${SUPPORT_EMAIL} within 7 days of purchase with your Stripe receipt to request a refund.`,
-              ],
-            ].map(([q, a]) => (
-              <details key={q} className="faq-tile">
-                <summary>
-                  {q}
-                </summary>
-                <p>
-                  {a}
-                </p>
-              </details>
-            ))}
+                ))}
+              </tbody>
+            </table>
           </div>
-        </section>
-        <p className="pr-debrief">
-          Prefer a written second perspective from the founder?{' '}
-          <Link
-            to="/debrief"
-            className="link-ink"
-          >
-            Read about the Personal Type Debrief
-          </Link>
-          .
-        </p>
-      </div>
+        </details>
+      </section>
+      <section className="mx-auto mt-14 max-w-4xl">
+        <h2 className="mb-5 font-display text-3xl">
+          Good to know before you buy.
+        </h2>
+        {[
+          [
+            'How is my report written?',
+            'The paid report uses AI to interpret your assessment result across ten sections. It is an educational reflection tool. Read it critically and compare it with your own experience.',
+          ],
+          [
+            'What happens after payment?',
+            'Stripe confirms payment, then returns you to TypeJung to generate your report from the map saved in this browser. Use the purchase email when signing in to restore paid access. Keep your receipt.',
+          ],
+          [
+            'Do I need a discount code?',
+            `The ${EMAIL_CAPTURE_OFFER.code} offer is applied automatically. Insight is ${discountedPriceLabel(PRICING.insight.amount)} and Mastery is ${discountedPriceLabel(PRICING.mastery.amount)}. Review the final amount on Stripe before paying.`,
+          ],
+          [
+            'What if the report is not useful?',
+            `Email ${SUPPORT_EMAIL} within 7 days of purchase with your Stripe receipt to request a refund.`,
+          ],
+        ].map(([q, a]) => (
+          <details key={q} className="border-b border-jung-border">
+            <summary className="cursor-pointer py-5 text-sm font-semibold">
+              {q}
+            </summary>
+            <p className="max-w-2xl pb-5 text-sm leading-7 text-jung-secondary">
+              {a}
+            </p>
+          </details>
+        ))}
+      </section>
+      <p className="mx-auto mt-10 max-w-4xl text-sm leading-7 text-jung-secondary">
+        Prefer a written second perspective from the founder?{' '}
+        <Link
+          to="/debrief"
+          className="inline-flex min-h-11 items-center text-jung-accent underline underline-offset-4"
+        >
+          Read about the Personal Type Debrief
+        </Link>
+        .
+      </p>
     </div>
   );
 };

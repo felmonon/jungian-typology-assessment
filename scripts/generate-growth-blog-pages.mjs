@@ -6,7 +6,6 @@ import { fileURLToPath } from 'url';
 import { growthBlogArticles } from './growth-blog-data.mjs';
 import { standaloneAnalyticsSnippet, withStandaloneAnalytics } from './standalone-analytics.mjs';
 import { writeGeneratedFile } from './stable-dates.mjs';
-import { STATIC_BASE_CSS, STATIC_FONT_LINKS } from './static-page-style.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const publicBlogDir = join(__dirname, '..', 'public', 'blog');
@@ -86,7 +85,39 @@ const articleSchema = (article) => JSON.stringify({
   ],
 }, null, 2);
 
-const style = STATIC_BASE_CSS;
+const style = `
+    body { font-family: Georgia, serif; line-height: 1.8; color: #333; max-width: 980px; margin: 0 auto; padding: 40px 20px; background: #fafaf9; }
+    h1 { color: #451a03; font-size: clamp(2.1rem, 7vw, 3.2rem); line-height: 1.05; margin-bottom: 0.35em; }
+    h2 { color: #451a03; border-bottom: 2px solid #b45309; padding-bottom: 10px; margin-top: 42px; }
+    h3 { color: #451a03; margin-top: 30px; }
+    a { color: #9a3412; }
+    .subtitle { color: #57534e; font-size: 1.22em; margin-bottom: 24px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    .meta { color: #78716c; font-size: 0.95em; }
+    .breadcrumb { color: #78716c; margin-bottom: 20px; }
+    .breadcrumb a { color: #b45309; text-decoration: none; }
+    .tag { display: inline-block; background: #fef3c7; color: #92400e; padding: 3px 10px; border-radius: 15px; font-size: 0.85em; margin: 4px 5px 4px 0; }
+    .cta { background: #451a03; color: #fff; padding: 28px; border-radius: 8px; margin: 32px 0; }
+    .cta h2 { color: #fff; border: 0; margin: 0 0 8px; padding: 0; }
+    .cta p { color: rgba(255,255,255,.82); margin-bottom: 20px; }
+    .btn { display: inline-block; padding: 12px 22px; background: #f59e0b; color: #1c1917; text-decoration: none; border-radius: 5px; font-weight: bold; }
+    .secondary-link { display: inline-block; margin-left: 14px; color: #fff; font-weight: 700; }
+    .save-link-panel { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px; padding: 20px; margin: 24px 0 34px; }
+    .save-link-panel h2 { border: 0; margin: 0 0 8px; padding: 0; font-size: 1.35rem; }
+    .save-link-panel p { margin: 0 0 14px; color: #57534e; }
+    .save-link-form { display: grid; gap: 10px; }
+    .save-link-form-row { display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr) auto; }
+    .save-link-form input[type="email"] { min-height: 44px; width: 100%; border: 1px solid #d6d3d1; border-radius: 5px; background: #fff; color: #292524; font: 600 0.95rem Georgia, serif; padding: 0 12px; }
+    .save-link-form button { min-height: 44px; border: 0; border-radius: 5px; background: #451a03; color: #fff; cursor: pointer; font-weight: 700; padding: 0 16px; }
+    .save-link-form button:disabled { cursor: wait; opacity: 0.72; }
+    .save-link-status { min-height: 1.35rem; margin: 0 !important; color: #57534e; font-size: 0.92rem; }
+    .honeypot { display: none; }
+    nav { background: #f5f5f4; padding: 18px; border-radius: 8px; margin-bottom: 30px; }
+    nav a { color: #b45309; text-decoration: none; margin-right: 18px; font-weight: 500; }
+    .related { background: #fff; border: 1px solid #e7e5e4; border-radius: 8px; padding: 22px; margin-top: 38px; }
+    footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #e7e5e4; color: #78716c; text-align: center; }
+    @media (max-width: 640px) { nav a { display: block; margin: 8px 0; } body { padding: 28px 16px; } .save-link-form-row { grid-template-columns: 1fr; } .secondary-link { display: block; margin: 14px 0 0; } }
+`;
 
 const renderSaveLinkPanel = (sourceBase, idBase = sourceBase) => `<section class="save-link-panel" aria-labelledby="${escapeHtml(sourceSlug(idBase))}-save-link-title">
     <h2 id="${escapeHtml(sourceSlug(idBase))}-save-link-title">Want to take the free map later?</h2>
@@ -273,7 +304,6 @@ const renderArticle = (article) => {
   <meta property="og:image" content="${baseUrl}/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  ${STATIC_FONT_LINKS}
   <script type="application/ld+json">
 ${articleSchema(article)}
   </script>
@@ -338,14 +368,12 @@ const renderIndex = () => `<!DOCTYPE html>
   <meta property="og:image" content="${baseUrl}/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  ${STATIC_FONT_LINKS}
   <style>
 ${style}
-    .blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 4px; margin: 32px 0; }
-    .blog-card { background: var(--jung-surface); padding: 24px; }
-    .blog-card h2 { margin: 0 0 2px; font-size: 1.4rem; letter-spacing: -0.02em; }
-    .blog-card h2 a { display: block; padding-block: 10px; color: var(--jung-dark); text-decoration: none; }
-    .blog-card h2 a:hover { text-decoration: underline; }
+    .blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 24px; margin: 30px 0; }
+    .blog-card { background: white; padding: 24px; border-radius: 8px; border: 1px solid #e7e5e4; }
+    .blog-card h2 { border: 0; padding: 0; margin: 8px 0 10px; font-size: 1.35rem; }
+    .blog-card h2 a { color: #451a03; text-decoration: none; }
   </style>
 ${standaloneAnalyticsSnippet}
 </head>

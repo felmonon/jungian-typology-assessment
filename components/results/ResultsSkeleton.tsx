@@ -29,8 +29,8 @@ export const ResultsSkeleton: React.FC = () => {
           <SkeletonBlock className="h-8 w-64 mx-auto" delay={0} reducedMotion={reducedMotion} />
           <SkeletonBlock className="h-4 w-48 mx-auto" delay={100} reducedMotion={reducedMotion} />
           <div className="flex justify-center gap-2 pt-2">
-            <SkeletonBlock className="h-6 w-16" delay={200} reducedMotion={reducedMotion} />
-            <SkeletonBlock className="h-6 w-16" delay={250} reducedMotion={reducedMotion} />
+            <SkeletonBlock className="h-6 w-16 rounded-full" delay={200} reducedMotion={reducedMotion} />
+            <SkeletonBlock className="h-6 w-16 rounded-full" delay={250} reducedMotion={reducedMotion} />
           </div>
         </div>
 
@@ -128,7 +128,7 @@ export const ResultsSkeleton: React.FC = () => {
                   <SkeletonBlock className="h-5 w-10" delay={700 + i * 30} reducedMotion={reducedMotion} />
                   <SkeletonBlock className="h-4 w-12" delay={700 + i * 30} reducedMotion={reducedMotion} />
                 </div>
-                <SkeletonBlock className="h-2 w-full" delay={700 + i * 30} reducedMotion={reducedMotion} />
+                <SkeletonBlock className="h-2 w-full rounded-full" delay={700 + i * 30} reducedMotion={reducedMotion} />
               </div>
             ))}
           </div>

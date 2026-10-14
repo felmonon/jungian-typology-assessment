@@ -93,7 +93,7 @@ const DefaultErrorFallback: React.FC<DefaultErrorFallbackProps> = ({
 
   return (
     <div className="min-h-screen bg-jung-surface flex items-center justify-center p-4">
-      <div className="max-w-lg w-full bg-jung-base rounded-2xl border border-jung-border p-8 text-center">
+      <div className="max-w-lg w-full bg-jung-base rounded-2xl shadow-xl border border-jung-border p-8 text-center">
         {/* Icon */}
         <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
           <AlertTriangle className="w-10 h-10 text-red-600" />
@@ -115,7 +115,7 @@ const DefaultErrorFallback: React.FC<DefaultErrorFallbackProps> = ({
           <div className="mb-6">
             <button
               onClick={() => setShowDetails(!showDetails)}
-              className="text-sm text-jung-accent-text hover:underline"
+              className="text-sm text-jung-accent hover:underline"
             >
               {showDetails ? 'Hide' : 'Show'} error details
             </button>
@@ -198,9 +198,9 @@ export class AssessmentErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="min-h-screen bg-jung-surface flex items-center justify-center p-4">
-          <div className="max-w-lg w-full bg-jung-base rounded-2xl border border-jung-border p-8 text-center">
+          <div className="max-w-lg w-full bg-jung-base rounded-2xl shadow-xl border border-jung-border p-8 text-center">
             <div className="w-20 h-20 bg-jung-accent-light rounded-full flex items-center justify-center mx-auto mb-6">
-              <AlertTriangle className="w-10 h-10 text-jung-accent-text" />
+              <AlertTriangle className="w-10 h-10 text-jung-accent" />
             </div>
 
             <h1 className="text-display text-2xl text-jung-dark mb-3">

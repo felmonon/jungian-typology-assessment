@@ -147,7 +147,7 @@ export const CheckoutSuccess: React.FC = () => {
 
     if (!sessionId) {
       setStatus('error');
-      setError('This page did not receive a payment reference from checkout.');
+      setError('No session ID found');
       return;
     }
     const verifiedSessionId = sessionId;
@@ -305,9 +305,9 @@ export const CheckoutSuccess: React.FC = () => {
   if (status === 'loading') {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center bg-jung-base px-4">
-        <span className="rs-state-line is-loading mb-8" aria-hidden="true" />
-        <h1 className="mb-2 text-center text-heading text-3xl text-jung-dark" role="status">
-          Verifying your payment…
+        <Loader2 className="mb-4 h-12 w-12 animate-spin text-jung-accent md:h-16 md:w-16" />
+        <h1 className="mb-2 text-center text-heading text-2xl text-jung-dark">
+          Verifying your payment...
         </h1>
         <p className="text-sm text-jung-secondary md:text-base">This usually takes a few seconds.</p>
       </div>
@@ -317,20 +317,19 @@ export const CheckoutSuccess: React.FC = () => {
   if (status === 'error') {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center bg-jung-base px-4">
-        <XCircle className="mb-6 h-12 w-12 text-error" aria-hidden="true" />
-        <h1 className="mb-2 text-center text-heading text-3xl text-jung-dark">
+        <div className="mb-6 rounded-lg bg-error/5 p-4">
+          <XCircle className="h-12 w-12 text-error md:h-16 md:w-16" />
+        </div>
+        <h1 className="mb-2 text-center text-heading text-2xl text-jung-dark">
           We could not verify the payment
         </h1>
-        <p className="mb-3 max-w-md text-center text-sm text-jung-secondary md:text-base">{error || 'Unable to verify payment'}</p>
-        <p className="mb-6 max-w-md text-center text-sm text-jung-muted md:text-base">
-          If you were charged, sign in with your purchase email to restore access, or email {SUPPORT_EMAIL} with your Stripe receipt.
-        </p>
+        <p className="mb-6 max-w-md text-center text-sm text-jung-secondary md:text-base">{error || 'Unable to verify payment'}</p>
         <div className="flex flex-col gap-4 sm:flex-row">
           <Button onClick={() => navigate('/results')} variant="primary">
-            Back to results
+            Back to Results
           </Button>
           <Button variant="outline" onClick={() => window.location.reload()}>
-            Try again
+            Try Again
           </Button>
         </div>
       </div>
@@ -341,7 +340,7 @@ export const CheckoutSuccess: React.FC = () => {
     return (
       <div className="min-h-[60vh] bg-jung-base py-12">
         <div className="editorial-container mx-auto max-w-2xl text-center">
-          <div className="mb-6 inline-flex h-16 w-16 items-center justify-center bg-jung-surface text-success">
+          <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent shadow-sm">
             <CheckCircle className="h-8 w-8" />
           </div>
           <h1 className="mb-4 text-heading text-4xl text-jung-dark">Your Personal Type Debrief is booked</h1>
@@ -350,12 +349,12 @@ export const CheckoutSuccess: React.FC = () => {
             send your founder-reviewed breakdown within 72 hours{debriefEmail ? <> to <span className="font-semibold text-jung-dark">{debriefEmail}</span></> : ''}.
           </p>
 
-          <div className="mb-8 bg-jung-surface p-6 text-left sm:p-8">
+          <div className="mb-8 rounded-lg border border-jung-border bg-jung-surface p-6 text-left shadow-sm">
             <h2 className="text-lg font-semibold text-jung-dark">What happens next</h2>
             <ul className="mt-4 space-y-3 text-sm leading-6 text-jung-secondary">
-              <li className="flex items-start gap-3"><CheckCircle className="mt-0.5 h-4 w-4 flex-none text-success" aria-hidden="true" />I read your result, tested types, and where you feel stuck.</li>
-              <li className="flex items-start gap-3"><CheckCircle className="mt-0.5 h-4 w-4 flex-none text-success" aria-hidden="true" />I record a 10-minute video or write a breakdown of your map, mistype risks, and stress edge.</li>
-              <li className="flex items-start gap-3"><CheckCircle className="mt-0.5 h-4 w-4 flex-none text-success" aria-hidden="true" />It lands in your inbox within 72 hours. Reply any time with follow-up questions.</li>
+              <li className="flex items-start gap-3"><CheckCircle className="mt-0.5 h-4 w-4 flex-none text-jung-accent" />I read your result, tested types, and where you feel stuck.</li>
+              <li className="flex items-start gap-3"><CheckCircle className="mt-0.5 h-4 w-4 flex-none text-jung-accent" />I record a 10-minute video or write a breakdown of your map, mistype risks, and stress edge.</li>
+              <li className="flex items-start gap-3"><CheckCircle className="mt-0.5 h-4 w-4 flex-none text-jung-accent" />It lands in your inbox within 72 hours. Reply any time with follow-up questions.</li>
             </ul>
           </div>
 
@@ -379,7 +378,7 @@ export const CheckoutSuccess: React.FC = () => {
     <div className="min-h-[60vh] bg-jung-base py-12">
       <div className="editorial-container max-w-2xl mx-auto">
         <div className="mb-10 text-center">
-          <div className="mb-6 inline-flex h-16 w-16 items-center justify-center bg-jung-surface text-success">
+          <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent shadow-sm">
             <CheckCircle className="h-8 w-8" />
           </div>
 
@@ -388,12 +387,12 @@ export const CheckoutSuccess: React.FC = () => {
           </h1>
 
           {dominantFunction && funcTitle && (
-            <p className="mb-3 text-lg font-medium text-jung-secondary">
+            <p className="mb-3 text-lg font-medium text-jung-accent">
               Based on your <span className="font-bold">{funcTitle}</span> profile...
             </p>
           )}
 
-          <div className="mb-4 flex items-center justify-center gap-2 font-semibold text-success">
+          <div className="mb-4 flex items-center justify-center gap-2 text-jung-accent">
             <TypeJungMark size="xs" />
             <span className="font-medium">Premium access is active</span>
           </div>
@@ -403,10 +402,10 @@ export const CheckoutSuccess: React.FC = () => {
           </p>
         </div>
 
-        <div className="mb-8 bg-night p-6 text-white sm:p-8">
+        <div className="mb-8 rounded-lg border border-jung-dark bg-jung-dark p-5 text-white shadow-lg sm:p-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-xs font-semibold text-white/55">
+              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-white/55">
                 Included with your report
               </p>
               <h2 className="mt-2 font-display text-2xl font-semibold text-white">
@@ -426,7 +425,7 @@ export const CheckoutSuccess: React.FC = () => {
                   tier: purchasedTier,
                 })
               }
-              className="inline-flex min-h-12 flex-none items-center justify-center gap-2 bg-white px-5 text-sm font-semibold text-jung-dark transition-colors hover:bg-jung-surface-alt"
+              className="inline-flex min-h-12 flex-none items-center justify-center gap-2 rounded-lg bg-white px-5 text-sm font-semibold text-jung-dark transition hover:-translate-y-px hover:bg-jung-accent-light"
             >
               <Download className="h-4 w-4" />
               Download the guide (PDF)
@@ -435,10 +434,10 @@ export const CheckoutSuccess: React.FC = () => {
         </div>
 
         {purchasedTier === 'insight' && (
-          <div className="mb-8 bg-jung-surface p-6 sm:p-8">
+          <div className="mb-8 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-5 shadow-sm sm:p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <div className="mb-2 inline-flex items-center gap-2 bg-jung-base px-3 py-1.5 text-sm font-semibold text-jung-dark">
+                <div className="mb-2 inline-flex items-center gap-2 rounded-lg bg-jung-surface px-3 py-1.5 text-xs font-semibold text-jung-accent">
                   <Sparkles className="h-3.5 w-3.5" />
                   Upgrade to Mastery
                 </div>
@@ -465,7 +464,7 @@ export const CheckoutSuccess: React.FC = () => {
         )}
 
         {!user && (
-          <div className="mb-8 bg-jung-surface p-6 sm:p-8">
+          <div className="mb-8 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-5">
             <h2 className="text-lg font-semibold text-jung-dark">Save the unlock to your account</h2>
             <p className="mt-2 text-sm leading-6 text-jung-secondary">
               Your Stripe receipt verifies the purchase in this browser. To keep access in history, restore it later{purchasedTier === 'mastery' ? ', and use the AI Type Guide' : ''}, sign in with the same email used at checkout.
@@ -480,9 +479,9 @@ export const CheckoutSuccess: React.FC = () => {
           </div>
         )}
 
-        <div className="mb-8 bg-jung-surface p-6 sm:p-8">
+        <div className="mb-8 rounded-lg border border-jung-border bg-jung-surface p-6 shadow-md">
           <h2 className="mb-5 flex items-center gap-2 text-lg font-semibold text-jung-dark">
-            <CheckCircle className="h-5 w-5 text-success" aria-hidden="true" />
+            <CheckCircle className="h-5 w-5 text-jung-accent" />
             What you unlocked
           </h2>
 
@@ -491,8 +490,8 @@ export const CheckoutSuccess: React.FC = () => {
               const Icon = feature.icon;
               return (
                 <div key={i} className="flex items-start gap-3">
-                  <div className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center bg-jung-base">
-                    <Icon className="h-4 w-4 text-jung-dark" aria-hidden="true" />
+                  <div className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-jung-accent-light">
+                    <Icon className="h-4 w-4 text-jung-accent" />
                   </div>
                   <span className="text-jung-secondary leading-relaxed">{feature.text}</span>
                 </div>
@@ -513,10 +512,10 @@ export const CheckoutSuccess: React.FC = () => {
           </Button>
         </div>
 
-        <div className="mb-8 bg-jung-surface p-6 sm:p-8">
+        <div className="mb-8 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-5 shadow-sm sm:p-6">
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center">
             <div>
-              <div className="mb-3 inline-flex items-center gap-2 bg-jung-base px-3 py-1.5 text-sm font-semibold text-jung-dark">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-lg bg-jung-surface px-3 py-1.5 text-xs font-semibold text-jung-accent">
                 <Share2 className="h-3.5 w-3.5" />
                 Customer referral
               </div>
@@ -550,7 +549,7 @@ export const CheckoutSuccess: React.FC = () => {
 
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-2 text-jung-muted">
-            <Shield className="h-4 w-4 text-jung-dark" aria-hidden="true" />
+            <Shield className="h-4 w-4 text-jung-accent" />
             <span className="text-sm">7-Day Money-Back Guarantee</span>
           </div>
           <p className="text-xs text-jung-muted">

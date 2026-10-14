@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Eye, ChevronDown, UserCircle, Compass } from 'lucide-react';
+import { Sparkles, Brain, Eye, ChevronDown, UserCircle } from 'lucide-react';
 import { ACTIVE_IMAGINATION_PROMPTS } from '../../data/questions';
 
 export const ActiveImaginationSection: React.FC = () => (
@@ -11,7 +11,7 @@ export const ActiveImaginationSection: React.FC = () => (
             </div>
             <div>
                 <h2 className="text-display text-3xl text-jung-dark dark:text-white">Active Imagination</h2>
-                <p className="text-[10px] font-bold text-jung-muted">Dialectic of the Unconscious</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-jung-muted">Dialectic of the Unconscious</p>
             </div>
         </div>
 
@@ -37,7 +37,7 @@ export const ActiveImaginationSection: React.FC = () => (
                         </summary>
                         <div className="px-8 pb-10 pt-4 bg-white/50 dark:bg-black/20 border-t border-jung-border/30 dark:border-dark-border">
                             <div className="flex gap-4">
-                                <Compass className="w-5 h-5 text-jung-accent-text flex-shrink-0 mt-1" />
+                                <Brain className="w-5 h-5 text-jung-accent flex-shrink-0 mt-1" />
                                 <p className="text-sm text-jung-secondary dark:text-jung-muted leading-relaxed font-serif">
                                     {exercise.prompt}
                                 </p>

@@ -1,9 +1,8 @@
 #!/usr/bin/env node
-// Downloads the self-hosted, latin-subset woff2 files for TypeJung's
-// typeface (Instrument Sans, the one family in the Reflection identity) and
-// emits public/fonts/fonts.css. Keeping only the latin and latin-ext subsets
-// (dropping vietnamese/greek/cyrillic) is the real payload cut versus loading
-// the full Google Fonts variable files at runtime.
+// Downloads the self-hosted, latin-subset woff2 files for TypeJung's three
+// typefaces and emits public/fonts/fonts.css. Keeping only the latin and
+// latin-ext subsets (dropping vietnamese/greek/cyrillic) is the real payload
+// cut versus loading the full Google Fonts variable files at runtime.
 //
 // Re-run with: node scripts/fetch-fonts.mjs
 
@@ -24,8 +23,20 @@ const KEEP_SUBSETS = new Set(['latin', 'latin-ext']);
 
 const families = [
   {
-    key: 'instrument-sans',
-    css: 'https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap',
+    key: 'fraunces',
+    css: 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&display=swap',
+  },
+  {
+    key: 'fraunces-italic',
+    css: 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,400..700&display=swap',
+  },
+  {
+    key: 'schibsted',
+    css: 'https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..700&display=swap',
+  },
+  {
+    key: 'spline-mono',
+    css: 'https://fonts.googleapis.com/css2?family=Spline+Sans+Mono:wght@400..600&display=swap',
   },
 ];
 

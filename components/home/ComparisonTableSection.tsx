@@ -7,35 +7,35 @@ export const ComparisonTableSection: React.FC = () => {
   const renderValue = (val: string, isPremium: boolean) => {
     if (val === 'Yes' || val === 'High') {
       return isPremium
-        ? <Check className="w-5 h-5 text-jung-accent-text mx-auto animate-pulse" />
+        ? <Check className="w-5 h-5 text-jung-accent mx-auto animate-pulse" />
         : <Check className="w-4 h-4 text-jung-muted mx-auto opacity-50" />;
     }
     if (val === 'No' || val === 'Low') {
       return <X className="w-4 h-4 text-error/50 mx-auto" />;
     }
-    return <span className={`text-[10px] font-mono ${isPremium ? 'text-jung-accent-text font-bold' : 'text-jung-secondary'}`}>{val}</span>;
+    return <span className={`text-[10px] font-mono uppercase ${isPremium ? 'text-jung-accent font-bold' : 'text-jung-secondary'}`}>{val}</span>;
   };
 
   return (
     <section className="py-24 bg-jung-base border-t border-jung-border/30">
       <div className="lab-container">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 mb-4 text-jung-muted font-mono text-[10px]">
+          <div className="inline-flex items-center gap-2 mb-4 text-jung-muted font-mono text-[10px] uppercase tracking-[0.2em]">
             <Scale className="w-3 h-3" />
             <span>Market Benchmark Analysis</span>
           </div>
-          <h2 className="text-display text-4xl text-jung-dark">Methodology <span className="text-jung-accent-text">Comparison</span></h2>
+          <h2 className="text-display text-4xl text-jung-dark">Methodology <span className="text-jung-accent">Comparison</span></h2>
         </div>
 
         <div className="overflow-x-auto">
           <div className="min-w-[900px] font-mono text-xs">
             {/* Header */}
-            <div className="grid grid-cols-5 border-b-2 border-jung-border p-4 bg-jung-surface-elevated text-jung-muted font-bold">
+            <div className="grid grid-cols-5 border-b-2 border-jung-border p-4 bg-jung-surface-elevated text-jung-muted uppercase tracking-wider font-bold">
               <div className="col-span-1 pl-4">Metric</div>
               <div className="col-span-1 text-center flex items-center justify-center gap-2"><Binary className="w-3 h-3" /> 16Personalities</div>
               <div className="col-span-1 text-center flex items-center justify-center gap-2"><FlaskConical className="w-3 h-3" /> Enneagram</div>
               <div className="col-span-1 text-center flex items-center justify-center gap-2"><BarChart3 className="w-3 h-3" /> Big Five</div>
-              <div className="col-span-1 text-center text-jung-accent-text border-b-2 border-jung-accent -mb-4 bg-jung-accent/5 pb-4">TypeJung (v2.0)</div>
+              <div className="col-span-1 text-center text-jung-accent border-b-2 border-jung-accent -mb-4 bg-jung-accent/5 pb-4">TypeJung (v2.0)</div>
             </div>
 
             {/* Rows */}

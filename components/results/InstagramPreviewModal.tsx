@@ -27,7 +27,7 @@ export const InstagramPreviewModal: React.FC<InstagramPreviewModalProps> = ({
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] flex items-center justify-center p-4 lg:p-8"
         >
-            <div className="absolute inset-0 bg-black/90" onClick={onClose} />
+            <div className="absolute inset-0 bg-black/90 backdrop-blur-xl" onClick={onClose} />
 
             <motion.div
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -53,7 +53,7 @@ export const InstagramPreviewModal: React.FC<InstagramPreviewModalProps> = ({
                             >
                                 <Suspense fallback={
                                     <div className="w-[1080px] h-[1920px] bg-jung-dark flex items-center justify-center">
-                                        <Loader2 className="w-20 h-20 animate-spin text-jung-accent-text" />
+                                        <Loader2 className="w-20 h-20 animate-spin text-jung-accent" />
                                     </div>
                                 }>
                                     <InstagramStoryCard
@@ -65,7 +65,7 @@ export const InstagramPreviewModal: React.FC<InstagramPreviewModalProps> = ({
                             </div>
                         </div>
 
-                        <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 bg-white/10 border border-white/10 flex items-center gap-2 text-[10px] font-bold text-jung-subtle">
+                        <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/10 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-jung-subtle">
                             <Smartphone className="w-3 h-3" /> 1080 x 1920 Render
                         </div>
                     </div>
@@ -74,7 +74,7 @@ export const InstagramPreviewModal: React.FC<InstagramPreviewModalProps> = ({
                 {/* Action Area */}
                 <div className="flex-1 p-10 lg:p-14 flex flex-col justify-center gap-10">
                     <div>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-jung-accent/20 text-jung-accent-text text-[8px] font-bold mb-4">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-jung-accent/20 rounded-full text-jung-accent text-[8px] font-bold uppercase tracking-widest mb-4">
                             Premium Export
                         </div>
                         <h3 className="text-display text-3xl text-white mb-4">Social Asset <br /><span className="text-jung-accent-muted italic">Generator.</span></h3>
@@ -87,7 +87,7 @@ export const InstagramPreviewModal: React.FC<InstagramPreviewModalProps> = ({
                         <button
                             onClick={onShare}
                             disabled={isGenerating}
-                            className="w-full flex items-center justify-center gap-4 py-5 bg-jung-accent text-white rounded-2xl font-bold text-xs shadow-xl shadow-jung-accent/20 hover:bg-jung-accent-hover hover:-translate-y-1 transition-all disabled:opacity-50"
+                            className="w-full flex items-center justify-center gap-4 py-5 bg-jung-accent text-white rounded-2xl font-bold uppercase tracking-[0.2em] text-xs shadow-xl shadow-jung-accent/20 hover:bg-jung-accent-hover hover:-translate-y-1 transition-all disabled:opacity-50"
                         >
                             {isGenerating ? (
                                 <>
@@ -104,7 +104,7 @@ export const InstagramPreviewModal: React.FC<InstagramPreviewModalProps> = ({
 
                         <button
                             onClick={onClose}
-                            className="w-full py-5 bg-white/5 text-jung-subtle rounded-2xl font-bold text-xs hover:bg-white/10 transition-all border border-white/5"
+                            className="w-full py-5 bg-white/5 text-jung-subtle rounded-2xl font-bold uppercase tracking-[0.2em] text-xs hover:bg-white/10 transition-all border border-white/5"
                         >
                             Back to Analysis
                         </button>
@@ -114,7 +114,7 @@ export const InstagramPreviewModal: React.FC<InstagramPreviewModalProps> = ({
                         <div className="p-3 bg-jung-gold/10 rounded-xl">
                             <Sparkles className="w-5 h-5 text-jung-gold" />
                         </div>
-                        <p className="text-[10px] text-jung-muted leading-relaxed">
+                        <p className="text-[10px] text-jung-muted leading-relaxed uppercase tracking-widest">
                             High-resolution export based on your TypeJung result pattern.
                         </p>
                     </div>
@@ -122,7 +122,7 @@ export const InstagramPreviewModal: React.FC<InstagramPreviewModalProps> = ({
 
                 <button
                     onClick={onClose}
-                    className="absolute top-8 right-8 p-3 text-white/40 hover:text-white transition-colors hover:bg-white/10"
+                    className="absolute top-8 right-8 p-3 text-white/40 hover:text-white transition-colors rounded-full hover:bg-white/10"
                 >
                     <X className="w-6 h-6" />
                 </button>

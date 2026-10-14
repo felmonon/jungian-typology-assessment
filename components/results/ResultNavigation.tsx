@@ -32,7 +32,7 @@ export function ResultNavigation({ value, onChange, isPremium = false }: ResultN
   };
 
   return (
-    <div className="result-tabs" role="tablist" aria-label="Your results" aria-orientation="horizontal">
+    <div className="studio-result-nav" role="tablist" aria-label="Your results" aria-orientation="horizontal">
       {views.map((view, index) => (
         <button
           key={view}

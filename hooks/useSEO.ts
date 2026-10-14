@@ -17,7 +17,7 @@ const SITE_NAME = 'TypeJung';
 export const PAGE_SEO: Record<string, SEOConfig> = {
   home: {
     title: 'Free Cognitive Function Test - MBTI Test Alternative | TypeJung',
-    description: 'When your MBTI keeps changing, map the pattern underneath. Take a free 42-question Jungian cognitive functions test and see the function-stack map before any paid report.',
+    description: 'MBTI result keeps changing? Take a free 42-question Jungian cognitive functions test and see your full 8-function stack map before any paid report.',
   },
   assessment: {
     title: 'Take the Free Jungian Cognitive Function Assessment | TypeJung',
@@ -29,16 +29,16 @@ export const PAGE_SEO: Record<string, SEOConfig> = {
     noIndex: true, // Results are personal
   },
   learn: {
-    title: 'Learn Jungian Psychology | Cognitive Functions Explained',
+    title: 'Learn Jungian Psychology and Cognitive Functions | TypeJung',
     description: 'Understand Carl Jung\'s theory of psychological types. Learn about the 8 cognitive functions, introversion vs extraversion, and the process of individuation.',
   },
   about: {
-    title: 'About | TypeJung',
+    title: 'About TypeJung: Free Jungian Function-Stack Map',
     description: 'Learn why TypeJung maps all 8 cognitive functions, inferior-function pressure, somatic signals, and attitude direction instead of forcing a four-letter label.',
   },
   pricing: {
-    title: 'TypeJung Pricing - Free Map, Insight CA$7, Mastery CA$20.30 | TypeJung',
-    description: 'Start with the free TypeJung assessment, then unlock Insight for CA$7 or Mastery for CA$20.30 with TYPEJUNG30 applied on Stripe. One-time CAD upgrades, no subscription.',
+    title: 'Pricing: Free Map, Insight CA$7, Mastery CA$20.30 | TypeJung',
+    description: 'Start with the free TypeJung map, then unlock Insight for CA$7 or Mastery for CA$20.30 with TYPEJUNG30 applied. One-time CAD upgrades, no subscription.',
   },
   methodology: {
     title: 'Methodology - How the Function-Stack Map Is Built | TypeJung',
@@ -50,7 +50,7 @@ export const PAGE_SEO: Record<string, SEOConfig> = {
   },
   sampleReport: {
     title: 'Sample Paid Report | TypeJung',
-    description: 'Preview a fictional TypeJung paid report sample before you buy, including developmental edge, stress-pattern reflection, relationship-pattern reflection, practices, and AI Type Guide examples.',
+    description: 'Preview a fictional TypeJung paid report before you buy: developmental edge, stress and relationship-pattern reflection, practices, and AI guide examples.',
   },
   privacy: {
     title: 'Privacy Policy | TypeJung',
@@ -61,7 +61,7 @@ export const PAGE_SEO: Record<string, SEOConfig> = {
     description: 'Terms and conditions for using TypeJung, including free assessment access, paid reports, and account features.',
   },
   leaderboard: {
-    title: 'Community Results | TypeJung',
+    title: 'Community Jungian Function Results | TypeJung',
     description: 'See how TypeJung function-stack maps distribute across the community and compare dominant-inferior patterns.',
   },
 };

@@ -465,7 +465,7 @@ export const pageData = {
   },
   '/mbti-alternative': {
     title: 'MBTI Alternative - Function-Based Typology Map | TypeJung',
-    description: 'Compare TypeJung as an MBTI alternative for people who want Jungian function evidence, a free function-stack map, and optional paid interpretation after the result.',
+    description: 'An MBTI alternative for people who want Jungian function evidence, a free function-stack map, and optional paid interpretation after the result.',
   },
   '/inferior-function-test': {
     title: 'Inferior Function Test - Find Your Stress Pattern | TypeJung',
@@ -476,11 +476,11 @@ export const pageData = {
     description: 'Take a cognitive function test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe in one Jungian function-stack profile.',
   },
   '/cognitive-functions-test': {
-    title: 'Cognitive Functions Test - Free Jungian 8-Function Map | TypeJung',
+    title: 'Cognitive Functions Test: Free 8-Function Map | TypeJung',
     description: 'Take a free Jungian cognitive functions test for Ni, Ne, Si, Se, Ti, Te, Fi, and Fe. This is a personality-functions map, not a memory screening test.',
   },
   '/jungian-cognitive-functions-test': {
-    title: 'Jungian Cognitive Functions Test - Free Ni Ne Si Se Ti Te Fi Fe Map | TypeJung',
+    title: 'Free Jungian Cognitive Functions Test | TypeJung',
     description: 'Take a free Jungian cognitive functions test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, then explains your dominant-inferior pattern.',
   },
 };
@@ -777,7 +777,7 @@ const competitorLandingPages = [
   {
     slug: 'mbti-test-alternative',
     query: 'MBTI test alternative',
-    title: 'MBTI Test Alternative - Free Cognitive Function Map | TypeJung',
+    title: 'MBTI Test Alternative: Free Cognitive Function Map | TypeJung',
     description: 'Looking for an MBTI test alternative? TypeJung maps all 8 Jungian cognitive functions before any paid report, so you can inspect the pattern behind the label.',
     keywords: ['MBTI test alternative', 'free MBTI alternative', 'cognitive functions test', 'Jungian function test'],
     eyebrow: 'MBTI test alternative',
@@ -862,8 +862,8 @@ const competitorLandingPages = [
   {
     slug: '16personalities-alternative',
     query: '16Personalities alternative',
-    title: '16Personalities Alternative - Free Function Map First | TypeJung',
-    description: 'Looking for a 16Personalities alternative? TypeJung maps all 8 Jungian cognitive functions, shows a free result first, and avoids forcing a final label too early.',
+    title: '16Personalities Alternative: Free Function Map | TypeJung',
+    description: 'Looking for a 16Personalities alternative? TypeJung maps all 8 Jungian cognitive functions, shows a free result first, and avoids forcing a label too early.',
     keywords: ['16Personalities alternative', '16 personalities alternative', 'MBTI test alternative', 'cognitive functions test'],
     eyebrow: '16Personalities alternative',
     h1: 'A 16Personalities alternative when four letters are not enough',
@@ -960,8 +960,8 @@ const competitorLandingPages = [
   {
     slug: 'sakinorva-alternative',
     query: 'Sakinorva alternative',
-    title: 'Sakinorva Alternative - Free Cognitive Function Map First | TypeJung',
-    description: 'Looking for a Sakinorva alternative? TypeJung maps all 8 Jungian functions, shows a free result first, and offers optional deeper reports only after you see the map.',
+    title: 'Sakinorva Alternative: Free Cognitive Function Map | TypeJung',
+    description: 'Looking for a Sakinorva alternative? TypeJung maps all 8 Jungian functions, shows a free result first, and offers deeper reports only after you see the map.',
     keywords: ['Sakinorva alternative', 'Sakinorva cognitive functions test alternative', 'cognitive functions test', 'MBTI function test alternative'],
     eyebrow: 'Sakinorva alternative',
     h1: 'A Sakinorva alternative when you want the map before the label',
@@ -1060,7 +1060,7 @@ const competitorLandingPages = [
   {
     slug: 'keys2cognition-alternative',
     query: 'Keys2Cognition alternative',
-    title: 'Keys2Cognition Alternative - Free Jungian Function Map | TypeJung',
+    title: 'Keys2Cognition Alternative: Free Function Map | TypeJung',
     description: 'Compare TypeJung as a Keys2Cognition alternative for mapping all 8 Jungian functions, stress edges, and optional deeper reports after a free result.',
     keywords: ['Keys2Cognition alternative', 'Keys2Cognition cognitive processes alternative', 'cognitive processes test', 'Jungian functions test'],
     eyebrow: 'Keys2Cognition alternative',
@@ -1159,7 +1159,7 @@ const competitorLandingPages = [
   {
     slug: 'mistype-investigator-alternative',
     query: 'Mistype Investigator alternative',
-    title: 'Mistype Investigator Alternative - Function Evidence Before Type | TypeJung',
+    title: 'Mistype Investigator Alternative: Free Test | TypeJung',
     description: 'Use TypeJung as a Mistype Investigator alternative when you want a free cognitive-function map, stress-edge context, and optional deeper interpretation.',
     keywords: ['Mistype Investigator alternative', 'mistype investigator cognitive functions test', 'mistype test alternative', 'MBTI mistype test'],
     eyebrow: 'Mistype Investigator alternative',
@@ -1244,7 +1244,7 @@ const competitorLandingPages = [
   {
     slug: 'michael-caloz-alternative',
     query: 'Michael Caloz alternative',
-    title: 'Michael Caloz Alternative - Free Jungian Function Map First | TypeJung',
+    title: 'Michael Caloz Test Alternative: Free Map | TypeJung',
     description: 'Looking for a Michael Caloz alternative? TypeJung maps all 8 functions, shows a free result first, and offers optional paid depth after the map.',
     keywords: ['Michael Caloz alternative', 'Michael Caloz cognitive functions test alternative', 'cognitive functions test alternative', 'MBTI function test'],
     eyebrow: 'Michael Caloz alternative',
@@ -1329,7 +1329,7 @@ const competitorLandingPages = [
   {
     slug: 'idrlabs-cognitive-function-test-alternative',
     query: 'IDRlabs cognitive function test alternative',
-    title: 'IDRlabs Cognitive Function Test Alternative - Free Function Map | TypeJung',
+    title: 'IDRlabs Cognitive Function Test Alternative | TypeJung',
     description: 'Compare TypeJung as an IDRlabs cognitive function test alternative with a free all-8-function map, stress edge, and optional paid interpretation.',
     keywords: ['IDRlabs cognitive function test alternative', 'IDR Labs alternative', 'IDRlabs Jungian functions test', 'free cognitive function test'],
     eyebrow: 'IDRlabs alternative',
@@ -1414,7 +1414,7 @@ const competitorLandingPages = [
   {
     slug: '16selves-alternative',
     query: '16Selves alternative',
-    title: '16Selves Alternative - Free Jungian Function Map First | TypeJung',
+    title: '16Selves Alternative: Free Jungian Function Map | TypeJung',
     description: 'Looking for a 16Selves alternative? TypeJung maps all 8 Jungian function-attitudes before optional one-time paid reports.',
     keywords: ['16Selves alternative', '16Selves Jungian cognitive functions alternative', 'Jungian cognitive functions test', 'personality test alternative'],
     eyebrow: '16Selves alternative',
@@ -1499,8 +1499,8 @@ const competitorLandingPages = [
   {
     slug: 'best-cognitive-functions-test',
     query: 'best cognitive functions test',
-    title: 'Best Cognitive Functions Test? How to Choose a Useful Function Map | TypeJung',
-    description: 'Compare what makes a cognitive functions test useful: all 8 functions, inspectable scores, stress-edge context, free-first results, and practical interpretation.',
+    title: 'Best Cognitive Functions Test: How to Choose | TypeJung',
+    description: 'What makes a cognitive functions test useful: all 8 functions, inspectable scores, stress-edge context, free-first results, and practical interpretation.',
     keywords: ['best cognitive functions test', 'best Jungian cognitive functions test', 'Sakinorva vs Keys2Cognition', 'MBTI cognitive functions test'],
     eyebrow: 'Best cognitive functions test',
     h1: 'The best cognitive functions test is the one you can inspect',
@@ -1663,7 +1663,7 @@ const dominantFunctionLandingPages = Object.entries(functionData).map(([function
   return {
     slug: `${functionKey}-dominant-test`,
     query: `${fn.code} dominant test`,
-    title: `${fn.code} Dominant Test - Check ${fn.name} Evidence | TypeJung`,
+    title: `${fn.code} Dominant Test: ${fn.name} Check | TypeJung`,
     description: `Use TypeJung as a ${fn.code} dominant test to compare ${fn.name} evidence, likely type pattern, and ${inferior.code} stress-edge signals.`,
     keywords: [
       `${fn.code} dominant test`,
@@ -1763,8 +1763,8 @@ const dominantFunctionLandingPages = Object.entries(functionData).map(([function
 const dominantFunctionHubPage = {
   slug: 'dominant-function-test',
   query: 'dominant function test',
-  title: 'Dominant Function Test - Find Your Leading Jungian Function | TypeJung',
-  description: 'Take a dominant function test that compares all 8 Jungian cognitive functions, support signals, and inferior-function pressure before naming a likely lead function.',
+  title: 'Dominant Function Test: Find Your Lead Function | TypeJung',
+  description: 'A dominant function test that compares all 8 Jungian cognitive functions, support signals, and inferior-function pressure before naming a likely lead.',
   keywords: ['dominant function test', 'find my dominant function', 'Jungian dominant function', 'cognitive function test', 'function stack test'],
   eyebrow: 'Dominant function test',
   h1: 'Find your likely dominant function without forcing a label first',
@@ -1855,7 +1855,7 @@ const dominantFunctionHubPage = {
 const guidesHubPage = {
   slug: 'guides',
   query: 'TypeJung guides',
-  title: 'TypeJung Guides - Jungian Tests, Cognitive Functions, and MBTI Alternatives',
+  title: 'Jungian Test and Cognitive Function Guides | TypeJung',
   description: 'Browse TypeJung guides for Jungian tests, cognitive functions, function stacks, inferior-function stress, MBTI alternatives, and common mistype comparisons.',
   keywords: ['TypeJung guides', 'Jungian test guides', 'cognitive function guides', 'MBTI alternative guides', 'function stack guide'],
   eyebrow: 'TypeJung guides',
@@ -2015,7 +2015,7 @@ export const seoLandingPages = [
   {
     slug: 'creator-preview',
     query: 'TypeJung creator preview',
-    title: 'TypeJung Creator Preview - Free Function-Stack Map for Typology Audiences',
+    title: 'Creator Preview: Free Function-Stack Map | TypeJung',
     description: 'A review path for typology creators, newsletters, and communities evaluating TypeJung as a free-first Jungian function-stack map.',
     keywords: ['TypeJung creator preview', 'typology creator resource', 'cognitive functions tool review', 'MBTI creator resource'],
     eyebrow: 'Creator review page',
@@ -2263,7 +2263,7 @@ export const seoLandingPages = [
     slug: 'mbti-alternative',
     query: 'MBTI alternative',
     title: 'MBTI Alternative - Function-Based Typology Map | TypeJung',
-    description: 'Compare TypeJung as an MBTI alternative for people who want Jungian function evidence, a free function-stack map, and optional paid interpretation after the result.',
+    description: 'An MBTI alternative for people who want Jungian function evidence, a free function-stack map, and optional paid interpretation after the result.',
     keywords: ['MBTI alternative', 'alternative to MBTI', 'Jungian typology alternative', 'function based typology', 'cognitive functions MBTI'],
     eyebrow: 'MBTI alternative',
     h1: 'An MBTI alternative for people who want the function pattern, not only the label',
@@ -2461,7 +2461,7 @@ export const seoLandingPages = [
   {
     slug: 'cognitive-functions-test',
     query: 'cognitive functions test',
-    title: 'Cognitive Functions Test - Free Jungian 8-Function Map | TypeJung',
+    title: 'Cognitive Functions Test: Free 8-Function Map | TypeJung',
     description: 'Take a free Jungian cognitive functions test for Ni, Ne, Si, Se, Ti, Te, Fi, and Fe. This is a personality-functions map, not a memory screening test.',
     keywords: ['cognitive functions test', 'Jungian cognitive functions test', 'free cognitive functions test', '8 cognitive functions test', 'Ni Ne Si Se Ti Te Fi Fe test'],
     eyebrow: 'Cognitive functions test',
@@ -2683,7 +2683,7 @@ export const seoLandingPages = [
   {
     slug: 'cognitive-functions-quiz',
     query: 'cognitive functions quiz',
-    title: 'Cognitive Functions Quiz - Map Ni Ne Si Se Ti Te Fi Fe | TypeJung',
+    title: 'Cognitive Functions Quiz: Ni Ne Si Se Ti Te Fi Fe | TypeJung',
     description: 'Take a cognitive functions quiz that maps all 8 Jungian functions, shows the dominant-inferior axis, and gives the free result before any paid report.',
     keywords: ['cognitive functions quiz', 'Jungian cognitive functions quiz', '8 cognitive functions quiz', 'Ni Ne Si Se Ti Te Fi Fe quiz'],
     eyebrow: 'Cognitive functions quiz',
@@ -2779,7 +2779,7 @@ export const seoLandingPages = [
   {
     slug: 'free-cognitive-function-test',
     query: 'free cognitive function test',
-    title: 'Free Cognitive Function Test - Map All 8 Functions | TypeJung',
+    title: 'Free Cognitive Function Test: All 8 Functions | TypeJung',
     description: 'Take a free cognitive function test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe before any optional paid report.',
     keywords: ['free cognitive function test', 'free Jungian cognitive functions test', 'free function test', 'Ni Ne Si Se Ti Te Fi Fe test'],
     eyebrow: 'Free cognitive function test',
@@ -3173,7 +3173,7 @@ export const seoLandingPages = [
   {
     slug: 'mbti-mistype-test',
     query: 'MBTI mistype test',
-    title: 'MBTI Mistype Test - Check Function Evidence Before Your Type | TypeJung',
+    title: 'MBTI Mistype Test: Check Your Function Evidence | TypeJung',
     description: 'Use TypeJung as an MBTI mistype test when your type result keeps changing or two labels both feel partly true.',
     keywords: ['MBTI mistype test', 'am I mistyped MBTI', 'mistyped MBTI test', 'personality type mistype test', 'cognitive functions mistype test'],
     eyebrow: 'MBTI mistype test',
@@ -3269,7 +3269,7 @@ export const seoLandingPages = [
   {
     slug: 'mbti-keeps-changing',
     query: 'why does my MBTI keep changing',
-    title: 'Why Does My MBTI Keep Changing? Take a Function-Based Test | TypeJung',
+    title: 'Why Does My MBTI Keep Changing? Free Test | TypeJung',
     description: 'If your MBTI type keeps changing, TypeJung can help you compare the cognitive function pattern behind shifting labels.',
     keywords: ['why does my MBTI keep changing', 'MBTI keeps changing', 'changing MBTI results', 'function based MBTI test'],
     eyebrow: 'Changing MBTI results',
@@ -3330,8 +3330,8 @@ export const seoLandingPages = [
   {
     slug: 'jungian-cognitive-functions-test',
     query: 'Jungian cognitive functions test',
-    title: 'Jungian Cognitive Functions Test - Free Ni Ne Si Se Ti Te Fi Fe Map | TypeJung',
-    description: 'Take a free 42-question Jungian cognitive functions test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, then shows your function stack and dominant-inferior pattern.',
+    title: 'Free Jungian Cognitive Functions Test | TypeJung',
+    description: 'A free 42-question Jungian cognitive functions test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, then shows your stack and dominant-inferior pattern.',
     keywords: ['Jungian cognitive functions test', 'free Jungian cognitive functions test', 'Jung functions test', 'Ni Ne Si Se Ti Te Fi Fe test', 'Jungian function stack test', 'cognitive function test'],
     eyebrow: 'Jungian functions test',
     h1: 'Free Jungian cognitive functions test',
@@ -3472,7 +3472,7 @@ export const seoLandingPages = [
   {
     slug: 'jungian-typology',
     query: 'Jungian typology',
-    title: 'Jungian Typology Guide - Functions, Type, and Self-Reflection | TypeJung',
+    title: 'Jungian Typology Guide: Functions and Type | TypeJung',
     description: 'Learn Jungian typology through cognitive functions, attitude direction, dominant-inferior patterns, and practical self-reflection.',
     keywords: ['Jungian typology', 'Jung psychological types', 'Jungian personality types', 'Jungian functions'],
     eyebrow: 'Jungian typology',
@@ -3533,7 +3533,7 @@ export const seoLandingPages = [
   {
     slug: 'cognitive-functions',
     query: 'Jungian cognitive functions',
-    title: 'Jungian Cognitive Functions Guide - Ni Ne Si Se Ti Te Fi Fe | TypeJung',
+    title: 'Jungian Cognitive Functions: Ni Ne Si Se Ti Te Fi Fe | TypeJung',
     description: 'Understand the 8 Jungian cognitive functions: Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, plus how they shape type and stress patterns.',
     keywords: ['Jungian cognitive functions', '8 cognitive functions', 'Ni Ne Si Se Ti Te Fi Fe', 'cognitive functions guide'],
     eyebrow: 'Cognitive functions',
@@ -3599,7 +3599,7 @@ export const seoLandingPages = [
   {
     slug: 'shadow-work-test',
     query: 'shadow work test',
-    title: 'Shadow Work Test - Jungian Self-Observation Patterns | TypeJung',
+    title: 'Shadow Work Test: Jungian Self-Observation | TypeJung',
     description: 'Use a Jungian self-observation test to explore inferior-function pressure and stress reactions without clinical diagnosis.',
     keywords: ['shadow work test', 'Jungian shadow test', 'shadow work questions', 'inferior function shadow'],
     eyebrow: 'Shadow work test',

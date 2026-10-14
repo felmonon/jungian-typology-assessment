@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync } from 'fs';
+import { writeGeneratedFile as writeKeepingBuildDate } from './stable-dates.mjs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { growthBlogArticles } from './growth-blog-data.mjs';
@@ -259,7 +260,7 @@ Assessment: ${absoluteUrl('/assessment')}
 
 function writeGeneratedFile(filePath, content) {
   mkdirSync(dirname(filePath), { recursive: true });
-  writeFileSync(filePath, `${content.trim()}\n`);
+  writeKeepingBuildDate(filePath, `${content.trim()}\n`);
 }
 
 writeGeneratedFile(join(publicDir, 'llms.txt'), llmsTxt);

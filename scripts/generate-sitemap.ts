@@ -9,15 +9,21 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { seoLandingPages } from './seo-data.mjs';
 import { growthBlogArticles } from './growth-blog-data.mjs';
+import { readDateModified } from './stable-dates.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const BASE_URL = 'https://typejung.com';
-const TODAY = new Date().toISOString().split('T')[0];
+const PUBLIC_DIR = join(__dirname, '..', 'public');
+
+// lastmod comes from the page's own dateModified, which only moves when the
+// generated page changes. Pages without a trustworthy date omit lastmod rather
+// than claiming they changed on every build.
+const pageLastmod = (relativeFile: string) => readDateModified(join(PUBLIC_DIR, relativeFile));
 
 interface SitemapEntry {
   loc: string;
-  lastmod: string;
+  lastmod?: string;
   changefreq: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
   priority: number;
 }
@@ -25,30 +31,30 @@ interface SitemapEntry {
 // Define all site URLs
 const entries: SitemapEntry[] = [
   // Main pages
-  { loc: '/', lastmod: TODAY, changefreq: 'weekly', priority: 1.0 },
-  { loc: '/assessment', lastmod: TODAY, changefreq: 'monthly', priority: 0.9 },
-  { loc: '/learn', lastmod: TODAY, changefreq: 'monthly', priority: 0.8 },
-  { loc: '/pricing', lastmod: TODAY, changefreq: 'monthly', priority: 0.7 },
-  { loc: '/sample-report', lastmod: TODAY, changefreq: 'monthly', priority: 0.7 },
-  { loc: '/methodology', lastmod: TODAY, changefreq: 'monthly', priority: 0.7 },
-  { loc: '/debrief', lastmod: TODAY, changefreq: 'monthly', priority: 0.7 },
-  { loc: '/leaderboard', lastmod: TODAY, changefreq: 'daily', priority: 0.6 },
-  { loc: '/ai-run-store', lastmod: TODAY, changefreq: 'weekly', priority: 0.6 },
-  { loc: '/about', lastmod: TODAY, changefreq: 'monthly', priority: 0.5 },
+  { loc: '/', changefreq: 'weekly', priority: 1.0 },
+  { loc: '/assessment', changefreq: 'monthly', priority: 0.9 },
+  { loc: '/learn', changefreq: 'monthly', priority: 0.8 },
+  { loc: '/pricing', changefreq: 'monthly', priority: 0.7 },
+  { loc: '/sample-report', changefreq: 'monthly', priority: 0.7 },
+  { loc: '/methodology', changefreq: 'monthly', priority: 0.7 },
+  { loc: '/debrief', changefreq: 'monthly', priority: 0.7 },
+  { loc: '/leaderboard', changefreq: 'daily', priority: 0.6 },
+  { loc: '/ai-run-store', changefreq: 'weekly', priority: 0.6 },
+  { loc: '/about', changefreq: 'monthly', priority: 0.5 },
 
   // Note: /content.txt and /llms.txt are intentionally excluded from the HTML sitemap.
   // They are plain-text files for AI/LLM consumption, not pages Google should index.
 
   // Blog pages
-  { loc: '/blog/', lastmod: TODAY, changefreq: 'weekly', priority: 0.8 },
+  { loc: '/blog/', changefreq: 'weekly', priority: 0.8 },
   { loc: '/blog/singer-loomis-vs-mbti', lastmod: '2026-01-15', changefreq: 'monthly', priority: 0.7 },
-  { loc: '/blog/understanding-the-grip', lastmod: '2026-01-10', changefreq: 'monthly', priority: 0.7 },
+  { loc: '/blog/understanding-the-grip', lastmod: '2026-10-14', changefreq: 'monthly', priority: 0.7 },
 ];
 
 for (const article of growthBlogArticles) {
   entries.push({
     loc: `/blog/${article.slug}`,
-    lastmod: article.date,
+    lastmod: pageLastmod(`blog/${article.slug}.html`) || article.date,
     changefreq: 'monthly',
     priority: 0.75
   });
@@ -73,7 +79,7 @@ for (const page of seoLandingPages) {
   if (sitemapExcludedLanding.has(slug)) continue;
   entries.push({
     loc: `/${slug}`,
-    lastmod: TODAY,
+    lastmod: pageLastmod(`${slug}/index.html`),
     changefreq: 'monthly',
     priority: 0.85
   });
@@ -84,7 +90,7 @@ const functions = ['ni', 'ne', 'si', 'se', 'ti', 'te', 'fi', 'fe'];
 for (const fn of functions) {
   entries.push({
     loc: `/functions/${fn}`,
-    lastmod: TODAY,
+    lastmod: pageLastmod(`functions/${fn}/index.html`),
     changefreq: 'monthly',
     priority: 0.8
   });
@@ -100,7 +106,7 @@ const types = [
 for (const type of types) {
   entries.push({
     loc: `/types/${type}`,
-    lastmod: TODAY,
+    lastmod: pageLastmod(`types/${type}/index.html`),
     changefreq: 'monthly',
     priority: 0.8
   });
@@ -109,8 +115,8 @@ for (const type of types) {
 // Generate sitemap XML
 function generateSitemap(entries: SitemapEntry[]): string {
   const urls = entries.map(entry => `  <url>
-    <loc>${BASE_URL}${entry.loc}</loc>
-    <lastmod>${entry.lastmod}</lastmod>
+    <loc>${BASE_URL}${entry.loc}</loc>${entry.lastmod ? `
+    <lastmod>${entry.lastmod}</lastmod>` : ''}
     <changefreq>${entry.changefreq}</changefreq>
     <priority>${entry.priority.toFixed(1)}</priority>
   </url>`).join('\n');
@@ -119,7 +125,6 @@ function generateSitemap(entries: SitemapEntry[]): string {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <!--
   TypeJung Sitemap
-  Generated: ${new Date().toISOString()}
   Total URLs: ${entries.length}
 -->
 ${urls}

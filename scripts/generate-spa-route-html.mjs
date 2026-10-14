@@ -32,7 +32,7 @@ const routePages = [
   },
   {
     path: '/pricing',
-    title: 'TypeJung Pricing - Free, Insight, and Mastery Plans',
+    title: 'Pricing: Free Map, Insight CA$7, Mastery CA$20.30 | TypeJung',
     description:
       'Start with the free TypeJung assessment, then unlock Insight for CA$7 or Mastery for CA$20.30 with TYPEJUNG30 applied on Stripe.',
     h1: 'Start with the map. Decide after.',
@@ -42,7 +42,7 @@ const routePages = [
     path: '/sample-report',
     title: 'Sample Paid Report | TypeJung',
     description:
-      'Preview a fictional TypeJung paid report sample before you buy, including developmental edge, stress-pattern reflection, relationship-pattern reflection, practices, and AI guide examples.',
+      'Preview a fictional TypeJung paid report before you buy: developmental edge, stress and relationship-pattern reflection, practices, and AI guide examples.',
     h1: 'Sample TypeJung paid report',
     cta: 'Start the free assessment',
     body: [
@@ -105,7 +105,7 @@ const routePages = [
   },
   {
     path: '/about',
-    title: 'About TypeJung - Free Jungian Function-Stack Map',
+    title: 'About TypeJung: Free Jungian Function-Stack Map',
     description:
       'TypeJung maps all 8 cognitive functions, inferior-function pressure, somatic signals, and attitude direction instead of forcing a shallow four-letter label.',
     h1: 'About TypeJung',

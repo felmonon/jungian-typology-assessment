@@ -1,6 +1,6 @@
 import type { VercelResponse } from '@vercel/node';
 import { randomUUID } from 'node:crypto';
-import { generateGeminiText } from './gemini.js';
+import { generateGeminiText, geminiErrorStatus } from './gemini.js';
 import { recordFunnelEvent } from './funnel-events.js';
 import { getSupabaseAdminClient, hasSupabaseAdminConfig } from './supabase.js';
 
@@ -28,7 +28,7 @@ export function resetReportAvailabilityCache() {
   lastHealthyProbeAt = 0;
 }
 
-type ProbeResult = { ok: boolean; reason: GuardBlockReason | null; elapsedMs: number };
+type ProbeResult = { ok: boolean; reason: GuardBlockReason | null; elapsedMs: number; providerStatus?: number | null };
 
 async function probeOnce(): Promise<ProbeResult> {
   const startedAt = Date.now();
@@ -47,11 +47,16 @@ async function probeOnce(): Promise<ProbeResult> {
     const reason: GuardBlockReason = /timeout|deadline|abort/i.test(message) || elapsedMs >= PROBE_TIMEOUT_MS - 500
       ? 'timeout'
       : 'provider_error';
-    return { ok: false, reason, elapsedMs };
+    return { ok: false, reason, elapsedMs, providerStatus: geminiErrorStatus(error) };
   }
 }
 
-async function recordGuardBlocked(context: GuardCheckoutContext, reason: GuardBlockReason, attempts: number) {
+async function recordGuardBlocked(
+  context: GuardCheckoutContext,
+  reason: GuardBlockReason,
+  attempts: number,
+  providerStatus?: number | null,
+) {
   if (!hasSupabaseAdminConfig()) return;
 
   try {
@@ -61,7 +66,9 @@ async function recordGuardBlocked(context: GuardCheckoutContext, reason: GuardBl
       anonymousId: context.anonymousId,
       source: context.source,
       tier: context.tier,
-      properties: { reason, attempts },
+      // The HTTP status alone (e.g. 404 for a retired model, 429 for quota)
+      // separates outage causes without storing provider messages.
+      properties: { reason, attempts, ...(providerStatus ? { provider_status: providerStatus } : {}) },
     });
   } catch (error) {
     console.warn('Checkout guard block could not be recorded:', error instanceof Error ? error.message : 'unknown');
@@ -91,8 +98,8 @@ export async function guardPaidReportCheckout(
   // Provider details stay out of customer responses; the reason category is
   // stored so outages show up in the funnel instead of as silent lost sales.
   const reason = result.reason ?? 'provider_error';
-  console.error(`Paid checkout paused: report generation service is unavailable (${reason}, ${attempts} attempt(s))`);
-  await recordGuardBlocked(context, reason, attempts);
+  console.error(`Paid checkout paused: report generation service is unavailable (${reason}, status ${result.providerStatus ?? 'unknown'}, ${attempts} attempt(s))`);
+  await recordGuardBlocked(context, reason, attempts, result.providerStatus);
   res.setHeader('Retry-After', '60');
   res.setHeader('Cache-Control', 'no-store');
   res.status(503).json({

@@ -4,7 +4,10 @@ import { generateGeminiText } from '../../api/_lib/gemini';
 import { recordFunnelEvent } from '../../api/_lib/funnel-events';
 import { guardPaidReportCheckout, resetReportAvailabilityCache } from '../../api/_lib/report-availability';
 
-vi.mock('../../api/_lib/gemini', () => ({ generateGeminiText: vi.fn() }));
+vi.mock('../../api/_lib/gemini', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../api/_lib/gemini')>()),
+  generateGeminiText: vi.fn(),
+}));
 vi.mock('../../api/_lib/funnel-events', () => ({ recordFunnelEvent: vi.fn() }));
 vi.mock('../../api/_lib/rate-limit', () => ({ enforceRateLimit: vi.fn(() => false) }));
 
@@ -44,6 +47,16 @@ describe('report availability before payment', () => {
       source: 'results_locked_preview',
       anonymousId: 'anon_123',
       properties: { reason: 'provider_error', attempts: 2 },
+    });
+  });
+
+  it('records the provider status code so the outage cause is visible', async () => {
+    vi.mocked(generateGeminiText).mockRejectedValue(Object.assign(new Error('model not found'), { status: 404 }));
+    const res = response();
+
+    expect(await guardPaidReportCheckout(res, { tier: 'insight' })).toBe(false);
+    expect(vi.mocked(recordFunnelEvent).mock.calls[0][1]).toMatchObject({
+      properties: { reason: 'provider_error', attempts: 2, provider_status: 404 },
     });
   });
 

@@ -1,6 +1,9 @@
 import {
   ArrowRight,
+  CheckCircle2,
   Clock,
+  CreditCard,
+  LogIn,
   LogOut,
   Menu,
   Trophy,
@@ -26,7 +29,7 @@ import {
   readPendingCheckout,
   type PendingCheckout,
 } from '../../lib/pending-checkout';
-import { ReflectionGlyph, TypeJungLogo, Wordmark } from '../brand/TypeJungMark';
+import { TypeJungMark } from '../brand/TypeJungMark';
 
 const navigation = [
   { to: '/methodology', label: 'How it works' },
@@ -230,26 +233,33 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `site-nav-link${isActive ? ' is-active' : ''}`;
+    `inline-flex min-h-10 items-center border-b-2 px-1 pt-0.5 text-sm font-medium transition-all ${
+      isActive
+        ? 'border-jung-tension text-jung-dark'
+        : 'border-transparent text-jung-muted hover:border-jung-border hover:text-jung-dark'
+    }`;
 
   const mobileNavLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `site-menu-link${isActive ? ' is-active' : ''}`;
-
-  const primaryTo = hasResult ? '/results' : '/assessment';
+    `flex min-h-11 w-full items-center rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+      isActive
+        ? 'bg-jung-accent-light text-jung-accent'
+        : 'text-jung-secondary hover:bg-jung-surface-alt hover:text-jung-dark'
+    }`;
 
   const accountAction = isAuthenticated ? (
-    <div className="hidden items-center gap-1 lg:flex">
-      <Link to="/profile" className="site-account">
+    <div className="hidden lg:flex items-center gap-2">
+      <Link
+        to="/profile"
+        className="inline-flex h-10 items-center gap-2 rounded-lg border border-jung-border bg-jung-surface px-3 text-sm font-medium text-jung-dark transition-colors hover:border-jung-accent-muted hover:bg-jung-accent-light"
+      >
         {user?.profileImageUrl ? (
           <img
             src={user.profileImageUrl}
             alt=""
-            width={24}
-            height={24}
             className="h-6 w-6 rounded-full object-cover"
           />
         ) : (
-          <User className="h-4 w-4" aria-hidden="true" />
+          <User className="h-4 w-4" />
         )}
         <span className="max-w-24 truncate">
           {user?.firstName || 'Profile'}
@@ -259,14 +269,18 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
         type="button"
         onClick={() => logout()}
         disabled={isLoggingOut}
-        className="site-icon-button"
+        className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-jung-muted transition-colors hover:bg-jung-surface-alt hover:text-jung-dark disabled:opacity-50"
         aria-label="Sign out"
       >
-        <LogOut className="h-4 w-4" aria-hidden="true" />
+        <LogOut className="h-4 w-4" />
       </button>
     </div>
   ) : (
-    <Link to="/auth" className="site-nav-link hidden lg:inline-flex">
+    <Link
+      to="/auth"
+      className="hidden h-10 items-center gap-2 rounded-lg border border-jung-border bg-jung-surface px-4 text-sm font-semibold text-jung-dark transition-colors hover:border-jung-accent-muted hover:bg-jung-accent-light lg:inline-flex"
+    >
+      <LogIn className="h-4 w-4" />
       Sign in
     </Link>
   );
@@ -274,31 +288,39 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
   if (isFocusedJourney) {
     return (
       <div className="min-h-screen bg-jung-base text-jung-dark">
-        <a href="#main-content" className="skip-link">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-jung-surface focus:p-3"
+        >
           Skip to content
         </a>
-        <header className="site-header is-focused">
-          <div className="wrap site-header-row">
-            <Link to="/" aria-label="TypeJung home" className="site-logo">
-              <TypeJungLogo />
+        <header className="border-b border-jung-border-light bg-jung-surface/80">
+          <div className="mx-auto flex h-[72px] max-w-6xl items-center justify-between gap-4 px-5 sm:px-8">
+            <Link
+              to="/"
+              aria-label="TypeJung home"
+              className="flex min-h-11 items-center gap-2"
+            >
+              <TypeJungMark size="sm" />
+              <span className="studio-wordmark font-display text-xl">TypeJung</span>
             </Link>
             <Link
               to={location.pathname !== '/assessment' && hasResult ? '/results' : '/'}
-              className="site-exit"
+              className="inline-flex min-h-11 items-center text-xs font-medium text-jung-secondary hover:text-jung-accent"
             >
               {location.pathname === '/assessment'
                 ? 'Save & exit'
                 : hasResult
                   ? 'Back to my map'
                   : 'Back to home'}
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              <ArrowRight className="ml-2 h-3.5 w-3.5" />
             </Link>
           </div>
         </header>
         <main id="main-content">{children}</main>
-        <footer className="wrap site-footer-slim">
-          <span>TypeJung · Educational self-reflection, not diagnosis</span>
-          <div>
+        <footer className="mx-auto flex max-w-6xl flex-wrap justify-between gap-3 border-t border-jung-border-light px-5 py-6 text-xs text-jung-muted sm:px-8">
+          <span>TypeJung · Educational self-reflection</span>
+          <div className="flex gap-5">
             <Link to="/privacy">Privacy</Link>
             <a href="mailto:support@typejung.com">Support</a>
           </div>
@@ -309,16 +331,37 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <div className="min-h-screen bg-jung-base text-jung-dark">
-      <a href="#main-content" className="skip-link">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:border focus:border-jung-accent focus:bg-jung-surface focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-jung-dark focus:shadow-lg"
+      >
         Skip to content
       </a>
-      <header className={`site-header${scrolled ? ' is-scrolled' : ''}`}>
-        <div className="wrap site-header-row">
-          <Link to="/" className="site-logo" aria-label="TypeJung home">
-            <TypeJungLogo />
+      <header
+        className={`studio-header sticky top-0 z-50 border-b transition-all duration-300 ${
+          scrolled
+            ? 'glass border-jung-border py-3 shadow-sm'
+            : 'border-jung-border/60 bg-jung-base/95 py-4'
+        }`}
+      >
+        <div className="lab-container flex items-center justify-between gap-4">
+          <Link
+            to="/"
+            className="flex min-h-11 items-center gap-3"
+            aria-label="TypeJung home"
+          >
+            <span className="flex h-8 w-8 items-center justify-center sm:h-10 sm:w-10">
+              <TypeJungMark size="sm" />
+            </span>
+            <span className="flex flex-col">
+              <span className="studio-wordmark font-display text-xl leading-none text-jung-dark sm:text-2xl">
+                TypeJung
+              </span>
+
+            </span>
           </Link>
 
-          <nav className="site-nav" aria-label="Main">
+          <nav className="hidden items-center gap-7 lg:flex">
             {navigation.map((item) => (
               <NavLink
                 key={item.to}
@@ -331,126 +374,147 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
             ))}
           </nav>
 
-          <div className="site-actions">
+          <div className="flex items-center gap-2">
             {isLoading ? (
-              <span className="hidden h-10 w-20 lg:block" aria-hidden="true" />
+              <div className="hidden h-10 w-24 animate-pulse rounded-lg bg-jung-surface-alt lg:block" />
             ) : (
               accountAction
             )}
             {location.pathname !== '/results' && (
-              <Link to={primaryTo} className="site-cta">
-                {hasResult ? 'My map' : 'Start free'}
-              </Link>
+              <div className="block">
+                <Link
+                  to={hasResult ? '/results' : '/assessment'}
+                  className="btn-premium !min-h-11 !px-4 !py-2 text-xs sm:text-sm"
+                >
+                  {hasResult ? 'My map' : 'Start free'}
+                </Link>
+              </div>
             )}
             <button
               type="button"
               onClick={() => setMobileMenuOpen((open) => !open)}
-              className="site-icon-button lg:hidden"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-jung-border bg-jung-surface text-jung-dark transition-colors hover:bg-jung-surface-alt lg:hidden"
               aria-expanded={mobileMenuOpen}
               id="site-menu-toggle"
               aria-controls="site-mobile-menu"
-              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+              aria-label="Toggle menu"
             >
               {mobileMenuOpen ? (
-                <X className="h-5 w-5" aria-hidden="true" />
+                <X className="h-5 w-5" />
               ) : (
-                <Menu className="h-5 w-5" aria-hidden="true" />
+                <Menu className="h-5 w-5" />
               )}
             </button>
           </div>
         </div>
 
         {mobileMenuOpen && (
-          <div id="site-mobile-menu" className="site-menu lg:hidden">
-            <nav className="wrap" aria-label="Menu">
-              {navigation.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  end={item.to === '/'}
-                  className={mobileNavLinkClass}
-                >
-                  {item.label}
-                </NavLink>
-              ))}
-              <NavLink to="/learn" className={mobileNavLinkClass}>
-                Learn the theory
-              </NavLink>
-              {isAuthenticated && (
-                <>
-                  <NavLink to="/profile" className={mobileNavLinkClass}>
-                    <User className="h-4 w-4" aria-hidden="true" />
-                    Profile settings
-                  </NavLink>
-                  <NavLink to="/history" className={mobileNavLinkClass}>
-                    <Clock className="h-4 w-4" aria-hidden="true" />
-                    History
-                  </NavLink>
-                  <NavLink to="/leaderboard" className={mobileNavLinkClass}>
-                    <Trophy className="h-4 w-4" aria-hidden="true" />
-                    Results data
-                  </NavLink>
-                </>
-              )}
-              <div className="site-menu-actions">
-                <Link to={primaryTo} className="site-menu-primary">
-                  {hasResult ? 'Open my map' : 'Start free assessment'}
-                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </Link>
-                {isAuthenticated ? (
-                  <button
-                    type="button"
-                    onClick={() => logout()}
-                    disabled={isLoggingOut}
-                    className="site-menu-secondary"
+          <div id="site-mobile-menu" className="lg:hidden">
+            <div className="lab-container pb-4 pt-3">
+              <div className="rounded-lg border border-jung-border bg-jung-surface p-2 shadow-lg">
+                {navigation.map((item) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    end={item.to === '/'}
+                    className={mobileNavLinkClass}
                   >
-                    <LogOut className="h-4 w-4" aria-hidden="true" />
-                    Sign out
-                  </button>
-                ) : (
-                  <Link to="/auth" className="site-menu-secondary">
-                    Sign in
-                  </Link>
+                    {item.label}
+                  </NavLink>
+                ))}
+                {isAuthenticated && (
+                  <>
+                    <NavLink to="/profile" className={mobileNavLinkClass}>
+                      <span className="inline-flex items-center gap-2">
+                        <User className="h-4 w-4" />
+                        Profile settings
+                      </span>
+                    </NavLink>
+                    <NavLink to="/history" className={mobileNavLinkClass}>
+                      <span className="inline-flex items-center gap-2">
+                        <Clock className="h-4 w-4" />
+                        History
+                      </span>
+                    </NavLink>
+                    <NavLink to="/leaderboard" className={mobileNavLinkClass}>
+                      <span className="inline-flex items-center gap-2">
+                        <Trophy className="h-4 w-4" />
+                        Results data
+                      </span>
+                    </NavLink>
+                  </>
                 )}
+                <div className="mt-2 grid gap-2 border-t border-jung-border pt-2">
+                  <Link
+                    to={hasResult ? '/results' : '/assessment'}
+                    className="inline-flex min-h-11 items-center justify-center rounded-lg bg-jung-accent px-4 text-sm font-semibold text-white"
+                  >
+                    {hasResult ? 'Open my map' : 'Start free assessment'}
+                  </Link>
+                  {isAuthenticated ? (
+                    <button
+                      type="button"
+                      onClick={() => logout()}
+                      disabled={isLoggingOut}
+                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-jung-border px-4 text-sm font-semibold text-jung-dark disabled:opacity-50"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Sign out
+                    </button>
+                  ) : (
+                    <Link
+                      to="/auth"
+                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-jung-border px-4 text-sm font-semibold text-jung-dark"
+                    >
+                      <LogIn className="h-4 w-4" />
+                      Sign in
+                    </Link>
+                  )}
+                </div>
               </div>
-            </nav>
+            </div>
           </div>
         )}
       </header>
 
       {shouldShowPendingCheckout && pendingCheckout && (
-        <section className="site-notice" aria-label="Open checkout">
-          <div className="wrap site-notice-row">
-            <div className="min-w-0">
-              <p className="site-notice-title">
-                {pendingCheckout.status === 'expired'
-                  ? `Your ${pendingCheckoutName(pendingCheckout.tier)} checkout expired.`
-                  : `Your ${pendingCheckoutName(pendingCheckout.tier)} checkout is still open.`}
-              </p>
-              <p className="site-notice-body">
-                {pendingCheckout.status === 'expired'
-                  ? `Start a fresh secure Stripe step for ${pendingCheckoutPriceLabel(pendingCheckout.tier)}. No subscription.`
-                  : `Resume the secure Stripe step for ${pendingCheckoutPriceLabel(pendingCheckout.tier)}. No subscription.`}
-              </p>
+        <section className="border-b border-jung-accent-muted bg-jung-accent-light/80">
+          <div className="lab-container flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 items-start gap-3">
+              <span className="mt-0.5 inline-flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-jung-surface text-jung-accent shadow-sm">
+                <CreditCard className="h-4 w-4" />
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-jung-dark">
+                  {pendingCheckout.status === 'expired'
+                    ? `Your ${pendingCheckoutName(pendingCheckout.tier)} checkout expired.`
+                    : `Your ${pendingCheckoutName(pendingCheckout.tier)} checkout is still open.`}
+                </p>
+                <p className="mt-1 text-xs leading-5 text-jung-secondary">
+                  {pendingCheckout.status === 'expired'
+                    ? `Start a fresh secure Stripe step for ${pendingCheckoutPriceLabel(pendingCheckout.tier)}. No subscription.`
+                    : `Resume the secure Stripe step for ${pendingCheckoutPriceLabel(pendingCheckout.tier)}. No subscription.`}
+                </p>
+              </div>
             </div>
-            <div className="site-notice-actions">
+            <div className="flex flex-none items-center gap-2">
               <button
                 type="button"
                 onClick={resumePendingCheckout}
-                className="site-notice-primary"
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-jung-accent px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-px hover:bg-jung-accent-hover"
               >
                 {pendingCheckout.status === 'expired'
                   ? 'Restart checkout'
                   : 'Resume payment'}
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                <ArrowRight className="h-4 w-4" />
               </button>
               <button
                 type="button"
                 onClick={dismissPendingCheckout}
-                className="site-icon-button"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-jung-border bg-jung-surface text-jung-muted transition hover:text-jung-dark"
                 aria-label="Dismiss pending checkout"
               >
-                <X className="h-4 w-4" aria-hidden="true" />
+                <X className="h-4 w-4" />
               </button>
             </div>
           </div>
@@ -458,35 +522,40 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
       )}
 
       {shouldShowAssessmentResume && assessmentProgress && (
-        <section className="site-notice" aria-label="Unfinished assessment">
-          <div className="wrap site-notice-row">
-            <div className="min-w-0">
-              <p className="site-notice-title">
-                Your free assessment is {assessmentProgress.progressPercent}%
-                complete.
-              </p>
-              <p className="site-notice-body">
-                Resume from {assessmentProgress.answeredCount} of{' '}
-                {assessmentProgress.totalQuestions} answered questions and
-                finish the map before deciding on any upgrade.
-              </p>
+        <section className="border-b border-jung-border bg-jung-surface">
+          <div className="lab-container flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 items-start gap-3">
+              <span className="mt-0.5 inline-flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent shadow-sm">
+                <CheckCircle2 className="h-4 w-4" />
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-jung-dark">
+                  Your free assessment is {assessmentProgress.progressPercent}%
+                  complete.
+                </p>
+                <p className="mt-1 text-xs leading-5 text-jung-secondary">
+                  Resume from {assessmentProgress.answeredCount} of{' '}
+                  {assessmentProgress.totalQuestions} answered questions and
+                  finish the map before deciding on any upgrade.
+                </p>
+              </div>
             </div>
-            <div className="site-notice-actions">
+            <div className="flex flex-none items-center gap-2">
               <button
                 type="button"
                 onClick={resumeAssessment}
-                className="site-notice-primary"
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-jung-accent px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-px hover:bg-jung-accent-hover"
               >
                 Resume assessment
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                <ArrowRight className="h-4 w-4" />
               </button>
               <button
                 type="button"
                 onClick={dismissAssessmentResume}
-                className="site-icon-button"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-jung-border bg-jung-surface text-jung-muted transition hover:text-jung-dark"
                 aria-label="Dismiss assessment reminder"
               >
-                <X className="h-4 w-4" aria-hidden="true" />
+                <X className="h-4 w-4" />
               </button>
             </div>
           </div>
@@ -495,64 +564,80 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
 
       <main id="main-content">{children}</main>
 
-      <footer className="site-footer">
-        <div className="wrap">
-          <div className="site-footer-grid">
-            <div className="site-footer-brand">
-              <p className="site-footer-line">
-                The pattern beneath your type, free before you buy anything.
-              </p>
-              <p className="site-footer-small">
-                TypeJung is a tool for educational self-reflection. It is not a
-                clinical assessment and does not diagnose anything.
-              </p>
-              <a href="mailto:support@typejung.com" className="site-footer-mail">
-                support@typejung.com
-              </a>
-            </div>
-            <nav aria-label="Explore TypeJung" className="site-footer-links">
+      <footer className="border-t border-jung-border bg-jung-surface">
+        <div className="lab-container grid gap-8 py-10 md:grid-cols-[1.2fr_1fr_1fr]">
+          <div>
+            <Link to="/" className="inline-flex min-h-11 items-center gap-2">
+              <TypeJungMark size="sm" />
+              <span className="studio-wordmark font-display text-2xl">TypeJung</span>
+            </Link>
+            <p className="mt-3 max-w-xs text-sm leading-6 text-jung-muted">
+              Explore the pattern behind your personality. A tool for
+              educational self-reflection.
+            </p>
+            <a
+              href="mailto:support@typejung.com"
+              className="mt-3 inline-flex min-h-11 items-center text-xs text-jung-accent"
+            >
+              support@typejung.com
+            </a>
+          </div>
+          <nav aria-label="Explore TypeJung">
+            <p className="journey-eyebrow mb-3">Explore</p>
+            <div className="grid grid-cols-2 gap-x-4 text-xs text-jung-secondary">
               {[
                 ['/assessment', 'Free assessment'],
-                ['/sample-report', 'Sample report'],
                 ['/pricing', 'Pricing'],
-                ['/methodology', 'How it works'],
+                ['/sample-report', 'Sample report'],
+                ['/methodology', 'Methodology'],
                 ['/learn', 'Learn the theory'],
                 ['/debrief', 'Personal debrief'],
               ].map(([to, label]) => (
-                <Link key={to} to={to}>
+                <Link
+                  key={to}
+                  to={to}
+                  className="inline-flex min-h-11 items-center hover:text-jung-accent"
+                >
                   {label}
                 </Link>
               ))}
-            </nav>
-            <nav aria-label="Help and resources" className="site-footer-links">
+            </div>
+          </nav>
+          <nav aria-label="Help and resources">
+            <p className="journey-eyebrow mb-3">Good to know</p>
+            <div className="grid grid-cols-2 gap-x-4 text-xs text-jung-secondary">
               {[
                 ['/about', 'About TypeJung'],
                 ['/auth', 'Account'],
                 ['/privacy', 'Privacy'],
                 ['/terms', 'Terms'],
               ].map(([to, label]) => (
-                <Link key={to} to={to}>
+                <Link
+                  key={to}
+                  to={to}
+                  className="inline-flex min-h-11 items-center hover:text-jung-accent"
+                >
                   {label}
                 </Link>
               ))}
-              <a href="/guides">All guides</a>
+              <a
+                href="/guides"
+                className="inline-flex min-h-11 items-center hover:text-jung-accent"
+              >
+                All guides
+              </a>
               <a
                 href="https://github.com/felmonon/jungian-typology-assessment"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center hover:text-jung-accent"
               >
                 View source
               </a>
-            </nav>
-          </div>
+            </div>
+          </nav>
         </div>
-        <div className="site-footer-mark" aria-hidden="true">
-          <div className="wrap site-footer-mark-row">
-            <ReflectionGlyph tone="dark" className="site-footer-glyph" />
-            <Wordmark className="site-footer-word" />
-          </div>
-        </div>
-        <div className="wrap site-footer-legal">
+        <div className="lab-container flex flex-wrap justify-between gap-3 border-t border-jung-border-light py-5 text-[11px] text-jung-muted">
           <span>© {new Date().getFullYear()} TypeJung</span>
           <span>Made for curiosity and reflection.</span>
         </div>

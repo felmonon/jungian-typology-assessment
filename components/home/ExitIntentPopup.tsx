@@ -86,7 +86,7 @@ export const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({
             Try the Free Assessment <ArrowRight className="ml-2 w-4 h-4" />
           </Button>
 
-          <div className="mt-6 flex items-center gap-3 text-xs font-medium text-jung-muted">
+          <div className="mt-6 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.12em] text-jung-muted">
             <span className="h-px flex-1 bg-jung-border" />
             or
             <span className="h-px flex-1 bg-jung-border" />

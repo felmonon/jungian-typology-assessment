@@ -21,176 +21,135 @@
 <meta name="twitter:description" content="Use TypeJung as a Mistype Investigator alternative when you want a free cognitive-function map, stress-edge context, and optional deeper interpretation.">
 <meta name="twitter:image" content="https://typejung.com/og-image.png">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="preload" href="/fonts/instrument-sans-latin-1.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --jung-base: #ffffff;
-    --jung-surface: #f0f1ee;
-    --jung-surface-alt: #e5e6e2;
-    --jung-dark: #121416;
-    --jung-secondary: #3f4347;
-    --jung-muted: #5b6065;
-    --jung-border: #dadbd7;
-    --jung-border-light: #e6e7e3;
-    --jung-line: #8a8f94;
-    --jung-accent: #d7261e;
-    --jung-accent-hover: #b51c15;
-    --jung-accent-light: #fbe9e7;
-    --jung-accent-muted: #e9908a;
-    --jung-gold: #3f4347;
-    --night: #121416;
-    --night-2: #1d2023;
-    --night-ink: #f5f5f2;
-    --night-muted: #a9aeb2;
-    --sans: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+    --jung-base: #fafaf8;
+    --jung-surface: #ffffff;
+    --jung-surface-alt: #f4f4f2;
+    --jung-dark: #1a1a1a;
+    --jung-secondary: #555d56;
+    --jung-muted: #666666;
+    --jung-border: #d4d4d2;
+    --jung-border-light: #e8e8e6;
+    --jung-accent: #2d5a3d;
+    --jung-accent-hover: #234832;
+    --jung-accent-light: #e8f1ea;
+    --jung-accent-muted: #7fa085;
+    --jung-gold: #a17932;
   }
   * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
   body {
-    font-family: var(--sans);
-    font-size: 1.0625rem;
-    line-height: 1.6;
+    font-family: "Schibsted Grotesk", Verdana, sans-serif;
+    line-height: 1.75;
     color: var(--jung-dark);
-    max-width: 1000px;
+    max-width: 980px;
     margin: 0 auto;
-    padding: 24px 20px 0;
-    background: var(--jung-base);
-    -webkit-font-smoothing: antialiased;
+    padding: 32px 20px 48px;
+    background:
+      linear-gradient(180deg, rgba(244,244,242,0.72) 0%, rgba(250,250,248,0) 360px),
+      var(--jung-base);
   }
-  :focus-visible { outline: 3px solid var(--jung-dark); outline-offset: 3px; }
-  ::selection { background: var(--jung-dark); color: var(--jung-base); }
-  h1, h2, h3 { font-family: var(--sans); font-weight: 600; overflow-wrap: anywhere; text-wrap: balance; color: var(--jung-dark); }
-  h1 { font-size: clamp(2.5rem, 7vw, 4.75rem); font-variation-settings: "wdth" 84; letter-spacing: -0.045em; line-height: 0.95; margin: 0 0 0.4em; }
-  h2 { font-size: clamp(1.6rem, 3.6vw, 2.4rem); font-variation-settings: "wdth" 88; letter-spacing: -0.035em; line-height: 1.05; margin: 56px 0 16px; padding: 0; border: 0; }
-  h3 { font-size: 1.25rem; letter-spacing: -0.02em; line-height: 1.2; margin: 32px 0 8px; }
-  p, li { color: var(--jung-secondary); overflow-wrap: anywhere; text-wrap: pretty; }
-  p, ul, ol { max-width: 68ch; }
-  ul { list-style: none; padding-left: 0; }
-  ul > li { position: relative; padding-left: 1.5em; }
-  ul > li::before { content: ""; position: absolute; left: 0.15em; top: 0.55em; width: 0.5em; height: 0.5em; background: currentColor; transform: rotate(45deg); }
-  .proof-strip > li::before { display: none; }
-  strong { color: var(--jung-dark); }
-  a { color: var(--jung-dark); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.2em; overflow-wrap: anywhere; }
-  a:hover { text-decoration-color: var(--jung-accent); }
-  .subtitle { color: var(--jung-secondary); font-size: clamp(1.2rem, 2.6vw, 1.5rem); line-height: 1.4; margin-bottom: 24px; max-width: 46em; }
+  h1, h2, h3 { font-family: "Fraunces", Georgia, serif; font-weight: 600; letter-spacing: 0; overflow-wrap: anywhere; }
+  h1 { color: var(--jung-dark); font-size: clamp(2.35rem, 7vw, 4.4rem); line-height: 0.98; margin: 0 0 0.35em; }
+  h2 { color: var(--jung-dark); border-bottom: 1px solid var(--jung-border); padding-bottom: 12px; margin-top: 48px; font-size: clamp(1.55rem, 3.5vw, 2.25rem); line-height: 1.1; }
+  h3 { color: var(--jung-dark); margin-top: 30px; font-size: 1.2rem; line-height: 1.25; }
+  p, li { color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; overflow-wrap: anywhere; }
+  a { color: var(--jung-accent); text-decoration-thickness: 0.08em; text-underline-offset: 0.18em; overflow-wrap: anywhere; }
+  .subtitle { color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; font-size: clamp(1.1rem, 2.6vw, 1.35rem); line-height: 1.65; margin-bottom: 22px; }
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-  .breadcrumb { color: var(--jung-muted); margin-bottom: 32px; font-size: 0.9375rem; }
-  .breadcrumb a { display: inline-flex; align-items: center; min-height: 44px; color: var(--jung-secondary); text-decoration: none; font-weight: 600; }
-  .breadcrumb a:hover { color: var(--jung-dark); text-decoration: underline; }
-  .eyebrow, .meta { color: var(--jung-muted); font-weight: 600; font-size: 0.9375rem; margin-bottom: 14px; }
-  .cta-box, .cta { background: var(--night); color: var(--night-ink); padding: clamp(24px, 5vw, 48px); margin: 48px 0; }
-  .cta-box p, .cta p { color: var(--night-muted); }
-  .cta-box h2, .cta-box h3, .cta h2, .cta h3 { color: var(--night-ink); margin-top: 0; }
-  .cta-box a:not(.btn), .cta a:not(.btn) { color: var(--night-ink); }
-  .cta-box :focus-visible, .cta :focus-visible { outline-color: var(--night-ink); }
-  .hero-actions, .cta-actions { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin: 28px 0 0; }
-  .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 12px 24px; background: var(--jung-accent); color: #fff; text-decoration: none; font-weight: 600; transition: background-color 160ms ease; }
-  .btn:hover { background: var(--jung-accent-hover); color: #fff; }
-  .secondary-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 12px 22px; background: transparent; color: var(--jung-dark); text-decoration: none; border: 1px solid var(--jung-line); font-weight: 600; }
-  .secondary-btn:hover { border-color: var(--jung-dark); background: var(--jung-surface); }
-  .cta-box .secondary-btn, .cta .secondary-btn { color: var(--night-ink); border-color: rgba(245,245,242,0.5); }
-  .cta-box .secondary-btn:hover, .cta .secondary-btn:hover { border-color: var(--night-ink); background: var(--night-2); }
-  .text-link, .secondary-link { display: inline-flex; align-items: center; min-height: 44px; color: var(--night-ink); font-weight: 600; margin-left: 16px; }
-  .proof-strip { display: flex; flex-wrap: wrap; gap: 4px; margin: 16px 0 0; padding: 0; list-style: none; }
-  .proof-strip li { margin: 0; padding: 8px 12px; background: var(--jung-surface); color: var(--jung-dark); font-size: 0.875rem; font-weight: 600; line-height: 1.25; }
-  .save-link-panel { display: grid; gap: 14px; margin: 28px 0 40px; padding: 24px; background: var(--jung-surface); }
-  .save-link-panel h2 { margin: 0; font-size: 1.375rem; letter-spacing: -0.02em; }
-  .save-link-panel p { margin: 0; font-size: 1rem; line-height: 1.55; }
+  .breadcrumb { color: var(--jung-muted); margin-bottom: 28px; font-size: 0.92rem; }
+  .breadcrumb a { color: var(--jung-accent); text-decoration: none; font-weight: 600; }
+  .eyebrow { color: var(--jung-accent); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.78rem; margin-bottom: 14px; }
+  .cta-box { background: var(--jung-dark); color: white; padding: clamp(24px, 5vw, 40px); border-radius: 8px; margin: 38px 0; border: 1px solid var(--jung-dark); box-shadow: 0 24px 60px -36px rgb(29 38 32 / 0.55); }
+  .cta-box p, .cta-box h2, .cta-box h3 { color: white; }
+  .cta-box h2 { border: 0; margin-top: 0; padding-bottom: 0; }
+  .cta-box h3 { margin-top: 0; }
+  .hero-actions, .cta-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 24px 0 0; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 12px 22px; background: var(--jung-accent); color: white; text-decoration: none; border-radius: 8px; font-weight: 700; box-shadow: 0 18px 50px -34px rgb(47 111 88 / 0.7); }
+  .btn:hover { background: var(--jung-accent-hover); }
+  .secondary-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 12px 20px; background: var(--jung-surface); color: var(--jung-dark); text-decoration: none; border: 1px solid var(--jung-border); border-radius: 8px; font-weight: 700; }
+  .secondary-btn:hover { border-color: var(--jung-accent-muted); color: var(--jung-accent); }
+  .cta-box .secondary-btn { background: transparent; color: white; border-color: rgba(255,255,255,0.32); }
+  .cta-box .secondary-btn:hover { border-color: rgba(255,255,255,0.72); color: white; }
+  .text-link { color: var(--jung-accent-light); font-weight: 700; margin-left: 16px; }
+  .proof-strip { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; padding: 0; list-style: none; }
+  .proof-strip li { margin: 0; padding: 7px 10px; border: 1px solid var(--jung-border-light); border-radius: 8px; background: rgba(255,255,255,0.72); color: var(--jung-secondary); font-family: "Schibsted Grotesk", Verdana, sans-serif; font-size: 0.82rem; font-weight: 600; line-height: 1.25; }
+  .save-link-panel { display: grid; gap: 14px; margin: 24px 0 0; padding: 18px; border: 1px solid var(--jung-accent-muted); border-radius: 8px; background: color-mix(in srgb, var(--jung-accent-light) 56%, white); }
+  .save-link-panel h2 { border: 0; margin: 0; padding: 0; font-family: "Schibsted Grotesk", Verdana, sans-serif; font-size: 1.04rem; line-height: 1.25; }
+  .save-link-panel p { margin: 0; font-size: 0.98rem; line-height: 1.55; }
   .save-link-form { display: grid; gap: 10px; }
-  .save-link-form-row { display: grid; gap: 8px; grid-template-columns: minmax(0, 1fr) auto; }
-  .save-link-form input[type="email"] { min-height: 48px; width: 100%; border: 1px solid var(--jung-line); border-radius: 0; background: var(--jung-base); color: var(--jung-dark); font: 400 1rem var(--sans); padding: 0 14px; }
-  .save-link-form input[type="email"]:focus { border-color: var(--jung-dark); box-shadow: inset 0 0 0 1px var(--jung-dark); outline: none; }
-  .save-link-form button { min-height: 48px; border: 0; border-radius: 0; background: var(--jung-dark); color: #fff; cursor: pointer; font: 600 0.9375rem var(--sans); padding: 0 18px; }
-  .save-link-form button:hover { background: #2a2e32; }
-  .save-link-form button:disabled { cursor: wait; opacity: 0.6; }
-  .save-link-status { min-height: 1.35rem; margin: 0 !important; color: var(--jung-secondary); font-size: 0.875rem !important; }
+  .save-link-form-row { display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr) auto; }
+  .save-link-form input[type="email"] { min-height: 44px; width: 100%; border: 1px solid var(--jung-border); border-radius: 8px; background: var(--jung-surface); color: var(--jung-dark); font: 600 0.95rem "Schibsted Grotesk", Verdana, sans-serif; padding: 0 12px; }
+  .save-link-form button { min-height: 44px; border: 0; border-radius: 8px; background: var(--jung-accent); color: white; cursor: pointer; font: 700 0.92rem "Schibsted Grotesk", Verdana, sans-serif; padding: 0 16px; }
+  .save-link-form button:disabled { cursor: wait; opacity: 0.72; }
+  .save-link-status { min-height: 1.35rem; color: var(--jung-secondary); font-size: 0.86rem !important; }
   .honeypot { display: none; }
-  .tag { display: inline-block; background: var(--jung-surface); color: var(--jung-dark); padding: 4px 10px; font-size: 0.875rem; font-weight: 600; margin: 4px 4px 4px 0; }
-  .related, .creator-share-kit { margin: 40px 0; padding: clamp(20px, 4vw, 32px); background: var(--jung-surface); }
-  .creator-share-kit h2 { margin: 0; font-size: clamp(1.4rem, 3vw, 1.9rem); }
+  .creator-share-kit { margin: 30px 0 36px; padding: clamp(20px, 4vw, 28px); border: 1px solid var(--jung-border); border-radius: 8px; background: var(--jung-surface); box-shadow: 0 16px 50px -42px rgb(29 38 32 / 0.4); }
+  .creator-share-kit h2 { border: 0; margin: 0; padding: 0; font-size: clamp(1.35rem, 3vw, 1.85rem); }
   .creator-share-kit-intro { margin: 8px 0 0; max-width: 740px; }
-  .creator-public-link { margin: 16px 0 0; padding: 12px 14px; background: var(--jung-base); font-size: 0.9375rem; }
-  .creator-public-link strong { display: block; margin-bottom: 3px; font-size: 0.875rem; }
-  .copy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 4px; margin: 18px 0 0; }
-  .copy-card { display: grid; gap: 10px; min-height: 100%; padding: 16px; background: var(--jung-base); }
-  .copy-card h3 { margin: 0; font-size: 1.0625rem; }
-  .copy-template { min-height: 172px; width: 100%; resize: vertical; border: 1px solid var(--jung-line); border-radius: 0; background: #fff; color: var(--jung-secondary); font: 400 0.9375rem/1.55 var(--sans); padding: 12px; }
+  .creator-public-link { margin: 16px 0 0; padding: 12px 14px; border: 1px solid var(--jung-border-light); border-radius: 8px; background: var(--jung-surface-alt); font-family: "Schibsted Grotesk", Verdana, sans-serif; font-size: 0.9rem; }
+  .creator-public-link strong { display: block; margin-bottom: 3px; color: var(--jung-dark); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .copy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 18px 0 0; }
+  .copy-card { display: grid; gap: 10px; min-height: 100%; padding: 15px; border: 1px solid var(--jung-border-light); border-radius: 8px; background: color-mix(in srgb, var(--jung-accent-light) 22%, white); }
+  .copy-card h3 { margin: 0; font-family: "Schibsted Grotesk", Verdana, sans-serif; font-size: 1rem; }
+  .copy-template { min-height: 172px; width: 100%; resize: vertical; border: 1px solid var(--jung-border); border-radius: 8px; background: white; color: var(--jung-secondary); font: 500 0.9rem/1.55 "Source Serif 4", Georgia, serif; padding: 12px; }
   .copy-action-row { display: grid; gap: 7px; align-items: center; }
-  .copy-action-row button { justify-self: start; min-height: 44px; border: 0; border-radius: 0; background: var(--jung-dark); color: #fff; cursor: pointer; font: 600 0.9375rem var(--sans); padding: 0 16px; }
-  .copy-status { min-height: 1.25rem; margin: 0; color: var(--jung-muted); font-size: 0.875rem !important; }
-  .related-grid, .cluster-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 4px; margin: 20px 0; }
-  .related-card, .cluster-link { display: block; min-height: 100%; padding: 18px; background: var(--jung-surface); color: var(--jung-dark); text-decoration: none; transition: background-color 160ms ease; }
-  .related-card:hover, .cluster-link:hover { background: var(--jung-surface-alt); }
-  .related-card a { display: inline-block; padding-block: 12px; margin-block: -12px; color: var(--jung-dark); text-decoration: none; font-weight: 600; }
-  .intent-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; margin: 28px 0 36px; }
-  .intent-card { background: var(--jung-surface); padding: 20px; }
-  .intent-card strong { display: block; margin-bottom: 6px; color: var(--jung-dark); font-size: 1rem; }
-  .intent-card span { display: block; color: var(--jung-secondary); line-height: 1.55; }
-  .cluster-nav { margin: 32px 0 40px; }
-  .cluster-nav h2 { margin: 0 0 12px; font-size: 1.25rem; letter-spacing: -0.02em; }
-  .cluster-link strong { display: block; margin-bottom: 6px; }
-  .cluster-link span { display: block; color: var(--jung-secondary); font-size: 0.9375rem; line-height: 1.45; }
-  .debrief-cta { margin: 40px 0; padding: clamp(22px, 4vw, 36px); background: var(--jung-surface); }
-  .debrief-cta-grid { display: grid; gap: 20px; align-items: center; grid-template-columns: minmax(0, 1fr) auto; }
-  .debrief-cta h2 { margin: 0; font-size: clamp(1.5rem, 3vw, 2.1rem); }
+  .copy-action-row button { justify-self: start; min-height: 40px; border: 0; border-radius: 8px; background: var(--jung-dark); color: white; cursor: pointer; font: 700 0.88rem "Schibsted Grotesk", Verdana, sans-serif; padding: 0 14px; }
+  .copy-status { min-height: 1.25rem; margin: 0; color: var(--jung-muted); font-size: 0.82rem !important; }
+  .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 20px 0; }
+  .related-card { background: var(--jung-surface); padding: 16px; border-radius: 8px; border: 1px solid var(--jung-border-light); box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
+  .related-card a { color: var(--jung-dark); text-decoration: none; font-weight: 700; }
+  .intent-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 28px 0 32px; }
+  .intent-card { background: var(--jung-surface); border: 1px solid var(--jung-border-light); border-radius: 8px; padding: 18px; box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
+  .intent-card strong { display: block; margin-bottom: 7px; font-family: "Schibsted Grotesk", Verdana, sans-serif; color: var(--jung-dark); font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .intent-card span { display: block; color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; line-height: 1.6; }
+  .cluster-nav { background: color-mix(in srgb, var(--jung-accent-light) 48%, white); border: 1px solid color-mix(in srgb, var(--jung-accent-muted) 55%, white); border-radius: 8px; padding: 18px; margin: 28px 0 36px; }
+  .cluster-nav h2 { border: 0; margin: 0 0 12px; padding: 0; font-size: 1.12rem; font-family: "Schibsted Grotesk", Verdana, sans-serif; }
+  .cluster-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+  .cluster-link { display: block; min-height: 100%; padding: 14px; border-radius: 8px; background: rgba(255,255,255,0.72); border: 1px solid var(--jung-border-light); color: var(--jung-dark); text-decoration: none; }
+  .cluster-link strong { display: block; margin-bottom: 6px; font-family: "Schibsted Grotesk", Verdana, sans-serif; }
+  .cluster-link span { display: block; color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; font-size: 0.95rem; line-height: 1.45; }
+  .debrief-cta { margin: 30px 0 36px; padding: clamp(22px, 4vw, 30px); border: 1px solid var(--jung-accent-muted); border-radius: 8px; background: linear-gradient(135deg, color-mix(in srgb, var(--jung-accent-light) 64%, white), var(--jung-surface)); box-shadow: 0 18px 54px -42px rgb(29 38 32 / 0.52); }
+  .debrief-cta-grid { display: grid; gap: 18px; align-items: center; grid-template-columns: minmax(0, 1fr) auto; }
+  .debrief-cta h2 { border: 0; margin: 0; padding: 0; font-size: clamp(1.45rem, 3vw, 2rem); }
   .debrief-cta p { margin: 10px 0 0; }
-  .debrief-cta ul { display: grid; gap: 7px; margin: 16px 0 0; }
-  .debrief-price-card { min-width: 176px; padding: 18px; background: var(--jung-base); text-align: right; }
-  .debrief-price-card strong { display: block; color: var(--jung-dark); font-size: 2.25rem; font-weight: 600; letter-spacing: -0.04em; line-height: 1; }
-  .debrief-price-card span { display: block; margin-top: 8px; color: var(--jung-muted); font-size: 0.875rem; font-weight: 600; }
-  .context-links { margin: 18px 0 0; padding: 16px 18px; background: var(--jung-surface); }
-  .context-links strong { display: block; margin-bottom: 8px; font-size: 0.9375rem; color: var(--jung-secondary); }
-  .context-links ul { margin: 0; }
-  .context-links li { margin: 0; }
-  .context-links li > a { display: block; padding-block: 10px; line-height: 1.4; }
-  .context-links li::before { top: calc(10px + 0.45em); }
-  .faq-item { background: var(--jung-surface); padding: 20px; margin-bottom: 4px; }
-  .faq-item h3 { margin: 0 0 8px; font-size: 1.125rem; }
-  .table-scroll { margin: 24px 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .comparison-table { width: 100%; min-width: 620px; border-collapse: collapse; background: var(--jung-base); }
-  .comparison-table th { background: var(--jung-dark); color: #fff; padding: 14px; text-align: left; vertical-align: bottom; font-weight: 600; }
-  .comparison-table td { padding: 14px; vertical-align: top; color: var(--jung-secondary); }
-  .comparison-table tbody tr:nth-child(even) { background: var(--jung-surface); }
-  .trait-list { columns: 2; column-gap: 32px; }
+  .debrief-cta ul { display: grid; gap: 7px; margin: 16px 0 0; padding-left: 20px; }
+  .debrief-price-card { min-width: 176px; padding: 16px; border: 1px solid var(--jung-border); border-radius: 8px; background: white; text-align: right; }
+  .debrief-price-card strong { display: block; color: var(--jung-dark); font-family: "Fraunces", Georgia, serif; font-size: 2rem; line-height: 1; }
+  .debrief-price-card span { display: block; margin-top: 8px; color: var(--jung-muted); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+  .context-links { margin: 18px 0 0; padding: 14px 16px; background: var(--jung-surface); border: 1px solid var(--jung-border-light); border-radius: 8px; }
+  .context-links strong { display: block; margin-bottom: 8px; font-family: "Schibsted Grotesk", Verdana, sans-serif; font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--jung-muted); }
+  .context-links ul { margin: 0; padding-left: 20px; }
+  .context-links li { margin: 4px 0; }
+  .faq-item { background: var(--jung-surface); padding: 18px; border-radius: 8px; margin-bottom: 14px; border: 1px solid var(--jung-border-light); }
+  .faq-item h3 { margin: 0 0 8px; font-size: 1.05rem; }
+  .comparison-table { display: block; width: 100%; max-width: 100%; border-collapse: collapse; margin: 22px 0; background: var(--jung-surface); border: 1px solid var(--jung-border); border-radius: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .comparison-table thead, .comparison-table tbody { display: table; width: 100%; min-width: min(620px, 100%); }
+  .comparison-table th { background: var(--jung-dark); color: white; padding: 13px; text-align: left; }
+  .comparison-table td { padding: 13px; border-bottom: 1px solid var(--jung-border-light); vertical-align: top; color: var(--jung-secondary); }
+  .comparison-table tr:nth-child(even) { background: var(--jung-surface-alt); }
+  .trait-list { columns: 2; column-gap: 30px; }
   .trait-list li { break-inside: avoid; margin-bottom: 10px; }
-  /* Night footer, full-bleed: the field below the line, as in the app. */
-  footer { margin-top: 96px; padding: 48px 0 56px; background: var(--night); box-shadow: 0 0 0 100vmax var(--night); clip-path: inset(0 -100vmax); color: var(--night-muted); }
-  footer::before { content: ""; display: block; width: 168px; height: 32px; margin-bottom: 20px; background: url(/brand/typejung-lockup-dark.svg) left center / contain no-repeat; }
-  footer p { color: var(--night-muted); font-size: 0.9375rem; }
-  footer a { display: inline-block; padding-block: 12px; color: var(--night-ink); }
-  footer :focus-visible { outline-color: var(--night-ink); }
-  nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 20px; padding: 0 0 12px; margin-bottom: 32px; }
-  nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--jung-secondary); text-decoration: none; font-weight: 600; font-size: 0.9375rem; }
-  /* The first nav link (Home) shows the lockup; its text stays for screen readers. */
-  nav a:first-child { flex: none; width: 132px; margin-right: auto; overflow: hidden; color: transparent; white-space: nowrap; background: url(/brand/typejung-lockup-color.svg) left center / auto 28px no-repeat; }
-  nav a:first-child:hover { color: transparent; text-decoration: none; }
-  nav a:hover { color: var(--jung-dark); text-decoration: underline; }
-  /* Small screens keep the lockup and the first one or three links; the rest
-     stay reachable from the page body and footer. */
-  @media (max-width: 1000px) {
-    nav { flex-wrap: nowrap; }
-    nav a:nth-child(n+5) { display: none; }
-  }
+  footer { margin-top: 50px; padding-top: 22px; border-top: 1px solid var(--jung-border); color: var(--jung-muted); text-align: center; }
+  nav { background: rgba(255,255,255,0.88); padding: 12px; border: 1px solid var(--jung-border); border-radius: 8px; margin-bottom: 30px; box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
+  nav a { display: inline-flex; align-items: center; min-height: 40px; padding: 0 6px; color: var(--jung-secondary); text-decoration: none; margin-right: 12px; font-weight: 700; font-size: 0.92rem; }
+  nav a:hover { color: var(--jung-accent); }
+  .breadcrumb a { display: inline-flex; align-items: center; min-height: 36px; }
   @media (max-width: 640px) {
-    body { padding: 16px 16px 0; }
-    .comparison-table, .comparison-table tbody, .comparison-table tr, .comparison-table td { display: block; width: 100%; min-width: 0; }
-    .comparison-table thead { display: block; position: absolute; width: 1px; min-width: 0; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-    .comparison-table tbody tr, .comparison-table tbody tr:nth-child(even) { margin-bottom: 4px; padding: 8px 0; background: var(--jung-surface); }
-    .comparison-table td { padding: 8px 16px; box-shadow: none; }
-    .comparison-table td::before { content: attr(data-label); display: block; margin-bottom: 2px; color: var(--jung-dark); font-size: 0.875rem; font-weight: 600; }
-    nav a:nth-child(n+3) { display: none; }
+    body { padding: 20px 16px 40px; }
+    nav { display: flex; flex-wrap: wrap; gap: 10px 14px; }
+    nav a { margin-right: 0; }
     .intent-grid { grid-template-columns: 1fr; }
     .trait-list { columns: 1; }
     .hero-actions > a, .cta-actions > a { width: 100%; }
     .save-link-form-row { grid-template-columns: 1fr; }
     .copy-action-row button { width: 100%; }
-    .text-link, .secondary-link { display: inline-flex; margin: 14px 0 0; }
+    .text-link { display: inline-block; margin: 14px 0 0; }
     .debrief-cta-grid { grid-template-columns: 1fr; }
     .debrief-price-card { text-align: left; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    * { transition-duration: 0.01ms !important; }
   }
 </style>
 
@@ -334,6 +293,7 @@
   </div>
 
   <header>
+    <p class="eyebrow">Mistype Investigator alternative</p>
     <h1>A Mistype Investigator alternative for checking the pattern behind a mistype</h1>
     <p class="subtitle">Mistype Investigator attracts people who suspect their type result is wrong or incomplete. That is the right instinct: mistypes usually need function evidence, not another personality stereotype.</p>
     <p class="subtitle">TypeJung approaches that question through a free 42-question map of all 8 functions, then shows the dominant-inferior axis and stress edge before any paid report.</p>
@@ -380,6 +340,8 @@
 
 
 
+
+
   <section class="cluster-nav" aria-label="Jungian test topic cluster">
     <h2>Related Jungian assessment guides</h2>
     <div class="cluster-grid">
@@ -423,17 +385,17 @@
   <section>
   <h2>TypeJung versus a mistype-only workflow</h2>
   <p>If your main question is &quot;what type am I really?&quot;, a mistype-focused test can be useful. If your next question is &quot;what does this pattern mean in stress, relationships, and practice?&quot;, TypeJung is designed to carry the result further.</p>
-  <div class="table-scroll" role="region" aria-label="TypeJung versus a mistype-only workflow" tabindex="0"><table class="comparison-table">
+  <table class="comparison-table">
     <thead>
       <tr><th>Need</th><th>Mistype search intent</th><th>TypeJung path</th></tr>
     </thead>
     <tbody>
-      <tr><td data-label="Need">Resolve confusion</td><td data-label="Mistype search intent">Compare possible type outcomes</td><td data-label="TypeJung path">Show function evidence and axis tension</td></tr>
-      <tr><td data-label="Need">Understand stress</td><td data-label="Mistype search intent">Often discussed after the result</td><td data-label="TypeJung path">Built into the map and optional report</td></tr>
-      <tr><td data-label="Need">Keep learning</td><td data-label="Mistype search intent">User studies theory and examples</td><td data-label="TypeJung path">Result links into function, type, and sample-report paths</td></tr>
-      <tr><td data-label="Need">Pay only after value</td><td data-label="Mistype search intent">Depends on the tool path</td><td data-label="TypeJung path">Core TypeJung map is free before checkout</td></tr>
+      <tr><td>Resolve confusion</td><td>Compare possible type outcomes</td><td>Show function evidence and axis tension</td></tr>
+      <tr><td>Understand stress</td><td>Often discussed after the result</td><td>Built into the map and optional report</td></tr>
+      <tr><td>Keep learning</td><td>User studies theory and examples</td><td>Result links into function, type, and sample-report paths</td></tr>
+      <tr><td>Pay only after value</td><td>Depends on the tool path</td><td>Core TypeJung map is free before checkout</td></tr>
     </tbody>
-  </table></div>
+  </table>
 </section>
 
   <section>
@@ -475,8 +437,6 @@
       <p>Yes. The core assessment and map are free; paid reports are optional after you see the result.</p>
     </div>
   </section>
-
-
 
   <section>
     <h2>Related TypeJung Pages</h2>

@@ -22,12 +22,12 @@ export const FAQSection: React.FC = () => {
             <div className="lg:sticky lg:top-32">
               <div className="flex items-center gap-3 mb-6">
                 <span className="h-px w-10 bg-jung-border-light" />
-                <span className="font-mono text-[10px] text-jung-muted">
+                <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted">
                   Inquiries
                 </span>
               </div>
               <h2 className="text-display text-4xl md:text-5xl leading-[1.02] tracking-tight text-jung-dark mb-6">
-                Questions, <span className="italic text-jung-accent-text">answered</span>.
+                Questions, <span className="italic text-jung-accent">answered</span>.
               </h2>
               <p className="text-jung-secondary font-light leading-relaxed">
                 Curious about methodology, accuracy, or what makes this different?
@@ -55,10 +55,10 @@ export const FAQSection: React.FC = () => {
                     <span className="font-mono text-[10px] tabular-nums text-jung-muted pt-1 w-8 shrink-0">
                       {String(i + 1).padStart(2, '0')}
                     </span>
-                    <span className="flex-1 text-display text-xl md:text-2xl text-jung-dark leading-snug group-hover:text-jung-accent-text transition-colors">
+                    <span className="flex-1 text-display text-xl md:text-2xl text-jung-dark leading-snug group-hover:text-jung-accent transition-colors">
                       {f.question}
                     </span>
-                    <span className="shrink-0 pt-1.5 text-jung-muted group-hover:text-jung-accent-text transition-colors">
+                    <span className="shrink-0 pt-1.5 text-jung-muted group-hover:text-jung-accent transition-colors">
                       {open ? <Minus size={18} /> : <Plus size={18} />}
                     </span>
                   </button>

@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import {
-  AlertCircle,
   ArrowRight,
   Check,
   Copy,
@@ -19,12 +18,12 @@ import React, {
   useState,
 } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { HorizonCard, HorizonMap } from '../components/brand/HorizonMap';
-import { ReflectionGlyph, TypeJungLogo } from '../components/brand/TypeJungMark';
+import { PatternLens } from '../components/brand/PatternLens';
 import { ResultNavigation, resultViewForHash, type ResultView } from '../components/results/ResultNavigation';
 import { ChatBot } from '../components/ChatBot';
 import { DiscountCaptureCard } from '../components/discount/DiscountCaptureCard';
 import { FunctionEmblem } from '../components/brand/FunctionEmblem';
+import { FunctionStackArtwork } from '../components/brand/FunctionStackArtwork';
 import { PersonalReportReader } from '../components/results/PersonalReportReader';
 import { ReportSamplePreview } from '../components/results/ReportSamplePreview';
 import { useOfferImpression } from '../hooks/useOfferImpression';
@@ -38,7 +37,6 @@ import {
   FunctionChannel,
 } from '../data/depthAssessment';
 import { discountedPriceLabel } from '../data/discount';
-import { FUNCTION_READINGS, isFunctionCode } from '../data/function-readings';
 import { PRICING, type PaidTierId } from '../data/pricing';
 import { SUPPORT_EMAIL } from '../data/support';
 import {
@@ -214,66 +212,86 @@ const postLifecycleEmail = async (body: Record<string, unknown>) => {
 const EnergyBars: React.FC<{ results: DepthAssessmentResult }> = ({
   results,
 }) => (
-  <div className="rs-tile">
-    <h3 className="rs-tile-title">Your four function channels</h3>
-    <p className="rs-tile-note">
-      Share of mapped energy · {results.reliability.score}% answer consistency
-    </p>
-    <ul className="rs-bars">
+  <div className="card-premium p-6 sm:p-8">
+    <div className="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p className="text-label">Energy distribution</p>
+        <h2 className="mt-2 text-heading text-3xl text-jung-dark">
+          Your four function channels
+        </h2>
+      </div>
+      <div className="rounded-lg bg-jung-accent-light px-3 py-2 text-sm font-semibold text-jung-accent">
+        {results.reliability.score}% consistency
+      </div>
+    </div>
+
+    <div className="space-y-5">
       {results.energy.map((item) => {
         const isDominant = item.channel === results.dominant;
         const isInferior = item.channel === results.inferior;
 
         return (
-          <li key={item.channel} className="rs-bar-row">
-            <span className="rs-bar-label">
-              {item.label}
-              {isDominant && <span className="rs-role-tag is-dominant">Dominant</span>}
-              {isInferior && <span className="rs-role-tag">Inferior</span>}
-            </span>
-            <span className="rs-bar-track" aria-hidden="true">
-              <motion.span
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 0.6, ease: [0.2, 0.7, 0.1, 1] }}
-                className={`rs-bar-fill${isDominant ? ' is-dominant' : ''}${isInferior ? ' is-inferior' : ''}`}
-                style={{ width: `${item.score}%` }}
+          <div key={item.channel}>
+            <div className="mb-2 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-jung-dark">
+                  {item.label}
+                </span>
+                {isDominant && (
+                  <span className="rounded-lg bg-jung-accent px-2 py-1 text-[11px] font-semibold text-white">
+                    Dominant
+                  </span>
+                )}
+                {isInferior && (
+                  <span className="rounded-lg border border-jung-border px-2 py-1 text-[11px] font-semibold text-jung-muted">
+                    Inferior
+                  </span>
+                )}
+              </div>
+              <span className="font-mono text-sm font-semibold text-jung-muted">
+                {item.score}%
+              </span>
+            </div>
+            <div className="h-3 overflow-hidden rounded-full bg-jung-border-light">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${item.score}%` }}
+                transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+                className={`h-full rounded-full ${isInferior ? 'bg-jung-accent-muted' : 'bg-jung-accent'}`}
               />
-            </span>
-            <span className="rs-bar-score">{item.score}%</span>
-          </li>
+            </div>
+          </div>
         );
       })}
-    </ul>
+    </div>
   </div>
 );
 
 const Hierarchy: React.FC<{ results: DepthAssessmentResult }> = ({
   results,
 }) => (
-  <ol className="rs-stack">
-    {results.hierarchy.map((item) => {
-      const code = getFunctionCode(item.channel, item.attitude);
-      return (
-        <li
-          key={item.position}
-          className={`rs-stack-item is-${item.position}`}
-        >
-          <p className="rs-stack-role">{positionLabels[item.position]}</p>
-          <p className="rs-stack-code">
-            <FunctionEmblem code={code} className="rs-stack-glyph" />
-            {code}
+  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    {results.hierarchy.map((item) => (
+      <div
+        key={item.position}
+        className={`rounded-lg border p-5 ${item.position === 'dominant' ? 'border-jung-accent-muted bg-jung-accent-light/70' : 'border-jung-border bg-jung-surface'}`}
+      >
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-xs font-semibold text-jung-muted">
+            {positionLabels[item.position]}
           </p>
-          <h3 className="rs-stack-name">
-            {ATTITUDE_LABELS[item.attitude]} {item.label}
-          </h3>
-          <p className="rs-stack-score">
-            {item.score}% of mapped energy
-          </p>
-        </li>
-      );
-    })}
-  </ol>
+          <FunctionEmblem code={getFunctionCode(item.channel, item.attitude)} className="h-9 w-9 shrink-0 text-jung-accent" />
+        </div>
+        <h3 className="mt-3 text-2xl font-semibold text-jung-dark">
+          {item.label}
+        </h3>
+        <p className="mt-2 text-sm leading-6 text-jung-secondary">
+          {ATTITUDE_LABELS[item.attitude]} channel, {item.score}% of mapped
+          energy.
+        </p>
+      </div>
+    ))}
+  </div>
 );
 
 const SignalGrid: React.FC<{ results: DepthAssessmentResult }> = ({
@@ -308,17 +326,24 @@ const SignalGrid: React.FC<{ results: DepthAssessmentResult }> = ({
   );
 
   return (
-    <dl className="rs-signals">
+    <div className="grid gap-3 sm:grid-cols-4">
       {signals.map(([layer, value]) => {
         const meta = depthLayerMeta[layer as keyof typeof depthLayerMeta];
         return (
-          <div key={layer} className="rs-signal">
-            <dt>{meta.shortLabel}</dt>
-            <dd>{value}</dd>
+          <div
+            key={layer}
+            className="rounded-lg border border-jung-border bg-jung-surface p-4"
+          >
+            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted">
+              {meta.shortLabel}
+            </p>
+            <p className="mt-2 text-lg font-semibold text-jung-dark">
+              {value}
+            </p>
           </div>
         );
       })}
-    </dl>
+    </div>
   );
 };
 
@@ -353,23 +378,22 @@ export const LockedPremiumPreview: React.FC<{
       <section
         id="report-offer"
         ref={offerRef}
-        className="rs-offer on-night scroll-mt-28"
+        className="studio-report-offer mb-8 scroll-mt-28"
       >
-        <div className="rs-offer-grid">
-          <div className="rs-offer-main">
-            <h2 className="rs-offer-title">
+        <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="studio-report-sample">
+            <p className="journey-eyebrow">Your map is a beginning</p>
+            <h2 className="mt-3 font-display text-3xl leading-tight sm:text-4xl">
               {dominantCode && inferiorCode ? (
                 <>See your {dominantCode}–{inferiorCode} tension<br />in everyday life.</>
               ) : (
                 <>Bring the pattern<br />into your everyday life.</>
               )}
             </h2>
-            <p className="rs-offer-lead">
-              Your map points to {inferiorLabel.toLowerCase()} as a growth edge. The optional report follows it into stress, relationships and work, written from your own answers.
-            </p>
+            <p className="mt-4 mb-6 text-sm leading-7 text-jung-secondary">Your map points to {inferiorLabel.toLowerCase()} as a growth edge. Explore what a report can help you notice in stress, relationships, and work.</p>
             {/* Phones reach the purchase card only after the full sample, so
                 offer the same checkout here with the price and refund terms. */}
-            <div className="rs-offer-top lg:hidden">
+            <div className="mb-6 lg:hidden">
               <Button
                 variant="accent"
                 size="lg"
@@ -380,28 +404,30 @@ export const LockedPremiumPreview: React.FC<{
               >
                 {`Add the ${PRICING[intendedTier].name} report · ${offerPrice}`}
               </Button>
-              <p className="rs-offer-top-note">
+              <p className="mt-2 text-center text-xs text-jung-muted">
                 One time · No subscription · 7-day refund ·{' '}
-                <a href="#report-purchase" className="on-night-link">What’s included</a>
+                <a href="#report-purchase" className="font-semibold text-jung-accent underline underline-offset-4">What’s included</a>
               </p>
             </div>
             <ReportSamplePreview onExplore={topic => trackEvent('result_report_sample_explored', { topic, source: 'results_locked_preview', tier: intendedTier })} />
           </div>
-          <div id="report-purchase" className="rs-buy scroll-mt-28">
-            <p className="rs-buy-name">
+          <div id="report-purchase" className="scroll-mt-28 rounded-2xl border border-jung-border bg-white p-6 sm:p-8 lg:sticky lg:top-36">
+            <p className="journey-eyebrow">
               Optional {PRICING[intendedTier].name} report
             </p>
-            <p className="rs-buy-price">
+            <p className="mt-4 font-display text-4xl">
               {offerPrice}
-              <span className="rs-buy-unit">one time · CAD</span>
+              <span className="ml-2 font-sans text-xs tracking-normal text-jung-muted">
+                one time · CAD
+              </span>
             </p>
             {regularPrice !== offerPrice && (
-              <p className="rs-buy-regular">
+              <p className="mt-1 text-xs text-jung-muted">
                 <span className="sr-only">Regular price </span>
                 <s>{regularPrice}</s> regular price · current offer
               </p>
             )}
-            <ul className="list-diamond rs-buy-list">
+            <ul className="my-6 space-y-3">
               {[
                 'Ten personalized, AI-generated sections',
                 'Stress and recovery reflections',
@@ -411,7 +437,13 @@ export const LockedPremiumPreview: React.FC<{
                   ? ['AI Type Guide and practice tools']
                   : []),
               ].map((item) => (
-                <li key={item}>{item}</li>
+                <li
+                  key={item}
+                  className="flex gap-3 text-sm leading-6 text-jung-secondary"
+                >
+                  <Check className="mt-1 h-4 w-4 shrink-0 text-jung-accent" />
+                  {item}
+                </li>
               ))}
             </ul>
             <Button
@@ -433,15 +465,15 @@ export const LockedPremiumPreview: React.FC<{
                 : `Get my report — ${offerPrice}`}
             </Button>
             {checkoutError && (
-              <p className="rs-alert" role="alert">
-                <AlertCircle className="rs-alert-icon" aria-hidden="true" />
-                <span>
-                  {checkoutError}
-                  {' '}
-                  <a href={`mailto:${SUPPORT_EMAIL}`} className="link-ink">
-                    Contact support
-                  </a>
-                </span>
+              <p
+                className="mt-4 rounded-lg border border-error/20 bg-error/5 p-3 text-sm leading-6 text-error"
+                role="alert"
+              >
+                {checkoutError}
+                {' '}
+                <a href={`mailto:${SUPPORT_EMAIL}`} className="underline">
+                  Contact support
+                </a>
               </p>
             )}
             <Button
@@ -451,26 +483,26 @@ export const LockedPremiumPreview: React.FC<{
             >
               Read the full illustrative sample
             </Button>
-            <p className="rs-buy-assure">
+            <p className="mt-3 text-center text-xs leading-6 text-jung-muted">
               Your free map is complete. No subscription.
               <br />
               7-day refund policy.
             </p>
-            <p className="rs-buy-secure">
-              <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+            <p className="mt-2 flex items-center justify-center gap-1.5 text-xs text-jung-muted">
+              <ShieldCheck className="h-3.5 w-3.5 text-jung-accent" aria-hidden="true" />
               Secure payment by Stripe
             </p>
             {notReadyCapture && (
-              <div className="rs-buy-later" data-testid="offer-not-ready">
+              <div className="mt-6 border-t border-jung-border pt-5" data-testid="offer-not-ready">
                 {notReadyCapture}
               </div>
             )}
-            <details className="rs-buy-details">
-              <summary>How this connects to your free map</summary>
-              <p className="rs-buy-details-body">
+            <details className="mt-6 border-t border-jung-border pt-4">
+              <summary className="cursor-pointer text-xs font-semibold text-jung-secondary">How this connects to your free map</summary>
+              <p className="mt-3 text-sm leading-7 text-jung-secondary">
                 {results.narrative.developmentalEdge}
               </p>
-              <p className="rs-buy-details-note">Your paid report develops this pattern across ten sections, using your assessment result.</p>
+              <p className="mt-3 text-xs leading-6 text-jung-muted">Your paid report develops this pattern across ten sections, using your assessment result.</p>
             </details>
           </div>
         </div>
@@ -513,33 +545,33 @@ const ResultReaction: React.FC<{ completedAt: string }> = ({ completedAt }) => {
     ];
 
   return (
-    <section className="rs-react" aria-live="polite">
+    <section className="mb-10 rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm sm:p-6">
       {reaction ? (
-        <div className="rs-react-done">
-          <Check className="rs-react-icon" aria-hidden="true" />
+        <div className="flex items-start gap-3">
+          <Check className="mt-0.5 h-5 w-5 flex-none text-jung-accent" />
           <div>
-            <p className="rs-react-q">
-              Thanks, that helps tune the map.
+            <p className="text-sm font-semibold text-jung-dark">
+              Thanks — that helps tune the map.
             </p>
-            <p className="rs-react-body">
+            <p className="mt-1 text-sm leading-6 text-jung-secondary">
               {reaction === 'not_yet'
-                ? 'If the map missed you, the dominant–inferior axis and the consistency signal in the function map are the best places to inspect why.'
-                : 'Glad it named something real. The function map shows the evidence layers behind this pattern.'}
+                ? 'If the map missed you, the dominant–inferior axis and reliability signal below are the best places to inspect why.'
+                : 'Glad it named something real. Read the evidence layers below to see why the pattern resolved this way.'}
             </p>
           </div>
         </div>
       ) : (
-        <div className="rs-react-ask">
-          <p className="rs-react-q">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm font-semibold text-jung-dark">
             Did this map name something real?
           </p>
-          <div className="rs-react-options">
+          <div className="flex flex-wrap gap-2">
             {options.map((option) => (
               <button
                 key={option.value}
                 type="button"
                 onClick={() => submit(option.value)}
-                className="chip"
+                className="rounded-full border border-jung-border bg-jung-base px-4 py-1.5 text-sm font-medium text-jung-dark transition-colors hover:border-jung-accent hover:text-jung-accent"
               >
                 {option.label}
               </button>
@@ -1294,11 +1326,13 @@ export const Results: React.FC = () => {
 
   if (state.status === 'loading') {
     return (
-      <div className="rs-state">
-        <div className="wrap">
-          <div className="rs-state-body" role="status">
-            <span className="rs-state-line is-loading" aria-hidden="true" />
-            <p className="rs-state-text">Loading your map…</p>
+      <div className="min-h-[60vh] bg-jung-base px-4 py-20">
+        <div className="editorial-container">
+          <div className="card-premium mx-auto max-w-xl p-8 text-center">
+            <div className="mx-auto h-12 w-12 animate-pulse rounded-lg bg-jung-accent-light" />
+            <p className="mt-5 text-sm font-semibold text-jung-muted">
+              Loading results
+            </p>
           </div>
         </div>
       </div>
@@ -1307,21 +1341,18 @@ export const Results: React.FC = () => {
 
   if (state.status === 'no-results') {
     return (
-      <div className="rs-state">
-        <div className="wrap">
-          <div className="rs-state-body">
-            <ReflectionGlyph className="rs-state-mark" />
-            <h1 className="rs-state-title">
+      <div className="min-h-[60vh] bg-jung-base px-4 py-20">
+        <div className="editorial-container">
+          <div className="card-premium mx-auto max-w-xl p-8 text-center">
+            <h1 className="text-heading text-3xl text-jung-dark">
               No function-stack map yet
             </h1>
-            <p className="rs-state-text">
+            <p className="mt-3 text-sm leading-6 text-jung-secondary">
               Complete the assessment first, then your result will appear here.
-              It takes 42 questions and the core map is free.
             </p>
             <Button
               className="mt-6"
               variant="accent"
-              size="lg"
               onClick={() => navigate('/assessment')}
               rightIcon={<ArrowRight className="h-5 w-5" />}
             >
@@ -1335,21 +1366,19 @@ export const Results: React.FC = () => {
 
   if (state.status === 'legacy') {
     return (
-      <div className="rs-state">
-        <div className="wrap">
-          <div className="rs-state-body">
-            <ReflectionGlyph className="rs-state-mark" />
-            <h1 className="rs-state-title">
+      <div className="min-h-[60vh] bg-jung-base px-4 py-20">
+        <div className="editorial-container">
+          <div className="card-premium mx-auto max-w-xl p-8 text-center">
+            <h1 className="text-heading text-3xl text-jung-dark">
               Retake for the new function-stack map
             </h1>
-            <p className="rs-state-text">
+            <p className="mt-3 text-sm leading-6 text-jung-secondary">
               Your saved result was created with the older 8-function scorer.
               The redesigned flow uses the new 42-question depth model.
             </p>
             <Button
               className="mt-6"
               variant="accent"
-              size="lg"
               onClick={() => navigate('/assessment')}
               rightIcon={<RefreshCcw className="h-5 w-5" />}
             >
@@ -1416,60 +1445,45 @@ export const Results: React.FC = () => {
       .filter((section) => Boolean(section.body && section.body.trim()))
     : [];
   const hasMasteryAccess = tier === 'mastery';
-  const horizonItems = results.hierarchy.map((item) => ({
-    code: getFunctionCode(item.channel, item.attitude),
-    position: item.position,
-    score: item.score,
-  }));
-  const stackRoleByCode = Object.fromEntries(
-    horizonItems.map((item) => [item.code, positionLabels[item.position]]),
-  ) as Record<string, string>;
-  const maxFunctionScore = Math.max(1, ...allFunctionScores.map((score) => score.score));
 
   return (
-    <div className="rs">
-      <header className="rs-head">
-        <div className="wrap">
-          <p className="rs-date">Your TypeJung map · {formatDate(results.completedAt)}</p>
-          <h1 className="rs-title">
-            {dominantLabel} leads your map.
-          </h1>
-          <p className="rs-lead">
-            {inferiorLabel} sits below the line as your growth edge. Read this as a
-            starting point for reflection, then compare it with what you notice in
-            everyday life.
-          </p>
-        </div>
-      </header>
-      <div className="rs-tabs">
-        <div className="wrap">
-          <ResultNavigation value={resultView} onChange={selectResultView} isPremium={isPremium} />
-        </div>
-      </div>
-      <div className="wrap">
-        <div role="tabpanel" id="result-panel-overview" aria-labelledby="result-tab-overview" tabIndex={0} hidden={resultView !== 'overview'} className="rs-panel">
-          <div className="rs-overview">
-            <HorizonMap items={horizonItems} label="Your function stack" className="rs-overview-map" />
-            <div className="rs-overview-read">
-              <h2 className="rs-h2">What leads</h2>
-              <p className="rs-body">
+    <div className="studio-results min-h-screen bg-jung-base pb-16">
+      <div className="editorial-container">
+        <header className="studio-results-title">
+          <div>
+            <p className="journey-eyebrow">Your TypeJung map · {formatDate(results.completedAt)}</p>
+            <h1>A clearer view of your pattern.</h1>
+          </div>
+          <p>Your result is a starting point for reflection. Compare what you read with what you notice in everyday life.</p>
+        </header>
+        <ResultNavigation value={resultView} onChange={selectResultView} isPremium={isPremium} />
+        <div role="tabpanel" id="result-panel-overview" aria-labelledby="result-tab-overview" tabIndex={0} hidden={resultView !== 'overview'} className="studio-result-panel">
+          <div className="studio-result-overview">
+            <div className="studio-result-summary">
+              <p className="journey-eyebrow mb-3">Your leading pattern</p>
+              <h2>{dominantLabel}.</h2>
+              <p className="mt-5 text-sm leading-7 text-jung-secondary">
                 {results.narrative.energyMap}
               </p>
-              <h2 className="rs-h2 mt-10">Your growth edge</h2>
-              <p className="rs-body">
+            </div>
+            <PatternLens items={results.hierarchy.map(item => ({ code: getFunctionCode(item.channel, item.attitude), role: positionLabels[item.position] }))} />
+            <div className="studio-result-reflection">
+              <p className="journey-eyebrow">A place to start</p>
+              <h3 className="mt-2">Notice your growth edge.</h3>
+              <p>
                 {results.narrative.developmentalEdge}
               </p>
             </div>
           </div>
-          <div className="rs-next">
-            <button type="button" className="rs-next-link" onClick={() => selectResultView('map', true)}>
+          <div className="studio-result-next">
+            <button type="button" onClick={() => selectResultView('map', true)}>
               <span>
                 <strong>Explore your function map</strong>
                 <span>All eight functions, your stack, and the signals behind it.</span>
               </span>
-              <ArrowRight aria-hidden="true" />
+              <ArrowRight />
             </button>
-            <button type="button" className="rs-next-link is-night" onClick={() => selectResultView('report', true)}>
+            <button type="button" onClick={() => selectResultView('report', true)}>
               <span>
                 <strong>
                   {isPremium
@@ -1482,122 +1496,161 @@ export const Results: React.FC = () => {
                   {isPremium ? 'Your full interpretation is here.' : 'Preview the optional Insight report on stress, relationships, and work · ' + paidTierPrice('insight') + ' once.'}
                 </span>
               </span>
-              <ArrowRight aria-hidden="true" />
+              <ArrowRight />
             </button>
           </div>
-          <div className="rs-first">
-            <h2 className="rs-h2">What to notice this week</h2>
-            {isLoadingFree ? (
-              <p className="rs-first-status" role="status">
-                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                Preparing your introductory interpretation…
-              </p>
-            ) : freeAnalysis ? (
-              <p className="rs-body">
-                {freeAnalysis}
-              </p>
-            ) : freeError ? (
-              <div>
-                <p className="rs-body">
-                  {results.narrative.practice}
+          <div className="mt-8">
+            {' '}
+            <div className="rounded-lg border border-jung-border bg-jung-surface p-6">
+              <p className="text-label">First read</p>
+              <h2 className="mt-3 text-2xl font-semibold text-jung-dark">
+                What to notice this week
+              </h2>
+              {isLoadingFree ? (
+                <div className="mt-5 flex items-center gap-3 text-sm text-jung-secondary">
+                  <Loader2 className="h-4 w-4 animate-spin text-jung-accent" />
+                  Preparing your introductory interpretation.
+                </div>
+              ) : freeAnalysis ? (
+                <p className="mt-4 text-sm leading-7 text-jung-secondary">
+                  {freeAnalysis}
                 </p>
-                <p className="rs-first-note">
-                  <span>This is the built-in practice for your growth edge. Your written first read did not load this time.</span>
-                  {legacyInput && (
-                    <button
-                      type="button"
-                      onClick={() => fetchFreeAnalysis(legacyInput)}
-                      className="rs-retry"
-                    >
-                      <RefreshCcw className="h-4 w-4" aria-hidden="true" />
-                      Try again
-                    </button>
-                  )}
+              ) : freeError ? (
+                <div className="mt-4">
+                  <p className="text-sm leading-7 text-jung-secondary">
+                    {results.narrative.practice}
+                  </p>
+                  <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs leading-6 text-jung-muted">
+                    <span>This is the built-in practice for your growth edge. Your written first read did not load this time.</span>
+                    {legacyInput && (
+                      <button
+                        type="button"
+                        onClick={() => fetchFreeAnalysis(legacyInput)}
+                        className="inline-flex min-h-11 items-center gap-1.5 font-semibold text-jung-accent underline underline-offset-4"
+                      >
+                        <RefreshCcw className="h-3.5 w-3.5" aria-hidden="true" />
+                        Try again
+                      </button>
+                    )}
+                  </p>
+                </div>
+              ) : (
+                <p className="mt-4 text-sm leading-7 text-jung-secondary">
+                  A short synthesis will appear here when it is ready.
                 </p>
-              </div>
-            ) : (
-              <p className="rs-body">
-                A short synthesis will appear here when it is ready.
-              </p>
-            )}
-            <ResultReaction completedAt={results.completedAt} />
+              )}
+            </div>
+            <div className="mt-5">
+              <ResultReaction completedAt={results.completedAt} />
+            </div>
           </div>
+
         </div>
-        <div role="tabpanel" id="result-panel-map" aria-labelledby="result-tab-map" tabIndex={0} hidden={resultView !== 'map'} className="rs-panel">
-          <div id="free-map" className="rs-section-head scroll-mt-28">
-            <h2 className="rs-h2-lg">Your eight-function view.</h2>
-            <p className="rs-body">These values are derived from four function channels and your attention direction. They help you compare the pattern; they are not eight independent psychological measurements.</p>
+        <div role="tabpanel" id="result-panel-map" aria-labelledby="result-tab-map" tabIndex={0} hidden={resultView !== 'map'} className="studio-result-panel">
+          <div id="free-map">
+            <p className="journey-eyebrow">The full picture</p>
+            <h2 className="mt-3 font-display text-3xl sm:text-4xl">Your eight-function view.</h2>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-jung-secondary">These values are derived from four function channels and your attention direction. They help you compare the pattern; they are not eight independent psychological measurements.</p>
           </div>
-          <ul className="rs-eight">
-            {allFunctionScores.map(score => {
-              const role = stackRoleByCode[score.function];
-              const name = isFunctionCode(score.function) ? FUNCTION_READINGS[score.function].name : score.function;
-              return <li key={score.function} className={`rs-eight-row${role === 'Dominant' ? ' is-dominant' : ''}${role ? ' is-stack' : ''}`}>
-                <FunctionEmblem code={score.function} className="rs-eight-glyph" />
-                <span className="rs-eight-name">
-                  <strong>{score.function}</strong>
-                  <span>{name}{role ? <span className="rs-eight-role">{role}</span> : null}</span>
-                </span>
-                <span className="rs-eight-track" aria-hidden="true">
-                  <span style={{ width: `${(score.score / maxFunctionScore) * 100}%` }} />
-                </span>
-                <span className="rs-eight-score">{score.score}%</span>
-              </li>;
-            })}
-          </ul>
-          <p className="rs-eight-key">Red marks your dominant, ink the rest of your stack, grey the functions outside it. Bars are ordered by score, so an outside function can rank above one in your stack.</p>
-          <section className="rs-block" aria-labelledby="rs-stack-heading">
-            <h2 id="rs-stack-heading" className="rs-h2">How the leading functions fit together</h2>
-            <Hierarchy results={results} />
-          </section>
-          <details className="rs-how">
-            <summary>How this map was formed · scoring and consistency</summary>
-            <div className="rs-how-body">
-              <EnergyBars results={results} />
-              <div className="rs-tile">
-                <h3 className="rs-tile-title">
-                  <ShieldCheck className="h-5 w-5" aria-hidden="true" />
-                  Answer consistency: {results.reliability.label}
-                </h3>
-                <span className="rs-bar-track rs-bar-track-solo" aria-hidden="true">
-                  <span className="rs-bar-fill" style={{ width: `${results.reliability.score}%` }} />
-                </span>
-                <div className="rs-tile-notes">
-                  {results.reliability.notes.map((note) => (
-                    <p key={note}>{note}</p>
-                  ))}
+          <div className="studio-eight-map">
+            {allFunctionScores.map(score => <div key={score.function}>
+              <div className="studio-eight-symbol">
+                <FunctionEmblem code={score.function} />
+              </div>
+              <div>
+                <div className="studio-eight-label">
+                  <span>
+                    <strong>
+                      {score.function}
+                    </strong>
+                    {({ Ti: 'Introverted Thinking', Te: 'Extraverted Thinking', Ni: 'Introverted Intuition', Ne: 'Extraverted Intuition', Si: 'Introverted Sensation', Se: 'Extraverted Sensation', Fi: 'Introverted Feeling', Fe: 'Extraverted Feeling' } as Record<string, string>)[score.function]}
+                  </span>
+                  <strong>{score.score}%</strong>
+                </div>
+                <div className="studio-eight-track">
+                  <span style={{ width: `${score.score}%` }} />
                 </div>
               </div>
-              <div className="rs-tile">
-                <h3 className="rs-tile-title">
-                  {(results.attitude.balanced ??
-                    Math.abs(
-                      results.attitude.introverted - results.attitude.extraverted,
-                    ) <= 6)
-                    ? 'Balanced direction'
-                    : `${ATTITUDE_LABELS[results.attitude.dominant]} direction`}
-                </h3>
-                <dl className="rs-attitude">
-                  <div>
-                    <dt>Introverted</dt>
-                    <dd>{results.attitude.introverted}%</dd>
+            </div>)}
+          </div>
+          <section className="mt-9">
+            <p className="journey-eyebrow mb-4">How the leading functions fit together</p>
+            <Hierarchy results={results} />
+          </section>
+          <details className="mt-8 rounded-xl border border-jung-border bg-white p-5 sm:p-6">
+            <summary className="cursor-pointer text-sm font-semibold">How this map was formed · scoring and consistency</summary>
+            <div className="mt-6">
+              <div className="grid gap-6 lg:grid-cols-[1fr_0.72fr]">
+                <EnergyBars results={results} />
+
+                <div className="grid gap-6">
+                  <div className="card-premium p-6 sm:p-8">
+                    <div className="mb-5 flex items-center gap-3">
+                      <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
+                        <ShieldCheck className="h-5 w-5" />
+                      </span>
+                      <div>
+                        <p className="text-label">Answer consistency signal</p>
+                        <h2 className="text-2xl font-semibold text-jung-dark">
+                          {results.reliability.label}
+                        </h2>
+                      </div>
+                    </div>
+                    <div className="h-3 overflow-hidden rounded-full bg-jung-border-light">
+                      <div
+                        className="h-full rounded-full bg-jung-accent"
+                        style={{ width: `${results.reliability.score}%` }}
+                      />
+                    </div>
+                    <div className="mt-5 space-y-3">
+                      {results.reliability.notes.map((note) => (
+                        <p
+                          key={note}
+                          className="text-sm leading-6 text-jung-secondary"
+                        >
+                          {note}
+                        </p>
+                      ))}
+                    </div>
                   </div>
-                  <div>
-                    <dt>Extraverted</dt>
-                    <dd>{results.attitude.extraverted}%</dd>
+
+                  <div className="card-premium p-6 sm:p-8">
+                    <p className="text-label">Attitude</p>
+                    <h2 className="mt-2 text-2xl font-semibold text-jung-dark">
+                      {(results.attitude.balanced ??
+                        Math.abs(
+                          results.attitude.introverted - results.attitude.extraverted,
+                        ) <= 6)
+                        ? 'Balanced direction'
+                        : `${ATTITUDE_LABELS[results.attitude.dominant]} direction`}
+                    </h2>
+                    <div className="mt-5 grid grid-cols-2 gap-3">
+                      <div className="rounded-lg border border-jung-border bg-jung-surface p-4">
+                        <p className="text-sm text-jung-muted">Introverted</p>
+                        <p className="mt-2 text-3xl font-semibold text-jung-dark">
+                          {results.attitude.introverted}%
+                        </p>
+                      </div>
+                      <div className="rounded-lg border border-jung-border bg-jung-surface p-4">
+                        <p className="text-sm text-jung-muted">Extraverted</p>
+                        <p className="mt-2 text-3xl font-semibold text-jung-dark">
+                          {results.attitude.extraverted}%
+                        </p>
+                      </div>
+                    </div>
+                    <p className="mt-4 text-sm leading-6 text-jung-secondary">
+                      {results.attitude.summary}
+                    </p>
                   </div>
-                </dl>
-                <p className="rs-tile-text">
-                  {results.attitude.summary}
-                </p>
+                </div>
               </div>
-              <div className="rs-tile">
-                <h3 className="rs-tile-title">What each layer pointed to</h3>
+
+              <section className="mt-6">
                 <SignalGrid results={results} />
-              </div>
+              </section>
             </div>
           </details>
-          <section className="faq-tiles rs-faq">
+          <section className="mt-8 grid gap-3">
             {[
               [
                 'How to read this result',
@@ -1612,48 +1665,62 @@ export const Results: React.FC = () => {
                 'Use the developmental edge as a practice target, then reassess later. The goal is not to change labels but to see whether energy distribution becomes more flexible.',
               ],
             ].map(([title, body]) => (
-              <details key={title} className="faq-tile">
-                <summary>{title}</summary>
-                <p>{body}</p>
+              <details
+                key={title}
+                className="rounded-lg border border-jung-border bg-jung-surface p-5"
+              >
+                <summary className="flex min-h-11 cursor-pointer list-none items-center text-base font-semibold text-jung-dark">
+                  {title}
+                </summary>
+                <p className="mt-3 text-sm leading-6 text-jung-secondary">
+                  {body}
+                </p>
               </details>
             ))}
           </section>
 
         </div>
-        <div role="tabpanel" id="result-panel-report" aria-labelledby="result-tab-report" tabIndex={0} hidden={resultView !== 'report'} className="rs-panel">
+        <div role="tabpanel" id="result-panel-report" aria-labelledby="result-tab-report" tabIndex={0} hidden={resultView !== 'report'} className="studio-result-panel">
           {isPremium && (
-            <section id="premium-report" className="rs-report scroll-mt-28">
-              <div className="rs-report-head">
-                <h2 className="rs-h2-lg">
-                  Your full {tier || 'Premium'} interpretation
-                </h2>
-                <span className="rs-saved">
-                  <Check className="h-4 w-4" aria-hidden="true" />
+            <section
+              id="premium-report"
+              className="mt-8 rounded-lg border border-jung-accent-muted bg-jung-surface p-5 shadow-sm sm:p-6"
+            >
+              <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="text-label">Unlocked report</p>
+                  <h2 className="mt-2 text-heading text-3xl text-jung-dark">
+                    Your full {tier || 'Premium'} interpretation
+                  </h2>
+                </div>
+                <span className="w-fit rounded-lg bg-jung-accent-light px-3 py-2 text-xs font-semibold text-jung-accent">
                   Purchase saved
                 </span>
               </div>
 
               {isLoadingPremium && (
-                <p className="rs-report-status" role="status">
-                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                  Generating the full premium report…
-                </p>
+                <div className="flex items-center gap-3 rounded-lg border border-jung-border bg-jung-base p-4 text-sm text-jung-secondary">
+                  <Loader2 className="h-4 w-4 animate-spin text-jung-accent" />
+                  Generating the full premium report.
+                </div>
               )}
 
               {!isLoadingPremium && premiumError && (
-                <div role="alert" className="rs-report-error">
-                  <h3>
-                    <AlertCircle className="h-5 w-5" aria-hidden="true" />
+                <div
+                  role="alert"
+                  className="rounded-lg border border-jung-border bg-jung-base p-5 text-sm leading-6 text-jung-secondary"
+                >
+                  <h3 className="text-base font-semibold text-jung-dark">
                     Your report could not be completed yet
                   </h3>
-                  <p>
+                  <p className="mt-2">
                     {premiumError}
                   </p>
-                  <p>
+                  <p className="mt-2">
                     You do not need to buy again or retake the assessment. Your
                     free map and Type Depth Guide are still available.
                   </p>
-                  <div className="rs-report-error-actions">
+                  <div className="mt-4 flex flex-wrap items-center gap-3">
                     <Button
                       variant="accent"
                       disabled={!premiumAnalysisInput}
@@ -1666,7 +1733,7 @@ export const Results: React.FC = () => {
                       Try my report again
                     </Button>
                     <a
-                      className="text-link"
+                      className="inline-flex min-h-11 items-center px-2 font-semibold text-jung-accent hover:underline"
                       href={`mailto:${SUPPORT_EMAIL}?subject=Help%20with%20my%20paid%20TypeJung%20report`}
                     >
                       Get help or request a refund
@@ -1684,7 +1751,7 @@ export const Results: React.FC = () => {
               {!isLoadingPremium &&
                 !premiumError &&
                 premiumReportSections.length === 0 && (
-                  <p className="rs-report-status">
+                  <p className="rounded-lg border border-jung-border bg-jung-base p-4 text-sm leading-6 text-jung-secondary">
                     Your paid access is active. The full report will appear here
                     when the analysis is available.
                   </p>
@@ -1694,9 +1761,9 @@ export const Results: React.FC = () => {
 
           {!premiumLoading && !isPremium && (
             <>
-              <p className="rs-offer-intro">Your free map is complete. Everything below is optional depth.</p>
+              <p className="journey-eyebrow mb-5">Your free map is complete · Optional depth</p>
               {intentFraming && (
-                <p className="rs-intent">
+                <p className="mb-5 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 px-4 py-3 text-sm leading-6 text-jung-dark">
                   {intentFraming.line}
                 </p>
               )}
@@ -1729,67 +1796,81 @@ export const Results: React.FC = () => {
             </>
           )}
 
-          {premiumLoading && <p role="status" className="rs-report-status">Checking your report access…</p>}
+          {premiumLoading && <p role="status" className="py-8 text-sm text-jung-secondary">Checking your report access…</p>}
         </div>
-        <div role="tabpanel" id="result-panel-save" aria-labelledby="result-tab-save" tabIndex={0} hidden={resultView !== 'save'} className="rs-panel">
-          <div id="save-share" className="rs-section-head scroll-mt-28">
-            <h2 className="rs-h2-lg">Save it. Share it. Come back to it.</h2>
+        <div role="tabpanel" id="result-panel-save" aria-labelledby="result-tab-save" tabIndex={0} hidden={resultView !== 'save'} className="studio-result-panel">
+          <div id="save-share" className="scroll-mt-28">
+            <p className="journey-eyebrow mb-3">Keep the conversation going</p>
+            <h2 className="mb-6 font-display text-3xl">Save it. Share it. Come back to it.</h2>
           </div>
           {inboundSharedResultSlug && (
-            <section className="rs-reply">
-              <div>
-                <h3 className="rs-tile-title">
-                  Send your map back while the comparison is fresh.
-                </h3>
-                <p className="rs-tile-text">
-                  You arrived from someone else's TypeJung result. Share your
-                  own map back so both dominant-inferior axes can sit in the
-                  same conversation. This creates your compare page and copies
-                  a reply that includes both maps.
-                </p>
-              </div>
-              <div className="rs-reply-actions">
-                <Button
-                  variant="accent"
-                  className="w-full"
-                  onClick={copyReturnCompareReply}
-                  disabled={isPreparingReferral}
-                  leftIcon={
-                    isPreparingReferral ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : returnCopied ? (
-                      <Check className="h-4 w-4" />
-                    ) : (
-                      <Copy className="h-4 w-4" />
-                    )
-                  }
-                >
-                  {isPreparingReferral
-                    ? 'Preparing reply'
-                    : returnCopied
-                      ? 'Reply copied'
-                      : 'Copy reply'}
-                </Button>
-                {inboundOriginalShareUrl && (
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={openInboundSharedResult}
-                    leftIcon={<Link2 className="h-4 w-4" />}
-                  >
-                    Open their map
-                  </Button>
-                )}
+            <section className="mb-8 overflow-hidden rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 shadow-sm">
+              <div className="grid gap-0 lg:grid-cols-[1fr_26rem]">
+                <div className="p-5 sm:p-6">
+                  <p className="text-label">Reply to the shared map</p>
+                  <h2 className="mt-2 text-2xl font-semibold text-jung-dark">
+                    Send your map back while the comparison is fresh.
+                  </h2>
+                  <p className="mt-3 max-w-3xl text-sm leading-6 text-jung-secondary">
+                    You arrived from someone else's TypeJung result. Share your
+                    own map back so both dominant-inferior axes can sit in the
+                    same conversation.
+                  </p>
+                </div>
+                <div className="border-t border-jung-accent-muted bg-jung-surface p-5 sm:p-6 lg:border-l lg:border-t-0">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-jung-dark">
+                    <Share2 className="h-4 w-4 text-jung-accent" />
+                    Return-share prompt
+                  </div>
+                  <p className="mt-3 text-sm leading-6 text-jung-secondary">
+                    This creates your compare page and copies a reply that
+                    includes both maps.
+                  </p>
+                  <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                    <Button
+                      variant="accent"
+                      className="w-full"
+                      onClick={copyReturnCompareReply}
+                      disabled={isPreparingReferral}
+                      leftIcon={
+                        isPreparingReferral ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : returnCopied ? (
+                          <Check className="h-4 w-4" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )
+                      }
+                    >
+                      {isPreparingReferral
+                        ? 'Preparing reply'
+                        : returnCopied
+                          ? 'Reply copied'
+                          : 'Copy reply'}
+                    </Button>
+                    {inboundOriginalShareUrl && (
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={openInboundSharedResult}
+                        leftIcon={<Link2 className="h-4 w-4" />}
+                      >
+                        Open their map
+                      </Button>
+                    )}
+                  </div>
+                </div>
               </div>
             </section>
           )}
 
-          <section className="rs-keep">
-            <div className="rs-tile">
-              <h3 className="rs-tile-title">
+          <section className="mt-8 grid gap-5 lg:grid-cols-2 lg:items-start">
+            <div className="rounded-xl border border-jung-border bg-jung-surface p-6">
+              <p className="journey-eyebrow">Keep your map</p>
+              <h2 className="mt-3 font-display text-2xl">
                 Come back when you need it.
-              </h3>
-              <p className="rs-tile-text">
+              </h2>
+              <p className="mt-4 text-sm leading-7 text-jung-secondary">
                 {isAuthenticated
                   ? saveState === 'saved'
                     ? 'Your result is saved to your account history.'
@@ -1807,7 +1888,7 @@ export const Results: React.FC = () => {
               </Button>
             </div>
             {!isPremium && (
-              <div className="rs-tile">
+              <div className="rounded-xl border border-jung-border bg-jung-surface p-6">
                 <DiscountCaptureCard
                   source="results_save_return_link"
                   dominantLabel={dominantLabel}
@@ -1825,50 +1906,55 @@ export const Results: React.FC = () => {
               </div>
             )}
             {isPremium && (
-              <div className="rs-tile">
-                <h3 className="rs-tile-title">
+              <div className="rounded-xl border border-jung-border bg-jung-surface p-6">
+                <p className="journey-eyebrow">Your purchase</p>
+                <h2 className="mt-3 font-display text-2xl">
                   {PRICING[tier === 'mastery' ? 'mastery' : 'insight'].name}{' '}
                   access
-                </h3>
-                <p className="rs-tile-text">
+                </h2>
+                <p className="mt-4 text-sm leading-7 text-jung-secondary">
                   Use your purchase email when signing in to restore paid access.
                   Keep your Stripe receipt in case you need help.
                 </p>
                 <a
                   href={`mailto:${SUPPORT_EMAIL}`}
-                  className="text-link mt-3"
+                  className="mt-3 inline-flex min-h-11 items-center text-sm font-semibold text-jung-accent underline underline-offset-4"
                 >
                   Contact support
                 </a>
               </div>
             )}
           </section>
-          <section className="rs-share">
-            <div className="rs-share-copy">
-              <h3 className="rs-h2">Different patterns. More to understand.</h3>
-              <p className="rs-body">Share your map with someone you know. Compare how you approach decisions, attention, and stress.</p>
+          <section className="my-10 grid items-center gap-7 rounded-2xl border border-jung-border bg-jung-surface p-5 sm:p-8 lg:grid-cols-[1fr_1fr]">
+            <div>
+              <p className="journey-eyebrow">A conversation worth having</p>
+              <h2 className="mt-3 font-display text-3xl">Different patterns.<br />More to understand.</h2>
+              <p className="mt-4 max-w-sm text-sm leading-7 text-jung-secondary">Share your map with someone you know. Compare how you approach decisions, attention, and stress.</p>
               <Button variant="accent" className="mt-5" onClick={() => shareAssessmentInvite('results_compare_banner')} disabled={isPreparingReferral} leftIcon={<Share2 className="h-4 w-4" />}>
                 {isPreparingReferral ? 'Preparing link…' : inviteCopied ? 'Invite copied' : 'Share my map'}
               </Button>
-              <p className="rs-share-note">Creates a public result link. Share only if you are comfortable making your map public.</p>
+              <p className="mt-3 text-xs leading-6 text-jung-muted">Creates a public result link. Share only if you are comfortable making your map public.</p>
             </div>
-            <div className="rs-share-card">
-              <div className="rs-share-card-top">
-                <TypeJungLogo tone="dark" className="rs-share-logo" />
+            <div className="overflow-hidden rounded-xl border border-jung-border bg-jung-base p-4 sm:p-5">
+              <div className="mb-4 flex justify-between gap-3 text-xs text-jung-accent">
+                <span className="font-semibold">TypeJung</span>
                 <span>My function-stack map</span>
               </div>
-              <HorizonCard items={horizonItems} />
-              <p className="rs-share-card-name">
+              <FunctionStackArtwork items={results.hierarchy.map(item => ({ code: getFunctionCode(item.channel, item.attitude), role: positionLabels[item.position] }))} compact />
+              <p className="mt-4 font-display text-xl">
                 {dominantLabel}
               </p>
-              <p className="rs-share-card-note">A pattern to explore. A conversation to begin.</p>
+              <p className="mt-2 text-xs text-jung-muted">A pattern to explore. A conversation to begin.</p>
             </div>
           </section>
 
-          <div className="rs-utility">
+          <div className="mb-6 flex flex-wrap gap-3">
             <Button variant="outline" onClick={downloadResults} leftIcon={<Download className="h-4 w-4" />}>Export data (JSON)</Button>
             <Button variant="outline" onClick={() => navigate('/assessment')} leftIcon={<RefreshCcw className="h-4 w-4" />}>Retake assessment</Button>
           </div>
+
+
+
         </div>
       </div>
       {isAuthenticated && hasMasteryAccess && chatProfile && <ChatBot userProfile={chatProfile} />}

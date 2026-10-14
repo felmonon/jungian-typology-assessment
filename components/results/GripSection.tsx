@@ -14,7 +14,7 @@ export const GripSection: React.FC<GripSectionProps> = ({ grip }) => (
             </div>
             <div>
                 <h2 className="text-display text-3xl text-jung-dark dark:text-white">The Grip</h2>
-                <p className="text-[10px] font-bold text-jung-muted">Inferior Eruption Analysis</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-jung-muted">Inferior Eruption Analysis</p>
             </div>
         </div>
 
@@ -40,7 +40,7 @@ export const GripSection: React.FC<GripSectionProps> = ({ grip }) => (
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-                { title: 'Normal State', content: grip.normalState, icon: Zap, color: 'text-jung-accent-text' },
+                { title: 'Normal State', content: grip.normalState, icon: Zap, color: 'text-jung-accent' },
                 { title: 'Common Triggers', content: grip.triggers, icon: AlertTriangle, color: 'text-error' },
                 { title: 'Path to Recovery', content: grip.recovery, icon: RefreshCw, color: 'text-jung-secondary' },
             ].map((item, i) => (
@@ -53,7 +53,7 @@ export const GripSection: React.FC<GripSectionProps> = ({ grip }) => (
                     className="card-premium p-6 bg-jung-base dark:bg-dark-surface-elevated border-transparent"
                 >
                     <item.icon className={`w-5 h-5 ${item.color} mb-4`} />
-                    <h4 className="text-[10px] font-bold text-jung-muted mb-3">{item.title}</h4>
+                    <h4 className="text-[10px] font-bold uppercase tracking-widest text-jung-muted mb-3">{item.title}</h4>
                     <p className="text-xs text-jung-secondary dark:text-jung-muted leading-relaxed line-clamp-4">
                         {item.content}
                     </p>

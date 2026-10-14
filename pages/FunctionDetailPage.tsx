@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Zap, AlertTriangle, Users, ChevronRight, Sparkles, Compass } from 'lucide-react';
+import { ArrowLeft, Brain, Zap, AlertTriangle, Users, ChevronRight, Sparkles } from 'lucide-react';
 import { functionSEO, functionData, validFunctions } from '../data/seo-config';
 import { Button } from '../components/ui/Button';
 
@@ -100,7 +100,7 @@ export const FunctionDetailPage: React.FC = () => {
             </span>
             <div className="h-16 w-px bg-white/30" />
             <div>
-              <span className="text-sm opacity-80">{data.attitude} {data.category}</span>
+              <span className="text-sm uppercase tracking-wider opacity-80">{data.attitude} {data.category}</span>
               <h1 className="text-2xl md:text-4xl font-serif font-bold">
                 {data.fullName}
               </h1>
@@ -130,27 +130,27 @@ export const FunctionDetailPage: React.FC = () => {
         {/* Quick Facts */}
         <section className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12">
           <div className="bg-white rounded-xl p-4 shadow-sm border border-jung-border">
-            <span className="text-xs text-jung-muted">Attitude</span>
+            <span className="text-xs text-jung-muted uppercase tracking-wider">Attitude</span>
             <p className="font-semibold text-jung-dark">{data.attitude}</p>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm border border-jung-border">
-            <span className="text-xs text-jung-muted">Category</span>
+            <span className="text-xs text-jung-muted uppercase tracking-wider">Category</span>
             <p className="font-semibold text-jung-dark">{data.category}</p>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm border border-jung-border">
-            <span className="text-xs text-jung-muted">Attitude counterpart</span>
-            <Link to={`/functions/${attitudeCounterpart}`} className="font-semibold text-jung-accent-text hover:underline">
+            <span className="text-xs text-jung-muted uppercase tracking-wider">Attitude counterpart</span>
+            <Link to={`/functions/${attitudeCounterpart}`} className="font-semibold text-jung-accent hover:underline">
               {data.oppositeFunction}
             </Link>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm border border-jung-border">
-            <span className="text-xs text-jung-muted">Inferior counterpart</span>
-            <Link to={`/functions/${inferior}`} className="font-semibold text-jung-accent-text hover:underline">
+            <span className="text-xs text-jung-muted uppercase tracking-wider">Inferior counterpart</span>
+            <Link to={`/functions/${inferior}`} className="font-semibold text-jung-accent hover:underline">
               {functionData[inferior].code}
             </Link>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm border border-jung-border">
-            <span className="text-xs text-jung-muted">Archetype</span>
+            <span className="text-xs text-jung-muted uppercase tracking-wider">Archetype</span>
             <p className="font-semibold text-jung-dark">{data.archetype}</p>
           </div>
         </section>
@@ -159,14 +159,14 @@ export const FunctionDetailPage: React.FC = () => {
         <section className="mb-12">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-full bg-jung-accent/10 flex items-center justify-center">
-              <Compass className="w-5 h-5 text-jung-accent-text" />
+              <Brain className="w-5 h-5 text-jung-accent" />
             </div>
             <h2 className="text-2xl font-serif font-bold text-jung-dark">Key Characteristics</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-3">
             {data.characteristics.map((char, idx) => (
               <div key={idx} className="flex items-start gap-3 bg-white rounded-lg p-4 shadow-sm border border-jung-border">
-                <ChevronRight className="w-5 h-5 text-jung-accent-text flex-shrink-0 mt-0.5" />
+                <ChevronRight className="w-5 h-5 text-jung-accent flex-shrink-0 mt-0.5" />
                 <span className="text-jung-dark">{char}</span>
               </div>
             ))}
@@ -197,14 +197,14 @@ export const FunctionDetailPage: React.FC = () => {
           <div>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-full bg-jung-accent-light flex items-center justify-center">
-                <AlertTriangle className="w-5 h-5 text-jung-accent-text" />
+                <AlertTriangle className="w-5 h-5 text-jung-accent" />
               </div>
               <h2 className="text-xl font-serif font-bold text-jung-dark">Challenges</h2>
             </div>
             <ul className="space-y-3">
               {data.challenges.map((challenge, idx) => (
                 <li key={idx} className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-jung-accent-light text-jung-accent-text flex items-center justify-center text-sm font-bold flex-shrink-0">
+                  <span className="w-6 h-6 rounded-full bg-jung-accent-light text-jung-accent flex items-center justify-center text-sm font-bold flex-shrink-0">
                     {idx + 1}
                   </span>
                   <span className="text-jung-dark">{challenge}</span>
@@ -233,14 +233,14 @@ export const FunctionDetailPage: React.FC = () => {
         <section className="mb-12">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-full bg-jung-accent/10 flex items-center justify-center">
-              <Users className="w-5 h-5 text-jung-accent-text" />
+              <Users className="w-5 h-5 text-jung-accent" />
             </div>
             <h2 className="text-2xl font-serif font-bold text-jung-dark">Types Using {data.code}</h2>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-sm text-jung-muted mb-3">Dominant Function</h3>
+              <h3 className="text-sm uppercase tracking-wider text-jung-muted mb-3">Dominant Function</h3>
               <div className="flex flex-wrap gap-2">
                 {data.dominantIn.map((type) => (
                   <Link
@@ -255,7 +255,7 @@ export const FunctionDetailPage: React.FC = () => {
             </div>
 
             <div>
-              <h3 className="text-sm text-jung-muted mb-3">Auxiliary Function</h3>
+              <h3 className="text-sm uppercase tracking-wider text-jung-muted mb-3">Auxiliary Function</h3>
               <div className="flex flex-wrap gap-2">
                 {data.auxiliaryIn.map((type) => (
                   <Link
@@ -273,9 +273,9 @@ export const FunctionDetailPage: React.FC = () => {
 
         {/* CTA */}
         <section className="text-center py-12 border-t border-jung-border">
-          <div className="inline-flex items-center gap-2 text-jung-accent-text mb-4">
+          <div className="inline-flex items-center gap-2 text-jung-accent mb-4">
             <Sparkles className="w-5 h-5" />
-            <span className="text-sm font-semibold">Discover Your Profile</span>
+            <span className="text-sm font-semibold uppercase tracking-wider">Discover Your Profile</span>
           </div>
           <h2 className="text-2xl md:text-3xl font-serif font-bold text-jung-dark mb-4">
             Want to know your {data.code} score?

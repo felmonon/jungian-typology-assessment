@@ -133,7 +133,7 @@ export const FunctionAtlas: React.FC<FunctionAtlasProps> = ({ figure, onStart, o
             <a
               href="/cognitive-functions"
               onClick={onGuideClick}
-              className="link-ink inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-jung-accent-text"
+              className="link-ink inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-jung-accent"
             >
               Read the full functions guide
               <ArrowRight className="h-3.5 w-3.5" />
@@ -155,7 +155,7 @@ export const FunctionAtlas: React.FC<FunctionAtlasProps> = ({ figure, onStart, o
                       <span className="font-display text-2xl font-semibold italic text-jung-dark">
                         {fn.code}
                       </span>
-                      <span className="text-mono text-[10px] text-jung-subtle">
+                      <span className="text-mono text-[10px] uppercase tracking-[0.14em] text-jung-subtle">
                         {fn.attitude}
                       </span>
                     </div>

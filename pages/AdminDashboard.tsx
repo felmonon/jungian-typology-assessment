@@ -161,8 +161,8 @@ export const AdminDashboard: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center gap-3 mb-6 sm:mb-8">
-        <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-jung-accent-text" />
-        <h1 className="text-2xl sm:text-3xl font-serif font-bold text-jung-accent-text">Admin Dashboard</h1>
+        <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-jung-primary" />
+        <h1 className="text-2xl sm:text-3xl font-serif font-bold text-jung-primary">Admin Dashboard</h1>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
@@ -204,7 +204,7 @@ export const AdminDashboard: React.FC = () => {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <CreditCard className="w-5 h-5 text-jung-accent-text" />
+              <CreditCard className="w-5 h-5 text-jung-primary" />
               <h2 className="text-xl font-serif font-semibold text-jung-dark">Checkout Funnel</h2>
             </div>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-jung-secondary">
@@ -310,7 +310,7 @@ export const AdminDashboard: React.FC = () => {
               </p>
             </div>
             <div className="rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-4">
-              <p className="text-xs font-semibold text-jung-accent-text">Next operator target</p>
+              <p className="text-xs font-semibold text-jung-accent">Next operator target</p>
               <p className="mt-1 text-sm leading-6 text-jung-secondary">
                 Reduce no-recovery abandonment before scaling traffic.
               </p>
@@ -322,7 +322,7 @@ export const AdminDashboard: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_24rem] gap-6 mb-8">
         <div className="bg-white rounded-lg shadow-sm border border-jung-border p-6">
           <div className="flex items-center gap-2 mb-4">
-            <TrendingUp className="w-5 h-5 text-jung-accent-text" />
+            <TrendingUp className="w-5 h-5 text-jung-primary" />
             <h2 className="text-xl font-serif font-semibold text-jung-dark">100-Customer Sprint</h2>
           </div>
           {statsLoading ? (
@@ -337,7 +337,7 @@ export const AdminDashboard: React.FC = () => {
                     <span className="text-xl text-jung-muted"> / {stats?.payingCustomerGoal ?? 100}</span>
                   </p>
                 </div>
-                <div className="rounded-lg bg-jung-accent-light px-3 py-2 text-sm font-semibold text-jung-accent-text">
+                <div className="rounded-lg bg-jung-accent-light px-3 py-2 text-sm font-semibold text-jung-accent">
                   {stats?.payingCustomerRemaining ?? 100} remaining
                 </div>
               </div>
@@ -373,7 +373,7 @@ export const AdminDashboard: React.FC = () => {
 
         <div className="bg-white rounded-lg shadow-sm border border-jung-border p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Activity className="w-5 h-5 text-jung-accent-text" />
+            <Activity className="w-5 h-5 text-jung-primary" />
             <h2 className="text-xl font-serif font-semibold text-jung-dark">Recovery Pipeline</h2>
           </div>
           {statsLoading ? (
@@ -409,11 +409,11 @@ export const AdminDashboard: React.FC = () => {
                 <span className="font-bold text-jung-dark">{stats?.skippedInvalidEmailCount ?? 0}</span>
               </div>
               <div className="flex items-center justify-between rounded-lg bg-jung-accent-light px-4 py-3">
-                <span className="text-sm font-semibold text-jung-accent-text">Awaiting follow-up</span>
+                <span className="text-sm font-semibold text-jung-accent">Awaiting follow-up</span>
                 <span className="font-bold text-jung-dark">{stats?.awaitingFollowupCount ?? 0}</span>
               </div>
               <div className="flex items-center justify-between rounded-lg bg-jung-accent-light px-4 py-3">
-                <span className="text-sm font-semibold text-jung-accent-text">Awaiting second follow-up</span>
+                <span className="text-sm font-semibold text-jung-accent">Awaiting second follow-up</span>
                 <span className="font-bold text-jung-dark">{stats?.awaitingSecondFollowupCount ?? 0}</span>
               </div>
               <div className="flex items-center justify-between rounded-lg bg-jung-surface px-4 py-3">
@@ -449,7 +449,7 @@ export const AdminDashboard: React.FC = () => {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <Activity className="w-5 h-5 text-jung-accent-text" />
+              <Activity className="w-5 h-5 text-jung-primary" />
               <h2 className="text-xl font-serif font-semibold text-jung-dark">Revenue Priorities</h2>
             </div>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-jung-secondary">
@@ -511,7 +511,7 @@ export const AdminDashboard: React.FC = () => {
 
       <div className="bg-white rounded-lg shadow-sm border border-jung-border p-6 mb-8">
         <div className="flex items-center gap-2 mb-4">
-          <BarChart3 className="w-5 h-5 text-jung-accent-text" />
+          <BarChart3 className="w-5 h-5 text-jung-primary" />
           <h2 className="text-xl font-serif font-semibold text-jung-dark">Paid Customer Sources</h2>
         </div>
         {statsLoading ? (
@@ -534,7 +534,7 @@ export const AdminDashboard: React.FC = () => {
       {stats?.topPurchaseChains && stats.topPurchaseChains.length > 0 && (
         <div className="bg-white rounded-lg shadow-sm border border-jung-border p-6 mb-8">
           <div className="flex items-center gap-2 mb-4">
-            <TrendingUp className="w-5 h-5 text-jung-accent-text" />
+            <TrendingUp className="w-5 h-5 text-jung-primary" />
             <h2 className="text-xl font-serif font-semibold text-jung-dark">Paid Attribution Chains</h2>
           </div>
           <div className="divide-y divide-jung-border">
@@ -552,7 +552,7 @@ export const AdminDashboard: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <div className="bg-white rounded-lg shadow-sm border border-jung-border p-6">
           <div className="flex items-center gap-2 mb-4">
-            <PieChart className="w-5 h-5 text-jung-accent-text" />
+            <PieChart className="w-5 h-5 text-jung-primary" />
             <h2 className="text-xl font-serif font-semibold text-jung-dark">Popular Types</h2>
           </div>
           {analyticsLoading ? (
@@ -592,7 +592,7 @@ export const AdminDashboard: React.FC = () => {
 
         <div className="bg-white rounded-lg shadow-sm border border-jung-border p-6">
           <div className="flex items-center gap-2 mb-4">
-            <TrendingUp className="w-5 h-5 text-jung-accent-text" />
+            <TrendingUp className="w-5 h-5 text-jung-primary" />
             <h2 className="text-xl font-serif font-semibold text-jung-dark">Engagement Metrics</h2>
           </div>
           {analyticsLoading ? (
@@ -655,7 +655,7 @@ export const AdminDashboard: React.FC = () => {
       <div className="bg-white rounded-lg shadow-sm border border-jung-border p-4 sm:p-6 mb-6 sm:mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6">
           <div className="flex items-center gap-2">
-            <FileText className="w-5 h-5 text-jung-accent-text" />
+            <FileText className="w-5 h-5 text-jung-primary" />
             <h2 className="text-lg sm:text-xl font-serif font-semibold text-jung-dark">Questions Management</h2>
             <span className="text-xs sm:text-sm text-jung-muted">({filteredQuestions.length})</span>
           </div>
@@ -693,12 +693,12 @@ export const AdminDashboard: React.FC = () => {
               <div className="flex items-center gap-2 mb-2">
                 <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
                   q.category === 'A' ? 'bg-green-100 text-green-700' :
-                  q.category === 'B' ? 'bg-jung-accent-light text-jung-accent-text' :
+                  q.category === 'B' ? 'bg-jung-accent-light text-jung-accent' :
                   'bg-blue-100 text-blue-700'
                 }`}>
                   {q.category}
                 </span>
-                <span className="inline-block px-2 py-0.5 rounded bg-jung-primary/10 text-jung-accent-text text-xs font-medium">
+                <span className="inline-block px-2 py-0.5 rounded bg-jung-primary/10 text-jung-primary text-xs font-medium">
                   {q.target}
                 </span>
                 <span className="text-xs text-jung-muted font-mono">{q.id}</span>
@@ -732,14 +732,14 @@ export const AdminDashboard: React.FC = () => {
                     <td className="py-3 px-2">
                       <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
                         q.category === 'A' ? 'bg-green-100 text-green-700' :
-                        q.category === 'B' ? 'bg-jung-accent-light text-jung-accent-text' :
+                        q.category === 'B' ? 'bg-jung-accent-light text-jung-accent' :
                         'bg-blue-100 text-blue-700'
                       }`}>
                         {q.category}
                       </span>
                     </td>
                     <td className="py-3 px-2">
-                      <span className="inline-block px-2 py-0.5 rounded bg-jung-primary/10 text-jung-accent-text text-xs font-medium">
+                      <span className="inline-block px-2 py-0.5 rounded bg-jung-primary/10 text-jung-primary text-xs font-medium">
                         {q.target}
                       </span>
                     </td>
@@ -755,7 +755,7 @@ export const AdminDashboard: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white rounded-lg shadow-sm border border-jung-border p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Settings className="w-5 h-5 text-jung-accent-text" />
+            <Settings className="w-5 h-5 text-jung-primary" />
             <h2 className="text-xl font-serif font-semibold text-jung-dark">Function Descriptions</h2>
           </div>
           <div className="space-y-2">
@@ -766,7 +766,7 @@ export const AdminDashboard: React.FC = () => {
                   className="w-full flex items-center justify-between p-3 text-left hover:bg-jung-surface"
                 >
                   <div className="flex items-center gap-2">
-                    <span className="inline-block px-2 py-0.5 rounded bg-jung-primary/10 text-jung-accent-text text-xs font-medium">
+                    <span className="inline-block px-2 py-0.5 rounded bg-jung-primary/10 text-jung-primary text-xs font-medium">
                       {key}
                     </span>
                     <span className="font-medium text-jung-dark">{desc.title}</span>
@@ -792,7 +792,7 @@ export const AdminDashboard: React.FC = () => {
 
         <div className="bg-white rounded-lg shadow-sm border border-jung-border p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Settings className="w-5 h-5 text-jung-accent-text" />
+            <Settings className="w-5 h-5 text-jung-primary" />
             <h2 className="text-xl font-serif font-semibold text-jung-dark">Stack Positions</h2>
           </div>
           <div className="space-y-2">

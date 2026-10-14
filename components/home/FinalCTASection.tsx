@@ -49,7 +49,7 @@ export const FinalCTASection: React.FC<FinalCTASectionProps> = ({ onStartAssessm
           <div className="relative max-w-3xl">
             <div className="flex items-center gap-3 mb-6 opacity-70">
               <span className="h-px w-10 bg-jung-base/40" />
-              <span className="font-mono text-[11px]">
+              <span className="font-mono text-[11px] tracking-[0.22em] uppercase">
                 Begin
               </span>
             </div>
@@ -64,9 +64,9 @@ export const FinalCTASection: React.FC<FinalCTASectionProps> = ({ onStartAssessm
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
               <button
                 onClick={handleStart}
-                className="group inline-flex items-center justify-center gap-3 px-7 py-4 bg-jung-base text-jung-accent-text hover:bg-jung-base/95 transition-all"
+                className="group inline-flex items-center justify-center gap-3 px-7 py-4 bg-jung-base text-jung-accent rounded-full hover:bg-jung-base/95 transition-all"
               >
-                <span className="font-mono text-[11px]">
+                <span className="font-mono text-[11px] tracking-[0.18em] uppercase">
                   Start free assessment
                 </span>
                 <span className="text-display italic text-lg leading-none translate-y-[-1px] transition-transform group-hover:translate-x-1">

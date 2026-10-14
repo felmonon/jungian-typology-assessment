@@ -64,7 +64,7 @@ export const InstagramStoryCard: React.FC<InstagramStoryCardProps> = ({
           <div className="flex items-center gap-4 mb-2">
             <div className="w-12 h-0.5 bg-gradient-to-r from-[#B87333] to-transparent" />
             <span
-              className="text-lg font-medium"
+              className="text-lg tracking-[0.3em] uppercase font-medium"
               style={{ color: '#B87333' }}
             >
               Jungian Profile
@@ -76,7 +76,7 @@ export const InstagramStoryCard: React.FC<InstagramStoryCardProps> = ({
         <div className="flex-1 flex flex-col justify-center -mt-20">
           <div className="mb-4">
             <span
-              className="text-2xl font-light"
+              className="text-2xl tracking-[0.2em] uppercase font-light"
               style={{ color: 'rgba(184, 115, 51, 0.8)' }}
             >
               Dominant Function
@@ -126,7 +126,7 @@ export const InstagramStoryCard: React.FC<InstagramStoryCardProps> = ({
             }}
           >
             <h3
-              className="text-xl mb-8 font-medium"
+              className="text-xl tracking-[0.2em] uppercase mb-8 font-medium"
               style={{ color: '#B87333' }}
             >
               Function Stack
@@ -140,17 +140,17 @@ export const InstagramStoryCard: React.FC<InstagramStoryCardProps> = ({
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-6">
                   <span
-                    className="text-lg w-32"
+                    className="text-lg w-32 uppercase tracking-wider"
                     style={{ color: '#8B7355' }}
                   >
                     {item.label}
                   </span>
                   <div
-                    className="flex-1 h-12 overflow-hidden"
+                    className="flex-1 h-12 rounded-full overflow-hidden"
                     style={{ background: 'rgba(255,255,255,0.05)' }}
                   >
                     <div
-                      className="h-full flex items-center justify-between px-6 transition-all"
+                      className="h-full rounded-full flex items-center justify-between px-6 transition-all"
                       style={{
                         width: `${Math.max(item.func.score, 20)}%`,
                         background: `linear-gradient(90deg, ${item.color} 0%, ${item.color}80 100%)`
@@ -199,7 +199,7 @@ export const InstagramStoryCard: React.FC<InstagramStoryCardProps> = ({
                 >
                   Discover Your Type
                 </div>
-                <div className="text-xl" style={{ color: '#B87333' }}>
+                <div className="text-xl tracking-wider" style={{ color: '#B87333' }}>
                   jungiandevelopment.com
                 </div>
               </div>

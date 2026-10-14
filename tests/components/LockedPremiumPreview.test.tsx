@@ -92,4 +92,18 @@ describe('optional report offer', () => {
     fireEvent.click(screen.getByRole('button', { name: `Add the Insight report · ${price}` }));
     expect(onUnlock).toHaveBeenCalledExactlyOnceWith('insight', 'results_locked_preview_top');
   });
+
+  it('places the not-ready email option inside the purchase card, after the checkout button', () => {
+    render(<LockedPremiumPreview {...commonProps} notReadyCapture={<p>Not ready to decide?</p>} />);
+    const purchaseCard = document.getElementById('report-purchase')!;
+    const capture = within(purchaseCard).getByTestId('offer-not-ready');
+    expect(within(capture).getByText('Not ready to decide?')).toBeVisible();
+    const checkoutButton = within(purchaseCard).getByRole('button', { name: /Get my report/ });
+    expect(checkoutButton.compareDocumentPosition(capture) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('omits the not-ready slot when none is given', () => {
+    render(<LockedPremiumPreview {...commonProps} />);
+    expect(screen.queryByTestId('offer-not-ready')).toBeNull();
+  });
 });

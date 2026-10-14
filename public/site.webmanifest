@@ -4,8 +4,8 @@
   "description": "A free Jungian function-stack map for people whose MBTI result keeps changing",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f8f9fc",
-  "theme_color": "#4144b8",
+  "background_color": "#f6f3ed",
+  "theme_color": "#18202b",
   "icons": [
     {
       "src": "/logo.svg",

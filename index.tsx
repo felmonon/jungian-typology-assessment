@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './styles/globals.css';
 import './styles/pattern-studio.css';
+import './styles/lamplight.css';
 import App from './App';
 import { initAnalytics } from './lib/analytics';
 

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TypeJung · Direction A · Field Guide · Home</title>
+<link rel="stylesheet" href="style.css">
+<script src="../content.js"></script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="#">Type<i>Jung</i></a>
+  <nav class="nav"><a href="#">How it works</a><a href="#">Sample report</a><a href="#">Pricing</a></nav>
+  <div class="top-actions"><a class="signin" href="#">Sign in</a><a class="btn small" href="#">Get my free map</a><span class="menu" aria-label="Menu"><span></span></span></div>
+</div></header>
+<main class="wrap" id="app"></main>
+<script>
+const H = TJ.home;
+document.getElementById('app').innerHTML = `
+<section class="hero">
+  <div>
+    <p class="kicker">${H.kicker}</p>
+    <h1>See how you <em>notice</em>, <em>decide</em>, and react under stress.</h1>
+    <p class="sub">${H.sub}</p>
+    <p class="mbti">${H.mbtiLine}</p>
+    <div class="actions">
+      <a class="btn" href="#">${H.cta} <span aria-hidden="true">→</span></a>
+      <a class="link" href="#">${H.secondary}</a>
+    </div>
+    <div class="facts"><span><b>${H.reassurance}</b></span><span>${H.time}. ${H.timeNote}</span></div>
+  </div>
+  <aside class="question">
+    <p class="label">${H.sampleQuestion.label}</p>
+    <h2>${H.sampleQuestion.prompt}</h2>
+    <ol>${H.sampleQuestion.options.map(o => `<li>${o}</li>`).join('')}</ol>
+    <p class="note">${H.sampleQuestion.note}</p>
+  </aside>
+</section>
+<section class="gets">
+  <h2>${H.getsTitle}</h2>
+  <ol>${H.gets.map(([t, d]) => `<li><strong>${t}</strong><p>${d}</p></li>`).join('')}</ol>
+  <p class="report">${H.reportLine}</p>
+</section>`;
+</script>
+</body>
+</html>

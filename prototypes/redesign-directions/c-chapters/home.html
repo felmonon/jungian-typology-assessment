@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TypeJung · Direction C · Chapters · Home</title>
+<link rel="stylesheet" href="style.css">
+<script src="../content.js"></script>
+</head>
+<body>
+<div class="home-hero">
+<header class="top on-blue"><div class="wrap">
+  <a class="brand" href="#"><span class="m"></span>TypeJung</a>
+  <nav class="nav"><a href="#">How it works</a><a href="#">Sample report</a><a href="#">Pricing</a></nav>
+  <div class="top-actions"><a class="signin" href="#">Sign in</a><a class="btn small" href="#">Get my free map</a><span class="menu"><span></span></span></div>
+</div></header>
+<div class="wrap" id="hero"></div>
+</div>
+<section class="chapters-strip"><div class="wrap" id="strip"></div></section>
+<script>
+const H = TJ.home;
+document.getElementById('hero').innerHTML = `
+<section class="hh">
+  <p class="kick">${H.kicker}</p>
+  <h1>See how you notice, decide, and <span>react under stress.</span></h1>
+  <p class="sub">${H.sub}</p>
+  <p class="mbti">${H.mbtiLine}</p>
+  <div><a class="btn" href="#">${H.cta} →</a><a class="how" href="#">${H.secondary}</a></div>
+  <div class="facts"><b>${H.reassurance}</b><span>${H.time}</span><span>${H.timeNote}</span></div>
+</section>
+<section class="try">
+  <div class="left"><p class="lbl">${H.sampleQuestion.label}</p><h2>${H.sampleQuestion.prompt}</h2><p>${H.sampleQuestion.note}</p></div>
+  <ul>${H.sampleQuestion.options.map((o, i) => `<li><b>${'ABCD'[i]}</b><span>${o}</span></li>`).join('')}</ul>
+</section>`;
+document.getElementById('strip').innerHTML = `
+<p class="get-title">${H.getsTitle}</p>
+<ol>${H.gets.map(([t, d]) => `<li><strong>${t}</strong><p>${d}</p></li>`).join('')}</ol>
+<p class="report">${H.reportLine}</p>`;
+</script>
+</body>
+</html>

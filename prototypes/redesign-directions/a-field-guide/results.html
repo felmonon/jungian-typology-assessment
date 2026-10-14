@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TypeJung · Direction A · Field Guide · Results</title>
+<link rel="stylesheet" href="style.css">
+<script src="../content.js"></script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="#">Type<i>Jung</i></a>
+  <nav class="nav"><a href="#">How it works</a><a href="#">Sample report</a><a href="#">Pricing</a></nav>
+  <div class="top-actions"><a class="signin" href="#">Sign in</a><span class="menu" aria-label="Menu"><span></span></span></div>
+</div></header>
+<div class="sample"><div class="wrap"><b>${''}</b></div></div>
+<main class="wrap" id="app"></main>
+<script>
+const R = TJ.result;
+document.querySelector('.sample .wrap').innerHTML = `<b>${TJ.sampleLabel}.</b> ${TJ.sampleNote}`;
+const max = Math.max(...R.eight.map(e => e.score));
+const glance = `
+  <div class="glance">
+    <h2>At a glance</h2>
+    <dl>
+      <dt>Your stack</dt><dd>${R.stack.map(s => s.code).join(' · ')}</dd>
+      <dt>Energy direction</dt><dd>${R.attitude.introverted}% introverted</dd>
+      <dt>Answer consistency</dt><dd>${R.consistency.label}</dd>
+      <dt>Completed</dt><dd>${R.date}</dd>
+    </dl>
+  </div>`;
+document.getElementById('app').innerHTML = `
+<nav class="tabs" aria-label="Result sections"><a class="on" href="#">Overview</a><a href="#">Function map</a><a href="#">Go deeper</a><a href="#">Save &amp; share</a></nav>
+<div class="result">
+  <article class="article">
+    <p class="kicker">Your TypeJung map · ${R.date}</p>
+    <h1>You lead with <em>${R.dominant.name.toLowerCase()}</em>.</h1>
+    <p class="lede">In plain words: <mark>you ${R.dominant.plain.charAt(0).toLowerCase() + R.dominant.plain.slice(1, R.dominant.plain.indexOf('.') + 1)}</mark> ${R.dominant.plain.slice(R.dominant.plain.indexOf('.') + 2)}</p>
+    <p class="body-2">${R.energyMap}</p>
+    <div class="mobile-glance">${glance}</div>
+
+    <h2>Your function stack, in order</h2>
+    <p class="hint">The four functions that carry most of your pattern, from the one you rely on most to the one you reach for least.</p>
+    <ol class="stack">${R.stack.map((s, i) => `
+      <li class="${i === 0 ? 'lead' : ''}">
+        <span class="n">${i + 1}</span>
+        <div><span class="role">${s.plainRole} · ${s.role.toLowerCase()}</span><span class="name">${s.name}</span><span class="verb">${s.verb}. ${s.desc}</span></div>
+        <span class="code">${s.code}</span>
+      </li>`).join('')}
+    </ol>
+
+    <h2>All eight, side by side</h2>
+    <p class="hint">Each function is one of four (thinking, feeling, sensation, intuition), turned either inward or outward.</p>
+    <ul class="dots">${R.eight.map((e, i) => `
+      <li class="${i === 0 ? 'top' : ''}">
+        <span class="lbl"><b>${e.code}</b><span>${e.verb}</span></span>
+        <span class="line"><s style="width:${e.score / max * 100}%"></s><i style="left:${e.score / max * 100}%"></i></span>
+        <span class="v">${e.score}%</span>
+      </li>`).join('')}
+    </ul>
+    <p class="small-note">${R.eightNote}</p>
+
+    <h2>Your stress edge</h2>
+    <p class="hint">Your least developed function is ${R.stack[3].name.toLowerCase()} (${R.stack[3].code}). It sits opposite the one you lead with.</p>
+    <p class="pull">${R.edge}</p>
+    <p class="body-2">${R.stress}</p>
+    <div class="box"><h3>${R.practiceTitle}</h3><p>${R.practice}</p></div>
+  </article>
+  <aside class="aside"><div class="sticky">
+    ${glance}
+    <div class="offer">
+      <p class="tag">Optional · ${R.offer.name}</p>
+      <h2>${R.offer.title}</h2>
+      <p>${R.offer.body}</p>
+      <p class="price">${R.offer.price}<span>one time · CAD</span></p>
+      <ul>${R.offer.items.map(i => `<li>${i}</li>`).join('')}</ul>
+      <a class="btn" href="#">${R.offer.cta}</a>
+      <p class="terms">${R.offer.terms}</p>
+      <div class="later"><b>${R.offer.notReadyTitle}</b> ${R.offer.notReady} <a class="link" href="#">${R.offer.notReadyCta}</a></div>
+    </div>
+  </div></aside>
+</div>`;
+</script>
+</body>
+</html>

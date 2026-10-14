@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TypeJung · Direction B · Profile · Home</title>
+<link rel="stylesheet" href="style.css">
+<script src="../content.js"></script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="#"><span class="logo"><i></i><i></i><i></i><i></i></span>TypeJung</a>
+  <nav class="nav"><a href="#">How it works</a><a href="#">Sample report</a><a href="#">Pricing</a></nav>
+  <div class="top-actions"><a class="btn small ghost" href="#">Sign in</a><a class="btn small" href="#">Get my free map</a><span class="menu"><span></span></span></div>
+</div></header>
+<main class="wrap" id="app"></main>
+<script>
+const H = TJ.home, R = TJ.result;
+const fam = { intuition: 'int', feeling: 'fee', thinking: 'thi', sensation: 'sen' };
+document.getElementById('app').innerHTML = `
+<section class="hero-head">
+  <span class="chip"><span class="dot" style="background:var(--sen)"></span>${H.kicker}</span>
+  <h1>${H.headline}</h1>
+  <p class="sub">${H.sub}</p>
+  <p class="mbti">${H.mbtiLine}</p>
+  <div class="actions"><a class="btn" href="#">${H.cta} →</a><a class="btn ghost" href="#">${H.secondary}</a></div>
+  <div class="facts"><b>${H.reassurance}</b><span>${H.time}</span><span>${H.timeNote}</span></div>
+</section>
+<section class="bento">
+  <div class="card q">
+    <p class="eyebrow">${H.sampleQuestion.label}</p>
+    <h2>${H.sampleQuestion.prompt}</h2>
+    <ul>${H.sampleQuestion.options.map((o, i) => `<li class="${i === 3 ? 'pick' : ''}">${o}</li>`).join('')}</ul>
+    <p class="note">${H.sampleQuestion.note}</p>
+  </div>
+  <div class="card profile">
+    <span class="sample-flag">${TJ.sampleLabel}</span>
+    <p class="eyebrow">What a result looks like</p>
+    <div class="lead"><small>${R.stack[0].plainRole}</small><b>${R.stack[0].name}</b><span>${R.stack[0].verb}. ${R.stack[0].desc}</span></div>
+    <div class="minirow">${R.stack.slice(1).map(s => `<div class="mini ${fam[s.family]}"><span>${s.plainRole}</span><b>${s.code}</b><span>${s.verb}</span></div>`).join('')}</div>
+    <p class="eyebrow" style="margin:16px 0 8px">All eight functions</p>
+    <ul class="bars" style="gap:6px">${R.eight.slice(0, 4).map(e => `<li style="grid-template-columns:34px 1fr 36px"><b>${e.code}</b><span class="track" style="height:10px"><i class="f-${e.family}" style="width:${e.score / 61 * 100}%"></i></span><span class="v">${e.score}%</span></li>`).join('')}</ul>
+    <p class="note">+ 4 more. ${TJ.sampleNote}</p>
+  </div>
+  <div class="card gets">
+    <h2>${H.getsTitle}</h2>
+    <ol>${H.gets.map(([t, d], i) => `<li><span class="num">${i + 1}</span><div><strong>${t}</strong><p>${d}</p></div></li>`).join('')}</ol>
+    <p class="report">${H.reportLine}</p>
+  </div>
+</section>`;
+</script>
+</body>
+</html>

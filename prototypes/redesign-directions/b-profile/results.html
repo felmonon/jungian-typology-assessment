@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TypeJung · Direction B · Profile · Results</title>
+<link rel="stylesheet" href="style.css">
+<script src="../content.js"></script>
+</head>
+<body>
+<div class="banner" id="banner"></div>
+<header class="top"><div class="wrap">
+  <a class="brand" href="#"><span class="logo"><i></i><i></i><i></i><i></i></span>TypeJung</a>
+  <nav class="nav"><a href="#">How it works</a><a href="#">Sample report</a><a href="#">Pricing</a></nav>
+  <div class="top-actions"><a class="btn small ghost" href="#">Sign in</a><span class="menu"><span></span></span></div>
+</div></header>
+<main class="wrap" id="app"></main>
+<script>
+const R = TJ.result;
+document.getElementById('banner').innerHTML = `<b>${TJ.sampleLabel}.</b> ${TJ.sampleNote}`;
+const max = 61;
+document.getElementById('app').innerHTML = `
+<div class="rhead">
+  <div><p class="eyebrow">Your TypeJung map · ${R.date}</p><h1>${R.title}</h1></div>
+  <nav class="tabs"><a class="on" href="#">Overview</a><a href="#">Function map</a><a href="#">Go deeper</a><a href="#">Save &amp; share</a></nav>
+</div>
+<div class="grid">
+  <section class="card hero-card span-7">
+    <span class="big" aria-hidden="true">${R.dominant.code}</span>
+    <p class="eyebrow">You lead with</p>
+    <div>
+      <h2>${R.dominant.name}</h2>
+      <p class="verb">${R.dominant.verb}.</p>
+      <p>${R.energyMap}</p>
+    </div>
+    <div class="opp"><small>Its opposite, and your stress edge</small><b>${R.stack[3].name} · ${R.stack[3].code}</b><span>${R.stack[3].verb}. Covered below.</span></div>
+  </section>
+  <section class="card stack span-5">
+    <h3>Your function stack</h3>
+    <p class="hint">From the one you rely on most to the one you reach for least.</p>
+    <ol>${R.stack.map(s => `<li><span class="code f-${s.family}">${s.code}</span><div><span class="role">${s.plainRole} · ${s.role.toLowerCase()}</span><span class="name">${s.name}</span><span class="verb">${s.verb}. ${s.desc}</span></div></li>`).join('')}</ol>
+  </section>
+  <section class="card span-8">
+    <h3>All eight functions</h3>
+    <p class="hint">Each colour is one of Jung's four functions. Each appears twice: turned inward and turned outward.</p>
+    <ul class="bars">${R.eight.map(e => `<li><span class="lbl"><b>${e.code}</b><span>${e.verb}</span></span><span class="track"><i class="f-${e.family}" style="width:${e.score / max * 100}%"></i></span><span class="v">${e.score}%</span></li>`).join('')}</ul>
+    <div class="legend"><span><i class="dot f-intuition"></i>Intuition</span><span><i class="dot f-feeling"></i>Feeling</span><span><i class="dot f-thinking"></i>Thinking</span><span><i class="dot f-sensation"></i>Sensation</span></div>
+    <p class="note">${R.eightNote}</p>
+  </section>
+  <div class="side span-4">
+    <section class="card">
+      <p class="eyebrow">Energy direction</p>
+      <div class="split"><span class="in" style="width:${R.attitude.introverted}%">${R.attitude.introverted}% inward</span><span class="out">${R.attitude.extraverted}%</span></div>
+      <p class="note" style="margin:0">${R.attitude.summary}</p>
+    </section>
+    <section class="card">
+      <p class="eyebrow">Answer consistency</p>
+      <p class="stat">${R.consistency.label}</p>
+      <p class="note" style="margin-top:4px">${R.consistency.note}</p>
+    </section>
+  </div>
+  <section class="card stress span-8">
+    <span class="tag">${R.stack[3].plainRole} · ${R.stack[3].code}</span>
+    <h3>${R.edgeTitle}</h3>
+    <p style="font-size:18px;font-weight:500">${R.edge}</p>
+    <p>${R.stress}</p>
+  </section>
+  <section class="card practice span-4">
+    <p class="eyebrow">${R.practiceTitle}</p>
+    <p>${R.practice}</p>
+  </section>
+  <section class="card offer span-12">
+    <div class="offer-head">
+      <div>
+        <p class="eyebrow">Optional · ${R.offer.name}</p>
+        <h3 style="font-size:30px;line-height:1.1">${R.offer.title}</h3>
+        <p style="color:var(--ink-2);margin:10px 0 0">${R.offer.body}</p>
+        <div class="later"><b>${R.offer.notReadyTitle}</b> ${R.offer.notReady} <a href="#">${R.offer.notReadyCta}</a></div>
+      </div>
+      <div>
+        <p class="price">${R.offer.price}<span>one time · CAD</span></p>
+        <ul>${R.offer.items.map(i => `<li>${i}</li>`).join('')}</ul>
+        <a class="btn" href="#">${R.offer.cta}</a>
+        <p class="terms">${R.offer.terms}</p>
+      </div>
+    </div>
+  </section>
+</div>`;
+</script>
+</body>
+</html>

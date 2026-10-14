@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TypeJung · Direction C · Chapters · Results</title>
+<link rel="stylesheet" href="style.css">
+<script src="../content.js"></script>
+</head>
+<body>
+<div class="banner" id="banner"></div>
+<div class="rail" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i></div>
+<div style="background:var(--cobalt)">
+<header class="top on-blue"><div class="wrap">
+  <a class="brand" href="#"><span class="m"></span>TypeJung</a>
+  <nav class="nav"><a href="#">How it works</a><a href="#">Sample report</a><a href="#">Pricing</a></nav>
+  <div class="top-actions"><a class="signin" href="#">Sign in</a><span class="menu"><span></span></span></div>
+</div></header>
+</div>
+<main id="app"></main>
+<script>
+const R = TJ.result;
+document.getElementById('banner').innerHTML = `<b>${TJ.sampleLabel}.</b> ${TJ.sampleNote}`;
+const [d, a, t, inf] = R.stack;
+
+// Jung's compass: thinking opposite feeling, sensation opposite intuition.
+// Each arm carries that function turned inward and turned outward.
+function compass() {
+  const W = 680, C = W / 2, L = 250, max = 61, inner = 46;
+  const arms = { thinking: [0, -1], feeling: [0, 1], sensation: [-1, 0], intuition: [1, 0] };
+  const names = { thinking: 'Thinking', feeling: 'Feeling', sensation: 'Sensation', intuition: 'Intuition' };
+  let s = `<svg class="compass" viewBox="0 0 ${W} ${W}" role="img" aria-label="All eight functions on Jung's compass">`;
+  const parts = [];
+  for (const [fam, [dx, dy]] of Object.entries(arms)) {
+    const fns = R.eight.filter(e => e.family === fam).sort((x, y) => (x.dir === 'in' ? -1 : 1));
+    fns.forEach((e, i) => {
+      const off = (i === 0 ? -1 : 1) * 17;
+      const px = -dy * off, py = dx * off;
+      const x1 = C + px + dx * inner, y1 = C + py + dy * inner;
+      const tx2 = C + px + dx * (L - 90), ty2 = C + py + dy * (L - 90);
+      const len = Math.max(4, e.score / max * (L - 90 - inner));
+      const x2 = x1 + dx * len, y2 = y1 + dy * len;
+      const isDom = e.code === d.code, isInf = e.code === inf.code;
+      const col = isDom ? '#2337E6' : isInf ? '#D49B00' : '#0F1016';
+      parts.push(`<line x1="${x1}" y1="${y1}" x2="${tx2}" y2="${ty2}" stroke="#E6E6EC" stroke-width="20" stroke-linecap="round"/>`);
+      parts.push(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="20" stroke-linecap="round"/>`);
+      // label just past the end of the track
+      const vert = dx === 0;
+      const lx = vert ? tx2 + (px < 0 ? -6 : 6) : tx2 + dx * 22, ly = vert ? ty2 + dy * 34 + 7 : ty2 + 7;
+      const anchor = vert ? (px < 0 ? 'end' : 'start') : (dx > 0 ? 'start' : 'end');
+      parts.push(`<text x="${lx}" y="${ly}" text-anchor="${anchor}" font-size="21" font-weight="800" fill="${col}">${e.code} ${e.score}</text>`);
+    });
+    const tx = dx === 0 ? C : C + dx * (L - 30), ty = dx === 0 ? C + dy * (L + 40) + 6 : C - 52;
+    parts.push(`<text x="${tx}" y="${ty}" text-anchor="middle" font-size="19" font-weight="700" fill="#6A6C78">${names[fam]}</text>`);
+  }
+  s += parts.join('') + `<circle cx="${C}" cy="${C}" r="6" fill="#0F1016"/></svg>`;
+  return s;
+}
+
+document.getElementById('app').innerHTML = `
+<section class="ch ch1"><div class="wrap">
+  <div class="meta"><span>Your TypeJung map · ${R.date}</span><nav class="tabs"><a class="on" href="#">Overview</a><a href="#">Function map</a><a href="#">Go deeper</a><a href="#">Save &amp; share</a></nav></div>
+  <p class="ch-no"><i></i>1 of 4 · What you lead with</p>
+  <div class="grid">
+    <div>
+      <p class="lead-in">You lead with</p>
+      <h1>${d.name}.</h1>
+      <span class="verb">${d.verb}.</span>
+      <p class="body">${R.dominant.plain} ${R.energyMap.split('. ').slice(1).join('. ')}</p>
+    </div>
+    <div class="code" aria-hidden="true">${d.code}</div>
+  </div>
+  <p class="scroll">Next: what supports it, your stress edge, and the whole map ↓</p>
+</div></section>
+
+<section class="ch ch2"><div class="wrap">
+  <p class="ch-no"><i></i>2 of 4 · Your function stack</p>
+  <h2 class="big-h">Four functions carry most of your pattern.</h2>
+  <p class="big-sub">In order, from the one you rely on most to the one you reach for least.</p>
+  <ol class="order">${R.stack.map(s => `<li><span class="pos">${s.plainRole}</span><span class="c">${s.code}</span><span class="n">${s.name}</span><span class="v">${s.verb}. ${s.desc}</span></li>`).join('')}</ol>
+</div></section>
+
+<section class="ch ch3"><div class="wrap">
+  <p class="ch-no"><i></i>3 of 4 · ${inf.plainRole}</p>
+  <div class="grid">
+    <div>
+      <h2 class="big-h">Under pressure, watch ${inf.name.toLowerCase()} (${inf.code}).</h2>
+      <p>It is your least developed function, and it sits opposite the one you lead with.</p>
+    </div>
+    <div>
+      <p class="quote">${R.edge}</p>
+      <p>${R.stress}</p>
+      <div class="practice"><b>${R.practiceTitle}</b><p>${R.practice}</p></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="ch ch4"><div class="wrap">
+  <div class="grid">
+    <div>
+      <p class="ch-no"><i></i>4 of 4 · The whole map</p>
+      <h2 class="big-h">All eight, on Jung's compass.</h2>
+      <p class="big-sub" style="margin-bottom:0">Thinking sits opposite feeling, and sensation opposite intuition. Each one appears twice: turned inward and turned outward. Your lead is blue; your stress edge is yellow.</p>
+      <div class="facts-list">
+        <div><span>Energy direction</span><b>${R.attitude.introverted}% introverted</b></div>
+        <div><span>Answer consistency</span><b>${R.consistency.label}</b></div>
+      </div>
+      <p class="small">${R.eightNote}</p>
+    </div>
+    <div>${compass()}</div>
+  </div>
+</div></section>
+
+<section class="ch ch5"><div class="wrap">
+  <div class="grid">
+    <div>
+      <p class="ch-no" style="color:var(--yellow)"><i></i>Optional · ${R.offer.name}</p>
+      <h2 class="big-h">${R.offer.title}</h2>
+      <p>${R.offer.body}</p>
+      <div class="later"><b>${R.offer.notReadyTitle}</b> ${R.offer.notReady} <a href="#">${R.offer.notReadyCta}</a></div>
+    </div>
+    <div class="card">
+      <p class="price">${R.offer.price}<span>one time · CAD</span></p>
+      <ul>${R.offer.items.map(i => `<li>${i}</li>`).join('')}</ul>
+      <a class="btn dark" href="#">${R.offer.cta}</a>
+      <p class="terms">${R.offer.terms}</p>
+    </div>
+  </div>
+</div></section>`;
+</script>
+</body>
+</html>

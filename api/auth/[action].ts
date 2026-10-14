@@ -705,6 +705,12 @@ async function handleLifecycleEmail(req: VercelRequest, res: VercelResponse) {
   return res.status(200).json(sendResult);
 }
 
+// Compact answer code from lib/result-link.ts. It rides in the checkout link's
+// fragment so the map can be rebuilt in a browser that never took the test.
+function cleanResultCode(value: unknown): string | null {
+  return typeof value === 'string' && /^[0-9a-z-]{2,80}$/.test(value) ? value : null;
+}
+
 async function handleDiscountLead(req: VercelRequest, res: VercelResponse) {
   if (cleanString(req.body?.website, 120)) {
     return res.status(200).json({ sent: false, skipped: true, reason: 'bot_check' });
@@ -724,6 +730,7 @@ async function handleDiscountLead(req: VercelRequest, res: VercelResponse) {
   const utmCampaign = cleanOptionalAttributionToken(req.body?.utmCampaign ?? req.body?.utm_campaign);
   const parentSource = cleanOptionalAttributionToken(req.body?.parentSource ?? req.body?.parent_source);
   const sourceChain = cleanOptionalSourceChain(req.body?.sourceChain ?? req.body?.source_chain);
+  const resultCode = cleanResultCode(req.body?.resultCode);
   const capture = await captureDiscountLead({
     email,
     source,
@@ -750,7 +757,7 @@ async function handleDiscountLead(req: VercelRequest, res: VercelResponse) {
   const actionUrl = shouldResumeAssessment
     ? `${baseUrl}/assessment?${actionParams.toString()}`
     : tierIntent
-    ? `${baseUrl}/checkout/${tierIntent}?${actionParams.toString()}`
+    ? `${baseUrl}/checkout/${tierIntent}?${actionParams.toString()}${resultCode ? `#map=${resultCode}` : ''}`
     : `${baseUrl}/pricing?${actionParams.toString()}`;
   const actionLabel = shouldResumeAssessment
     ? isAssessmentProgressReturnSource(source)

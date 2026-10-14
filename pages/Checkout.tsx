@@ -38,6 +38,12 @@ import {
   trackEvent,
 } from '../lib/analytics';
 import { writePendingCheckout } from '../lib/pending-checkout';
+import {
+  encodeResultCode,
+  RESULT_CODE_HASH_KEY,
+  resultCodeFromHash,
+  resultFromCode,
+} from '../lib/result-link';
 import { writeUpgradeIntent } from '../lib/upgrade-intent';
 import { STORAGE_KEYS } from '../lib/validation';
 import {
@@ -149,6 +155,30 @@ const readSavedDepthResult = (): DepthAssessmentResult | null => {
   }
 };
 
+// Emailed checkout links carry the map's answer code, so a visitor who opens
+// the email in a browser that never took the test still reaches checkout.
+const readInitialDepthResult = (
+  hash: string,
+): {
+  result: DepthAssessmentResult | null;
+  restoredFromLink: boolean;
+} => {
+  const saved = readSavedDepthResult();
+  if (saved || typeof window === 'undefined') {
+    return { result: saved, restoredFromLink: false };
+  }
+
+  const restored = resultFromCode(resultCodeFromHash(hash));
+  if (!restored) return { result: null, restoredFromLink: false };
+
+  try {
+    localStorage.setItem(STORAGE_KEYS.RESULTS, JSON.stringify(restored));
+  } catch {
+    // The restored map still renders for this visit.
+  }
+  return { result: restored, restoredFromLink: true };
+};
+
 export const Checkout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -172,14 +202,18 @@ export const Checkout: React.FC = () => {
   const [checkoutRecoverySaveStatus, setCheckoutRecoverySaveStatus] = useState<
     'idle' | 'saving' | 'saved' | 'error'
   >('idle');
-  const [savedDepthResult] = useState(readSavedDepthResult);
+  const [{ result: savedDepthResult, restoredFromLink }] = useState(() =>
+    readInitialDepthResult(location.hash),
+  );
   const hasLocalResults = Boolean(savedDepthResult);
+  const linkedResultCode = resultCodeFromHash(location.hash);
   const returnedFromStripe =
     new URLSearchParams(location.search).get('checkout') === 'cancelled';
   const acquisition = useMemo(() => {
     if (typeof window === 'undefined') return null;
 
-    const path = `${location.pathname}${location.search}${location.hash}`;
+    const hash = resultCodeFromHash(location.hash) ? '' : location.hash;
+    const path = `${location.pathname}${location.search}${hash}`;
     return captureAcquisitionSourceFromLocation(
       location.search,
       path,
@@ -234,6 +268,30 @@ export const Checkout: React.FC = () => {
     }
   }, [checkoutRecoveryEmail, user?.email]);
 
+  useEffect(() => {
+    if (!linkedResultCode) return;
+
+    const params = new URLSearchParams(location.hash.replace(/^#/, ''));
+    params.delete(RESULT_CODE_HASH_KEY);
+    const remainingHash = params.toString();
+    navigate(
+      `${location.pathname}${location.search}${remainingHash ? `#${remainingHash}` : ''}`,
+      { replace: true },
+    );
+  }, [linkedResultCode, location.hash, location.pathname, location.search, navigate]);
+
+  useEffect(() => {
+    if (!paidTier || !linkedResultCode) return;
+
+    trackEvent('checkout_result_link_opened', {
+      tier: paidTier,
+      restored: restoredFromLink,
+      had_local_results: hasLocalResults && !restoredFromLink,
+    });
+    // Once per visit: the code leaves the URL right after this runs.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useSEO({
     title: checkoutDetails
       ? `Checkout - ${checkoutDetails.packageName} | TypeJung`
@@ -262,6 +320,7 @@ export const Checkout: React.FC = () => {
       parent_source: acquisition?.parentSource || 'none',
       source_chain: acquisition?.sourceChain || 'none',
       has_local_results: hasLocalResults,
+      result_restored_from_link: restoredFromLink,
     });
   }, [
     acquisition?.parentSource,
@@ -274,6 +333,7 @@ export const Checkout: React.FC = () => {
     hasLocalResults,
     navigate,
     paidTier,
+    restoredFromLink,
     returnedFromStripe,
   ]);
 
@@ -357,6 +417,9 @@ export const Checkout: React.FC = () => {
             website: '',
             source: 'checkout_recovery_prestripe',
             tierIntent: paidTier,
+            resultCode: savedDepthResult
+              ? encodeResultCode(savedDepthResult) || undefined
+              : undefined,
             dominantLabel: savedResultAxis?.dominantLabel,
             inferiorLabel: savedResultAxis?.inferiorLabel,
             utmSource: checkoutAttribution?.utmSource,
@@ -409,6 +472,7 @@ export const Checkout: React.FC = () => {
       checkoutAttribution?.utmCampaign,
       checkoutAttribution?.utmSource,
       paidTier,
+      savedDepthResult,
       savedResultAxis?.dominantLabel,
       savedResultAxis?.inferiorLabel,
     ],
@@ -750,6 +814,11 @@ export const Checkout: React.FC = () => {
                   the free 42-question map first, then the{' '}
                   {PRICING[paidTier].name} upgrade stays selected if the result
                   feels worth keeping.
+                </p>
+                <p className="mt-4 max-w-2xl text-sm leading-6 text-jung-secondary">
+                  Already took it in another browser or on another device? Your
+                  map is saved there, so open this link in that browser to
+                  continue to checkout.
                 </p>
                 <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                   <Button

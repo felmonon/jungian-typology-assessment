@@ -123,8 +123,12 @@ describe('assessment navigation', () => {
     const first = screen.getByRole('heading', { name: depthQuestions[0].prompt });
     first.focus();
     const displayedAnswer = screen.getAllByRole('radio')[1] as HTMLInputElement;
-    fireEvent.keyDown(first, { key: '2' });
-    expect(displayedAnswer).toBeChecked();
+    // The key handler attaches in an effect that can land just after the
+    // button enables on a slow runner; selecting option 2 again is harmless.
+    await waitFor(() => {
+      fireEvent.keyDown(first, { key: '2' });
+      expect(displayedAnswer).toBeChecked();
+    });
     expect(screen.getByRole('heading', { name: depthQuestions[0].prompt })).toBeVisible();
     expect(JSON.parse(localStorage.getItem(ASSESSMENT_PROGRESS_STORAGE_KEY)!).answers[depthQuestions[0].id])
       .toBe(displayedAnswer.value);

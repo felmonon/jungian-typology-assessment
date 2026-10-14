@@ -98,3 +98,16 @@ export const dismissAssessmentResumePrompt = () => {
     // Non-critical UI hint.
   }
 };
+
+// True when this browser holds a completed TypeJung map. Used to swap
+// "Start free" calls to action for a route back to the saved map.
+export const hasSavedAssessmentResult = (): boolean => {
+  if (typeof window === 'undefined') return false;
+
+  try {
+    const parsed = JSON.parse(localStorage.getItem(ASSESSMENT_RESULTS_STORAGE_KEY) || 'null');
+    return Boolean(parsed && typeof parsed === 'object' && parsed.version === 'depth-energy-map');
+  } catch {
+    return false;
+  }
+};

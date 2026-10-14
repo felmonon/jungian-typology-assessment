@@ -81,4 +81,15 @@ describe('optional report offer', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Read the full illustrative sample' }));
     expect(onViewSampleReport).toHaveBeenCalledWith('results_locked_preview');
   });
+
+  it('names the dominant-inferior tension and offers checkout before the sample on phones', () => {
+    const onUnlock = vi.fn();
+    const price = discountedPriceLabel(PRICING.insight.amount);
+    render(<LockedPremiumPreview {...commonProps} onUnlock={onUnlock} />);
+    expect(screen.getByRole('heading', { level: 2, name: /tension\s*in everyday life/ })).toBeVisible();
+    expect(screen.getByText(PRICING.insight.price)).toBeVisible();
+    expect(screen.getByText('Secure payment by Stripe')).toBeVisible();
+    fireEvent.click(screen.getByRole('button', { name: `Add the Insight report · ${price}` }));
+    expect(onUnlock).toHaveBeenCalledExactlyOnceWith('insight', 'results_locked_preview_top');
+  });
 });

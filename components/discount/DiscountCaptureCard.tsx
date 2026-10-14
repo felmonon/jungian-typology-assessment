@@ -7,6 +7,7 @@ import { isPaidTierId, type PaidTierId } from '../../data/pricing';
 import { useAuth } from '../../hooks/use-auth';
 import { AnalyticsEvents, trackEvent } from '../../lib/analytics';
 import { pathWithSource, readAcquisitionSource } from '../../lib/acquisition-source';
+import { readSavedResultCode } from '../../lib/result-link';
 
 type DiscountCaptureCardProps = {
   source: string;
@@ -177,6 +178,7 @@ export const DiscountCaptureCard: React.FC<DiscountCaptureCardProps> = ({
           dominantLabel,
           inferiorLabel,
           tierIntent: preferredTier,
+          resultCode: preferredTier ? readSavedResultCode() || undefined : undefined,
           utmSource: acquisition?.utmSource,
           utmCampaign: acquisition?.utmCampaign,
           parentSource: acquisition?.parentSource || acquisition?.source,

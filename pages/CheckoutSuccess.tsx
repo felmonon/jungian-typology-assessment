@@ -551,10 +551,10 @@ export const CheckoutSuccess: React.FC = () => {
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-2 text-jung-muted">
             <Shield className="h-4 w-4 text-jung-dark" aria-hidden="true" />
-            <span className="text-sm">30-Day Money-Back Guarantee</span>
+            <span className="text-sm">7-Day Money-Back Guarantee</span>
           </div>
           <p className="text-xs text-jung-muted">
-            Not insightful? Email {SUPPORT_EMAIL} within 30 days with your Stripe receipt.
+            Not insightful? Email {SUPPORT_EMAIL} within 7 days of purchase with your Stripe receipt.
           </p>
         </div>
       </div>

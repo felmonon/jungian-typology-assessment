@@ -20,7 +20,7 @@ export const RelationshipsSection: React.FC<RelationshipsSectionProps> = ({ domi
                 </div>
                 <div>
                     <h2 className="text-display text-3xl text-jung-dark dark:text-white">Interpersonal Dynamics</h2>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-jung-muted">Relational Intelligence & Compatibility</p>
+                    <p className="text-[10px] font-bold text-jung-muted">Relational Intelligence & Compatibility</p>
                 </div>
             </div>
 
@@ -33,7 +33,7 @@ export const RelationshipsSection: React.FC<RelationshipsSectionProps> = ({ domi
                 >
                     <div className="absolute top-0 right-0 w-32 h-32 bg-jung-accent/5 rounded-full blur-3xl -mr-16 -mt-16" />
                     <h4 className="text-display text-xl text-jung-dark dark:text-white mb-6 flex items-center gap-3">
-                        <Users className="w-5 h-5 text-jung-accent" />
+                        <Users className="w-5 h-5 text-jung-accent-text" />
                         Core Strengths
                     </h4>
                     <p className="text-sm text-jung-secondary dark:text-jung-muted leading-relaxed font-serif italic">

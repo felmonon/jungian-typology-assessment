@@ -43,7 +43,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
               className="flex items-center gap-3 mb-8"
             >
               <span className="h-px w-10 bg-jung-border-light" />
-              <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted">
+              <span className="font-mono text-[10px] text-jung-muted">
                 A cognitive assessment · No. 01
               </span>
             </motion.div>
@@ -55,7 +55,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
               className="text-display text-[44px] sm:text-6xl md:text-7xl lg:text-[80px] leading-[0.98] tracking-tight text-jung-dark mb-6"
             >
               Understand your{' '}
-              <span className="italic text-jung-accent">cognitive&nbsp;functions</span>{' '}
+              <span className="italic text-jung-accent-text">cognitive&nbsp;functions</span>{' '}
               without the noise.
             </motion.h1>
 
@@ -77,7 +77,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
               className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-12"
             >
               <Button onClick={onStartAssessment} className="btn-premium group">
-                <span className="font-mono text-[11px] tracking-[0.18em] uppercase">
+                <span className="font-mono text-[11px]">
                   Start free assessment
                 </span>
                 <span className="ml-2 inline-block transition-transform group-hover:translate-x-1">
@@ -89,7 +89,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
                 variant="outline"
                 className="border-jung-border text-jung-secondary hover:text-jung-dark hover:border-jung-accent"
               >
-                <span className="font-mono text-[11px] tracking-[0.18em] uppercase">
+                <span className="font-mono text-[11px]">
                   Read the method
                 </span>
               </Button>
@@ -104,7 +104,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
               {stats.map(([n, l]) => (
                 <div key={l} className="flex items-baseline gap-2">
                   <span className="text-display text-2xl text-jung-dark leading-none">{n}</span>
-                  <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-jung-muted">
+                  <span className="font-mono text-[10px] text-jung-muted">
                     {l}
                   </span>
                 </div>
@@ -122,24 +122,24 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartAssessment, onL
             <div className="relative bg-jung-surface border border-jung-border rounded-2xl p-6 md:p-8 shadow-md">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted mb-1">
+                  <p className="font-mono text-[10px] text-jung-muted mb-1">
                     Specimen profile
                   </p>
                   <h3 className="text-display text-xl text-jung-dark">Subject 14·B</h3>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-jung-accent animate-pulse" />
-                  <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted">
+                  <span className="font-mono text-[10px] text-jung-muted">
                     Live
                   </span>
                 </div>
               </div>
               <FunctionRadial data={sample} />
               <div className="mt-4 pt-4 border-t border-jung-border flex items-center justify-between">
-                <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-jung-muted">
+                <span className="font-mono text-[10px] text-jung-muted">
                   Dominant
                 </span>
-                <span className="text-display italic text-base text-jung-accent">
+                <span className="text-display italic text-base text-jung-accent-text">
                   Ni — Introverted Intuition
                 </span>
               </div>

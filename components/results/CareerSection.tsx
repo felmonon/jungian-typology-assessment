@@ -20,7 +20,7 @@ export const CareerSection: React.FC<CareerSectionProps> = ({ dominantFunc }) =>
                 </div>
                 <div>
                     <h2 className="text-display text-3xl text-jung-dark dark:text-white">Career Alignment</h2>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-jung-muted">Professional Vocation & Flow</p>
+                    <p className="text-[10px] font-bold text-jung-muted">Professional Vocation & Flow</p>
                 </div>
             </div>
 
@@ -33,7 +33,7 @@ export const CareerSection: React.FC<CareerSectionProps> = ({ dominantFunc }) =>
                         className="card-premium p-8 bg-white dark:bg-dark-surface border-jung-border dark:border-dark-border"
                     >
                         <div className="flex items-center gap-3 mb-6">
-                            <Target className="w-5 h-5 text-jung-accent" />
+                            <Target className="w-5 h-5 text-jung-accent-text" />
                             <h3 className="text-display text-xl text-jung-dark dark:text-white">Natural Mastery</h3>
                         </div>
                         <p className="text-sm text-jung-secondary dark:text-jung-muted leading-relaxed font-serif italic">
@@ -74,7 +74,7 @@ export const CareerSection: React.FC<CareerSectionProps> = ({ dominantFunc }) =>
                             </h4>
                             <div className="flex flex-wrap gap-3">
                                 {guidance.roles.map((role: string, idx: number) => (
-                                    <span key={idx} className="px-6 py-2.5 rounded-full bg-white/5 border border-white/10 text-xs font-bold uppercase tracking-widest text-jung-accent-muted hover:bg-white/10 transition-colors">
+                                    <span key={idx} className="px-6 py-2.5 bg-white/5 border border-white/10 text-xs font-bold text-jung-accent-muted hover:bg-white/10 transition-colors">
                                         {role}
                                     </span>
                                 ))}
@@ -84,7 +84,7 @@ export const CareerSection: React.FC<CareerSectionProps> = ({ dominantFunc }) =>
                         <div className="w-full lg:w-80 lg:pl-12 lg:border-l border-white/10">
                             <div className="flex items-center gap-3 mb-4 text-error">
                                 <AlertCircle className="w-5 h-5" />
-                                <h4 className="text-xs font-bold uppercase tracking-[0.2em]">Burnout Risk</h4>
+                                <h4 className="text-xs font-bold">Burnout Risk</h4>
                             </div>
                             <p className="text-xs text-jung-subtle leading-relaxed font-serif">
                                 {guidance.watchOutFor}

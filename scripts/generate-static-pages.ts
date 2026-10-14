@@ -11,6 +11,7 @@ import { writeGeneratedFile } from './stable-dates.mjs';
 import { mkdirSync } from 'fs';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { STATIC_BASE_CSS, STATIC_FONT_LINKS } from './static-page-style.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -172,137 +173,8 @@ const getHead = (title: string, description: string, path: string, keywords?: st
 <meta name="twitter:description" content="${escapeHtml(description)}">
 <meta name="twitter:image" content="${siteConfig.url}/og-image.png">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --jung-base: #fafaf8;
-    --jung-surface: #ffffff;
-    --jung-surface-alt: #f4f4f2;
-    --jung-dark: #1a1a1a;
-    --jung-secondary: #555d56;
-    --jung-muted: #666666;
-    --jung-border: #d4d4d2;
-    --jung-border-light: #e8e8e6;
-    --jung-accent: #2d5a3d;
-    --jung-accent-hover: #234832;
-    --jung-accent-light: #e8f1ea;
-    --jung-accent-muted: #7fa085;
-    --jung-gold: #a17932;
-  }
-  * { box-sizing: border-box; }
-  body {
-    font-family: "Schibsted Grotesk", Verdana, sans-serif;
-    line-height: 1.75;
-    color: var(--jung-dark);
-    max-width: 980px;
-    margin: 0 auto;
-    padding: 32px 20px 48px;
-    background:
-      linear-gradient(180deg, rgba(244,244,242,0.72) 0%, rgba(250,250,248,0) 360px),
-      var(--jung-base);
-  }
-  h1, h2, h3 { font-family: "Fraunces", Georgia, serif; font-weight: 600; letter-spacing: 0; overflow-wrap: anywhere; }
-  h1 { color: var(--jung-dark); font-size: clamp(2.35rem, 7vw, 4.4rem); line-height: 0.98; margin: 0 0 0.35em; }
-  h2 { color: var(--jung-dark); border-bottom: 1px solid var(--jung-border); padding-bottom: 12px; margin-top: 48px; font-size: clamp(1.55rem, 3.5vw, 2.25rem); line-height: 1.1; }
-  h3 { color: var(--jung-dark); margin-top: 30px; font-size: 1.2rem; line-height: 1.25; }
-  p, li { color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; overflow-wrap: anywhere; }
-  a { color: var(--jung-accent); text-decoration-thickness: 0.08em; text-underline-offset: 0.18em; overflow-wrap: anywhere; }
-  .subtitle { color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; font-size: clamp(1.1rem, 2.6vw, 1.35rem); line-height: 1.65; margin-bottom: 22px; }
-  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-  .breadcrumb { color: var(--jung-muted); margin-bottom: 28px; font-size: 0.92rem; }
-  .breadcrumb a { color: var(--jung-accent); text-decoration: none; font-weight: 600; }
-  .eyebrow { color: var(--jung-accent); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.78rem; margin-bottom: 14px; }
-  .cta-box { background: var(--jung-dark); color: white; padding: clamp(24px, 5vw, 40px); border-radius: 8px; margin: 38px 0; border: 1px solid var(--jung-dark); box-shadow: 0 24px 60px -36px rgb(29 38 32 / 0.55); }
-  .cta-box p, .cta-box h2, .cta-box h3 { color: white; }
-  .cta-box h2 { border: 0; margin-top: 0; padding-bottom: 0; }
-  .cta-box h3 { margin-top: 0; }
-  .hero-actions, .cta-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 24px 0 0; }
-  .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 12px 22px; background: var(--jung-accent); color: white; text-decoration: none; border-radius: 8px; font-weight: 700; box-shadow: 0 18px 50px -34px rgb(47 111 88 / 0.7); }
-  .btn:hover { background: var(--jung-accent-hover); }
-  .secondary-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 12px 20px; background: var(--jung-surface); color: var(--jung-dark); text-decoration: none; border: 1px solid var(--jung-border); border-radius: 8px; font-weight: 700; }
-  .secondary-btn:hover { border-color: var(--jung-accent-muted); color: var(--jung-accent); }
-  .cta-box .secondary-btn { background: transparent; color: white; border-color: rgba(255,255,255,0.32); }
-  .cta-box .secondary-btn:hover { border-color: rgba(255,255,255,0.72); color: white; }
-  .text-link { color: var(--jung-accent-light); font-weight: 700; margin-left: 16px; }
-  .proof-strip { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; padding: 0; list-style: none; }
-  .proof-strip li { margin: 0; padding: 7px 10px; border: 1px solid var(--jung-border-light); border-radius: 8px; background: rgba(255,255,255,0.72); color: var(--jung-secondary); font-family: "Schibsted Grotesk", Verdana, sans-serif; font-size: 0.82rem; font-weight: 600; line-height: 1.25; }
-  .save-link-panel { display: grid; gap: 14px; margin: 24px 0 0; padding: 18px; border: 1px solid var(--jung-accent-muted); border-radius: 8px; background: color-mix(in srgb, var(--jung-accent-light) 56%, white); }
-  .save-link-panel h2 { border: 0; margin: 0; padding: 0; font-family: "Schibsted Grotesk", Verdana, sans-serif; font-size: 1.04rem; line-height: 1.25; }
-  .save-link-panel p { margin: 0; font-size: 0.98rem; line-height: 1.55; }
-  .save-link-form { display: grid; gap: 10px; }
-  .save-link-form-row { display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr) auto; }
-  .save-link-form input[type="email"] { min-height: 44px; width: 100%; border: 1px solid var(--jung-border); border-radius: 8px; background: var(--jung-surface); color: var(--jung-dark); font: 600 0.95rem "Schibsted Grotesk", Verdana, sans-serif; padding: 0 12px; }
-  .save-link-form button { min-height: 44px; border: 0; border-radius: 8px; background: var(--jung-accent); color: white; cursor: pointer; font: 700 0.92rem "Schibsted Grotesk", Verdana, sans-serif; padding: 0 16px; }
-  .save-link-form button:disabled { cursor: wait; opacity: 0.72; }
-  .save-link-status { min-height: 1.35rem; color: var(--jung-secondary); font-size: 0.86rem !important; }
-  .honeypot { display: none; }
-  .creator-share-kit { margin: 30px 0 36px; padding: clamp(20px, 4vw, 28px); border: 1px solid var(--jung-border); border-radius: 8px; background: var(--jung-surface); box-shadow: 0 16px 50px -42px rgb(29 38 32 / 0.4); }
-  .creator-share-kit h2 { border: 0; margin: 0; padding: 0; font-size: clamp(1.35rem, 3vw, 1.85rem); }
-  .creator-share-kit-intro { margin: 8px 0 0; max-width: 740px; }
-  .creator-public-link { margin: 16px 0 0; padding: 12px 14px; border: 1px solid var(--jung-border-light); border-radius: 8px; background: var(--jung-surface-alt); font-family: "Schibsted Grotesk", Verdana, sans-serif; font-size: 0.9rem; }
-  .creator-public-link strong { display: block; margin-bottom: 3px; color: var(--jung-dark); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; }
-  .copy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 18px 0 0; }
-  .copy-card { display: grid; gap: 10px; min-height: 100%; padding: 15px; border: 1px solid var(--jung-border-light); border-radius: 8px; background: color-mix(in srgb, var(--jung-accent-light) 22%, white); }
-  .copy-card h3 { margin: 0; font-family: "Schibsted Grotesk", Verdana, sans-serif; font-size: 1rem; }
-  .copy-template { min-height: 172px; width: 100%; resize: vertical; border: 1px solid var(--jung-border); border-radius: 8px; background: white; color: var(--jung-secondary); font: 500 0.9rem/1.55 "Source Serif 4", Georgia, serif; padding: 12px; }
-  .copy-action-row { display: grid; gap: 7px; align-items: center; }
-  .copy-action-row button { justify-self: start; min-height: 40px; border: 0; border-radius: 8px; background: var(--jung-dark); color: white; cursor: pointer; font: 700 0.88rem "Schibsted Grotesk", Verdana, sans-serif; padding: 0 14px; }
-  .copy-status { min-height: 1.25rem; margin: 0; color: var(--jung-muted); font-size: 0.82rem !important; }
-  .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 20px 0; }
-  .related-card { background: var(--jung-surface); padding: 16px; border-radius: 8px; border: 1px solid var(--jung-border-light); box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
-  .related-card a { color: var(--jung-dark); text-decoration: none; font-weight: 700; }
-  .intent-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 28px 0 32px; }
-  .intent-card { background: var(--jung-surface); border: 1px solid var(--jung-border-light); border-radius: 8px; padding: 18px; box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
-  .intent-card strong { display: block; margin-bottom: 7px; font-family: "Schibsted Grotesk", Verdana, sans-serif; color: var(--jung-dark); font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.06em; }
-  .intent-card span { display: block; color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; line-height: 1.6; }
-  .cluster-nav { background: color-mix(in srgb, var(--jung-accent-light) 48%, white); border: 1px solid color-mix(in srgb, var(--jung-accent-muted) 55%, white); border-radius: 8px; padding: 18px; margin: 28px 0 36px; }
-  .cluster-nav h2 { border: 0; margin: 0 0 12px; padding: 0; font-size: 1.12rem; font-family: "Schibsted Grotesk", Verdana, sans-serif; }
-  .cluster-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
-  .cluster-link { display: block; min-height: 100%; padding: 14px; border-radius: 8px; background: rgba(255,255,255,0.72); border: 1px solid var(--jung-border-light); color: var(--jung-dark); text-decoration: none; }
-  .cluster-link strong { display: block; margin-bottom: 6px; font-family: "Schibsted Grotesk", Verdana, sans-serif; }
-  .cluster-link span { display: block; color: var(--jung-secondary); font-family: "Source Serif 4", Georgia, serif; font-size: 0.95rem; line-height: 1.45; }
-  .debrief-cta { margin: 30px 0 36px; padding: clamp(22px, 4vw, 30px); border: 1px solid var(--jung-accent-muted); border-radius: 8px; background: linear-gradient(135deg, color-mix(in srgb, var(--jung-accent-light) 64%, white), var(--jung-surface)); box-shadow: 0 18px 54px -42px rgb(29 38 32 / 0.52); }
-  .debrief-cta-grid { display: grid; gap: 18px; align-items: center; grid-template-columns: minmax(0, 1fr) auto; }
-  .debrief-cta h2 { border: 0; margin: 0; padding: 0; font-size: clamp(1.45rem, 3vw, 2rem); }
-  .debrief-cta p { margin: 10px 0 0; }
-  .debrief-cta ul { display: grid; gap: 7px; margin: 16px 0 0; padding-left: 20px; }
-  .debrief-price-card { min-width: 176px; padding: 16px; border: 1px solid var(--jung-border); border-radius: 8px; background: white; text-align: right; }
-  .debrief-price-card strong { display: block; color: var(--jung-dark); font-family: "Fraunces", Georgia, serif; font-size: 2rem; line-height: 1; }
-  .debrief-price-card span { display: block; margin-top: 8px; color: var(--jung-muted); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
-  .context-links { margin: 18px 0 0; padding: 14px 16px; background: var(--jung-surface); border: 1px solid var(--jung-border-light); border-radius: 8px; }
-  .context-links strong { display: block; margin-bottom: 8px; font-family: "Schibsted Grotesk", Verdana, sans-serif; font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--jung-muted); }
-  .context-links ul { margin: 0; padding-left: 20px; }
-  .context-links li { margin: 4px 0; }
-  .faq-item { background: var(--jung-surface); padding: 18px; border-radius: 8px; margin-bottom: 14px; border: 1px solid var(--jung-border-light); }
-  .faq-item h3 { margin: 0 0 8px; font-size: 1.05rem; }
-  .comparison-table { display: block; width: 100%; max-width: 100%; border-collapse: collapse; margin: 22px 0; background: var(--jung-surface); border: 1px solid var(--jung-border); border-radius: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .comparison-table thead, .comparison-table tbody { display: table; width: 100%; min-width: min(620px, 100%); }
-  .comparison-table th { background: var(--jung-dark); color: white; padding: 13px; text-align: left; }
-  .comparison-table td { padding: 13px; border-bottom: 1px solid var(--jung-border-light); vertical-align: top; color: var(--jung-secondary); }
-  .comparison-table tr:nth-child(even) { background: var(--jung-surface-alt); }
-  .trait-list { columns: 2; column-gap: 30px; }
-  .trait-list li { break-inside: avoid; margin-bottom: 10px; }
-  footer { margin-top: 50px; padding-top: 22px; border-top: 1px solid var(--jung-border); color: var(--jung-muted); text-align: center; }
-  nav { background: rgba(255,255,255,0.88); padding: 12px; border: 1px solid var(--jung-border); border-radius: 8px; margin-bottom: 30px; box-shadow: 0 1px 2px 0 rgb(29 38 32 / 0.05); }
-  nav a { display: inline-flex; align-items: center; min-height: 40px; padding: 0 6px; color: var(--jung-secondary); text-decoration: none; margin-right: 12px; font-weight: 700; font-size: 0.92rem; }
-  nav a:hover { color: var(--jung-accent); }
-  .breadcrumb a { display: inline-flex; align-items: center; min-height: 36px; }
-  @media (max-width: 640px) {
-    body { padding: 20px 16px 40px; }
-    nav { display: flex; flex-wrap: wrap; gap: 10px 14px; }
-    nav a { margin-right: 0; }
-    .intent-grid { grid-template-columns: 1fr; }
-    .trait-list { columns: 1; }
-    .hero-actions > a, .cta-actions > a { width: 100%; }
-    .save-link-form-row { grid-template-columns: 1fr; }
-    .copy-action-row button { width: 100%; }
-    .text-link { display: inline-block; margin: 14px 0 0; }
-    .debrief-cta-grid { grid-template-columns: 1fr; }
-    .debrief-price-card { text-align: left; }
-  }
-</style>
+${STATIC_FONT_LINKS}
+<style>${STATIC_BASE_CSS}</style>
 `;
 
 const debriefGuideSlugs = new Set([
@@ -327,7 +199,6 @@ function renderDebriefGuideCta(page: any) {
   return `<section class="debrief-cta" aria-labelledby="${escapeHtml(page.slug)}-debrief-title">
     <div class="debrief-cta-grid">
       <div>
-        <p class="eyebrow">Human-reviewed option</p>
         <h2 id="${escapeHtml(page.slug)}-debrief-title">Still stuck between two types?</h2>
         <p>
           If this guide sounds familiar but you still do not know how to read your result, get a Personal Type Debrief.
@@ -339,8 +210,8 @@ function renderDebriefGuideCta(page: any) {
           <li>Educational self-reflection, not a clinical or diagnostic assessment.</li>
         </ul>
         <div class="cta-actions">
-          <a href="${escapeHtml(withSource('/debrief', page, 'guide_debrief'))}" class="btn">Get a personal debrief</a>
-          <a href="${escapeHtml(withSource('/assessment', page, 'guide_debrief_assessment'))}" class="secondary-btn">Take the free map first</a>
+          <a href="${escapeHtml(withSource('/assessment', page, 'guide_debrief_assessment'))}" class="btn">Take the free map first</a>
+          <a href="${escapeHtml(withSource('/debrief', page, 'guide_debrief'))}" class="secondary-btn">Get a personal debrief</a>
         </div>
       </div>
       <div class="debrief-price-card">
@@ -628,14 +499,14 @@ function renderLandingSection(section: any, page: any, sectionIndex: number) {
     ? `<ul>\n    ${section.bullets.map((item: string) => `<li>${escapeHtml(item)}</li>`).join('\n    ')}\n  </ul>`
     : '';
   const table = section.table
-    ? `<table class="comparison-table">
+    ? `<div class="table-scroll" role="region" aria-label="${escapeHtml(section.heading ?? 'Comparison table')}" tabindex="0"><table class="comparison-table">
     <thead>
       <tr>${section.table.headers.map((header: string) => `<th>${escapeHtml(header)}</th>`).join('')}</tr>
     </thead>
     <tbody>
-      ${section.table.rows.map((row: string[]) => `<tr>${row.map((cell: string) => `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('\n      ')}
+      ${section.table.rows.map((row: string[]) => `<tr>${row.map((cell: string, cellIndex: number) => `<td data-label="${escapeHtml(section.table.headers[cellIndex] ?? '')}">${escapeHtml(cell)}</td>`).join('')}</tr>`).join('\n      ')}
     </tbody>
-  </table>`
+  </table></div>`
     : '';
   const links = section.links
     ? `<div class="context-links">
@@ -730,7 +601,6 @@ ${standaloneAnalyticsSnippet}
   </div>
 
   <header>
-    <p class="eyebrow">${escapeHtml(page.eyebrow)}</p>
     <h1>${escapeHtml(page.h1)}</h1>
     ${page.intro.map((paragraph: string) => `<p class="subtitle">${escapeHtml(paragraph)}</p>`).join('\n    ')}
     <div class="hero-actions">
@@ -746,8 +616,6 @@ ${standaloneAnalyticsSnippet}
   </header>
 
   ${renderIntentPanel(page)}
-
-  ${renderDebriefGuideCta(page)}
 
   ${renderCreatorShareKit(page)}
 
@@ -772,6 +640,8 @@ ${standaloneAnalyticsSnippet}
       <p>${escapeHtml(faq.answer)}</p>
     </div>`).join('\n    ')}
   </section>
+
+  ${renderDebriefGuideCta(page)}
 
   <section>
     <h2>Related TypeJung Pages</h2>

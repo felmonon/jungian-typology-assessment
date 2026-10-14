@@ -1,12 +1,10 @@
 import { useAssessmentKeyboard } from '../hooks/useAssessmentKeyboard';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
+  AlertCircle,
   ArrowLeft,
   ArrowRight,
   CheckCircle2,
-  Circle,
-  Loader2,
-  Sparkles,
   X,
 } from 'lucide-react';
 import React, {
@@ -484,24 +482,39 @@ export const Assessment: React.FC = () => {
     isDialogOpen: showCompletion,
   });
 
+  const chapterLabels: Record<DepthLayer, string> = {
+    behavioral: 'Everyday life',
+    inferior: 'Under stress',
+    somatic: 'Body cues',
+    attitude: 'Attention',
+  };
+  const chapters = layerOrder.map((layer) => {
+    const inLayer = depthQuestions.filter((question) => question.layer === layer);
+    return {
+      layer,
+      total: inLayer.length,
+      answered: inLayer.filter((question) => answers[question.id]).length,
+    };
+  });
+
   return (
-    <div className="studio-assessment bg-jung-base">
+    <div className="qz">
       <AnimatePresence>
         {showCompletion && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-jung-base/95 px-6 backdrop-blur"
+            className="qz-done"
+            role="status"
+            aria-live="polite"
           >
-            <div className="max-w-sm rounded-lg border border-jung-border bg-jung-surface p-8 text-center shadow-xl">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
-                <Loader2 className="h-6 w-6 animate-spin" />
-              </div>
-              <h2 className="mt-6 text-heading text-3xl text-jung-dark">
-                Mapping your energy
+            <div className="qz-done-body">
+              <span className="qz-done-line" aria-hidden="true" />
+              <h2 className="qz-done-title">
+                Mapping your energy…
               </h2>
-              <p className="mt-3 text-sm leading-6 text-jung-secondary">
+              <p className="qz-done-text">
                 Behavioral, inferior, somatic, and attitude signals are being
                 combined now.
               </p>
@@ -517,12 +530,12 @@ export const Assessment: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: prefersReducedMotion ? 0 : 0.24 }}
-            className="pointer-events-none fixed inset-x-0 top-[68px] z-[60] flex justify-center px-4 sm:top-[80px]"
+            className="qz-toast-wrap"
             role="status"
             aria-live="polite"
           >
-            <div className="pointer-events-auto inline-flex items-center gap-2.5 rounded-full border border-jung-accent-muted bg-jung-dark px-4 py-2 text-sm font-semibold text-white shadow-lg">
-              <Sparkles className="h-4 w-4 flex-none text-jung-accent-muted" />
+            <div className="qz-toast">
+              <span className="qz-toast-mark" aria-hidden="true" />
               <span>
                 {depthLayerMeta[sectionReward.completed].shortLabel} layer
                 complete.
@@ -535,74 +548,78 @@ export const Assessment: React.FC = () => {
         )}
       </AnimatePresence>
 
-      <header className="mx-auto w-full max-w-3xl px-5 pb-5 pt-7 sm:px-8 sm:pt-10">
-        <div className="flex items-center justify-between gap-4">
-          <p className="journey-eyebrow">
+      <header className="qz-head">
+        <div className="qz-meta">
+          <p className="qz-count">
             {pageLabel}
           </p>
-          <p className="text-xs text-jung-muted">
-            {totalAnswered > 0
-              ? 'Progress saved on this device'
-              : '20–25 minutes · Free results'}
+          <p className="qz-note">
+            {showTimeEstimate
+              ? `About ${minutesLeft} min left`
+              : totalAnswered > 0
+                ? 'Progress saved on this device'
+                : '20–25 minutes · Free results'}
           </p>
         </div>
         <div
-          className="mt-4 h-1.5 overflow-hidden rounded-full bg-jung-border-light"
+          className="qz-progress"
           role="progressbar"
           aria-label="Assessment progress"
           aria-valuemin={0}
           aria-valuemax={42}
           aria-valuenow={totalAnswered}
         >
-          <div
-            className="h-full rounded-full bg-jung-accent transition-[width] duration-300 motion-reduce:transition-none"
-            style={{ width: `${overallProgress}%` }}
-          />
-        </div>
-        <ol className="studio-chapters" aria-label="Assessment chapters">
-          {layerOrder.map((layer, index) => <li key={layer} aria-current={currentQuestions[0]?.layer === layer ? 'step' : undefined}>
-            <span>
-              {index + 1}
+          {chapters.map((chapter) => (
+            <span
+              key={chapter.layer}
+              className="qz-progress-part"
+              style={{ flexGrow: chapter.total }}
+            >
+              <span style={{ width: `${(chapter.answered / Math.max(1, chapter.total)) * 100}%` }} />
             </span>
-            {['Everyday life', 'Under stress', 'Body cues', 'Attention'][index]}
+          ))}
+        </div>
+        <ol className="qz-chapters" aria-label="Assessment chapters">
+          {chapters.map((chapter) => <li
+            key={chapter.layer}
+            style={{ flexGrow: chapter.total }}
+            aria-current={currentLayer === chapter.layer ? 'step' : undefined}
+            className={chapter.answered === chapter.total ? 'is-done' : undefined}
+          >
+            {chapterLabels[chapter.layer]}
           </li>)}
         </ol>
-        <div className="mt-4 flex items-baseline justify-between gap-3">
-          <h1 className="text-xs font-medium text-jung-secondary">
-            {currentLayerMeta.shortLabel}
-          </h1>
-          <p className="text-xs text-jung-muted">
-            {showTimeEstimate ? `About ${minutesLeft} min left` : `${totalAnswered} of 42 answered`}
-          </p>
-        </div>
+        <h1 className="sr-only">
+          {currentLayerMeta.shortLabel}: {pageLabel}
+        </h1>
       </header>
 
       <section
         id="assessment-questions"
-        className="mx-auto w-full max-w-3xl scroll-mt-24 px-5 pb-10 sm:px-8"
+        className="qz-body scroll-mt-24"
       >
         {resumedAnswered !== null && !showCompletion && (
           <div
-            className="mb-5 flex items-start gap-3 rounded-xl bg-jung-accent-light p-4"
+            className="qz-resume"
             role="status"
           >
-            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-jung-accent" />
-            <p className="flex-1 text-sm leading-6 text-jung-secondary">
+            <CheckCircle2 className="qz-resume-icon" aria-hidden="true" />
+            <p>
               Welcome back. Your {resumedAnswered} answers are saved. Continue
               where you left off.
             </p>
             <button
               type="button"
               onClick={() => setResumedAnswered(null)}
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg hover:bg-white"
+              className="qz-resume-close"
               aria-label="Dismiss resume notice"
             >
-              <X className="h-4 w-4" />
+              <X className="h-5 w-5" />
             </button>
           </div>
         )}
         {currentPage === 0 && (
-          <p className="mb-5 text-sm leading-6 text-jung-muted">
+          <p className="qz-intro">
             Choose what actually happens in your life. “None” is a valid answer
             when nothing fits.
           </p>
@@ -623,7 +640,7 @@ export const Assessment: React.FC = () => {
                   .getElementById(`prompt-${currentQuestions[0]?.id}`)
                   ?.focus({ preventScroll: true });
             }}
-            className="grid gap-4 sm:gap-5"
+            className="qz-questions"
           >
             {currentQuestions.map((question, qIndex) => {
               const questionNumber =
@@ -635,58 +652,55 @@ export const Assessment: React.FC = () => {
                 <fieldset
                   key={question.id}
                   id={`assessment-q-${question.id}`}
-                  className="min-w-0"
+                  className="qz-question"
                 >
-                  <legend className="mb-5 w-full">
+                  <legend className="qz-legend">
                     <h2
                       tabIndex={-1}
                       id={`prompt-${question.id}`}
-                      className="font-display text-[27px] leading-[1.25] text-jung-dark outline-none sm:text-4xl"
+                      className="qz-prompt"
                     >
                       {question.prompt}
                     </h2>
                     {question.context && (
-                      <p className="mt-3 text-sm leading-6 text-jung-secondary">
+                      <p className="qz-context">
                         {question.context}
                       </p>
                     )}
                   </legend>
                   {isFlagged && (
                     <p
-                      className="mb-3 text-sm font-medium text-error"
+                      className="qz-flag"
                       role="alert"
                     >
+                      <AlertCircle className="h-5 w-5 flex-none" aria-hidden="true" />
                       Choose an answer to continue. “None” is fine if nothing
                       fits.
                     </p>
                   )}
-                  <div className="grid gap-2.5">
-                    {question.options.map((option) => (
+                  <div className="qz-options">
+                    {question.options.map((option, optionIndex) => (
                       <label
                         key={option.id}
-                        className="relative block cursor-pointer"
+                        className="qz-option"
                       >
                         <input
                           type="radio"
-                          className="peer sr-only"
+                          className="qz-option-input"
                           name={question.id}
                           value={option.id}
+                          aria-labelledby={`${question.id}-${option.id}-label`}
                           checked={selectedAnswer === option.id}
                           onChange={() =>
                             handleAnswer(question.id, option.id, questionNumber)
                           }
                         />
-                        <span className="flex min-h-14 items-start gap-3 rounded-xl border border-jung-border bg-jung-surface px-4 py-3.5 text-sm leading-6 text-jung-dark transition-colors hover:border-jung-accent-muted hover:bg-jung-accent-light peer-checked:border-jung-accent peer-checked:bg-jung-accent-light peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-jung-accent sm:px-5 sm:text-base">
-                          <span className="mt-0.5 shrink-0 text-jung-accent">
-                            {selectedAnswer === option.id ? (
-                              <CheckCircle2 className="h-5 w-5" />
-                            ) : (
-                              <Circle className="h-5 w-5 text-jung-border" />
-                            )}
-                          </span>
-                          <span>
+                        <span className="qz-option-face">
+                          <span className="qz-option-mark" aria-hidden="true" />
+                          <span className="qz-option-label" id={`${question.id}-${option.id}-label`}>
                             {option.label}
                           </span>
+                          <span className="qz-option-key" data-key={optionIndex + 1} aria-hidden="true" />
                         </span>
                       </label>
                     ))}
@@ -699,35 +713,31 @@ export const Assessment: React.FC = () => {
 
         <div
           data-testid="assessment-action-bar"
-          className="mt-6 border-t border-jung-border py-5 sm:grid sm:grid-cols-[auto_1fr_auto] sm:items-center sm:gap-4"
+          className="qz-actions"
         >
-          <div className="mb-2 text-center text-xs font-medium text-jung-muted sm:hidden">
+          <p className="qz-hint" aria-live="polite">
             {actionHint}
-          </div>
-          <div className="grid grid-cols-[0.82fr_1.18fr] gap-2 sm:contents">
+          </p>
+          <div className="qz-buttons">
             <Button
               variant="outline"
-              size="md"
+              size="lg"
               onClick={handleBack}
               disabled={currentPage === 0 || questionReadyPage !== currentPage || showCompletion}
               leftIcon={<ArrowLeft className="h-4 w-4" />}
-              className="w-full px-4 sm:w-auto"
+              className={`qz-back${currentPage === 0 ? ' is-first max-md:hidden' : ''}`}
             >
               Back
             </Button>
-
-            <div className="hidden text-center text-sm text-jung-muted sm:block">
-              {actionHint}
-            </div>
-
             <Button
               variant={isPageComplete ? 'accent' : 'secondary'}
-              size="md"
+              size="lg"
               onClick={handleNext}
               disabled={questionReadyPage !== currentPage || showCompletion}
               aria-disabled={!isPageComplete}
               rightIcon={<ArrowRight className="h-4 w-4" />}
-              className="w-full px-4 sm:w-auto"
+              // Stays clickable (the hint explains what is missing) but reads as waiting.
+              className="qz-next aria-disabled:bg-jung-surface aria-disabled:text-jung-muted aria-disabled:hover:bg-jung-surface"
             >
               {currentPage === totalPages - 1
                 ? 'See my free map'
@@ -735,7 +745,7 @@ export const Assessment: React.FC = () => {
             </Button>
           </div>
         </div>
-        <p className="studio-keyboard-note">You can also use <kbd>1</kbd>–<kbd>5</kbd> to select · <kbd>Enter</kbd> to continue</p>
+        <p className="qz-keys">You can also use <kbd>1</kbd>–<kbd>5</kbd> to select · <kbd>Enter</kbd> to continue</p>
       </section>
     </div>
   );

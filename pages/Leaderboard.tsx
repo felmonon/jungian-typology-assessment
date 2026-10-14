@@ -24,13 +24,13 @@ const FUNCTION_COLORS: Record<string, string> = {
 };
 
 const FUNCTION_BG_COLORS: Record<string, string> = {
-  Te: 'bg-jung-accent/10 text-jung-accent',
+  Te: 'bg-jung-accent/10 text-jung-accent-text',
   Ti: 'bg-jung-dark/10 text-jung-dark',
-  Fe: 'bg-jung-accent/10 text-jung-accent',
+  Fe: 'bg-jung-accent/10 text-jung-accent-text',
   Fi: 'bg-jung-secondary/10 text-jung-secondary',
-  Se: 'bg-jung-accent/10 text-jung-accent',
+  Se: 'bg-jung-accent/10 text-jung-accent-text',
   Si: 'bg-jung-muted/20 text-jung-muted',
-  Ne: 'bg-jung-accent/10 text-jung-accent',
+  Ne: 'bg-jung-accent/10 text-jung-accent-text',
   Ni: 'bg-jung-dark/10 text-jung-dark',
 };
 
@@ -83,8 +83,8 @@ export const Leaderboard: React.FC = () => {
   return (
     <div className="editorial-container py-8 sm:py-12">
       <div className="text-center mb-8 sm:mb-12">
-        <div className="inline-block p-3 rounded-full bg-jung-accent/10 mb-4">
-          <Trophy className="w-8 h-8 sm:w-10 sm:h-10 text-jung-accent" />
+        <div className="inline-block p-3 bg-jung-accent/10 mb-4">
+          <Trophy className="w-8 h-8 sm:w-10 sm:h-10 text-jung-accent-text" />
         </div>
         <h1 className="text-display text-jung-dark mb-4">
           Community Leaderboard
@@ -96,7 +96,7 @@ export const Leaderboard: React.FC = () => {
 
       <div className="card-elevated rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8">
         <div className="flex items-center justify-center gap-3 text-center">
-          <Users className="w-6 h-6 sm:w-8 sm:h-8 text-jung-accent" />
+          <Users className="w-6 h-6 sm:w-8 sm:h-8 text-jung-accent-text" />
           <div>
             <p className="text-2xl sm:text-3xl font-bold text-jung-dark font-serif">{data?.total || 0}</p>
             <p className="text-xs sm:text-sm text-jung-muted font-data">Total Assessments Completed</p>
@@ -107,16 +107,16 @@ export const Leaderboard: React.FC = () => {
       {data && data.leaderboard.length > 0 && (
         <div className="bg-jung-accent/5 rounded-2xl border border-jung-accent/20 p-4 sm:p-6 mb-6 sm:mb-8">
           <div className="flex items-center gap-2 mb-3 sm:mb-4">
-            <TrendingUp className="w-5 h-5 text-jung-accent" />
+            <TrendingUp className="w-5 h-5 text-jung-accent-text" />
             <h2 className="text-base sm:text-lg font-serif font-bold text-jung-dark">Most Common Dominant Functions</h2>
           </div>
           <div className="flex flex-wrap gap-2 sm:gap-3">
             {data.leaderboard.slice(0, 3).map((entry, index) => (
               <div
                 key={entry.function}
-                className="flex items-center gap-2 bg-jung-surface rounded-full px-4 py-2 shadow-sm border border-jung-border"
+                className="flex items-center gap-2 bg-jung-surface px-4 py-2 shadow-sm border border-jung-border"
               >
-                <span className="text-lg font-bold text-jung-accent font-serif">#{index + 1}</span>
+                <span className="text-lg font-bold text-jung-accent-text font-serif">#{index + 1}</span>
                 <span className={`px-2 py-1 rounded-lg text-sm font-bold font-data ${FUNCTION_BG_COLORS[entry.function] || 'bg-jung-surface text-jung-muted'}`}>
                   {entry.function}
                 </span>
@@ -129,7 +129,7 @@ export const Leaderboard: React.FC = () => {
 
       <div className="card-elevated rounded-2xl overflow-hidden">
         <div className="px-4 sm:px-6 py-4 border-b border-jung-border flex items-center gap-2">
-          <BarChart3 className="w-5 h-5 text-jung-accent" />
+          <BarChart3 className="w-5 h-5 text-jung-accent-text" />
           <h2 className="text-lg font-serif font-bold text-jung-dark">Function Distribution</h2>
         </div>
 
@@ -168,9 +168,9 @@ export const Leaderboard: React.FC = () => {
 
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-jung-dark truncate font-body text-sm sm:text-base">{entry.title}</p>
-                      <div className="mt-1.5 sm:mt-2 h-1.5 sm:h-2 bg-jung-surface rounded-full overflow-hidden">
+                      <div className="mt-1.5 sm:mt-2 h-1.5 sm:h-2 bg-jung-surface overflow-hidden">
                         <div
-                          className={`h-full rounded-full transition-all duration-500 ${FUNCTION_COLORS[entry.function] || 'bg-jung-muted'}`}
+                          className={`h-full transition-all duration-500 ${FUNCTION_COLORS[entry.function] || 'bg-jung-muted'}`}
                           style={{ width: `${barWidth}%` }}
                         />
                       </div>

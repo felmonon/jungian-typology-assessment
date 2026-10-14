@@ -11,7 +11,7 @@ export const DreamJournalingSection: React.FC = () => (
             </div>
             <div>
                 <h2 className="text-display text-3xl text-jung-dark dark:text-white">Dream Archelogy</h2>
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-jung-muted">The Royal Road to the Unconscious</p>
+                <p className="text-[10px] font-bold text-jung-muted">The Royal Road to the Unconscious</p>
             </div>
         </div>
 
@@ -25,7 +25,7 @@ export const DreamJournalingSection: React.FC = () => (
             <div className="grid md:grid-cols-2 gap-10 mb-12">
                 <div className="space-y-6">
                     <div className="flex items-center gap-3 text-jung-dark dark:text-white">
-                        <HelpCircle className="w-5 h-5 text-jung-accent" />
+                        <HelpCircle className="w-5 h-5 text-jung-accent-text" />
                         <h4 className="text-display text-xl">The Inquiry Protocol</h4>
                     </div>
                     <div className="space-y-4">
@@ -60,7 +60,7 @@ export const DreamJournalingSection: React.FC = () => (
                                 transition={{ delay: i * 0.05 }}
                                 className="p-5 rounded-2xl border border-jung-border dark:border-dark-border text-center group hover:border-jung-accent transition-colors"
                             >
-                                <span className="text-xs font-bold uppercase tracking-widest text-jung-muted group-hover:text-jung-accent transition-colors">
+                                <span className="text-xs font-bold text-jung-muted group-hover:text-jung-accent-text transition-colors">
                                     {symbol}
                                 </span>
                             </motion.div>
@@ -71,7 +71,7 @@ export const DreamJournalingSection: React.FC = () => (
                         <div className="absolute bottom-0 right-0 w-32 h-32 bg-jung-accent/10 rounded-full blur-3xl -mr-16 -mb-16" />
                         <div className="flex items-center gap-3 mb-4">
                             <Lightbulb className="w-5 h-5 text-jung-accent-muted" />
-                            <h4 className="text-[10px] font-bold uppercase tracking-widest text-jung-subtle">Analytic Key</h4>
+                            <h4 className="text-[10px] font-bold text-jung-subtle">Analytic Key</h4>
                         </div>
                         <p className="text-sm text-jung-subtle leading-relaxed font-serif italic">
                             {DREAM_JOURNALING_TEMPLATE.jungianTip}

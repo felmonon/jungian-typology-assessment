@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ValidatedAssessmentResults } from '../../lib/validation';
 import { FUNCTION_DESCRIPTIONS } from '../../data/questions';
-import { Sparkles, Brain, Award } from 'lucide-react';
+import { Sparkles, Award, Compass } from 'lucide-react';
 
 interface ResultsHeaderProps {
   results: ValidatedAssessmentResults;
@@ -19,10 +19,10 @@ export const ResultsHeader: React.FC<ResultsHeaderProps> = ({ results }) => {
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="inline-flex items-center gap-3 px-5 py-2.5 bg-jung-accent/10 dark:bg-jung-accent/20 border border-jung-accent/20 rounded-full text-jung-accent"
+          className="inline-flex items-center gap-3 px-5 py-2.5 bg-jung-accent/10 dark:bg-jung-accent/20 border border-jung-accent/20 text-jung-accent-text"
         >
           <Award className="w-5 h-5" />
-          <span className="text-xs font-bold uppercase tracking-[0.2em]">Verified Archetypal Analysis</span>
+          <span className="text-xs font-bold">Verified Archetypal Analysis</span>
         </motion.div>
 
         <motion.h1
@@ -32,7 +32,7 @@ export const ResultsHeader: React.FC<ResultsHeaderProps> = ({ results }) => {
           className="text-display text-4xl sm:text-6xl text-jung-dark dark:text-white tracking-tight"
         >
           Your Cognitive <br />
-          <span className="italic text-jung-accent">Architecture.</span>
+          <span className="italic text-jung-accent-text">Architecture.</span>
         </motion.h1>
 
         <motion.p
@@ -60,7 +60,7 @@ export const ResultsHeader: React.FC<ResultsHeaderProps> = ({ results }) => {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
               <div className="space-y-2">
-                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-jung-accent-muted flex items-center gap-2">
+                <span className="text-[10px] font-bold text-jung-accent-muted flex items-center gap-2">
                   <Sparkles className="w-4 h-4" /> Core Ego Preference
                 </span>
                 <h2 className="text-display text-4xl lg:text-7xl leading-none">
@@ -79,7 +79,7 @@ export const ResultsHeader: React.FC<ResultsHeaderProps> = ({ results }) => {
             <div className="lg:pl-12 lg:border-l border-white/10 space-y-6">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-jung-accent/20 flex items-center justify-center border border-jung-accent/30">
-                  <Brain className="w-6 h-6 text-jung-accent-muted" />
+                  <Compass className="w-6 h-6 text-jung-accent-muted" />
                 </div>
                 <h4 className="text-display text-xl">The Hero Archetype</h4>
               </div>
@@ -87,10 +87,10 @@ export const ResultsHeader: React.FC<ResultsHeaderProps> = ({ results }) => {
                 {dominantDesc.desc.split('.').slice(0, 2).join('.')}... This function marks your primary way of interacting with reality and provides the fundamental orientation of your conscious life.
               </p>
               <div className="flex gap-3">
-                <div className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest text-jung-subtle">
+                <div className="px-4 py-1.5 bg-white/5 border border-white/10 text-[10px] font-bold text-jung-subtle">
                   Primary Orientation
                 </div>
-                <div className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest text-jung-subtle">
+                <div className="px-4 py-1.5 bg-white/5 border border-white/10 text-[10px] font-bold text-jung-subtle">
                   Function-first
                 </div>
               </div>

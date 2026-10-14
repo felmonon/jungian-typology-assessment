@@ -40,7 +40,7 @@ export const DifferentiatorsSection: React.FC = () => {
           </motion.h2>
           <motion.div
             variants={itemVariants}
-            className="w-24 h-1 bg-jung-accent mx-auto rounded-full"
+            className="w-24 h-1 bg-jung-accent mx-auto"
           />
         </motion.div>
 
@@ -62,7 +62,7 @@ export const DifferentiatorsSection: React.FC = () => {
               >
                 <div className="card-premium h-full p-8 bg-white dark:bg-dark-surface border-jung-border dark:border-dark-border group-hover:border-jung-accent/50 transition-colors">
                   <div className="w-12 h-12 bg-jung-accent/5 dark:bg-dark-surface-elevated rounded-2xl flex items-center justify-center mb-6 border border-jung-accent/10 group-hover:bg-jung-accent group-hover:text-white transition-all duration-300">
-                    <Icon className="w-6 h-6 text-jung-accent group-hover:text-white" />
+                    <Icon className="w-6 h-6 text-jung-accent-text group-hover:text-white" />
                   </div>
                   <h3 className="text-display text-xl text-jung-dark mb-4 tracking-tight">
                     {item.title}

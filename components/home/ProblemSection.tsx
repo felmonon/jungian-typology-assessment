@@ -13,7 +13,7 @@ export const ProblemSection: React.FC = () => {
           {/* Header LOG */}
           <div className="flex items-center gap-4 mb-20 border-b border-error/20 pb-4">
             <div className="w-3 h-3 bg-error animate-pulse" />
-            <span className="font-mono text-error text-xs uppercase tracking-widest">System Diagnostics: Current Paradigm Failure</span>
+            <span className="font-mono text-error text-xs">System Diagnostics: Current Paradigm Failure</span>
             <div className="flex-grow text-right font-mono text-jung-muted text-[10px]">ERR_CODE_16</div>
           </div>
 
@@ -36,7 +36,7 @@ export const ProblemSection: React.FC = () => {
                 </p>
                 <p className="text-error">&gt; WARN: Mood_Bias_High</p>
                 <p className="pl-4 opacity-70">Results fluctuating based on serotonin levels.</p>
-                <p className="text-jung-accent">&gt; hypothesis: Current tools measure symptom, not origin.</p>
+                <p className="text-jung-accent-text">&gt; hypothesis: Current tools measure symptom, not origin.</p>
               </div>
             </div>
 
@@ -46,7 +46,7 @@ export const ProblemSection: React.FC = () => {
                 The map is not <br /> <span className="text-jung-muted italic">the territory.</span>
               </h2>
               <p className="text-body text-jung-secondary max-w-sm">
-                Standard tests force you into 4 letters. But the human psyche is a dynamic system. You use <span className="text-jung-accent border-b border-jung-accent/50">all 8 functions</span>, not just 4.
+                Standard tests force you into 4 letters. But the human psyche is a dynamic system. You use <span className="text-jung-accent-text border-b border-jung-accent/50">all 8 functions</span>, not just 4.
               </p>
 
               <div className="space-y-4">
@@ -58,7 +58,7 @@ export const ProblemSection: React.FC = () => {
                   <div key={i} className="flex gap-4 p-4 border border-jung-border/50 hover:bg-jung-surface transition-colors rounded-sm">
                     <AlertOctagon className="w-5 h-5 text-jung-muted flex-shrink-0" />
                     <div>
-                      <h4 className="text-xs font-mono font-bold uppercase tracking-widest text-jung-dark mb-1">{item.title}</h4>
+                      <h4 className="text-xs font-mono font-bold text-jung-dark mb-1">{item.title}</h4>
                       <p className="text-xs text-jung-secondary">{item.desc}</p>
                     </div>
                   </div>

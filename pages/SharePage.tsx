@@ -10,6 +10,7 @@ import { extractDepthResult } from '../utils/depthCompatibility';
 import { AnalyticsEvents, trackEvent } from '../lib/analytics';
 import { pathWithSource } from '../lib/acquisition-source';
 import { useSEO } from '../hooks/useSEO';
+import { ReflectionGlyph } from '../components/brand/TypeJungMark';
 
 const SHARED_RESULT_CAMPAIGN = 'shared_result_compare';
 
@@ -54,7 +55,7 @@ const trackSharedResultCta = (ctaName: string, buttonText: string, destination: 
 };
 
 const SharedResultStickyCta: React.FC<{ assessmentHref: string; sharedSlug?: string }> = ({ assessmentHref, sharedSlug }) => (
-  <div className="fixed inset-x-0 bottom-0 z-40 border-t border-jung-border bg-jung-surface/95 shadow-[0_-12px_32px_rgba(41,28,18,0.14)] backdrop-blur lg:hidden">
+  <div className="fixed inset-x-0 bottom-0 z-40 border-t border-jung-border bg-jung-surface/95 shadow-[0_-12px_32px_rgba(41,28,18,0.14)] lg:hidden">
     <div className="mx-auto grid max-w-screen-sm grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3">
       <div className="min-w-0">
         <p className="truncate text-sm font-semibold text-jung-dark">Compare your own map</p>
@@ -79,7 +80,7 @@ const ComparisonPrompt: React.FC<{
   assessmentHref: string;
   sharedSlug?: string;
 }> = ({ sharedLabel, sharedDetail, ctaName, assessmentHref, sharedSlug }) => (
-  <section className="mt-8 rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm sm:p-6">
+  <section className="mt-8 rounded-lg border border-jung-border bg-jung-surface p-5 sm:p-6">
     <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
       <div>
         <p className="text-label">Compare maps</p>
@@ -100,15 +101,15 @@ const ComparisonPrompt: React.FC<{
 
     <div className="mt-6 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:items-stretch">
       <div className="rounded-lg border border-jung-border bg-jung-base p-4">
-        <p className="text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted">Their map</p>
+        <p className="text-xs font-semibold text-jung-muted">Their map</p>
         <p className="mt-3 text-xl font-semibold text-jung-dark">{sharedLabel}</p>
         <p className="mt-2 text-sm leading-6 text-jung-secondary">{sharedDetail}</p>
       </div>
-      <div className="hidden items-center justify-center text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted sm:flex">
+      <div className="hidden items-center justify-center text-xs font-semibold text-jung-muted sm:flex">
         versus
       </div>
       <div className="rounded-lg border border-dashed border-jung-accent-muted bg-jung-accent-light/60 p-4">
-        <p className="text-xs font-semibold uppercase tracking-[0.08em] text-jung-accent">Your map</p>
+        <p className="text-xs font-semibold text-jung-accent-text">Your map</p>
         <p className="mt-3 text-xl font-semibold text-jung-dark">Unknown until you answer</p>
         <p className="mt-2 text-sm leading-6 text-jung-secondary">
           See whether your energy concentrates in the same channel, its opposite, or a different axis entirely.
@@ -125,12 +126,12 @@ const SharedDepthHero: React.FC<{
   sampleHref: string;
   sharedSlug?: string;
 }> = ({ sharedLabel, sharedDetail, assessmentHref, sampleHref, sharedSlug }) => (
-  <section className="mb-8 overflow-hidden rounded-lg border border-jung-border bg-jung-dark text-white shadow-xl">
+  <section className="mb-8 overflow-hidden rounded-lg border border-jung-border bg-jung-dark text-white ">
     <div className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_26rem]">
       <div className="p-6 sm:p-9">
         <div className="flex flex-wrap items-center gap-3">
           <img src="/logo.svg" alt="TypeJung" className="h-10 w-10 rounded-lg bg-white p-1" />
-          <span className="text-xs font-semibold uppercase tracking-[0.12em] text-white/55">
+          <span className="text-xs font-semibold text-white/55">
             Someone shared their function-stack map
           </span>
         </div>
@@ -169,15 +170,15 @@ const SharedDepthHero: React.FC<{
 
       <div className="border-t border-white/10 bg-white/10 p-6 sm:p-7 lg:border-l lg:border-t-0">
         <div className="rounded-lg border border-white/15 bg-white/10 p-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-white/50">Their map</p>
+          <p className="text-xs font-semibold text-white/50">Their map</p>
           <p className="mt-3 text-2xl font-semibold text-white">{sharedLabel}</p>
           <p className="mt-2 text-sm leading-6 text-white/60">{sharedDetail}</p>
         </div>
-        <div className="my-4 flex items-center justify-center text-xs font-semibold uppercase tracking-[0.14em] text-white/40">
+        <div className="my-4 flex items-center justify-center text-xs font-semibold text-white/40">
           versus
         </div>
         <div className="rounded-lg border border-dashed border-jung-accent-muted bg-jung-accent-light p-4 text-jung-dark">
-          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-jung-accent">Your map</p>
+          <p className="text-xs font-semibold text-jung-accent-text">Your map</p>
           <p className="mt-3 text-2xl font-semibold">Unknown until you answer</p>
           <p className="mt-2 text-sm leading-6 text-jung-secondary">
             Your result may match this axis, invert it, or reveal a completely different dominant-inferior pattern.
@@ -271,7 +272,7 @@ export const SharePage: React.FC = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-jung-surface px-4">
         <div className="text-center">
-          <Loader2 className="w-10 h-10 md:w-12 md:h-12 animate-spin text-jung-accent mx-auto mb-4" />
+          <Loader2 className="w-10 h-10 md:w-12 md:h-12 animate-spin text-jung-accent-text mx-auto mb-4" />
           <p className="text-jung-secondary text-sm md:text-base">Loading shared result...</p>
         </div>
       </div>
@@ -280,12 +281,10 @@ export const SharePage: React.FC = () => {
 
   if (error || !result) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-jung-surface px-4">
+      <div className="min-h-[70vh] flex items-center justify-center bg-jung-base px-4">
         <div className="text-center max-w-md mx-auto">
-          <div className="w-16 h-16 rounded-full bg-jung-accent/10 flex items-center justify-center mx-auto mb-5">
-            <span className="text-3xl font-serif text-jung-accent">ψ</span>
-          </div>
-          <h1 className="text-xl md:text-2xl font-serif font-bold text-jung-dark mb-3">Result Not Found</h1>
+          <ReflectionGlyph className="mx-auto mb-6 h-14 w-14" />
+          <h1 className="text-heading text-3xl text-jung-dark mb-3">Result Not Found</h1>
           <p className="text-jung-secondary mb-6 text-sm md:text-base">{error || 'This shared result could not be found.'}</p>
           <Link to={assessmentHref} onClick={() => trackSharedResultCta('missing_shared_result_start_assessment', 'Take Your Own Assessment', assessmentHref, slug)}>
             <Button className="w-full sm:w-auto min-h-[48px]">Take Your Own Assessment</Button>
@@ -309,7 +308,7 @@ export const SharePage: React.FC = () => {
           sharedSlug={slug}
         />
 
-        <div className="rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm sm:p-6">
+        <div className="rounded-lg border border-jung-border bg-jung-surface p-5 sm:p-6">
           <div className="mb-6 max-w-2xl"><FunctionStackArtwork items={depthResult.hierarchy.map(item => ({ code: `${item.channel === 'thinking' ? 'T' : item.channel === 'feeling' ? 'F' : item.channel === 'sensation' ? 'S' : 'N'}${item.attitude === 'introverted' ? 'i' : 'e'}`, role: item.position.charAt(0).toUpperCase() + item.position.slice(1) }))} compact /></div>
           <p className="text-label">Shared result details</p>
           <h2 className="mt-2 text-heading text-3xl text-jung-dark">{sharedLabel}</h2>
@@ -328,8 +327,8 @@ export const SharePage: React.FC = () => {
                     <span className="font-semibold text-jung-dark">{item.label}</span>
                     <span className="font-mono text-sm text-jung-muted">{item.score}%</span>
                   </div>
-                  <div className="h-3 overflow-hidden rounded-full bg-jung-border-light">
-                    <div className="h-full rounded-full bg-jung-accent" style={{ width: `${item.score}%` }} />
+                  <div className="h-3 overflow-hidden bg-jung-border-light">
+                    <div className="h-full bg-jung-accent" style={{ width: `${item.score}%` }} />
                   </div>
                 </div>
               ))}
@@ -344,7 +343,7 @@ export const SharePage: React.FC = () => {
             <p className="mt-4 text-sm leading-7 text-jung-secondary">
               {depthResult.narrative.developmentalEdge}
             </p>
-            <div className="mt-6 rounded-lg bg-jung-accent-light px-4 py-3 text-sm font-semibold text-jung-accent">
+            <div className="mt-6 rounded-lg bg-jung-accent-light px-4 py-3 text-sm font-semibold text-jung-accent-text">
               {depthResult.reliability.score}% answer consistency
             </div>
           </div>
@@ -382,14 +381,14 @@ export const SharePage: React.FC = () => {
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-3 mb-4">
           <img src="/logo.svg" alt="TypeJung" className="w-10 h-10" />
-          <span className="text-xs md:text-sm font-data font-bold tracking-widest uppercase text-jung-secondary">
+          <span className="text-xs md:text-sm font-data font-bold text-jung-secondary">
             TypeJung Shared Result
           </span>
         </div>
         <p className="text-jung-muted text-sm md:text-base">Someone shared their psychological type profile with you</p>
       </div>
 
-      <section className="mb-8 rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm sm:p-6">
+      <section className="mb-8 rounded-lg border border-jung-border bg-jung-surface p-5 sm:p-6">
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
           <div>
             <p className="text-label">Shared result</p>
@@ -417,9 +416,9 @@ export const SharePage: React.FC = () => {
       </section>
 
       {/* Hero card */}
-      <div className="bg-jung-dark text-white p-6 md:p-10 rounded-2xl mb-8 shadow-xl">
+      <div className="bg-jung-dark text-white p-6 md:p-10 rounded-2xl mb-8 ">
         <div className="text-center">
-          <p className="text-xs md:text-sm uppercase tracking-widest opacity-70 mb-3 font-data">Dominant Function</p>
+          <p className="text-xs md:text-sm opacity-70 mb-3 font-data">Dominant Function</p>
           <h1 className="text-2xl md:text-4xl font-serif font-bold mb-3">
             {funcDescription?.title || dominantFunc} ({dominantFunc})
           </h1>
@@ -441,7 +440,7 @@ export const SharePage: React.FC = () => {
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         {/* Radar chart */}
         <div className="card-elevated p-6 rounded-2xl">
-          <h3 className="text-sm md:text-base font-data font-bold text-jung-secondary mb-4 tracking-widest uppercase text-center">
+          <h3 className="text-sm md:text-base font-data font-bold text-jung-secondary mb-4 text-center">
             Function-Attitude Energy
           </h3>
           <div className="w-full h-[280px] md:h-[350px]">
@@ -472,7 +471,7 @@ export const SharePage: React.FC = () => {
             <h3 className="text-base md:text-lg font-serif font-bold text-jung-dark mb-4">Function Stack</h3>
             <div className="space-y-3">
               <div className="flex justify-between items-center py-3 border-b border-jung-border">
-                <span className="font-medium text-jung-accent text-sm md:text-base font-serif">1. Dominant</span>
+                <span className="font-medium text-jung-accent-text text-sm md:text-base font-serif">1. Dominant</span>
                 <span className="font-serif font-bold text-base md:text-lg">{result.stack.dominant.function}</span>
               </div>
               <div className="flex justify-between items-center py-3 border-b border-jung-border">

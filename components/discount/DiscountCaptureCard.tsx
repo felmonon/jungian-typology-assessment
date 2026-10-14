@@ -116,13 +116,13 @@ export const DiscountCaptureCard: React.FC<DiscountCaptureCardProps> = ({
   const minimalIsDark = minimalTone === 'dark';
   const minimalPrimaryText = minimalIsDark ? 'text-white' : 'text-jung-dark';
   const minimalSecondaryText = minimalIsDark ? 'text-white/70' : 'text-jung-secondary';
-  const minimalMutedText = minimalIsDark ? 'text-white/50' : 'text-jung-muted';
+  const minimalMutedText = minimalIsDark ? 'text-white/70' : 'text-jung-muted';
   const minimalSentStyles = minimalIsDark
     ? 'border border-white/10 bg-white/5 text-white/70'
     : 'bg-jung-surface text-jung-secondary';
   const minimalInputStyles = minimalIsDark
-    ? 'border-white/15 bg-white/5 text-white placeholder:text-white/35 focus:border-jung-accent focus:ring-jung-accent/30'
-    : 'border-jung-border bg-jung-surface text-jung-dark focus:border-jung-accent focus:ring-jung-accent/20';
+    ? 'border-white/40 bg-white/5 text-white placeholder:text-white/60 focus:border-white focus:shadow-[inset_0_0_0_1px_#fff]'
+    : 'border-line-strong bg-jung-base text-jung-dark placeholder:text-jung-muted focus:border-jung-dark focus:shadow-[inset_0_0_0_1px_var(--color-jung-dark)]';
   const minimalButtonClass = minimalIsDark ? 'border-white/15 text-white hover:border-white/30 hover:bg-white/10' : '';
 
   const copyDiscountCode = async () => {
@@ -244,19 +244,19 @@ export const DiscountCaptureCard: React.FC<DiscountCaptureCardProps> = ({
     return (
       <div className={className}>
         <div className="flex items-start gap-3">
-          <Mail className="mt-0.5 h-4 w-4 flex-none text-jung-accent" />
+          <Mail className={`mt-1 h-5 w-5 flex-none ${minimalPrimaryText}`} aria-hidden="true" />
           <div className="min-w-0">
-            <p className={`text-sm font-semibold ${minimalPrimaryText}`}>{minimalTitleCopy}</p>
-            <p className={`mt-1 text-xs leading-5 ${minimalSecondaryText}`}>
+            <p className={`text-lg font-semibold leading-snug ${minimalPrimaryText}`}>{minimalTitleCopy}</p>
+            <p className={`mt-1 text-[0.9375rem] leading-6 ${minimalSecondaryText}`}>
               {minimalDescriptionCopy}
             </p>
           </div>
         </div>
 
         {status === 'sent' ? (
-          <div className={`mt-3 grid gap-3 rounded-lg px-3 py-3 text-xs leading-5 ${minimalSentStyles}`}>
+          <div className={`mt-4 grid gap-3 px-4 py-3 text-[0.9375rem] leading-6 ${minimalSentStyles}`} role="status">
             <div className="flex items-start gap-2">
-              <Check className="mt-0.5 h-3.5 w-3.5 flex-none text-jung-accent" />
+              <Check className="mt-1 h-4 w-4 flex-none text-success" aria-hidden="true" />
               <span>{minimalSentMessageCopy}</span>
             </div>
             {showCheckoutButtons && preferredTier && (
@@ -273,7 +273,7 @@ export const DiscountCaptureCard: React.FC<DiscountCaptureCardProps> = ({
             )}
           </div>
         ) : (
-          <form onSubmit={submit} className="mt-3 grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
+          <form onSubmit={submit} className="mt-4 grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
             <label className="sr-only" htmlFor={`${source}-discount-email`}>
               Email address
             </label>
@@ -284,7 +284,9 @@ export const DiscountCaptureCard: React.FC<DiscountCaptureCardProps> = ({
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="you@example.com"
-              className={`h-12 w-full rounded-lg border px-3 text-sm outline-none transition focus:ring-2 ${minimalInputStyles}`}
+              autoComplete="email"
+              spellCheck={false}
+              className={`h-12 w-full border px-3 text-base outline-none transition ${minimalInputStyles}`}
             />
             <Button
               type="submit"
@@ -305,8 +307,8 @@ export const DiscountCaptureCard: React.FC<DiscountCaptureCardProps> = ({
               className="hidden"
               name="website"
             />
-            {error && <p className="text-xs leading-5 text-error sm:col-span-2">{error}</p>}
-            <p className={`text-xs leading-5 sm:col-span-2 ${minimalMutedText}`}>
+            {error && <p className="text-[0.875rem] leading-5 text-error sm:col-span-2" role="alert">{error}</p>}
+            <p className={`text-[0.8125rem] leading-5 sm:col-span-2 ${minimalMutedText}`}>
               {minimalFootnoteCopy}
             </p>
           </form>
@@ -316,10 +318,10 @@ export const DiscountCaptureCard: React.FC<DiscountCaptureCardProps> = ({
   }
 
   return (
-    <div className={`rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-5 shadow-sm ${className}`}>
+    <div className={`bg-jung-surface p-5 sm:p-6 ${className}`}>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <div className="inline-flex items-center gap-2 rounded-lg bg-jung-surface px-3 py-1.5 text-xs font-semibold text-jung-accent">
+          <div className="inline-flex items-center gap-2 bg-jung-base px-3 py-1.5 text-sm font-semibold text-jung-dark">
             <Tag className="h-3.5 w-3.5" />
             {checkoutCopy}
           </div>
@@ -330,13 +332,13 @@ export const DiscountCaptureCard: React.FC<DiscountCaptureCardProps> = ({
             Stripe applies {EMAIL_CAPTURE_OFFER.code} automatically before payment. Keep the code here, or email yourself a backup copy.
           </p>
         </div>
-        <ShieldCheck className="hidden h-5 w-5 flex-none text-jung-accent sm:block" />
+        <ShieldCheck className="hidden h-5 w-5 flex-none text-jung-dark sm:block" aria-hidden="true" />
       </div>
 
-      <div className="mt-5 rounded-lg border border-jung-border bg-jung-surface p-4">
-        <p className="text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted">Promotion code</p>
+      <div className="mt-5 bg-jung-base p-4">
+        <p className="text-sm font-semibold text-jung-secondary">Promotion code</p>
         <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_auto]">
-          <div className="flex min-h-12 items-center rounded-lg border border-jung-border bg-jung-base px-4 font-mono text-lg font-semibold tracking-[0.12em] text-jung-dark">
+          <div className="flex min-h-12 items-center border border-line-strong bg-jung-base px-4 text-lg font-semibold tabular-nums text-jung-dark">
             {discountCode}
           </div>
           <Button
@@ -355,9 +357,9 @@ export const DiscountCaptureCard: React.FC<DiscountCaptureCardProps> = ({
 
       {status === 'sent' ? (
         <div className="mt-5 grid gap-4">
-          <div className="rounded-lg border border-jung-border bg-jung-surface p-4">
+          <div className="bg-jung-base p-4">
             <div className="flex items-start gap-3">
-              <span className="mt-0.5 inline-flex h-8 w-8 flex-none items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
+              <span className="mt-0.5 inline-flex h-8 w-8 flex-none items-center justify-center bg-jung-surface text-success">
                 <Check className="h-4 w-4" />
               </span>
               <div>
@@ -406,7 +408,9 @@ export const DiscountCaptureCard: React.FC<DiscountCaptureCardProps> = ({
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="you@example.com"
-                className="h-12 w-full rounded-lg border border-jung-border bg-jung-surface pl-10 pr-3 text-sm text-jung-dark outline-none transition focus:border-jung-accent focus:ring-2 focus:ring-jung-accent/20"
+                autoComplete="email"
+                spellCheck={false}
+                className="input-premium pl-10"
               />
             </div>
             <Button type="submit" variant="accent" disabled={status === 'submitting'} isLoading={status === 'submitting'}>

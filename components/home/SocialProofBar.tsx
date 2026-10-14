@@ -24,7 +24,7 @@ export const SocialProofBar: React.FC = () => {
       <div className="editorial-container">
         <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-jung-secondary text-sm font-serif">
           <span className="flex items-center gap-2">
-            <Check className="w-4 h-4 text-jung-accent" />
+            <Check className="w-4 h-4 text-jung-accent-text" />
             <span>Free map before payment</span>
           </span>
           <span className="hidden sm:inline text-jung-muted">|</span>

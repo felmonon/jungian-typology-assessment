@@ -5,6 +5,7 @@ import {
   ASSESSMENT_RESULTS_STORAGE_KEY,
   countAssessmentAnswers,
   dismissAssessmentResumePrompt,
+  hasSavedAssessmentResult,
   readResumableAssessmentProgress,
   writeAssessmentProgress,
 } from '../../lib/assessment-progress';
@@ -71,5 +72,15 @@ describe('assessment progress storage', () => {
 
     expect(sessionStorage.getItem(ASSESSMENT_PROGRESS_DISMISSED_KEY)).toBeNull();
     expect(readResumableAssessmentProgress()?.answeredCount).toBe(2);
+  });
+
+  it('detects a completed map only when the saved result is valid', () => {
+    expect(hasSavedAssessmentResult()).toBe(false);
+    localStorage.setItem(ASSESSMENT_RESULTS_STORAGE_KEY, '{not json');
+    expect(hasSavedAssessmentResult()).toBe(false);
+    localStorage.setItem(ASSESSMENT_RESULTS_STORAGE_KEY, JSON.stringify({ version: 'other' }));
+    expect(hasSavedAssessmentResult()).toBe(false);
+    localStorage.setItem(ASSESSMENT_RESULTS_STORAGE_KEY, JSON.stringify({ version: 'depth-energy-map' }));
+    expect(hasSavedAssessmentResult()).toBe(true);
   });
 });

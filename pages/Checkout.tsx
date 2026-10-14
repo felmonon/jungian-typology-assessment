@@ -756,6 +756,7 @@ export const Checkout: React.FC = () => {
                     variant="accent"
                     size="lg"
                     onClick={startAssessmentFirst}
+                    className="whitespace-nowrap"
                     rightIcon={<ArrowRight className="h-5 w-5" />}
                   >
                     Start free assessment
@@ -764,6 +765,7 @@ export const Checkout: React.FC = () => {
                     variant="secondary"
                     size="lg"
                     onClick={viewSampleReport}
+                    className="whitespace-nowrap"
                     leftIcon={<FileText className="h-5 w-5" />}
                   >
                     View sample report
@@ -781,8 +783,12 @@ export const Checkout: React.FC = () => {
                 </p>
                 <div className="mt-5 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-4">
                   <p className="text-sm font-semibold text-jung-dark">
-                    {EMAIL_CAPTURE_OFFER.code} price:{' '}
+                    Current offer:{' '}
                     {discountedPriceLabel(PRICING[paidTier].amount)}
+                    <span className="ml-2 text-xs font-normal text-jung-muted">
+                      <span className="sr-only">Regular price </span>
+                      <s>{PRICING[paidTier].price}</s>
+                    </span>
                   </p>
                   <p className="mt-1 text-xs leading-5 text-jung-secondary">
                     One-time CAD purchase after your free result. No

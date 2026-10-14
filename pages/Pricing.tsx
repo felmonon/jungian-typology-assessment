@@ -156,7 +156,7 @@ export const Pricing: React.FC = () => {
             </p>
             <p className="mt-6 font-display text-5xl font-semibold">
               {plan.price}
-              <span className="ml-2 font-sans text-xs text-jung-muted">
+              <span className="ml-2 font-sans text-xs tracking-normal text-jung-muted">
                 {plan.id === 'free' ? 'always free' : 'one time · CAD'}
               </span>
             </p>

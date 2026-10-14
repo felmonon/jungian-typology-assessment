@@ -17,6 +17,7 @@ import { usePageTracking } from '../../hooks/useAnalytics';
 import { trackEvent } from '../../lib/analytics';
 import {
   dismissAssessmentResumePrompt,
+  hasSavedAssessmentResult,
   readResumableAssessmentProgress,
   type ResumableAssessmentProgress,
 } from '../../lib/assessment-progress';
@@ -52,6 +53,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
     useState<PendingCheckout | null>(null);
   const [assessmentProgress, setAssessmentProgress] =
     useState<ResumableAssessmentProgress | null>(null);
+  const [hasResult, setHasResult] = useState(false);
 
   usePageTracking();
 
@@ -76,6 +78,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
   const refreshRecoveryPrompts = () => {
     setPendingCheckout(readPendingCheckout());
     setAssessmentProgress(readResumableAssessmentProgress());
+    setHasResult(hasSavedAssessmentResult());
   };
 
   useEffect(() => {
@@ -302,12 +305,14 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
               <span className="studio-wordmark font-display text-xl">TypeJung</span>
             </Link>
             <Link
-              to={location.pathname === '/assessment' ? '/' : '/results'}
+              to={location.pathname !== '/assessment' && hasResult ? '/results' : '/'}
               className="inline-flex min-h-11 items-center text-xs font-medium text-jung-secondary hover:text-jung-accent"
             >
               {location.pathname === '/assessment'
                 ? 'Save & exit'
-                : 'Back to my map'}
+                : hasResult
+                  ? 'Back to my map'
+                  : 'Back to home'}
               <ArrowRight className="ml-2 h-3.5 w-3.5" />
             </Link>
           </div>
@@ -375,14 +380,16 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
             ) : (
               accountAction
             )}
-            <div className="block">
-              <Link
-                to="/assessment"
-                className="btn-premium !min-h-11 !px-4 !py-2 text-xs sm:text-sm"
-              >
-                Start free
-              </Link>
-            </div>
+            {location.pathname !== '/results' && (
+              <div className="block">
+                <Link
+                  to={hasResult ? '/results' : '/assessment'}
+                  className="btn-premium !min-h-11 !px-4 !py-2 text-xs sm:text-sm"
+                >
+                  {hasResult ? 'My map' : 'Start free'}
+                </Link>
+              </div>
+            )}
             <button
               type="button"
               onClick={() => setMobileMenuOpen((open) => !open)}
@@ -439,10 +446,10 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
                 )}
                 <div className="mt-2 grid gap-2 border-t border-jung-border pt-2">
                   <Link
-                    to="/assessment"
+                    to={hasResult ? '/results' : '/assessment'}
                     className="inline-flex min-h-11 items-center justify-center rounded-lg bg-jung-accent px-4 text-sm font-semibold text-white"
                   >
-                    Start free assessment
+                    {hasResult ? 'Open my map' : 'Start free assessment'}
                   </Link>
                   {isAuthenticated ? (
                     <button

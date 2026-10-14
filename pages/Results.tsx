@@ -146,6 +146,15 @@ const getFunctionCode = (
   attitude: AttitudeDirection,
 ) => functionCodeByChannel[channel]?.[attitude] ?? 'unknown';
 
+// Function code (for example "Ni") at a stack position, or null when absent.
+const stackPositionCode = (
+  results: DepthAssessmentResult,
+  position: 'dominant' | 'inferior',
+) => {
+  const item = results.hierarchy.find((entry) => entry.position === position);
+  return item ? getFunctionCode(item.channel, item.attitude) : null;
+};
+
 const formatDate = (iso: string) => {
   try {
     return new Intl.DateTimeFormat(undefined, {
@@ -358,7 +367,10 @@ export const LockedPremiumPreview: React.FC<{
   checkoutError,
 }) => {
     const offerPrice = paidTierPrice(intendedTier);
+    const regularPrice = PRICING[intendedTier].price;
     const isOpening = checkoutOpeningTier === intendedTier;
+    const dominantCode = stackPositionCode(results, 'dominant');
+    const inferiorCode = stackPositionCode(results, 'inferior');
     return (
       <section
         id="report-offer"
@@ -367,12 +379,33 @@ export const LockedPremiumPreview: React.FC<{
       >
         <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
           <div className="studio-report-sample">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="journey-eyebrow">Your map is a beginning</p>
-              <a href="#report-purchase" className="inline-flex min-h-11 items-center text-xs font-semibold text-jung-accent underline underline-offset-4 lg:hidden">{offerPrice} once · See the offer ↓</a>
-            </div>
-            <h2 className="mt-3 font-display text-3xl leading-tight sm:text-4xl">Bring the pattern<br />into your everyday life.</h2>
+            <p className="journey-eyebrow">Your map is a beginning</p>
+            <h2 className="mt-3 font-display text-3xl leading-tight sm:text-4xl">
+              {dominantCode && inferiorCode ? (
+                <>See your {dominantCode}–{inferiorCode} tension<br />in everyday life.</>
+              ) : (
+                <>Bring the pattern<br />into your everyday life.</>
+              )}
+            </h2>
             <p className="mt-4 mb-6 text-sm leading-7 text-jung-secondary">Your map points to {inferiorLabel.toLowerCase()} as a growth edge. Explore what a report can help you notice in stress, relationships, and work.</p>
+            {/* Phones reach the purchase card only after the full sample, so
+                offer the same checkout here with the price and refund terms. */}
+            <div className="mb-6 lg:hidden">
+              <Button
+                variant="accent"
+                size="lg"
+                className="w-full"
+                onClick={() => onUnlock(intendedTier, 'results_locked_preview_top')}
+                disabled={isOpening}
+                rightIcon={<ArrowRight className="h-4 w-4" />}
+              >
+                {`Add the ${PRICING[intendedTier].name} report · ${offerPrice}`}
+              </Button>
+              <p className="mt-2 text-center text-xs text-jung-muted">
+                One time · No subscription · 7-day refund ·{' '}
+                <a href="#report-purchase" className="font-semibold text-jung-accent underline underline-offset-4">What’s included</a>
+              </p>
+            </div>
             <ReportSamplePreview onExplore={topic => trackEvent('result_report_sample_explored', { topic, source: 'results_locked_preview', tier: intendedTier })} />
           </div>
           <div id="report-purchase" className="scroll-mt-28 rounded-2xl border border-jung-border bg-white p-6 sm:p-8 lg:sticky lg:top-36">
@@ -381,10 +414,16 @@ export const LockedPremiumPreview: React.FC<{
             </p>
             <p className="mt-4 font-display text-4xl">
               {offerPrice}
-              <span className="ml-2 font-sans text-xs text-jung-muted">
+              <span className="ml-2 font-sans text-xs tracking-normal text-jung-muted">
                 one time · CAD
               </span>
             </p>
+            {regularPrice !== offerPrice && (
+              <p className="mt-1 text-xs text-jung-muted">
+                <span className="sr-only">Regular price </span>
+                <s>{regularPrice}</s> regular price · current offer
+              </p>
+            )}
             <ul className="my-6 space-y-3">
               {[
                 'Ten personalized, AI-generated sections',
@@ -445,6 +484,10 @@ export const LockedPremiumPreview: React.FC<{
               Your free map is complete. No subscription.
               <br />
               7-day refund policy.
+            </p>
+            <p className="mt-2 flex items-center justify-center gap-1.5 text-xs text-jung-muted">
+              <ShieldCheck className="h-3.5 w-3.5 text-jung-accent" aria-hidden="true" />
+              Secure payment by Stripe
             </p>
             <details className="mt-6 border-t border-jung-border pt-4">
               <summary className="cursor-pointer text-xs font-semibold text-jung-secondary">How this connects to your free map</summary>
@@ -1377,6 +1420,8 @@ export const Results: React.FC = () => {
       attitudeScore: legacyInput.attitudeScore,
     }
     : null;
+  const dominantCode = stackPositionCode(results, 'dominant');
+  const inferiorCode = stackPositionCode(results, 'inferior');
   const functionStackCodes = results.hierarchy.map((item) =>
     getFunctionCode(item.channel, item.attitude),
   );
@@ -1433,10 +1478,14 @@ export const Results: React.FC = () => {
             <button type="button" onClick={() => selectResultView('report', true)}>
               <span>
                 <strong>
-                  {isPremium ? 'Open your personal report' : 'See your pattern in everyday life'}
+                  {isPremium
+                    ? 'Open your personal report'
+                    : dominantCode && inferiorCode
+                      ? `See your ${dominantCode}–${inferiorCode} tension in everyday life`
+                      : 'See your pattern in everyday life'}
                 </strong>
                 <span>
-                  {isPremium ? 'Your full interpretation is here.' : 'Explore a sample of the optional Insight report · ' + paidTierPrice('insight') + ' once.'}
+                  {isPremium ? 'Your full interpretation is here.' : 'Preview the optional Insight report on stress, relationships, and work · ' + paidTierPrice('insight') + ' once.'}
                 </span>
               </span>
               <ArrowRight />
@@ -1458,11 +1507,28 @@ export const Results: React.FC = () => {
                 <p className="mt-4 text-sm leading-7 text-jung-secondary">
                   {freeAnalysis}
                 </p>
+              ) : freeError ? (
+                <div className="mt-4">
+                  <p className="text-sm leading-7 text-jung-secondary">
+                    {results.narrative.practice}
+                  </p>
+                  <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs leading-6 text-jung-muted">
+                    <span>This is the built-in practice for your growth edge. Your written first read did not load this time.</span>
+                    {legacyInput && (
+                      <button
+                        type="button"
+                        onClick={() => fetchFreeAnalysis(legacyInput)}
+                        className="inline-flex min-h-11 items-center gap-1.5 font-semibold text-jung-accent underline underline-offset-4"
+                      >
+                        <RefreshCcw className="h-3.5 w-3.5" aria-hidden="true" />
+                        Try again
+                      </button>
+                    )}
+                  </p>
+                </div>
               ) : (
                 <p className="mt-4 text-sm leading-7 text-jung-secondary">
-                  {freeError
-                    ? `What to notice this week unavailable: ${freeError}`
-                    : 'A short synthesis will appear here when it is ready.'}
+                  A short synthesis will appear here when it is ready.
                 </p>
               )}
             </div>

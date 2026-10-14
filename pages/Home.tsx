@@ -82,7 +82,7 @@ export const Home: React.FC = () => {
       promise: 'mbti_alternative_function_stack',
     });
     AnalyticsEvents.ctaClicked('start_assessment', source, {
-      buttonText: 'Find my pattern',
+      buttonText: 'Get my free map',
       destination,
     });
     navigate(destination);
@@ -92,11 +92,11 @@ export const Home: React.FC = () => {
     <div className="journey-home">
       <section className="studio-hero lab-container">
         <div className="studio-hero-copy">
-          <p className="studio-kicker"><span /> A little more self-understanding</p>
+          <p className="studio-kicker"><span /> Free Jungian cognitive functions test</p>
           <h1>You’re more<br />than <span>four letters.</span></h1>
-          <p className="studio-hero-description">Your type keeps changing. Your everyday patterns can tell you more. Explore how you think, connect, and respond to stress with a free function map.</p>
+          <p className="studio-hero-description">Your MBTI result keeps changing? Look at the pattern underneath it. Get a free map of all eight cognitive functions, your function stack, and the dominant–inferior tension that shows up under stress.</p>
           <div className="studio-hero-actions">
-            <Button variant="accent" size="lg" onClick={() => start('home_hero')} rightIcon={<ArrowRight className="h-4 w-4" />}>Find my pattern</Button>
+            <Button variant="accent" size="lg" onClick={() => start('home_hero')} rightIcon={<ArrowRight className="h-4 w-4" />}>Get my free map</Button>
             <a href="#how-it-works">How it works <span aria-hidden="true">↓</span></a>
           </div>
           <p className="studio-reassurance"><Check size={15} /> Free results. No signup. No card.</p>
@@ -167,7 +167,7 @@ export const Home: React.FC = () => {
             </div>
             <p className="mt-4 font-display text-6xl font-semibold tracking-tight">
               {insightPrice}
-              <span className="ml-3 font-sans text-sm text-jung-muted">
+              <span className="ml-3 font-sans text-sm tracking-normal text-jung-muted">
                 one time · CAD
               </span>
             </p>
@@ -334,7 +334,7 @@ export const Home: React.FC = () => {
           onClick={() => start('home_final_cta')}
           rightIcon={<ArrowRight className="h-4 w-4" />}
         >
-          Find my pattern
+          Get my free map
         </Button>
         <p className="mt-4 text-xs text-jung-muted">
           42 questions. Your core map is free.

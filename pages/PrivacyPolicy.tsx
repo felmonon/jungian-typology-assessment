@@ -21,7 +21,7 @@ export const PrivacyPolicy: React.FC = () => {
           Privacy Policy
         </h1>
         <p className="text-jung-muted text-sm font-serif">
-          Last updated: May 18, 2026
+          Last updated: October 14, 2026
         </p>
       </header>
 
@@ -87,6 +87,12 @@ export const PrivacyPolicy: React.FC = () => {
           </div>
 
           <div className="space-y-4 pl-14">
+            <div className="card-elevated rounded-2xl p-5">
+              <h3 className="font-semibold text-jung-dark mb-2 font-serif">OpenRouter and Microsoft Azure (AI Interpretations)</h3>
+              <p className="text-jung-secondary text-sm m-0 font-body">
+                To generate AI interpretations and coach responses, we send your assessment scores, function-stack map, and any coach messages to OpenAI’s GPT-4.1 Mini model hosted on Microsoft Azure through OpenRouter. We do not include account email addresses or payment details in these prompts. Coach messages can contain personal information you choose to enter. We request only provider endpoints with zero data retention and no training on prompts; requests fail rather than route to an endpoint that does not meet these settings. These services may process data outside Canada. OpenRouter retains operational metadata such as token counts and costs. See <a href="https://openrouter.ai/privacy" target="_blank" rel="noopener noreferrer" className="text-jung-accent hover:underline">OpenRouter’s privacy policy</a> and <a href="https://privacy.microsoft.com/privacystatement" target="_blank" rel="noopener noreferrer" className="text-jung-accent hover:underline">Microsoft’s privacy statement</a>.
+              </p>
+            </div>
             <div className="card-elevated rounded-2xl p-5">
               <h3 className="font-semibold text-jung-dark mb-2 flex items-center gap-2 font-serif">
                 <CreditCard className="w-4 h-4 text-jung-muted" />

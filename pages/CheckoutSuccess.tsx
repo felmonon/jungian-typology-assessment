@@ -5,7 +5,7 @@ import { TypeJungMark } from '../components/brand/TypeJungMark';
 import { Button } from '../components/ui/Button';
 import { isPaidTierId, PRICING, type PaidTierId } from '../data/pricing';
 import { discountedAmount, formatCadAmount } from '../data/discount';
-import { SUPPORT_EMAIL } from '../data/support';
+import { REFUND_WINDOW_DAYS, SUPPORT_EMAIL } from '../data/support';
 
 const MASTERY_UPGRADE_LABEL = formatCadAmount(
   Math.round((discountedAmount(PRICING.mastery.amount) - discountedAmount(PRICING.insight.amount)) * 100) / 100,
@@ -550,10 +550,10 @@ export const CheckoutSuccess: React.FC = () => {
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-2 text-jung-muted">
             <Shield className="h-4 w-4 text-jung-accent" />
-            <span className="text-sm">30-Day Money-Back Guarantee</span>
+            <span className="text-sm">{REFUND_WINDOW_DAYS}-day money-back guarantee</span>
           </div>
           <p className="text-xs text-jung-muted">
-            Not insightful? Email {SUPPORT_EMAIL} within 30 days with your Stripe receipt.
+            Not useful? Email {SUPPORT_EMAIL} within {REFUND_WINDOW_DAYS} days with your Stripe receipt.
           </p>
         </div>
       </div>

@@ -6,6 +6,7 @@ import { buildRequestUrl, getSessionUserFromCookie, getVerifiedSessionId, parseC
 import { enforceRateLimit } from '../_lib/rate-limit.js';
 import { processQueuedRecoveryEmails } from '../_lib/recovery-emails.js';
 import { getSupabaseAdminClient, hasSupabaseAdminConfig } from '../_lib/supabase.js';
+import { handleUnsubscribe } from '../_lib/unsubscribe.js';
 import { EMAIL_CAPTURE_OFFER } from '../../data/discount.js';
 import { isPaidTierId } from '../../data/pricing.js';
 import {
@@ -1796,6 +1797,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       case 'recovery-emails':
         return handleCheckoutRecoveryEmails(req, res);
+
+      case 'unsubscribe':
+        // No IP rate limit: one-click unsubscribes arrive from mail providers'
+        // shared IPs, and the signed token already blocks guessing.
+        return handleUnsubscribe(req, res);
 
       default:
         return res.status(404).json({ error: 'Not found' });

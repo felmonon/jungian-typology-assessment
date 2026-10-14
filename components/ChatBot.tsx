@@ -101,10 +101,10 @@ export const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-jung-dark hover:bg-jung-secondary text-white px-6 py-4 rounded-full shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl min-h-[56px]"
+          className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-jung-dark hover:bg-jung-secondary text-white px-6 py-4 shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl min-h-[56px]"
         >
           <MessageCircle className="w-5 h-5" />
-          <span className="font-serif font-medium tracking-wide">Ask Your Type Guide</span>
+          <span className="font-serif font-medium">Ask Your Type Guide</span>
         </button>
       )}
 
@@ -115,7 +115,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
           <div className="bg-jung-dark text-white p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-jung-accent" />
+                <Sparkles className="w-5 h-5 text-jung-accent-text" />
               </div>
               <div>
                 <h3 className="font-serif font-bold text-lg">Jungian Type Guide</h3>
@@ -175,7 +175,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
             {isLoading && (
               <div className="flex justify-start">
                 <div className="bg-jung-surface border border-jung-border p-4 rounded-2xl rounded-bl-md shadow-sm">
-                  <Loader2 className="w-5 h-5 animate-spin text-jung-accent" />
+                  <Loader2 className="w-5 h-5 animate-spin text-jung-accent-text" />
                 </div>
               </div>
             )}
@@ -193,13 +193,13 @@ export const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Ask about your type..."
-                className="flex-1 px-4 py-3 rounded-full border border-jung-border bg-jung-surface focus:outline-none focus:border-jung-accent focus:ring-2 focus:ring-jung-accent/20 text-sm text-jung-dark placeholder:text-jung-muted font-serif transition-all duration-200"
+                className="flex-1 px-4 py-3 border border-jung-border bg-jung-surface focus:outline-none focus:border-jung-accent focus:ring-2 focus:ring-jung-accent/20 text-sm text-jung-dark placeholder:text-jung-muted font-serif transition-all duration-200"
                 disabled={isLoading}
               />
               <button
                 onClick={sendMessage}
                 disabled={!input.trim() || isLoading}
-                className="p-3 bg-jung-accent text-white rounded-full hover:bg-jung-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 min-w-[48px] min-h-[48px] flex items-center justify-center"
+                className="p-3 bg-jung-accent text-white hover:bg-jung-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 min-w-[48px] min-h-[48px] flex items-center justify-center"
                 aria-label="Send message"
               >
                 <Send className="w-5 h-5" />

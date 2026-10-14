@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ArrowRight, CheckCircle2, Clock, Loader2, ShieldCheck, UserCheck } from 'lucide-react';
+import { ArrowRight, Clock, Loader2, ShieldCheck, UserCheck } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { useSEO, PAGE_SEO } from '../hooks/useSEO';
 import { DEBRIEF_FIELD_MAX, DEBRIEF_OFFER, type DebriefIntake } from '../data/debrief';
@@ -95,7 +95,6 @@ export const Debrief: React.FC = () => {
     <div className="editorial-container py-12 md:py-16">
       <div className="grid gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
         <header className="lg:sticky lg:top-24">
-          <p className="text-label mb-4">Personal Type Debrief</p>
           <h1 className="text-display text-4xl sm:text-5xl">Still stuck between two types?</h1>
           <p className="annotation mt-5 max-w-md text-lg not-italic">
             If your free map is interesting but you are still unsure how to read it, you may not need another
@@ -105,20 +104,17 @@ export const Debrief: React.FC = () => {
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <span className="font-display text-3xl font-semibold text-jung-dark">{DEBRIEF_OFFER.price}</span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-jung-border bg-jung-surface px-3 py-1 text-xs font-semibold text-jung-secondary">
-              <Clock className="h-3.5 w-3.5 text-jung-accent" /> Within {DEBRIEF_OFFER.deliveryHours} hours
+            <span className="inline-flex items-center gap-1.5 bg-jung-surface px-3 py-1 text-xs font-semibold text-jung-secondary">
+              <Clock className="h-3.5 w-3.5" /> Within {DEBRIEF_OFFER.deliveryHours} hours
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-jung-border bg-jung-surface px-3 py-1 text-xs font-semibold text-jung-secondary">
-              <UserCheck className="h-3.5 w-3.5 text-jung-accent" /> Limited to {DEBRIEF_OFFER.weeklyCap}/week
+            <span className="inline-flex items-center gap-1.5 bg-jung-surface px-3 py-1 text-xs font-semibold text-jung-secondary">
+              <UserCheck className="h-3.5 w-3.5" /> Limited to {DEBRIEF_OFFER.weeklyCap}/week
             </span>
           </div>
 
-          <ul className="mt-6 grid gap-2.5">
+          <ul className="list-diamond mt-6 text-jung-secondary">
             {includes.map((item) => (
-              <li key={item} className="flex items-start gap-2.5 text-sm leading-6 text-jung-secondary">
-                <CheckCircle2 className="mt-0.5 h-4 w-4 flex-none text-jung-accent" />
-                <span>{item}</span>
-              </li>
+              <li key={item}>{item}</li>
             ))}
           </ul>
 
@@ -127,11 +123,11 @@ export const Debrief: React.FC = () => {
           </p>
           <p className="mt-2 text-xs leading-5 text-jung-muted">
             No result yet?{' '}
-            <Link to="/assessment" className="inline-block -my-3 py-3 font-semibold text-jung-accent hover:underline">Take the free map first</Link>.
+            <Link to="/assessment" className="inline-block -my-3 py-3 font-semibold text-jung-accent-text hover:underline">Take the free map first</Link>.
           </p>
 
-          <section className="mt-8 rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm">
-            <p className="text-label">Sample debrief excerpt</p>
+          <section className="mt-8 bg-jung-surface p-5">
+            <p className="text-sm font-semibold text-jung-secondary">Sample debrief excerpt</p>
             <h2 className="mt-2 text-heading text-2xl text-jung-dark">What the read can sound like</h2>
             <p className="mt-3 text-sm leading-7 text-jung-secondary">
               Fictional example: “Your TypeJung map points toward Ni-Fe-Ti-Se, but the INFP confusion makes sense
@@ -162,7 +158,7 @@ export const Debrief: React.FC = () => {
 
           <div className="mt-6 grid gap-5">
             <label className="block">
-              <span className="text-sm font-semibold text-jung-dark">Email for delivery <span className="text-jung-tension">*</span></span>
+              <span className="text-sm font-semibold text-jung-dark">Email for delivery <span className="text-jung-accent-text">*</span></span>
               <input
                 type="email"
                 required
@@ -234,7 +230,7 @@ export const Debrief: React.FC = () => {
           </div>
 
           {error && (
-            <p className="mt-4 text-sm font-medium text-jung-tension" role="alert">{error}</p>
+            <p className="mt-4 text-sm font-medium text-jung-accent-text" role="alert">{error}</p>
           )}
 
           <Button
@@ -249,8 +245,8 @@ export const Debrief: React.FC = () => {
           </Button>
 
           <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] font-semibold text-jung-secondary">
-            <span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5 text-jung-accent" />Secure via Stripe</span>
-            <span className="inline-flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 text-jung-accent" />Delivered within {DEBRIEF_OFFER.deliveryHours}h</span>
+            <span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5" />Secure via Stripe</span>
+            <span className="inline-flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" />Delivered within {DEBRIEF_OFFER.deliveryHours}h</span>
           </div>
         </form>
       </div>

@@ -42,12 +42,12 @@ export const HowItWorksSection: React.FC<HowItWorksSectionProps> = ({ onStartAss
           <motion.div variants={item}>
             <div className="flex items-center gap-3 mb-6">
               <span className="h-px w-10 bg-jung-border-light" />
-              <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted">
+              <span className="font-mono text-[10px] text-jung-muted">
                 Procedure
               </span>
             </div>
             <h2 className="text-display text-4xl md:text-5xl leading-[1.02] tracking-tight text-jung-dark max-w-2xl">
-              Three steps from <span className="italic text-jung-accent">curiosity</span> to clarity.
+              Three steps from <span className="italic text-jung-accent-text">curiosity</span> to clarity.
             </h2>
           </motion.div>
           <motion.p
@@ -73,14 +73,14 @@ export const HowItWorksSection: React.FC<HowItWorksSectionProps> = ({ onStartAss
               className="group bg-jung-base p-8 md:p-10 hover:bg-jung-surface transition-colors"
             >
               <div className="flex items-baseline justify-between mb-8">
-                <span className="text-display text-6xl italic text-jung-accent leading-none">
+                <span className="text-display text-6xl italic text-jung-accent-text leading-none">
                   {numerals[i]}
                 </span>
-                <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted">
+                <span className="font-mono text-[10px] text-jung-muted">
                   Step {i + 1} / {HOW_IT_WORKS_STEPS.length}
                 </span>
               </div>
-              <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted mb-3">
+              <p className="font-mono text-[10px] text-jung-muted mb-3">
                 {s.step}
               </p>
               <h3 className="text-display text-2xl text-jung-dark mb-3 leading-tight">
@@ -101,7 +101,7 @@ export const HowItWorksSection: React.FC<HowItWorksSectionProps> = ({ onStartAss
           className="mt-12 flex justify-center"
         >
           <Button onClick={handleStart} className="btn-premium">
-            <span className="font-mono text-[11px] tracking-[0.18em] uppercase">
+            <span className="font-mono text-[11px]">
               Begin assessment
             </span>
           </Button>

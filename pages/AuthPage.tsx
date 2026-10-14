@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { CheckCircle2, LogIn, ShieldCheck, UserPlus } from 'lucide-react';
+import { LogIn, ShieldCheck, UserPlus } from 'lucide-react';
+import { ReflectionGlyph } from '../components/brand/TypeJungMark';
 import { Button } from '../components/ui/Button';
 import { useAuth } from '../hooks/use-auth';
 import { AnalyticsEvents } from '../lib/analytics';
@@ -154,32 +155,26 @@ export const AuthPage: React.FC = () => {
     (activeTab === 'signup' && signupError?.message);
 
   return (
-    <div className="min-h-screen bg-jung-base px-4 py-10 sm:px-6 lg:py-14">
+    <div className="bg-jung-base py-10 lg:py-14">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         className="editorial-container grid gap-6 lg:grid-cols-[0.78fr_1fr] lg:items-start"
       >
-        <aside className="rounded-lg border border-jung-border bg-jung-dark p-7 text-white shadow-xl sm:p-9 lg:sticky lg:top-28">
-          <div className="mb-8 flex h-14 w-14 items-center justify-center rounded-lg bg-white/10 text-white ring-1 ring-white/15">
-            <span className="font-display text-3xl">&psi;</span>
-          </div>
-          <p className="text-sm font-semibold text-white/55">TypeJung account</p>
-          <h1 className="mt-4 text-heading text-4xl text-white sm:text-5xl">
+        <aside className="bg-jung-dark p-7 text-white sm:p-9 lg:sticky lg:top-28">
+          <ReflectionGlyph tone="dark" className="mb-6 h-10 w-10 sm:mb-8 sm:h-12 sm:w-12" />
+          <h1 className="text-heading text-4xl text-white sm:text-5xl">
             {activeTab === 'login' ? 'Sign in to TypeJung' : 'Create your account'}
           </h1>
           <p className="mt-4 max-w-md text-sm leading-7 text-white/72">
             Save your assessment history, restore paid reports, and fully clear local account data when you sign out.
           </p>
 
-          <div className="mt-8 grid gap-3">
+          <ul className="list-diamond mt-8 hidden text-white/85 sm:grid">
             {AUTH_BENEFITS.map((benefit) => (
-              <div key={benefit} className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80">
-                <CheckCircle2 className="h-4 w-4 flex-none text-jung-accent-muted" />
-                {benefit}
-              </div>
+              <li key={benefit}>{benefit}</li>
             ))}
-          </div>
+          </ul>
         </aside>
 
         <div>
@@ -193,11 +188,11 @@ export const AuthPage: React.FC = () => {
               }}
               className={`flex min-h-12 items-center justify-center gap-2 rounded-lg px-3 text-sm font-semibold transition-colors ${
                 activeTab === 'login'
-                  ? 'bg-jung-accent text-white shadow-sm'
+                  ? 'bg-jung-dark text-white'
                   : 'text-jung-secondary hover:bg-jung-surface hover:text-jung-dark'
               }`}
             >
-              <LogIn className="h-4 w-4" />
+              <LogIn className="hidden h-4 w-4 sm:block" aria-hidden="true" />
               Sign in
             </button>
             <button
@@ -208,11 +203,11 @@ export const AuthPage: React.FC = () => {
               }}
               className={`flex min-h-12 items-center justify-center gap-2 rounded-lg px-3 text-sm font-semibold transition-colors ${
                 activeTab === 'signup'
-                  ? 'bg-jung-accent text-white shadow-sm'
+                  ? 'bg-jung-dark text-white'
                   : 'text-jung-secondary hover:bg-jung-surface hover:text-jung-dark'
               }`}
             >
-              <UserPlus className="h-4 w-4" />
+              <UserPlus className="hidden h-4 w-4 sm:block" aria-hidden="true" />
               Create account
             </button>
           </div>
@@ -268,11 +263,7 @@ export const AuthPage: React.FC = () => {
               )}
             </div>
 
-            <div className="my-8 flex items-center gap-4">
-              <div className="h-px flex-1 bg-jung-border" />
-              <span className="text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted">or use email</span>
-              <div className="h-px flex-1 bg-jung-border" />
-            </div>
+            <p className="my-6 text-sm font-semibold text-jung-muted">Or use email</p>
 
             <AnimatePresence mode="wait">
               <motion.div
@@ -416,7 +407,7 @@ export const AuthPage: React.FC = () => {
           </div>
 
           <div className="mt-4 flex items-start justify-center gap-3 rounded-lg border border-jung-border bg-jung-surface p-4 text-jung-secondary shadow-sm">
-            <ShieldCheck className="mt-0.5 h-5 w-5 flex-none text-jung-accent" />
+            <ShieldCheck className="mt-0.5 h-5 w-5 flex-none text-jung-secondary" />
             <p className="text-sm leading-6">
               Your account is used for saved history and paid access. Logging out now clears local TypeJung result and premium cache from this browser.
             </p>

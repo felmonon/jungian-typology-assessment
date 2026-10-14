@@ -31,7 +31,7 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({ results }) => {
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10 pb-6 border-b border-jung-border dark:border-dark-border">
         <div>
           <h2 className="text-display text-3xl text-jung-dark dark:text-white">Full Functional Scan</h2>
-          <p className="text-sm text-jung-muted mt-1 uppercase tracking-widest font-bold">Empirical Raw Data (0-100)</p>
+          <p className="text-sm text-jung-muted mt-1 font-bold">Empirical Raw Data (0-100)</p>
         </div>
         <p className="max-w-md text-sm text-jung-secondary dark:text-jung-muted italic font-serif leading-relaxed">
           High scores indicate conscious mastery. Lower scores reveal your growth edge and the potential for unintegrated psychic movement.
@@ -65,24 +65,24 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({ results }) => {
                     <span className="text-display text-lg text-jung-dark dark:text-white truncate">
                       {FUNCTION_DESCRIPTIONS[item.function].title}
                     </span>
-                    <span className="text-sm font-display font-bold text-jung-accent tabular-nums">
+                    <span className="text-sm font-display font-bold text-jung-accent-text tabular-nums">
                       {item.score}%
                     </span>
                   </div>
 
-                  <div className="relative h-1.5 w-full bg-jung-base dark:bg-white/10 rounded-full overflow-hidden">
+                  <div className="relative h-1.5 w-full bg-jung-base dark:bg-white/10 overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       whileInView={{ width: `${item.score}%` }}
                       transition={{ duration: 1, delay: 0.2 + idx * 0.05 }}
-                      className={`h-full rounded-full transition-colors duration-500 ${isHigh ? 'bg-jung-accent shadow-[0_0_10px_rgba(31,122,103,0.3)]' : isLow ? 'bg-jung-muted' : 'bg-jung-secondary'
+                      className={`h-full transition-colors duration-500 ${isHigh ? 'bg-jung-accent shadow-[0_0_10px_rgba(31,122,103,0.3)]' : isLow ? 'bg-jung-muted' : 'bg-jung-secondary'
                         }`}
                     />
                   </div>
                 </div>
 
                 <div className="hidden lg:block w-12 text-right">
-                  <span className="text-[10px] font-bold uppercase tracking-tighter text-jung-muted">
+                  <span className="text-[10px] font-bold tracking-tighter text-jung-muted">
                     {item.function}
                   </span>
                 </div>

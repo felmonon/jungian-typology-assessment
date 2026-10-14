@@ -44,7 +44,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) =>
         >
           <motion.div variants={item} className="flex items-center gap-3 mb-6">
             <span className="h-px w-10 bg-jung-border-light" />
-            <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-jung-muted">
+            <span className="font-mono text-[10px] text-jung-muted">
               Editions
             </span>
           </motion.div>
@@ -53,7 +53,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) =>
             className="text-display text-4xl md:text-5xl leading-[1.02] tracking-tight text-jung-dark mb-4"
           >
             One assessment.{' '}
-            <span className="italic text-jung-accent">Three&nbsp;depths</span> of insight.
+            <span className="italic text-jung-accent-text">Three&nbsp;depths</span> of insight.
           </motion.h2>
           <motion.p variants={item} className="text-jung-secondary font-light">
             Start free. Upgrade only when you want more. No subscriptions.
@@ -81,8 +81,8 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) =>
                 }`}
               >
                 {highlighted && (
-                  <div className="absolute -top-3 left-8 px-3 py-1 bg-jung-gold text-jung-base rounded-full">
-                    <span className="font-mono text-[10px] tracking-[0.22em] uppercase">
+                  <div className="absolute -top-3 left-8 px-3 py-1 bg-jung-gold text-jung-base">
+                    <span className="font-mono text-[10px]">
                       Recommended
                     </span>
                   </div>
@@ -97,7 +97,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) =>
                     {p.name.charAt(0) + p.name.slice(1).toLowerCase()}
                   </h3>
                   <span
-                    className={`font-mono text-[10px] tracking-[0.22em] uppercase ${
+                    className={`font-mono text-[10px] ${
                       highlighted ? 'text-jung-base/60' : 'text-jung-muted'
                     }`}
                   >
@@ -114,7 +114,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) =>
                     {displayPrice}
                   </span>
                   <span
-                    className={`font-mono text-[10px] tracking-[0.22em] uppercase ml-2 ${
+                    className={`font-mono text-[10px] ml-2 ${
                       highlighted ? 'text-jung-base/60' : 'text-jung-muted'
                     }`}
                   >
@@ -141,13 +141,13 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) =>
 
                 <button
                   onClick={() => handlePricingClick(p.name, p.amount)}
-                  className={`w-full py-3 rounded-full mb-8 transition-all ${
+                  className={`w-full py-3 mb-8 transition-all ${
                     highlighted
-                      ? 'bg-jung-base text-jung-accent hover:bg-jung-base/95'
+                      ? 'bg-jung-base text-jung-accent-text hover:bg-jung-base/95'
                       : 'bg-jung-dark text-jung-base hover:bg-jung-dark/90'
                   }`}
                 >
-                  <span className="font-mono text-[11px] tracking-[0.18em] uppercase">
+                  <span className="font-mono text-[11px]">
                     {p.cta}
                   </span>
                 </button>

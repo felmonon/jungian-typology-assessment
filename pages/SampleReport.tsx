@@ -1,4 +1,4 @@
-import { ArrowRight, FileText } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { REPORT_SAMPLE_EXCERPTS as excerpts } from '../data/report-sample';
@@ -55,38 +55,32 @@ export const SampleReport: React.FC = () => {
     navigate(destination);
   };
   return (
-    <div className="studio-sample-report lab-container py-8 sm:py-14">
-      <header className="mx-auto max-w-3xl">
-        <p className="journey-eyebrow">Inside an Insight report</p>
-        <h1 className="mt-4 font-display text-4xl leading-tight sm:text-6xl">
+    <div className="sr">
+      <header className="wrap sr-head">
+        <h1 className="sr-title">
           From a function map
           <br />
-          <span className="text-jung-accent">
-            to moments you recognize.
-          </span>
+          to moments you recognize.
         </h1>
-        <p className="mt-5 max-w-2xl text-base leading-7 text-jung-secondary">
+        <p className="sr-lead">
           Read four illustrative excerpts below. Your paid report contains ten
           AI-generated sections based on your own assessment result.
         </p>
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-y border-jung-border py-4">
-          <span className="font-display text-xl text-jung-accent">
+        <p className="sr-example">
+          <span className="sr-example-codes">
             Ti · Ne · Si · Fe
           </span>
-          <span className="text-xs text-jung-muted">
+          <span>
             Fictional example · Not your personal result
           </span>
-        </div>
+        </p>
       </header>
-      <div className="mx-auto mt-10 grid max-w-5xl items-start gap-10 lg:grid-cols-[15rem_1fr] lg:gap-12">
-        <details className="rounded-xl border border-jung-border bg-white p-4 lg:hidden">
-          <summary className="cursor-pointer text-sm font-semibold">Explore the four sample chapters</summary>
-          <ol className="mt-3">
+      <div className="wrap reader sr-reader">
+        <details className="sr-jump lg:hidden">
+          <summary>Explore the four sample chapters</summary>
+          <ol>
             {excerpts.map(section => <li key={section.id}>
-              <a className="flex min-h-11 items-center gap-3 text-sm text-jung-secondary" href={`#sample-${section.id}`}>
-                <span className="text-xs text-jung-accent">
-                  {section.number}
-                </span>
+              <a href={`#sample-${section.id}`}>
                 {section.category}
               </a>
             </li>)}
@@ -94,102 +88,101 @@ export const SampleReport: React.FC = () => {
         </details>
         <nav
           aria-label="Sample report contents"
-          className="hidden rounded-xl bg-jung-surface-alt p-5 lg:sticky lg:top-28 lg:block"
+          className="reader-nav hidden lg:block"
         >
-          <p className="journey-eyebrow">In this sample</p>
-          <ol className="mt-3">
+          <p className="reader-nav-title">In this sample</p>
+          <ol className="reader-toc">
             {excerpts.map((section) => (
               <li key={section.id}>
                 <a
                   href={`#sample-${section.id}`}
                   aria-current={activeSection === `sample-${section.id}` ? "location" : undefined}
-                  className="flex min-h-11 items-center gap-3 text-xs leading-5 text-jung-secondary hover:text-jung-accent"
                 >
-                  <span className="font-mono text-jung-gold">
-                    {section.number}
-                  </span>
                   {section.category}
                 </a>
               </li>
             ))}
           </ol>
-          <div className="mt-5 border-t border-jung-border pt-5">
-            <p className="font-display text-3xl">
+          <div className="sr-buy">
+            <p className="sr-buy-price">
               {price}
-              <span className="ml-2 font-sans text-xs text-jung-muted">once · CAD</span>
+              <span>once · CAD</span>
             </p>
-            <p className="mt-2 text-xs leading-6 text-jung-secondary">Ten AI-generated sections based on your result, plus the Function Stack in Depth PDF guide.</p>
+            <p className="sr-buy-text">Ten AI-generated sections based on your result, plus the Function Stack in Depth PDF guide.</p>
             <Button variant="accent" className="mt-4 w-full" onClick={continueToReport}>
               {hasResults ? 'Get my Insight report' : 'Start with my free map'}
             </Button>
-            <p className="mt-3 text-[11px] leading-6 text-jung-muted">Free map first. No subscription.<br />7-day refund policy.</p>
+            <p className="sr-buy-fine">Free map first. No subscription.<br />7-day refund policy.</p>
           </div>
-          <p className="mt-4 border-t border-jung-border pt-4 text-xs leading-6 text-jung-muted">
+          <p className="sr-buy-fine sr-buy-note">
             Educational self-reflection. This is a format example, not a
             diagnosis or a customer testimonial.
           </p>
         </nav>
         <div>
-          {excerpts.map((section) => (
-            <article
-              key={section.id}
-              id={`sample-${section.id}`}
-              className="mb-12 scroll-mt-28 border-b border-jung-border pb-12"
-            >
-              <p className="journey-eyebrow">
-                {section.number} / {section.category}
-              </p>
-              <h2 className="mt-3 font-display text-3xl leading-tight sm:text-4xl">
-                {section.title}
-              </h2>
-              <div className="mt-5 space-y-4">
-                {section.paragraphs.map((paragraph) => (
-                  <p
-                    key={paragraph}
-                    className="text-base leading-8 text-jung-secondary"
-                  >
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-              <div className="mt-6 rounded-xl border-l-2 border-jung-accent bg-jung-accent-light p-5">
-                <h3 className="text-xs font-semibold text-jung-accent">
-                  Try this
-                </h3>
-                <p className="mt-2 text-sm leading-7 text-jung-secondary">
-                  {section.practice}
+          <div className="reader-page">
+            <div className="reader-folio">
+              <span>Illustrative Insight sample</span>
+              <span>Ti · Ne · Si · Fe</span>
+            </div>
+            {excerpts.map((section) => (
+              <article
+                key={section.id}
+                id={`sample-${section.id}`}
+                className="reader-section"
+              >
+                <p className="reader-count">
+                  {section.category}
                 </p>
-              </div>
-            </article>
-          ))}
-          <section className="rounded-2xl bg-jung-accent p-6 text-white sm:p-8">
-            <FileText className="h-5 w-5 text-white/70" />
-            <h2 className="mt-4 font-display text-3xl">
+                <h2>
+                  {section.title}
+                </h2>
+                <div className="sr-paras">
+                  {section.paragraphs.map((paragraph) => (
+                    <p key={paragraph} className="reader-body">
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+                <div className="report-sample-practice sr-practice">
+                  <strong>
+                    Try this
+                  </strong>
+                  <p>
+                    {section.practice}
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
+          <section className="sr-close on-night">
+            <h2 className="sr-close-title">
               What could your map help you notice?
             </h2>
-            <p className="mt-4 text-sm leading-7 text-white/80">
+            <p className="sr-close-text">
               Insight includes ten sections: overview, function dynamics,
               archetypes, stress, relationships, work, individuation, shadow,
               growth, and dream reflection. The Function Stack in Depth PDF
               guide is also included.
             </p>
             <Button
-              variant="inverted"
-              className="mt-6"
+              variant="accent"
+              size="lg"
+              className="mt-6 w-full sm:w-auto"
               onClick={continueToReport}
               rightIcon={<ArrowRight className="h-4 w-4" />}
             >
               {hasResults
-                ? `Get my Insight report — ${price}`
+                ? `Get Insight — ${price}`
                 : 'Start with my free map'}
             </Button>
-            <p className="mt-4 text-xs leading-6 text-white/70">
+            <p className="sr-close-fine">
               {price} once · CAD · No subscription · 7-day refund policy
             </p>
           </section>
           <Link
             to={hasResults ? '/results' : '/pricing'}
-            className="mt-5 inline-flex min-h-11 items-center text-sm font-medium text-jung-accent underline underline-offset-4"
+            className="text-link mt-6"
           >
             {hasResults
               ? 'Return to my free result'

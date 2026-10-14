@@ -30,9 +30,9 @@ export const Learn: React.FC = () => {
 
       {/* Header */}
       <div className="mb-12 border-b border-jung-border pb-8">
-        <div className="flex items-center gap-3 text-jung-accent mb-4">
+        <div className="flex items-center gap-3 text-jung-accent-text mb-4">
           <BookOpen className="w-6 h-6" />
-          <span className="font-serif font-bold uppercase tracking-widest text-sm">The Theory</span>
+          <span className="font-serif font-bold text-sm">The Theory</span>
         </div>
         <h1 className="text-display text-jung-dark mb-6">
           Jungian Depth Psychology
@@ -47,7 +47,7 @@ export const Learn: React.FC = () => {
         {/* Section 1: Core Concept */}
         <section className="mb-16">
           <h2 className="text-3xl font-serif font-bold text-jung-dark mb-6 flex items-center gap-3">
-            <Compass className="w-8 h-8 text-jung-accent" />
+            <Compass className="w-8 h-8 text-jung-accent-text" />
             Orientation of Consciousness
           </h2>
           <p className="text-jung-secondary mb-4">
@@ -63,7 +63,7 @@ export const Learn: React.FC = () => {
 
         {/* Section 2: The Four Functions */}
         <section className="mb-16 card-elevated p-8 rounded-2xl">
-          <h3 className="text-2xl font-serif font-bold text-jung-accent mb-6">The Four Functions</h3>
+          <h3 className="text-2xl font-serif font-bold text-jung-accent-text mb-6">The Four Functions</h3>
           <p className="mb-6 text-jung-secondary">
             Jung identified four basic psychological mechanisms by which consciousness orients itself to experience.
             He divided these into two pairs of opposites:
@@ -77,11 +77,11 @@ export const Learn: React.FC = () => {
               </p>
               <ul className="space-y-4 text-base">
                 <li className="flex gap-3">
-                  <span className="font-bold text-jung-accent min-w-[80px] font-serif">Thinking</span>
+                  <span className="font-bold text-jung-accent-text min-w-[80px] font-serif">Thinking</span>
                   <span className="text-jung-secondary">Evaluates <i>truth/falsity</i> through logical inference and conceptual connection. "What is this?"</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-jung-accent min-w-[80px] font-serif">Feeling</span>
+                  <span className="font-bold text-jung-accent-text min-w-[80px] font-serif">Feeling</span>
                   <span className="text-jung-secondary">Evaluates <i>value/worth</i> (acceptance or rejection) through an ego-based value system. "What is this worth to me?" (Note: This is not emotion; it is rational judgment).</span>
                 </li>
               </ul>
@@ -94,11 +94,11 @@ export const Learn: React.FC = () => {
               </p>
               <ul className="space-y-4 text-base">
                 <li className="flex gap-3">
-                  <span className="font-bold text-jung-accent min-w-[80px] font-serif">Sensation</span>
+                  <span className="font-bold text-jung-accent-text min-w-[80px] font-serif">Sensation</span>
                   <span className="text-jung-secondary">Perceives <i>that</i> something exists through physical stimuli. Focuses on reality and facts.</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-jung-accent min-w-[80px] font-serif">Intuition</span>
+                  <span className="font-bold text-jung-accent-text min-w-[80px] font-serif">Intuition</span>
                   <span className="text-jung-secondary">Perceives <i>possibilities</i> and patterns via the unconscious. Focuses on where things came from and where they are going.</span>
                 </li>
               </ul>
@@ -108,7 +108,7 @@ export const Learn: React.FC = () => {
 
         {/* Section 3: The Attitudes */}
         <section className="mb-16">
-          <h3 className="text-2xl font-serif font-bold text-jung-accent mb-6">The Two Attitudes</h3>
+          <h3 className="text-2xl font-serif font-bold text-jung-accent-text mb-6">The Two Attitudes</h3>
           <p className="text-jung-secondary">
             Every function operates in one of two directions. Jung defined these as the flow of "libido" (psychic energy).
           </p>
@@ -133,7 +133,7 @@ export const Learn: React.FC = () => {
 
         {/* Section 4: The 8 Function-Attitudes */}
         <section className="mb-16">
-          <h3 className="text-2xl font-serif font-bold text-jung-accent mb-6">The 8 Function-Attitudes</h3>
+          <h3 className="text-2xl font-serif font-bold text-jung-accent-text mb-6">The 8 Function-Attitudes</h3>
           <p className="text-jung-secondary">
             Combining the 4 functions with the 2 attitudes creates the 8 distinctive cognitive processes that form the basis of this assessment.
           </p>
@@ -154,7 +154,7 @@ export const Learn: React.FC = () => {
                 href={`/functions/${f.code.toLowerCase()}`}
                 className="flex items-start gap-4 rounded-lg border border-jung-border p-4 text-inherit no-underline transition-colors hover:bg-jung-surface hover:text-jung-dark"
               >
-                <span className="font-mono font-bold text-lg text-jung-accent">{f.code}</span>
+                <span className="font-mono font-bold text-lg text-jung-accent-text">{f.code}</span>
                 <div>
                   <strong className="block text-jung-dark font-serif">{f.name}</strong>
                   <span className="text-sm text-jung-secondary">{f.desc}</span>
@@ -186,7 +186,7 @@ export const Learn: React.FC = () => {
         {/* Section 5: The Dynamics */}
         <section className="mb-16">
            <h2 className="text-3xl font-serif font-bold text-jung-dark mb-6 flex items-center gap-3">
-            <Layers className="w-8 h-8 text-jung-accent" />
+            <Layers className="w-8 h-8 text-jung-accent-text" />
             The Dynamics of the Stack
           </h2>
           <p className="text-jung-secondary">
@@ -195,14 +195,14 @@ export const Learn: React.FC = () => {
 
           <div className="my-8 space-y-8">
             <div>
-              <h3 className="text-xl font-bold text-jung-accent font-serif">1. The Dominant (Superior) Function</h3>
+              <h3 className="text-xl font-bold text-jung-accent-text font-serif">1. The Dominant (Superior) Function</h3>
               <p className="text-base text-jung-secondary">
                 This is your "hero" function—the most differentiated and conscious tool you have. It is how you primarily adapt to reality. If you are a Thinking type, you navigate the world through logic.
               </p>
             </div>
 
             <div>
-              <h3 className="text-xl font-bold text-jung-accent font-serif">2. The Inferior Function</h3>
+              <h3 className="text-xl font-bold text-jung-accent-text font-serif">2. The Inferior Function</h3>
               <p className="text-base text-jung-secondary">
                 Because energy is finite, specializing in one area (e.g., Thinking) necessarily deprives its opposite (Feeling) of energy. The opposite function drops into the unconscious.
               </p>
@@ -217,7 +217,7 @@ export const Learn: React.FC = () => {
 
           <blockquote className="border-l-4 border-jung-accent pl-6 italic my-8 text-jung-secondary text-xl">
             "The inferior function is the ever-bleeding wound of the conscious personality, but through it the unconscious can always come in."
-            <footer className="text-sm font-bold mt-2 not-italic text-jung-accent font-serif">— Marie-Louise von Franz</footer>
+            <footer className="text-sm font-bold mt-2 not-italic text-jung-accent-text font-serif">— Marie-Louise von Franz</footer>
           </blockquote>
         </section>
 

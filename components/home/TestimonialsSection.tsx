@@ -18,13 +18,13 @@ export const TestimonialsSection: React.FC = () => {
         <div className="grid md:grid-cols-3 gap-6">
           {PRODUCT_PROOF_ITEMS.map((item, index) => (
             <div key={index} className="card-elevated p-6">
-              <CheckCircle2 className="w-8 h-8 text-jung-accent mb-4" />
+              <CheckCircle2 className="w-8 h-8 text-jung-accent-text mb-4" />
               <h3 className="font-serif text-xl text-jung-dark mb-3">{item.title}</h3>
               <p className="text-body text-jung-secondary mb-6 leading-relaxed">
                 {item.description}
               </p>
               <div className="border-t border-jung-border pt-4">
-                <p className="text-xs font-mono uppercase tracking-widest text-jung-muted">
+                <p className="text-xs font-mono text-jung-muted">
                   {item.detail}
                 </p>
               </div>

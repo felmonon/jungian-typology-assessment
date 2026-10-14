@@ -62,9 +62,9 @@ export const AITypeCoachSection: React.FC = () => {
           {/* Left Column - Text */}
           <div className="space-y-10">
             <motion.div variants={itemVariants} className="inline-flex">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 backdrop-blur-md rounded-full shadow-2xl">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 shadow-2xl">
                 <Sparkles className="w-4 h-4 text-jung-accent-muted" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Mastery reflection companion</span>
+                <span className="text-[10px] font-bold text-white">Mastery reflection companion</span>
               </div>
             </motion.div>
 
@@ -112,11 +112,11 @@ export const AITypeCoachSection: React.FC = () => {
                     <h4 className="text-display text-lg text-white">AI Type Guide</h4>
                     <span className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-jung-accent-muted animate-pulse" />
-                      <span className="text-[10px] uppercase tracking-widest text-jung-subtle font-bold">Educational prompts ready</span>
+                      <span className="text-[10px] text-jung-subtle font-bold">Educational prompts ready</span>
                     </span>
                   </div>
                 </div>
-                <div className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold text-jung-subtle uppercase">
+                <div className="px-3 py-1 bg-white/5 border border-white/10 text-[10px] font-bold text-jung-subtle">
                   Not therapy
                 </div>
               </div>
@@ -126,7 +126,7 @@ export const AITypeCoachSection: React.FC = () => {
                 {/* User Message */}
                 <div className="flex flex-col items-end space-y-2">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[10px] uppercase tracking-widest text-jung-subtle font-bold">You</span>
+                    <span className="text-[10px] text-jung-subtle font-bold">You</span>
                     <div className="w-5 h-5 rounded bg-white/10 flex items-center justify-center">
                       <User className="w-3 h-3 text-jung-subtle" />
                     </div>
@@ -148,7 +148,7 @@ export const AITypeCoachSection: React.FC = () => {
                         <div className="w-5 h-5 rounded bg-jung-accent/20 flex items-center justify-center">
                           <Bot className="w-3 h-3 text-jung-accent-muted" />
                         </div>
-                        <span className="text-[10px] uppercase tracking-widest text-jung-accent-muted font-bold">Guide</span>
+                        <span className="text-[10px] text-jung-accent-muted font-bold">Guide</span>
                       </div>
                       <div className="bg-jung-accent/10 border border-jung-accent/20 text-white px-5 py-4 rounded-2xl rounded-tl-none max-w-[95%] shadow-2xl relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-1 h-full bg-jung-accent" />
@@ -181,7 +181,7 @@ export const AITypeCoachSection: React.FC = () => {
               </div>
 
               {/* Input Bar Overlay */}
-              <div className="p-6 bg-white/5 border-t border-white/10 backdrop-blur-xl">
+              <div className="p-6 bg-white/5 border-t border-white/10">
                 <div className="flex gap-4 p-2 bg-black/40 rounded-xl border border-white/5">
                   <div className="flex-1 px-4 py-3 text-sm text-jung-subtle font-serif truncate">
                     Ask about your Si-Ne axis development...
@@ -194,7 +194,7 @@ export const AITypeCoachSection: React.FC = () => {
             </div>
 
             {/* Background Light Effect */}
-            <div className="absolute -inset-10 bg-jung-accent/10 blur-[80px] -z-10 rounded-full" />
+            <div className="absolute -inset-10 bg-jung-accent/10 blur-[80px] -z-10" />
           </motion.div>
         </motion.div>
       </div>

@@ -65,8 +65,8 @@ export const ShareSection: React.FC<ShareSectionProps> = ({
     <div className="mt-16 pt-16 border-t border-jung-border dark:border-dark-border">
       <div className="max-w-xl mx-auto text-center">
         <div className="inline-flex items-center gap-2 mb-6">
-          <Share2 className="w-4 h-4 text-jung-accent" />
-          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-jung-muted">Extend the Inquiry</span>
+          <Share2 className="w-4 h-4 text-jung-accent-text" />
+          <span className="text-[10px] font-bold text-jung-muted">Extend the Inquiry</span>
         </div>
 
         <h3 className="text-display text-2xl text-jung-dark dark:text-white mb-8">Share Your Profile</h3>
@@ -82,7 +82,7 @@ export const ShareSection: React.FC<ShareSectionProps> = ({
             <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-jung-accent transition-colors">
               <Camera className="w-6 h-6" />
             </div>
-            <span className="text-xs font-bold uppercase tracking-widest">Instagram Story</span>
+            <span className="text-xs font-bold">Instagram Story</span>
           </button>
 
           <button
@@ -97,7 +97,7 @@ export const ShareSection: React.FC<ShareSectionProps> = ({
                   animate={{ scale: 1 }}
                   className="w-12 h-12 rounded-full bg-jung-accent/10 flex items-center justify-center"
                 >
-                  <Check className="w-6 h-6 text-jung-accent" />
+                  <Check className="w-6 h-6 text-jung-accent-text" />
                 </motion.div>
               ) : (
                 <motion.div
@@ -106,11 +106,11 @@ export const ShareSection: React.FC<ShareSectionProps> = ({
                   animate={{ scale: 1 }}
                   className="w-12 h-12 rounded-full bg-jung-base dark:bg-dark-base flex items-center justify-center group-hover:bg-jung-accent/10 transition-colors"
                 >
-                  <Link2 className="w-6 h-6 text-jung-muted group-hover:text-jung-accent" />
+                  <Link2 className="w-6 h-6 text-jung-muted group-hover:text-jung-accent-text" />
                 </motion.div>
               )}
             </AnimatePresence>
-            <span className={`text-xs font-bold uppercase tracking-widest ${linkCopied ? 'text-jung-accent' : 'text-jung-muted'}`}>
+            <span className={`text-xs font-bold ${linkCopied ? 'text-jung-accent-text' : 'text-jung-muted'}`}>
               {linkCopied ? 'Link Copied!' : 'Copy Share Link'}
             </span>
           </button>
@@ -119,7 +119,7 @@ export const ShareSection: React.FC<ShareSectionProps> = ({
         <div className="flex justify-center gap-6">
           <button
             onClick={shareOnX}
-            className="text-jung-muted hover:text-jung-accent transition-colors p-2 rounded-lg hover:bg-jung-surface-alt"
+            className="text-jung-muted hover:text-jung-accent-text transition-colors p-2 rounded-lg hover:bg-jung-surface-alt"
             aria-label="Share on X"
             title="Share on X (Twitter)"
           >
@@ -127,7 +127,7 @@ export const ShareSection: React.FC<ShareSectionProps> = ({
           </button>
           <button
             onClick={shareOnLinkedIn}
-            className="text-jung-muted hover:text-jung-accent transition-colors p-2 rounded-lg hover:bg-jung-surface-alt"
+            className="text-jung-muted hover:text-jung-accent-text transition-colors p-2 rounded-lg hover:bg-jung-surface-alt"
             aria-label="Share on LinkedIn"
             title="Share on LinkedIn"
           >
@@ -135,7 +135,7 @@ export const ShareSection: React.FC<ShareSectionProps> = ({
           </button>
           <button
             onClick={shareByEmail}
-            className="text-jung-muted hover:text-jung-accent transition-colors p-2 rounded-lg hover:bg-jung-surface-alt"
+            className="text-jung-muted hover:text-jung-accent-text transition-colors p-2 rounded-lg hover:bg-jung-surface-alt"
             aria-label="Send via Email"
             title="Send via email"
           >

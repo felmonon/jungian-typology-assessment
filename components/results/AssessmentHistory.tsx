@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { History, ChevronDown, ChevronUp, Loader2, Eye, Trash2, Calendar, Brain } from 'lucide-react';
+import { History, ChevronDown, ChevronUp, Loader2, Eye, Trash2, Calendar, Compass } from 'lucide-react';
 import { FUNCTION_DESCRIPTIONS } from '../../data/questions';
 
 interface SavedResult {
@@ -45,11 +45,11 @@ export const AssessmentHistory: React.FC<AssessmentHistoryProps> = ({
             <div className="flex items-center gap-4">
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${showHistory ? 'bg-white/10' : 'bg-jung-base dark:bg-dark-base'
                     }`}>
-                    <History className={`w-6 h-6 ${showHistory ? 'text-jung-accent-muted' : 'text-jung-muted group-hover:text-jung-accent'}`} />
+                    <History className={`w-6 h-6 ${showHistory ? 'text-jung-accent-muted' : 'text-jung-muted group-hover:text-jung-accent-text'}`} />
                 </div>
                 <div className="text-left">
                     <h3 className="text-display text-xl font-bold">Evolution History</h3>
-                    <p className={`text-[10px] font-bold uppercase tracking-widest ${showHistory ? 'text-jung-subtle' : 'text-jung-muted'}`}>
+                    <p className={`text-[10px] font-bold ${showHistory ? 'text-jung-subtle' : 'text-jung-muted'}`}>
                         {historyResults.length} Previous Diagnostics
                     </p>
                 </div>
@@ -68,12 +68,12 @@ export const AssessmentHistory: React.FC<AssessmentHistoryProps> = ({
                     <div className="pt-8 space-y-4">
                         {isLoading ? (
                             <div className="flex flex-col items-center justify-center py-20 bg-jung-base dark:bg-dark-base/50 rounded-[2rem]">
-                                <Loader2 className="w-8 h-8 animate-spin text-jung-accent mb-4" />
-                                <span className="text-xs font-bold uppercase tracking-widest text-jung-muted">Accessing Archive...</span>
+                                <Loader2 className="w-8 h-8 animate-spin text-jung-accent-text mb-4" />
+                                <span className="text-xs font-bold text-jung-muted">Accessing Archive...</span>
                             </div>
                         ) : historyResults.length === 0 ? (
                             <div className="text-center py-16 bg-jung-base dark:bg-dark-base rounded-[2rem] border border-dashed border-jung-border dark:border-dark-border">
-                                <Brain className="w-12 h-12 text-jung-muted/30 mx-auto mb-4" />
+                                <Compass className="w-12 h-12 text-jung-muted/30 mx-auto mb-4" />
                                 <p className="text-sm text-jung-secondary font-serif italic">Your psychological snapshots will appear here.</p>
                             </div>
                         ) : (
@@ -106,10 +106,10 @@ export const AssessmentHistory: React.FC<AssessmentHistoryProps> = ({
                                                     <div className="flex items-center gap-3 mb-1">
                                                         <h4 className="text-display text-lg text-jung-dark dark:text-white leading-none">{funcTitle}</h4>
                                                         {isViewing && (
-                                                            <span className="px-2 py-0.5 bg-jung-accent text-[8px] font-bold text-white uppercase tracking-widest rounded">Active</span>
+                                                            <span className="px-2 py-0.5 bg-jung-accent text-[8px] font-bold text-white rounded">Active</span>
                                                         )}
                                                     </div>
-                                                    <div className="flex items-center gap-3 text-[10px] font-bold text-jung-muted uppercase tracking-widest">
+                                                    <div className="flex items-center gap-3 text-[10px] font-bold text-jung-muted">
                                                         <Calendar className="w-3 h-3" />
                                                         {dateStr}
                                                     </div>
@@ -119,7 +119,7 @@ export const AssessmentHistory: React.FC<AssessmentHistoryProps> = ({
                                             <div className="flex items-center gap-3 w-full sm:w-auto">
                                                 <button
                                                     onClick={() => onLoad(result)}
-                                                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-jung-accent/10 text-jung-accent hover:bg-jung-accent hover:text-white rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all"
+                                                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-jung-accent/10 text-jung-accent-text hover:bg-jung-accent hover:text-white rounded-xl text-[10px] font-bold transition-all"
                                                 >
                                                     <Eye className="w-3.5 h-3.5" /> Restore
                                                 </button>

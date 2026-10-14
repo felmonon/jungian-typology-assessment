@@ -5,7 +5,6 @@ import {
   BadgeCheck,
   BarChart3,
   Bot,
-  Brain,
   CheckCircle2,
   ClipboardList,
   CreditCard,
@@ -14,6 +13,7 @@ import {
   Lock,
   ShieldCheck,
   Sparkles,
+  Compass,
 } from 'lucide-react';
 import { PRICING } from '../data/pricing';
 import { discountedPriceLabel } from '../data/discount';
@@ -58,7 +58,7 @@ const operatingLoop = [
     body: 'Read funnel events, checkout attempts, lead captures, support friction, stale copy, and mobile behavior before changing anything.',
   },
   {
-    icon: Brain,
+    icon: Compass,
     title: 'Pick one constraint',
     body: 'Choose the narrowest blocker: unclear promise, checkout leakage, weak trust, missing instrumentation, or poor follow-up.',
   },
@@ -173,7 +173,7 @@ export const AIRunStore: React.FC = () => {
         <div className="lab-container grid gap-10 py-12 sm:py-16 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-start lg:py-20">
           <div>
             <div className="inline-flex items-center gap-2 rounded-lg border border-jung-border bg-jung-surface px-3 py-2 text-sm font-semibold text-jung-secondary shadow-sm">
-              <Bot className="h-4 w-4 text-jung-accent" />
+              <Bot className="h-4 w-4 text-jung-accent-text" />
               Owner-supervised AI operator
             </div>
             <h1 className="mt-6 max-w-4xl text-display text-4xl text-jung-dark sm:text-5xl lg:text-6xl">
@@ -205,7 +205,7 @@ export const AIRunStore: React.FC = () => {
             <div className="mt-6 grid gap-2 sm:grid-cols-2">
               {buyerProof.map(({ icon: Icon, label, body }) => (
                 <div key={label} className="flex gap-3 rounded-lg border border-jung-border bg-jung-surface px-4 py-3 shadow-sm">
-                  <Icon className="mt-0.5 h-4 w-4 flex-none text-jung-accent" />
+                  <Icon className="mt-0.5 h-4 w-4 flex-none text-jung-accent-text" />
                   <div>
                     <p className="text-sm font-semibold leading-5 text-jung-dark">{label}</p>
                     <p className="mt-0.5 text-xs leading-5 text-jung-secondary">{body}</p>
@@ -217,13 +217,13 @@ export const AIRunStore: React.FC = () => {
 
           <aside className="rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm sm:p-6">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-jung-accent" />
+              <Sparkles className="h-5 w-5 text-jung-accent-text" />
               <h2 className="text-heading text-xl text-jung-dark">System status</h2>
             </div>
             <div className="mt-5 divide-y divide-jung-border">
               {operatingStats.map(([label, value]) => (
                 <div key={label} className="grid gap-1 py-3">
-                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted">{label}</p>
+                  <p className="text-xs font-semibold text-jung-muted">{label}</p>
                   <p className="text-sm font-semibold leading-6 text-jung-dark">{value}</p>
                 </div>
               ))}
@@ -246,7 +246,7 @@ export const AIRunStore: React.FC = () => {
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {operatingLoop.map(({ icon: Icon, title, body }) => (
               <div key={title} className="rounded-lg border border-jung-border bg-jung-base p-5">
-                <Icon className="h-5 w-5 text-jung-accent" />
+                <Icon className="h-5 w-5 text-jung-accent-text" />
                 <h3 className="mt-4 text-lg font-semibold text-jung-dark">{title}</h3>
                 <p className="mt-2 text-sm leading-6 text-jung-secondary">{body}</p>
               </div>
@@ -258,13 +258,13 @@ export const AIRunStore: React.FC = () => {
       <section className="lab-container grid gap-8 py-12 sm:py-16 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
         <div className="rounded-lg border border-jung-border bg-jung-surface p-6 shadow-sm">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="h-5 w-5 text-jung-accent" />
+            <ShieldCheck className="h-5 w-5 text-jung-accent-text" />
             <h2 className="text-heading text-2xl text-jung-dark">Guardrails</h2>
           </div>
           <div className="mt-5 grid gap-3">
             {guardrails.map((guardrail) => (
               <div key={guardrail} className="flex gap-3 rounded-lg border border-jung-border bg-jung-base p-4">
-                <Lock className="mt-0.5 h-4 w-4 flex-none text-jung-accent" />
+                <Lock className="mt-0.5 h-4 w-4 flex-none text-jung-accent-text" />
                 <p className="text-sm leading-6 text-jung-secondary">{guardrail}</p>
               </div>
             ))}
@@ -273,14 +273,14 @@ export const AIRunStore: React.FC = () => {
 
         <div className="rounded-lg border border-jung-border bg-jung-surface p-6 shadow-sm">
           <div className="flex items-center gap-2">
-            <ClipboardList className="h-5 w-5 text-jung-accent" />
+            <ClipboardList className="h-5 w-5 text-jung-accent-text" />
             <h2 className="text-heading text-2xl text-jung-dark">Public ledger</h2>
           </div>
           <div className="mt-5 divide-y divide-jung-border">
             {shippedLedger.map((item) => (
               <article key={`${item.date}-${item.title}`} className="py-4 first:pt-0 last:pb-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="rounded-lg bg-jung-accent-light px-2.5 py-1 text-xs font-semibold text-jung-accent">
+                  <span className="rounded-lg bg-jung-accent-light px-2.5 py-1 text-xs font-semibold text-jung-accent-text">
                     {item.date}
                   </span>
                   <h3 className="text-base font-semibold text-jung-dark">{item.title}</h3>
@@ -295,7 +295,7 @@ export const AIRunStore: React.FC = () => {
       <section className="section-rule bg-jung-dark text-white">
         <div className="lab-container py-12 sm:py-16">
           <div className="max-w-3xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.12em] text-jung-accent-muted">Operator stack</p>
+            <p className="text-sm font-semibold text-jung-accent-muted">Operator stack</p>
             <h2 className="mt-3 text-heading text-3xl text-white sm:text-4xl">
               The store is AI-operated, not ungoverned.
             </h2>
@@ -319,7 +319,7 @@ export const AIRunStore: React.FC = () => {
         <div className="rounded-lg border border-jung-border bg-jung-surface p-6 shadow-sm sm:p-8">
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-center">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-lg bg-jung-accent-light px-3 py-1.5 text-sm font-semibold text-jung-accent">
+              <div className="inline-flex items-center gap-2 rounded-lg bg-jung-accent-light px-3 py-1.5 text-sm font-semibold text-jung-accent-text">
                 <CheckCircle2 className="h-4 w-4" />
                 First screen is still the actual product
               </div>

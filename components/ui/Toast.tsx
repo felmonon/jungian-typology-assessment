@@ -57,7 +57,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast, onRemove }) => {
     success: <CheckCircle className="w-5 h-5 text-emerald-500" />,
     error: <AlertCircle className="w-5 h-5 text-red-500" />,
     info: <Info className="w-5 h-5 text-blue-500" />,
-    loading: <Loader2 className="w-5 h-5 text-jung-accent animate-spin" />,
+    loading: <Loader2 className="w-5 h-5 text-jung-accent-text animate-spin" />,
   };
 
   const styles = {
@@ -83,7 +83,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast, onRemove }) => {
       <span className="flex-1 text-sm font-serif text-jung-dark">{toast.message}</span>
       <button
         onClick={handleClose}
-        className="p-1 rounded-full hover:bg-black/5 transition-colors"
+        className="p-1 hover:bg-black/5 transition-colors"
         aria-label="Dismiss notification"
       >
         <X className="w-4 h-4 text-jung-muted" />

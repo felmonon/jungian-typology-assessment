@@ -274,7 +274,7 @@ export const ProfilePage: React.FC = () => {
     return (
       <div className="min-h-[60vh] flex items-center justify-center bg-jung-base">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-10 h-10 animate-spin text-jung-accent" />
+          <Loader2 className="w-10 h-10 animate-spin text-jung-accent-text" />
           <p className="text-body text-jung-muted">Loading your profile...</p>
         </div>
       </div>
@@ -315,21 +315,21 @@ export const ProfilePage: React.FC = () => {
 
         <div className="grid gap-4 md:grid-cols-3">
           <div className="card-elevated p-5">
-            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
+            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent-text">
               <Mail className="h-5 w-5" />
             </div>
             <p className="text-label">Signed in as</p>
             <p className="mt-2 truncate text-sm font-semibold text-jung-dark">{user?.email}</p>
           </div>
           <div className="card-elevated p-5">
-            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
+            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent-text">
               <BarChart3 className="h-5 w-5" />
             </div>
             <p className="text-label">Saved results</p>
             <p className="mt-2 text-2xl font-semibold text-jung-dark">{totalAssessments}</p>
           </div>
           <div className="card-elevated p-5">
-            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
+            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent-text">
               <Clock className="h-5 w-5" />
             </div>
             <p className="text-label">Member since</p>
@@ -344,7 +344,7 @@ export const ProfilePage: React.FC = () => {
                 <p className="text-label">Authentication</p>
                 <h2 className="mt-2 text-heading text-2xl">Login and session</h2>
               </div>
-              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
+              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent-text">
                 <ShieldCheck className="h-5 w-5" />
               </div>
             </div>
@@ -352,35 +352,35 @@ export const ProfilePage: React.FC = () => {
             <div className="grid gap-3">
               <div className="flex items-center justify-between gap-4 rounded-lg border border-jung-border bg-jung-base p-4">
                 <div className="flex items-center gap-3">
-                  <KeyRound className="h-4 w-4 text-jung-accent" />
+                  <KeyRound className="h-4 w-4 text-jung-accent-text" />
                   <div>
                     <p className="text-sm font-semibold text-jung-dark">Email and password</p>
                     <p className="text-xs text-jung-muted">Available for every account</p>
                   </div>
                 </div>
-                <span className="rounded-full bg-jung-accent-light px-3 py-1 text-xs font-semibold text-jung-accent">Active</span>
+                <span className=" bg-jung-accent-light px-3 py-1 text-xs font-semibold text-jung-accent-text">Active</span>
               </div>
               <div className="flex items-center justify-between gap-4 rounded-lg border border-jung-border bg-jung-base p-4">
                 <div className="flex items-center gap-3">
-                  <span className="flex h-4 w-4 items-center justify-center text-xs font-bold text-jung-accent">G</span>
+                  <span className="flex h-4 w-4 items-center justify-center text-xs font-bold text-jung-accent-text">G</span>
                   <div>
                     <p className="text-sm font-semibold text-jung-dark">Google sign-in</p>
                     <p className="text-xs text-jung-muted">Uses Google OAuth when configured</p>
                   </div>
                 </div>
-                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${providers.google ? 'bg-jung-accent-light text-jung-accent' : 'bg-jung-surface-alt text-jung-secondary'}`}>
+                <span className={` px-3 py-1 text-xs font-semibold ${providers.google ? 'bg-jung-accent-light text-jung-accent-text' : 'bg-jung-surface-alt text-jung-secondary'}`}>
                   {providers.google ? 'Enabled' : 'Unavailable'}
                 </span>
               </div>
               <div className="flex items-center justify-between gap-4 rounded-lg border border-jung-border bg-jung-base p-4">
                 <div className="flex items-center gap-3">
-                  <span className="flex h-4 w-4 items-center justify-center rounded-full border border-jung-accent text-[10px] font-bold text-jung-accent">A</span>
+                  <span className="flex h-4 w-4 items-center justify-center rounded-full border border-jung-accent text-[10px] font-bold text-jung-accent-text">A</span>
                   <div>
                     <p className="text-sm font-semibold text-jung-dark">Apple sign-in</p>
                     <p className="text-xs text-jung-muted">Appears on login once enabled for production</p>
                   </div>
                 </div>
-                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${providers.apple ? 'bg-jung-accent-light text-jung-accent' : 'bg-jung-surface-alt text-jung-secondary'}`}>
+                <span className={` px-3 py-1 text-xs font-semibold ${providers.apple ? 'bg-jung-accent-light text-jung-accent-text' : 'bg-jung-surface-alt text-jung-secondary'}`}>
                   {providers.apple ? 'Enabled' : 'Optional'}
                 </span>
               </div>
@@ -403,7 +403,7 @@ export const ProfilePage: React.FC = () => {
                 <p className="text-label">Privacy</p>
                 <h2 className="mt-2 text-heading text-2xl">Data retention</h2>
               </div>
-              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent">
+              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-jung-accent-light text-jung-accent-text">
                 <RotateCcw className="h-5 w-5" />
               </div>
             </div>
@@ -458,14 +458,14 @@ export const ProfilePage: React.FC = () => {
                 <img
                   src={profileImageUrl}
                   alt="Profile"
-                  className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-jung-accent/20 shadow-lg"
+                  className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-jung-accent/20 "
                 />
               ) : (
-                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-jung-surface-alt flex items-center justify-center border-4 border-jung-accent/20 shadow-lg">
+                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-jung-surface-alt flex items-center justify-center border-4 border-jung-accent/20 ">
                   <User className="w-10 h-10 sm:w-12 sm:h-12 text-jung-muted" />
                 </div>
               )}
-              <label className="absolute bottom-0 right-0 w-9 h-9 sm:w-10 sm:h-10 bg-jung-accent rounded-full flex items-center justify-center cursor-pointer shadow-md hover:bg-jung-accent-hover hover:scale-105 transition-all duration-200">
+              <label className="absolute bottom-0 right-0 w-9 h-9 sm:w-10 sm:h-10 bg-jung-accent rounded-full flex items-center justify-center cursor-pointer hover:bg-jung-accent-hover hover:scale-105 transition-all duration-200">
                 <Camera className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 <input
                   type="file"
@@ -523,7 +523,7 @@ export const ProfilePage: React.FC = () => {
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="w-full py-3.5 min-h-[48px] bg-jung-accent text-white text-ui font-semibold rounded-lg shadow-md shadow-jung-accent/20 hover:bg-jung-accent-hover hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
+              className="w-full py-3.5 min-h-[48px] bg-jung-accent text-white text-ui font-semibold rounded-lg hover:bg-jung-accent-hover hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
             >
               <Save className="w-5 h-5" />
               {isSaving ? 'Saving...' : 'Save Changes'}
@@ -579,7 +579,7 @@ export const ProfilePage: React.FC = () => {
         <div className="card-elevated p-5 sm:p-6 md:p-8">
           <h2 className="text-heading text-lg sm:text-xl md:text-2xl mb-5 md:mb-6 flex items-center gap-3">
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-jung-accent/10 flex items-center justify-center shrink-0">
-              <History className="w-4 h-4 sm:w-5 sm:h-5 text-jung-accent" />
+              <History className="w-4 h-4 sm:w-5 sm:h-5 text-jung-accent-text" />
             </div>
             Assessment History
           </h2>
@@ -589,17 +589,17 @@ export const ProfilePage: React.FC = () => {
             <div className="bg-jung-surface-alt rounded-lg p-4 border border-jung-border-light">
               <div className="flex items-center gap-2 text-jung-muted mb-1.5">
                 <BarChart3 className="w-4 h-4" />
-                <span className="text-xs font-medium uppercase tracking-wide">Total Assessments</span>
+                <span className="text-xs font-medium">Total Assessments</span>
               </div>
-              <p className="text-2xl sm:text-3xl font-serif font-bold text-jung-accent">{totalAssessments}</p>
+              <p className="text-2xl sm:text-3xl font-serif font-bold text-jung-accent-text">{totalAssessments}</p>
             </div>
 
             <div className="bg-jung-surface-alt rounded-lg p-4 border border-jung-border-light">
               <div className="flex items-center gap-2 text-jung-muted mb-1.5">
                 <Eye className="w-4 h-4" />
-                <span className="text-xs font-medium uppercase tracking-wide">Recent Dominant</span>
+                <span className="text-xs font-medium">Recent Dominant</span>
               </div>
-              <p className="text-lg sm:text-xl font-serif font-bold text-jung-accent truncate">
+              <p className="text-lg sm:text-xl font-serif font-bold text-jung-accent-text truncate">
                 {mostRecentResult ? mostRecentResult.stack.dominant.function : '—'}
               </p>
               {mostRecentResult && (
@@ -612,9 +612,9 @@ export const ProfilePage: React.FC = () => {
             <div className="bg-jung-surface-alt rounded-lg p-4 border border-jung-border-light">
               <div className="flex items-center gap-2 text-jung-muted mb-1.5">
                 <Clock className="w-4 h-4" />
-                <span className="text-xs font-medium uppercase tracking-wide">Member Since</span>
+                <span className="text-xs font-medium">Member Since</span>
               </div>
-              <p className="text-lg sm:text-xl font-serif font-bold text-jung-accent">
+              <p className="text-lg sm:text-xl font-serif font-bold text-jung-accent-text">
                 {accountCreatedDate || '—'}
               </p>
             </div>
@@ -624,7 +624,7 @@ export const ProfilePage: React.FC = () => {
           {isLoadingHistory ? (
             <div className="flex items-center justify-center py-12 sm:py-16">
               <div className="flex flex-col items-center gap-4">
-                <Loader2 className="w-8 h-8 animate-spin text-jung-accent" />
+                <Loader2 className="w-8 h-8 animate-spin text-jung-accent-text" />
                 <p className="text-body text-jung-muted">Loading history...</p>
               </div>
             </div>
@@ -637,7 +637,7 @@ export const ProfilePage: React.FC = () => {
               <p className="text-sm text-jung-muted mb-6">Take your first assessment to see your results here.</p>
               <button
                 onClick={() => navigate('/assessment')}
-                className="px-6 py-3 min-h-[44px] bg-jung-accent text-white text-ui font-semibold rounded-lg shadow-md shadow-jung-accent/20 hover:bg-jung-accent-hover hover:-translate-y-0.5 transition-all duration-200"
+                className="px-6 py-3 min-h-[44px] bg-jung-accent text-white text-ui font-semibold rounded-lg hover:bg-jung-accent-hover hover:-translate-y-0.5 transition-all duration-200"
               >
                 Start Assessment
               </button>
@@ -647,7 +647,7 @@ export const ProfilePage: React.FC = () => {
               {historyResults.map((result) => (
                 <div
                   key={result.id}
-                  className="border border-jung-border rounded-lg p-4 bg-jung-surface hover:border-jung-accent/30 hover:shadow-md transition-all duration-200"
+                  className="border border-jung-border rounded-lg p-4 bg-jung-surface hover:border-jung-accent/30 transition-all duration-200"
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                     <div className="flex-1 min-w-0">

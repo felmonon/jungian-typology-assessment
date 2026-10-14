@@ -109,7 +109,7 @@ export const TypeDetailPage: React.FC = () => {
             </span>
             <div className="h-16 w-px bg-white/30" />
             <div>
-              <span className="text-sm uppercase tracking-wider opacity-80">{data.nickname}</span>
+              <span className="text-sm opacity-80">{data.nickname}</span>
               <h1 className="text-2xl md:text-4xl font-serif font-bold">
                 {data.name}
               </h1>
@@ -136,15 +136,15 @@ export const TypeDetailPage: React.FC = () => {
                 <Link
                   key={func}
                   to={`/functions/${funcLower}`}
-                  className="group bg-white rounded-xl p-4 shadow-sm border border-jung-border hover:shadow-md hover:border-jung-accent/30 transition-all"
+                  className="group bg-white rounded-xl p-4 border border-jung-border hover:border-jung-accent/30 transition-all"
                 >
                   <div className="flex items-center gap-2 mb-2">
                     <span className={`w-3 h-3 rounded-full ${stackPositionColors[idx]}`} />
-                    <span className="text-xs text-jung-muted uppercase tracking-wider">
+                    <span className="text-xs text-jung-muted">
                       {stackPositionLabels[idx]}
                     </span>
                   </div>
-                  <div className="font-mono text-2xl font-bold text-jung-dark group-hover:text-jung-accent transition-colors">
+                  <div className="font-mono text-2xl font-bold text-jung-dark group-hover:text-jung-accent-text transition-colors">
                     {func}
                   </div>
                   <div className="text-sm text-jung-secondary">
@@ -180,14 +180,14 @@ export const TypeDetailPage: React.FC = () => {
           <div>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-full bg-jung-accent-light flex items-center justify-center">
-                <AlertTriangle className="w-5 h-5 text-jung-accent" />
+                <AlertTriangle className="w-5 h-5 text-jung-accent-text" />
               </div>
               <h2 className="text-xl font-serif font-bold text-jung-dark">Challenges</h2>
             </div>
             <ul className="space-y-3">
               {data.challenges.map((challenge, idx) => (
                 <li key={idx} className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-jung-accent-light text-jung-accent flex items-center justify-center text-sm font-bold flex-shrink-0">
+                  <span className="w-6 h-6 rounded-full bg-jung-accent-light text-jung-accent-text flex items-center justify-center text-sm font-bold flex-shrink-0">
                     {idx + 1}
                   </span>
                   <span className="text-jung-dark">{challenge}</span>
@@ -237,7 +237,7 @@ export const TypeDetailPage: React.FC = () => {
           <div className="bg-jung-accent-light rounded-2xl p-6 md:p-8 border border-jung-border">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-full bg-jung-accent-light flex items-center justify-center">
-                <AlertTriangle className="w-5 h-5 text-jung-accent" />
+                <AlertTriangle className="w-5 h-5 text-jung-accent-text" />
               </div>
               <h2 className="text-xl font-serif font-bold text-jung-dark">Under Stress</h2>
             </div>
@@ -287,9 +287,9 @@ export const TypeDetailPage: React.FC = () => {
 
         {/* CTA */}
         <section className="text-center py-12 border-t border-jung-border">
-          <div className="inline-flex items-center gap-2 text-jung-accent mb-4">
+          <div className="inline-flex items-center gap-2 text-jung-accent-text mb-4">
             <Sparkles className="w-5 h-5" />
-            <span className="text-sm font-semibold uppercase tracking-wider">Discover Your Type</span>
+            <span className="text-sm font-semibold">Discover Your Type</span>
           </div>
           <h2 className="text-2xl md:text-3xl font-serif font-bold text-jung-dark mb-4">
             Are you an {data.code}?

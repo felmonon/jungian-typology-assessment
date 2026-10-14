@@ -16,7 +16,7 @@ export const IndividuationSection: React.FC<IndividuationSectionProps> = ({ stac
             </div>
             <div>
                 <h2 className="text-display text-3xl text-jung-dark dark:text-white">Path of Individuation</h2>
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-jung-muted">Integrating the Psychic Whole</p>
+                <p className="text-[10px] font-bold text-jung-muted">Integrating the Psychic Whole</p>
             </div>
         </div>
 
@@ -53,7 +53,7 @@ export const IndividuationSection: React.FC<IndividuationSectionProps> = ({ stac
                         0{i + 1}
                     </div>
                     <h4 className="text-display text-lg text-jung-dark dark:text-white mb-2">{stage.name}</h4>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-jung-muted mb-4">{stage.description}</p>
+                    <p className="text-[10px] font-bold text-jung-muted mb-4">{stage.description}</p>
                     <div className="mt-auto pt-6 border-t border-jung-border dark:border-dark-border">
                         <p className="text-xs text-jung-secondary dark:text-jung-muted italic font-serif leading-relaxed">
                             "{stage.task}"
@@ -70,7 +70,7 @@ export const IndividuationSection: React.FC<IndividuationSectionProps> = ({ stac
                     <AlertTriangle className="w-5 h-5 text-error" />
                 </div>
                 <div>
-                    <h4 className="text-xs font-bold uppercase tracking-[0.3em] text-error mb-2">Psychic Safeguard</h4>
+                    <h4 className="text-xs font-bold text-error mb-2">Psychic Safeguard</h4>
                     <p className="text-sm text-jung-subtle leading-relaxed font-serif italic">
                         {INDIVIDUATION_GUIDANCE.warning}
                     </p>

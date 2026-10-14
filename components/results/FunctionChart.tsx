@@ -19,7 +19,7 @@ const CustomTooltip: React.FC<any> = ({ active, payload, label }) => {
       <div className="glass-morphism dark p-4 border border-white/10 rounded-2xl shadow-2xl max-w-[280px]">
         <div className="flex items-center justify-between mb-3">
           <span className="text-2xl font-display font-bold text-jung-accent-muted">{label}</span>
-          <span className="text-[10px] font-bold px-2 py-0.5 bg-jung-accent/20 text-jung-accent-muted rounded-full uppercase tracking-widest">
+          <span className="text-[10px] font-bold px-2 py-0.5 bg-jung-accent/20 text-jung-accent-muted">
             {intensity}
           </span>
         </div>
@@ -58,10 +58,10 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
         <div className="flex items-center justify-between mb-10">
           <div>
             <h3 className="text-display text-2xl text-jung-dark dark:text-white">Psychological Map</h3>
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-jung-muted">Functional Spectrum Analysis</p>
+            <p className="text-[10px] font-bold text-jung-muted">Functional Spectrum Analysis</p>
           </div>
           <div className="w-12 h-12 bg-jung-accent/10 rounded-2xl flex items-center justify-center">
-            <Activity className="w-6 h-6 text-jung-accent" />
+            <Activity className="w-6 h-6 text-jung-accent-text" />
           </div>
         </div>
 
@@ -121,11 +121,11 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
         <div className="flex justify-center gap-8 mt-10">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-jung-accent" />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-jung-muted">Conscious Reach</span>
+            <span className="text-[10px] font-bold text-jung-muted">Conscious Reach</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-jung-border" />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-jung-muted">Potential</span>
+            <span className="text-[10px] font-bold text-jung-muted">Potential</span>
           </div>
         </div>
       </motion.div>
@@ -145,7 +145,7 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
               <TrendingUp className="w-5 h-5 text-jung-accent-muted" />
             </div>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-jung-subtle">Primary Attitude</p>
+              <p className="text-[10px] font-bold text-jung-subtle">Primary Attitude</p>
               <h3 className="text-display text-2xl">{attitudeType}</h3>
             </div>
           </div>
@@ -154,7 +154,7 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
           </p>
           <div className="flex items-end gap-2">
             <div className="text-4xl font-display font-bold text-jung-accent-muted">{Math.abs(results.attitudeScore).toFixed(1)}</div>
-            <div className="text-[10px] font-bold uppercase tracking-widest text-jung-subtle mb-2">Intensity Vector</div>
+            <div className="text-[10px] font-bold text-jung-subtle mb-2">Intensity Vector</div>
           </div>
         </motion.div>
 
@@ -167,7 +167,7 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
           className="card-premium p-8 bg-white dark:bg-dark-surface border-jung-border dark:border-dark-border"
         >
           <div className="flex items-center gap-3 mb-8">
-            <Layers className="w-5 h-5 text-jung-accent" />
+            <Layers className="w-5 h-5 text-jung-accent-text" />
             <h3 className="text-display text-xl">The Hierarchy</h3>
           </div>
           <div className="space-y-4">
@@ -181,15 +181,15 @@ export const FunctionChart: React.FC<FunctionChartProps> = ({ results }) => {
               return (
                 <div key={key} className="flex items-center justify-between p-4 rounded-2xl bg-jung-base dark:bg-dark-surface-elevated group hover:scale-[1.02] transition-transform">
                   <div className="flex items-center gap-4">
-                    <div className={`w-2 h-10 rounded-full ${color}`} />
+                    <div className={`w-2 h-10 ${color}`} />
                     <div>
-                      <p className="text-[9px] font-bold uppercase tracking-widest text-jung-muted mb-0.5">{label}</p>
+                      <p className="text-[9px] font-bold text-jung-muted mb-0.5">{label}</p>
                       <p className="text-lg font-display text-jung-dark dark:text-white leading-none">{func.function}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-xl font-display font-bold text-jung-accent">{func.score}%</p>
-                    <p className="text-[8px] font-bold uppercase tracking-tighter text-jung-muted">Active Potency</p>
+                    <p className="text-xl font-display font-bold text-jung-accent-text">{func.score}%</p>
+                    <p className="text-[8px] font-bold tracking-tighter text-jung-muted">Active Potency</p>
                   </div>
                 </div>
               );

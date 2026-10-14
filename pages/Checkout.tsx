@@ -1,7 +1,7 @@
 import {
+  AlertCircle,
   ArrowLeft,
   ArrowRight,
-  Check,
   FileText,
   Loader2,
   ShieldCheck,
@@ -710,71 +710,73 @@ export const Checkout: React.FC = () => {
   }, [checkoutRecoveryOptIn, hasCheckoutEmail, paidTier, startStripeCheckout]);
 
   const checkoutEmailCard = (
-    <details className="mt-5 border-t border-jung-border pt-3">
-      <summary className="cursor-pointer py-2 text-xs font-medium text-jung-secondary">
+    <details className="co-later">
+      <summary>
         Email me a link to return later (optional)
       </summary>
-      <label
-        htmlFor="checkout-recovery-email"
-        className="mt-3 block text-xs font-medium"
-      >
-        Email address
-      </label>
-      <input
-        ref={checkoutEmailInputRef}
-        id="checkout-recovery-email"
-        type="email"
-        autoComplete="email"
-        value={checkoutRecoveryEmail}
-        onChange={(event) => {
-          setCheckoutRecoveryEmail(event.target.value);
-          setCheckoutRecoverySaveStatus('idle');
-          setRecoveryEmailError(null);
-        }}
-        placeholder="you@example.com"
-        aria-invalid={Boolean(recoveryEmailError)}
-        aria-describedby={
-          recoveryEmailError ? 'checkout-recovery-email-error' : undefined
-        }
-        className="mt-2 h-11 w-full rounded-lg border border-jung-border bg-jung-surface px-3 text-sm"
-      />
-      <label className="mt-3 flex gap-3 text-xs leading-5 text-jung-secondary">
+      <div className="co-later-body">
+        <label
+          htmlFor="checkout-recovery-email"
+          className="co-label"
+        >
+          Email address
+        </label>
         <input
-          type="checkbox"
-          checked={checkoutRecoveryOptIn}
-          onChange={(event) => setCheckoutRecoveryOptIn(event.target.checked)}
-          className="mt-1 h-4 w-4 shrink-0 accent-jung-accent"
+          ref={checkoutEmailInputRef}
+          id="checkout-recovery-email"
+          type="email"
+          autoComplete="email"
+          spellCheck={false}
+          value={checkoutRecoveryEmail}
+          onChange={(event) => {
+            setCheckoutRecoveryEmail(event.target.value);
+            setCheckoutRecoverySaveStatus('idle');
+            setRecoveryEmailError(null);
+          }}
+          placeholder="you@example.com"
+          aria-invalid={Boolean(recoveryEmailError)}
+          aria-describedby={
+            recoveryEmailError ? 'checkout-recovery-email-error' : undefined
+          }
+          className="input-premium mt-2"
         />
-        Email me my result link and reminders about this optional report.
-      </label>
-      {checkoutRecoveryOptIn && (
-        <Button
-          variant="outline"
-          size="sm"
-          className="mt-3 w-full"
-          onClick={() => void saveCheckoutRecoveryPath('checkout_email_card')}
-          disabled={checkoutRecoverySaveStatus === 'saving'}
-        >
-          {checkoutRecoverySaveStatus === 'saving'
-            ? 'Sending…'
-            : checkoutRecoverySaveStatus === 'saved'
-              ? 'Link sent'
-              : 'Send my return link'}
-        </Button>
-      )}
-      {recoveryEmailError && (
-        <p
-          id="checkout-recovery-email-error"
-          role="alert"
-          className="mt-2 text-xs leading-5 text-error"
-        >
-          {recoveryEmailError}
+        <label className="co-check">
+          <input
+            type="checkbox"
+            checked={checkoutRecoveryOptIn}
+            onChange={(event) => setCheckoutRecoveryOptIn(event.target.checked)}
+          />
+          Email me my result link and reminders about this optional report.
+        </label>
+        {checkoutRecoveryOptIn && (
+          <Button
+            variant="outline"
+            className="mt-3 w-full"
+            onClick={() => void saveCheckoutRecoveryPath('checkout_email_card')}
+            disabled={checkoutRecoverySaveStatus === 'saving'}
+          >
+            {checkoutRecoverySaveStatus === 'saving'
+              ? 'Sending…'
+              : checkoutRecoverySaveStatus === 'saved'
+                ? 'Link sent'
+                : 'Send my return link'}
+          </Button>
+        )}
+        {recoveryEmailError && (
+          <p
+            id="checkout-recovery-email-error"
+            role="alert"
+            className="co-field-error"
+          >
+            <AlertCircle className="h-4 w-4 flex-none" aria-hidden="true" />
+            {recoveryEmailError}
+          </p>
+        )}
+        <p className="co-fine">
+          Stripe collects your receipt email during payment. This extra email is
+          optional.
         </p>
-      )}
-      <p className="mt-3 text-xs leading-5 text-jung-muted">
-        Stripe collects your receipt email during payment. This extra email is
-        optional.
-      </p>
+      </div>
     </details>
   );
 
@@ -784,252 +786,242 @@ export const Checkout: React.FC = () => {
 
   if (!hasLocalResults) {
     return (
-      <div className="min-h-screen bg-jung-base">
-        <section className="section-rule py-8 sm:py-10">
-          <div className="mx-auto w-full max-w-[960px] px-4 sm:px-8">
-            <Link
-              to="/pricing"
-              className="inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-jung-secondary transition-colors hover:text-jung-accent"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to pricing
-            </Link>
-          </div>
-        </section>
-
-        <section className="mx-auto w-full max-w-[960px] px-4 py-12 sm:px-8 lg:py-16">
-          <div className="rounded-lg border border-jung-border bg-jung-surface p-6 shadow-sm sm:p-9">
-            <div className="inline-flex items-center gap-2 rounded-lg border border-jung-accent-muted bg-jung-accent-light px-3 py-1.5 text-xs font-semibold text-jung-accent">
-              <ShieldCheck className="h-4 w-4" />
-              Free map needed first
-            </div>
-            <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
-              <div>
-                <h1 className="text-display text-4xl text-jung-dark sm:text-5xl">
-                  Take the assessment before paying for{' '}
-                  {checkoutDetails.packageName}.
-                </h1>
-                <p className="mt-5 max-w-2xl text-body-lg text-jung-secondary">
-                  The paid report is built from your TypeJung result. Complete
-                  the free 42-question map first, then the{' '}
-                  {PRICING[paidTier].name} upgrade stays selected if the result
-                  feels worth keeping.
-                </p>
-                <p className="mt-4 max-w-2xl text-sm leading-6 text-jung-secondary">
-                  Already took it in another browser or on another device? Your
-                  map is saved there, so open this link in that browser to
-                  continue to checkout.
-                </p>
-                <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                  <Button
-                    variant="accent"
-                    size="lg"
-                    onClick={startAssessmentFirst}
-                    className="whitespace-nowrap"
-                    rightIcon={<ArrowRight className="h-5 w-5" />}
-                  >
-                    Start free assessment
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    size="lg"
-                    onClick={viewSampleReport}
-                    className="whitespace-nowrap"
-                    leftIcon={<FileText className="h-5 w-5" />}
-                  >
-                    View sample report
-                  </Button>
-                </div>
-              </div>
-
-              <div className="rounded-lg border border-jung-border bg-jung-base p-5">
-                <p className="text-label">Selected upgrade</p>
-                <h2 className="mt-3 text-heading text-2xl text-jung-dark">
-                  {checkoutDetails.packageName}
-                </h2>
-                <p className="mt-3 text-sm leading-6 text-jung-secondary">
-                  {checkoutDetails.headline}
-                </p>
-                <div className="mt-5 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-4">
-                  <p className="text-sm font-semibold text-jung-dark">
-                    Current offer:{' '}
-                    {discountedPriceLabel(PRICING[paidTier].amount)}
-                    <span className="ml-2 text-xs font-normal text-jung-muted">
-                      <span className="sr-only">Regular price </span>
-                      <s>{PRICING[paidTier].price}</s>
-                    </span>
-                  </p>
-                  <p className="mt-1 text-xs leading-5 text-jung-secondary">
-                    One-time CAD purchase after your free result. No
-                    subscription.
-                  </p>
-                </div>
+      <div className="co">
+        <div className="co-wrap">
+          <Link
+            to="/pricing"
+            className="co-back"
+          >
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+            Back to pricing
+          </Link>
+          <div className="co-grid">
+            <div>
+              <p className="co-flag">
+                <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+                Free map needed first
+              </p>
+              <h1 className="co-title">
+                Take the assessment before paying for{' '}
+                {checkoutDetails.packageName}.
+              </h1>
+              <p className="co-lead">
+                The paid report is built from your TypeJung result. Complete
+                the free 42-question map first, then the{' '}
+                {PRICING[paidTier].name} upgrade stays selected if the result
+                feels worth keeping.
+              </p>
+              <p className="co-text">
+                Already took it in another browser or on another device? Your
+                map is saved there, so open this link in that browser to
+                continue to checkout.
+              </p>
+              <div className="co-actions">
+                <Button
+                  variant="accent"
+                  size="lg"
+                  onClick={startAssessmentFirst}
+                  className="whitespace-nowrap"
+                  rightIcon={<ArrowRight className="h-5 w-5" />}
+                >
+                  Start free assessment
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={viewSampleReport}
+                  className="whitespace-nowrap"
+                  leftIcon={<FileText className="h-5 w-5" />}
+                >
+                  View sample report
+                </Button>
               </div>
             </div>
+
+            <aside className="co-card">
+              <p className="co-card-label">Selected upgrade</p>
+              <h2 className="co-card-name">
+                {checkoutDetails.packageName}
+              </h2>
+              <p className="co-text">
+                {checkoutDetails.headline}
+              </p>
+              <p className="co-card-offer">
+                Current offer:{' '}
+                {discountedPriceLabel(PRICING[paidTier].amount)}
+                <span className="co-card-regular">
+                  <span className="sr-only">Regular price </span>
+                  <s>{PRICING[paidTier].price}</s>
+                </span>
+              </p>
+              <p className="co-fine">
+                One-time CAD purchase after your free result. No
+                subscription.
+              </p>
+            </aside>
           </div>
-        </section>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="studio-checkout mx-auto max-w-5xl px-5 py-10 sm:px-8 sm:py-14">
-      <div className="mb-8">
-        <p className="journey-eyebrow">One last look</p>
-        <h1 className="mt-3 font-display text-4xl leading-tight sm:text-5xl">
+    <div className="co">
+      <div className="co-wrap">
+        <h1 className="co-title">
           Make room for a deeper look.
         </h1>
-        <p className="mt-4 max-w-xl text-base leading-7 text-jung-secondary">
+        <p className="co-lead">
           Add {checkoutDetails.packageName} to the result you have already
           completed.
         </p>
-      </div>
-      <div className="grid items-start gap-8 lg:grid-cols-[1fr_23rem] lg:gap-14">
-        <div>
-          {savedResultAxis && (
-            <div className="rounded-xl bg-jung-accent-light p-5 sm:p-6">
-              <p className="journey-eyebrow">Based on your saved map</p>
-              <p className="mt-3 font-display text-2xl text-jung-accent">
-                {savedResultAxis.dominantLabel}
-              </p>
-              <p className="mt-2 text-sm leading-6 text-jung-secondary">
-                With {savedResultAxis.inferiorLabel.toLowerCase()} as your
-                growth edge.
-              </p>
-              <Link
-                to="/results"
-                className="mt-3 inline-flex min-h-11 items-center gap-2 text-xs font-semibold text-jung-accent underline underline-offset-4"
-              >
-                Read my free map <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-            </div>
-          )}
-          <h2 className="mt-7 font-display text-2xl">What you will receive</h2>
-          <ul className="mt-5 space-y-4">
-            {checkoutDetails.includes.map((item) => (
-              <li
-                key={item}
-                className="flex gap-3 text-sm leading-6 text-jung-secondary"
-              >
-                <Check className="mt-1 h-4 w-4 shrink-0 text-jung-accent" />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-6 text-xs leading-6 text-jung-muted">
-            Your interpretation is generated by AI from your assessment result.
-            Use it for self-reflection and compare it with your experience.
-          </p>
-          <Button
-            variant="ghost"
-            className="mt-2 !px-0"
-            onClick={viewSampleReport}
-            rightIcon={<ArrowRight className="h-4 w-4" />}
-          >
-            Read the sample report
-          </Button>
-          <details className="mt-5 border-t border-jung-border">
-            <summary className="cursor-pointer py-4 text-sm font-medium">
-              What happens after I pay?
-            </summary>
-            <p className="pb-4 text-sm leading-7 text-jung-secondary">
-              Stripe returns you to TypeJung to generate your report. Keep this
-              browser's saved map and your receipt. Sign in with the purchase
-              email to restore paid access on another device. Contact support if
-              you need help.
+        <div className="co-grid">
+          <div>
+            {savedResultAxis && (
+              <div className="co-axis">
+                <p className="co-axis-label">Based on your saved map</p>
+                <div className="co-axis-day">
+                  <p className="co-axis-name">
+                    {savedResultAxis.dominantLabel}
+                  </p>
+                  <p className="co-axis-role">Leads your map</p>
+                </div>
+                <div className="co-axis-line" aria-hidden="true" />
+                <div className="co-axis-night">
+                  <p className="co-axis-name">{savedResultAxis.inferiorLabel}</p>
+                  <p className="co-axis-role">
+                    With {savedResultAxis.inferiorLabel.toLowerCase()} as your
+                    growth edge.
+                  </p>
+                  <Link
+                    to="/results"
+                    className="co-axis-link"
+                  >
+                    Read my free map <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+                </div>
+              </div>
+            )}
+            <h2 className="co-h2">What you will receive</h2>
+            <ul className="list-diamond co-list">
+              {checkoutDetails.includes.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+            <p className="co-fine">
+              Your interpretation is generated by AI from your assessment result.
+              Use it for self-reflection and compare it with your experience.
             </p>
-          </details>
-        </div>
-        <aside className="order-first rounded-2xl border border-jung-border bg-jung-surface p-6 shadow-lg sm:p-7 lg:order-none">
-          <div className="flex items-start justify-between gap-3">
-            <h2 className="font-display text-2xl">
+            <button
+              type="button"
+              className="text-link mt-4"
+              onClick={viewSampleReport}
+            >
+              Read the sample report
+            </button>
+            <details className="faq-tile co-after">
+              <summary>
+                What happens after I pay?
+              </summary>
+              <p>
+                Stripe returns you to TypeJung to generate your report. Keep this
+                browser's saved map and your receipt. Sign in with the purchase
+                email to restore paid access on another device. Contact support if
+                you need help.
+              </p>
+            </details>
+          </div>
+          <aside className="co-card co-pay">
+            <h2 className="co-card-name">
               {checkoutDetails.packageName}
             </h2>
-            <FileText className="mt-1 h-5 w-5 shrink-0 text-jung-accent" />
-          </div>
-          <p className="mt-5 font-display text-5xl">{finalPriceLabel}</p>
-          <p className="mt-2 text-sm text-jung-muted">
-            One payment · Canadian dollars
-          </p>
-          <div className="mt-5 space-y-2 border-y border-jung-border py-4 text-xs text-jung-secondary">
-            <p className="flex justify-between gap-3">
-              <span>Regular price</span>
-              <span>{tierPrice.price}</span>
+            <p className="co-price">{finalPriceLabel}</p>
+            <p className="co-price-unit">
+              One payment · Canadian dollars
             </p>
-            <p className="flex justify-between gap-3">
-              <span>{EMAIL_CAPTURE_OFFER.percentOff}% offer applied</span>
-              <span>
-                −{formatCadAmount(discountSavingsAmount(tierPrice.amount))}
-              </span>
-            </p>
-            <p className="flex justify-between gap-3 font-semibold text-jung-dark">
-              <span>Report total</span>
-              <span>{finalPriceLabel}</span>
-            </p>
-          </div>
-          {returnedFromStripe && (
-            <p
-              className="mt-4 rounded-lg bg-jung-accent-light p-3 text-xs leading-6 text-jung-secondary"
-              role="status"
-            >
-              Payment was not completed. Your free map is still saved, and you
-              can return whenever you are ready.
-            </p>
-          )}
-          {error && (
-            <div
-              id="checkout-error"
-              className="mt-5 rounded-lg border border-error/20 bg-error/5 p-4 text-sm leading-6 text-error"
-              role="alert"
-            >
-              <p>{error}</p>
-              <a
-                href={`mailto:${SUPPORT_EMAIL}`}
-                className="mt-2 inline-flex min-h-11 items-center font-medium underline underline-offset-4"
+            <dl className="co-sum">
+              <div>
+                <dt>Regular price</dt>
+                <dd>{tierPrice.price}</dd>
+              </div>
+              <div>
+                <dt>{EMAIL_CAPTURE_OFFER.percentOff}% offer applied</dt>
+                <dd>
+                  −{formatCadAmount(discountSavingsAmount(tierPrice.amount))}
+                </dd>
+              </div>
+              <div className="is-total">
+                <dt>Report total</dt>
+                <dd>{finalPriceLabel}</dd>
+              </div>
+            </dl>
+            {returnedFromStripe && (
+              <p
+                className="co-status"
+                role="status"
               >
-                Contact support
-              </a>
-            </div>
-          )}
-          <Button
-            variant="accent"
-            size="lg"
-            className="mt-5 w-full"
-            onClick={handleCheckoutActionClick}
-            disabled={isOpeningStripe}
-            rightIcon={
-              isOpeningStripe ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <ArrowRight className="h-4 w-4" />
-              )
-            }
-          >
-            {isOpeningStripe
-              ? 'Checking availability…'
-              : error
-                ? 'Try checkout again'
-                : 'Continue to payment'}
-          </Button>
-          <p className="mt-3 text-center text-xs leading-5 text-jung-muted">
-            Secure payment with Stripe. Review the final total before paying.
-          </p>
-          <p className="mt-5 flex items-center gap-2 text-xs text-jung-secondary">
-            <ShieldCheck className="h-4 w-4 shrink-0 text-jung-accent" />
-            No subscription. 7-day refund policy.
-          </p>
-          <p className="mt-2 text-xs leading-6 text-jung-muted">
-            If the report is not useful, email{' '}
-            <a
-              className="underline underline-offset-2"
-              href={`mailto:${SUPPORT_EMAIL}`}
+                Payment was not completed. Your free map is still saved, and you
+                can return whenever you are ready.
+              </p>
+            )}
+            {error && (
+              <div
+                id="checkout-error"
+                className="co-error"
+                role="alert"
+              >
+                <p>
+                  <AlertCircle className="h-5 w-5 flex-none" aria-hidden="true" />
+                  <span>{error}</span>
+                </p>
+                <a
+                  href={`mailto:${SUPPORT_EMAIL}`}
+                  className="link-ink"
+                >
+                  Contact support
+                </a>
+              </div>
+            )}
+            <Button
+              variant="accent"
+              size="lg"
+              className="mt-6 w-full"
+              onClick={handleCheckoutActionClick}
+              disabled={isOpeningStripe}
+              rightIcon={
+                isOpeningStripe ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <ArrowRight className="h-4 w-4" />
+                )
+              }
             >
-              support
-            </a>{' '}
-            within 7 days with your receipt.
-          </p>
-          {checkoutEmailCard}
-        </aside>
+              {isOpeningStripe
+                ? 'Checking availability…'
+                : error
+                  ? 'Try checkout again'
+                  : 'Continue to payment'}
+            </Button>
+            <p className="co-fine co-center">
+              Secure payment with Stripe. Review the final total before paying.
+            </p>
+            <p className="co-refund">
+              <ShieldCheck className="h-4 w-4 flex-none" aria-hidden="true" />
+              No subscription. 7-day refund policy.
+            </p>
+            <p className="co-fine">
+              If the report is not useful, email{' '}
+              <a
+                className="link-ink"
+                href={`mailto:${SUPPORT_EMAIL}`}
+              >
+                support
+              </a>{' '}
+              within 7 days with your receipt.
+            </p>
+            {checkoutEmailCard}
+          </aside>
+        </div>
       </div>
     </div>
   );

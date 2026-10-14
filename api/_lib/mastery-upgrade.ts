@@ -50,7 +50,11 @@ export async function createMasteryUpgradeSession(req: VercelRequest, res: Verce
       return res.status(500).json({ error: 'Stripe not configured' });
     }
 
-    if (!await guardPaidReportCheckout(res)) return;
+    if (!await guardPaidReportCheckout(res, {
+      tier: 'mastery',
+      source: cleanToken(req.body?.source) || 'success_upsell',
+      anonymousId: cleanToken(req.body?.anonymousId ?? req.body?.anonymous_id, 160),
+    })) return;
 
     const customerEmail = cleanEmail(req.body?.email ?? req.body?.customerEmail);
     const source = cleanToken(req.body?.source) || 'success_upsell';

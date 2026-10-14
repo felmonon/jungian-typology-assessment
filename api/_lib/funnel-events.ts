@@ -32,6 +32,7 @@ const FUNNEL_EVENT_NAMES = new Set([
   'results_direct_checkout_failed',
   'checkout_review_viewed',
   'checkout_session_created',
+  'checkout_guard_blocked',
   'purchase',
 ]);
 

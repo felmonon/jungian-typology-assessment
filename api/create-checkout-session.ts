@@ -306,7 +306,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Invalid tier' });
     }
 
-    if (!await guardPaidReportCheckout(res)) return;
+    if (!await guardPaidReportCheckout(res, {
+      tier: resolvedTier,
+      source: cleanCheckoutSource(req.body?.source),
+      anonymousId: cleanCheckoutToken(req.body?.anonymousId ?? req.body?.anonymous_id, 160),
+    })) return;
 
     const baseUrl = resolveCheckoutBaseUrl(req.headers.origin, req.headers.host);
     const customerEmail = await getCheckoutCustomerEmail(req);

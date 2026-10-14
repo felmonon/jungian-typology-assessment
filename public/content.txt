@@ -1,6 +1,6 @@
 # TypeJung - Map All 8 Cognitive Functions
 # Website: https://typejung.com
-# Last Updated: 2026-09-06
+# Last Updated: 2026-10-14
 
 ================================================================================
 ABOUT
@@ -73,13 +73,13 @@ Maps: Ni, Ne, Si, Se, Ti, Te, Fi, Fe, likely function stack, inferior-function p
 
 16Personalities alternative:
 https://typejung.com/16personalities-alternative
-Looking for a 16Personalities alternative? TypeJung maps all 8 Jungian cognitive functions, shows a free result first, and avoids forcing a final label too early.
+Looking for a 16Personalities alternative? TypeJung maps all 8 Jungian cognitive functions, shows a free result first, and avoids forcing a label too early.
 Best for: People who liked the accessibility of a quick type result but want a deeper function-based map.
 Maps: All 8 Jungian functions, dominant-inferior axis, stress-edge signal, attitude direction, and answer consistency.
 
 Sakinorva alternative:
 https://typejung.com/sakinorva-alternative
-Looking for a Sakinorva alternative? TypeJung maps all 8 Jungian functions, shows a free result first, and offers optional deeper reports only after you see the map.
+Looking for a Sakinorva alternative? TypeJung maps all 8 Jungian functions, shows a free result first, and offers deeper reports only after you see the map.
 Best for: People comparing cognitive-function tests who want an inspectable free map and optional paid depth after the result.
 Maps: All 8 function-attitudes, likely dominant-inferior axis, attitude direction, answer consistency, stress-edge signals, and type-pattern evidence.
 
@@ -115,7 +115,7 @@ Maps: All 8 function-attitudes, likely type pattern, dominant-inferior axis, att
 
 best cognitive functions test:
 https://typejung.com/best-cognitive-functions-test
-Compare what makes a cognitive functions test useful: all 8 functions, inspectable scores, stress-edge context, free-first results, and practical interpretation.
+What makes a cognitive functions test useful: all 8 functions, inspectable scores, stress-edge context, free-first results, and practical interpretation.
 Best for: Searchers comparing cognitive-function tests and deciding which one to take next.
 Maps: All 8 function-attitudes, hierarchy hypotheses, dominant-inferior axis, stress patterns, and confidence signals.
 
@@ -127,7 +127,7 @@ Maps: All 8 cognitive functions, function-stack interpretation, dominant-inferio
 
 dominant function test:
 https://typejung.com/dominant-function-test
-Take a dominant function test that compares all 8 Jungian cognitive functions, support signals, and inferior-function pressure before naming a likely lead function.
+A dominant function test that compares all 8 Jungian cognitive functions, support signals, and inferior-function pressure before naming a likely lead.
 Best for: People who suspect a dominant function but want evidence across all 8 functions and the matching inferior-function edge.
 Maps: All 8 function-attitudes, likely dominant and support signals, dominant-inferior tension, attitude direction, and stress-pattern evidence.
 
@@ -193,7 +193,7 @@ Maps: All 8 function-attitudes, dominant-inferior tension, behavioral scenarios,
 
 MBTI alternative:
 https://typejung.com/mbti-alternative
-Compare TypeJung as an MBTI alternative for people who want Jungian function evidence, a free function-stack map, and optional paid interpretation after the result.
+An MBTI alternative for people who want Jungian function evidence, a free function-stack map, and optional paid interpretation after the result.
 Best for: People comparing MBTI as a framework with function-based Jungian typology and wanting a more inspectable map.
 Maps: Independent function scores, likely type pattern, inferior-function pressure, and context for why MBTI results change.
 
@@ -337,7 +337,7 @@ If your MBTI type keeps changing, TypeJung can help you compare the cognitive fu
 
 Jungian cognitive functions test:
 https://typejung.com/jungian-cognitive-functions-test
-Take a free 42-question Jungian cognitive functions test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, then shows your function stack and dominant-inferior pattern.
+A free 42-question Jungian cognitive functions test that maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe, then shows your stack and dominant-inferior pattern.
 Best for: People searching specifically for a Jungian cognitive functions test, function stack test, or full Ni Ne Si Se Ti Te Fi Fe assessment.
 Maps: Four function channels and attention direction, combined into a derived eight-function map and a suggested stack.
 

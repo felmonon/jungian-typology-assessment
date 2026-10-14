@@ -7,7 +7,8 @@
 import { functionSEO, functionData, typeSEO, typeData } from '../data/seo-config.js';
 import { seoLandingPages } from './seo-data.mjs';
 import { standaloneAnalyticsSnippet } from './standalone-analytics.mjs';
-import { writeFileSync, mkdirSync } from 'fs';
+import { writeGeneratedFile } from './stable-dates.mjs';
+import { mkdirSync } from 'fs';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -156,7 +157,7 @@ const getHead = (title: string, description: string, path: string, keywords?: st
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${escapeHtml(title)}</title>
 <meta name="description" content="${escapeHtml(description)}">
-<meta name="keywords" content="${escapeHtml((keywords && keywords.length > 0 ? keywords : ['Jung personality test', 'cognitive functions', title.split(' - ')[0].toLowerCase(), 'psychological types']).join(', '))}">
+<meta name="keywords" content="${escapeHtml((keywords && keywords.length > 0 ? keywords : ['Jung personality test', 'cognitive functions', title.split(/ - |: | \| /)[0].toLowerCase(), 'psychological types']).join(', '))}">
 <meta name="author" content="TypeJung">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <link rel="canonical" href="${siteConfig.url}${path}">
@@ -1125,7 +1126,7 @@ for (const fn of ['ni', 'ne', 'si', 'se', 'ti', 'te', 'fi', 'fe']) {
   const html = generateFunctionPage(fn);
   const path = `${__dirname}/../public/functions/${fn}/index.html`;
   mkdirSync(dirname(path), { recursive: true });
-  writeFileSync(path, html);
+  writeGeneratedFile(path, html);
   console.log(`  ✅ /functions/${fn}/index.html`);
 }
 
@@ -1135,7 +1136,7 @@ for (const type of ['intj','intp','entj','entp','infj','infp','enfj','enfp','ist
   const html = generateTypePage(type);
   const path = `${__dirname}/../public/types/${type}/index.html`;
   mkdirSync(dirname(path), { recursive: true });
-  writeFileSync(path, html);
+  writeGeneratedFile(path, html);
   console.log(`  ✅ /types/${type}/index.html`);
 }
 
@@ -1145,7 +1146,7 @@ for (const page of seoLandingPages) {
   const html = generateLandingPage(page);
   const path = `${__dirname}/../public/${page.slug}/index.html`;
   mkdirSync(dirname(path), { recursive: true });
-  writeFileSync(path, html);
+  writeGeneratedFile(path, html);
   console.log(`  ✅ /${page.slug}/index.html`);
 }
 

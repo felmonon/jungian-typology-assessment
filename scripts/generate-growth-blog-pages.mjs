@@ -5,6 +5,7 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { growthBlogArticles } from './growth-blog-data.mjs';
 import { standaloneAnalyticsSnippet, withStandaloneAnalytics } from './standalone-analytics.mjs';
+import { writeGeneratedFile } from './stable-dates.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const publicBlogDir = join(__dirname, '..', 'public', 'blog');
@@ -356,13 +357,13 @@ const renderIndex = () => `<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TypeJung Blog - Jungian Psychology, Cognitive Functions & Personal Growth</title>
+  <title>Jungian Psychology and Cognitive Functions Blog | TypeJung</title>
   <meta name="description" content="Explore Jungian psychology, cognitive functions, personality types, mistyping, inferior functions, shadow work, and personal growth.">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <link rel="canonical" href="${baseUrl}/blog/">
   <meta property="og:type" content="website">
   <meta property="og:url" content="${baseUrl}/blog/">
-  <meta property="og:title" content="TypeJung Blog - Jungian Psychology & Cognitive Functions">
+  <meta property="og:title" content="Jungian Psychology and Cognitive Functions Blog | TypeJung">
   <meta property="og:description" content="Explore Jungian psychology, cognitive functions, mistyping, inferior functions, and shadow work.">
   <meta property="og:image" content="${baseUrl}/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -424,7 +425,7 @@ ${discountLeadScript}
 mkdirSync(publicBlogDir, { recursive: true });
 
 for (const article of growthBlogArticles) {
-  writeFileSync(join(publicBlogDir, `${article.slug}.html`), renderArticle(article));
+  writeGeneratedFile(join(publicBlogDir, `${article.slug}.html`), renderArticle(article));
   console.log(`Generated blog article: /blog/${article.slug}`);
 }
 

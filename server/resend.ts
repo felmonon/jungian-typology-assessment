@@ -8,6 +8,12 @@ import {
   isCheckoutReturnSource,
   isResultUpgradeSource,
 } from '../lib/discount-lead-routing.js';
+import {
+  buildUnsubscribeUrl,
+  checkEmailSuppression,
+  getSiteUrl,
+  type EmailCategory,
+} from './email-suppression.js';
 
 let connectionSettings: any;
 
@@ -69,7 +75,7 @@ export type CheckoutRecoveryEmailInput = {
 type LifecycleEmailTemplate = {
   subject: string;
   preview: string;
-  html: string;
+  bodyHtml: string;
   text: string;
 };
 
@@ -124,19 +130,6 @@ async function getCredentials(): Promise<ResendCredentials | null> {
   return getEnvCredentials() || await getReplitCredentials();
 }
 
-export async function getResendClient() {
-  const credentials = await getCredentials();
-
-  if (!credentials) {
-    throw new Error('Resend not configured');
-  }
-
-  return {
-    client: new Resend(credentials.apiKey),
-    fromEmail: credentials.fromEmail
-  };
-}
-
 function escapeHtml(value: string): string {
   return value
     .replace(/&/g, '&amp;')
@@ -163,7 +156,8 @@ function formatCompletedAt(value?: string): string {
 function buildBaseHtml(
   preview: string,
   body: string,
-  footerReason = 'You received this TypeJung email because this account started or completed an assessment.',
+  footerReason: string,
+  footerExtraHtml = '',
 ): string {
   return `
     <div style="display:none;max-height:0;overflow:hidden;color:transparent;opacity:0;">
@@ -172,7 +166,7 @@ function buildBaseHtml(
     <div style="font-family: Inter, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; color: #121512;">
       ${body}
       <p style="margin-top: 32px; color: #6b746c; font-size: 12px; line-height: 1.6;">
-        ${escapeHtml(footerReason)}
+        ${escapeHtml(footerReason)}${footerExtraHtml}
       </p>
     </div>
   `;
@@ -195,6 +189,93 @@ function urlForPath(baseUrl: string, path: string): string {
   } catch {
     return `https://typejung.com${path}`;
   }
+}
+
+const DEFAULT_FOOTER_REASON = 'You received this TypeJung email because this account started or completed an assessment.';
+
+export type CustomerEmailInput = {
+  // marketing: lifecycle, discount and recovery mail; skipped for any
+  // suppressed address and carries one-click unsubscribe headers.
+  // transactional: mail the reader paid for or asked for directly; skipped only
+  // for bounced or complained addresses.
+  // internal: founder notifications; never suppressed, no unsubscribe link.
+  category: EmailCategory;
+  to: string;
+  subject: string;
+  preview: string;
+  bodyHtml: string;
+  text: string;
+  footerReason?: string;
+  replyTo?: string;
+  attachments?: { filename: string; content: string }[];
+  idempotencyKey?: string;
+};
+
+function buildFooter(input: CustomerEmailInput, unsubscribeUrl: string | null) {
+  const postalAddress = getEnvValue('EMAIL_POSTAL_ADDRESS');
+  const identity = postalAddress ? `TypeJung · ${postalAddress}` : `TypeJung · ${getSiteUrl().replace(/^https?:\/\//, '')}`;
+  const unsubscribeHtml = unsubscribeUrl
+    ? ` <a href="${escapeHtml(unsubscribeUrl)}" style="color: #6b746c; text-decoration: underline;">Unsubscribe from TypeJung emails</a>.`
+    : '';
+  const html = input.category === 'internal'
+    ? ''
+    : `${unsubscribeHtml}<br>${escapeHtml(identity)}`;
+  const textLines = ['', '', '--', input.footerReason || DEFAULT_FOOTER_REASON];
+  if (unsubscribeUrl) textLines.push(`Unsubscribe: ${unsubscribeUrl}`);
+  textLines.push(identity);
+  const text = input.category === 'internal' ? '' : textLines.join('\n');
+
+  return { html, text };
+}
+
+// The single path every TypeJung email goes through: checks the suppression
+// list, adds the shared footer, and adds List-Unsubscribe headers to marketing
+// mail. Senders only build the subject and body.
+export async function sendCustomerEmail(input: CustomerEmailInput): Promise<LifecycleEmailSendResult> {
+  if (!input.to) {
+    return { sent: false, skipped: true, reason: 'missing_email' };
+  }
+
+  const credentials = await getCredentials();
+  if (!credentials) {
+    return { sent: false, skipped: true, reason: 'resend_not_configured' };
+  }
+
+  const suppression = await checkEmailSuppression(input.to, input.category);
+  if (suppression.suppressed) {
+    return {
+      sent: false,
+      skipped: true,
+      reason: suppression.reason === 'suppression_check_failed' ? suppression.reason : 'email_suppressed',
+    };
+  }
+
+  const unsubscribeUrl = input.category === 'marketing' ? buildUnsubscribeUrl(input.to) : null;
+  const footer = buildFooter(input, unsubscribeUrl);
+  const headers = unsubscribeUrl
+    ? {
+      'List-Unsubscribe': `<${unsubscribeUrl}>`,
+      'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+    }
+    : undefined;
+
+  const client = new Resend(credentials.apiKey);
+  const result = await client.emails.send({
+    from: credentials.fromEmail,
+    to: input.to,
+    ...(input.replyTo ? { replyTo: input.replyTo } : {}),
+    subject: input.subject,
+    html: buildBaseHtml(input.preview, input.bodyHtml, input.footerReason || DEFAULT_FOOTER_REASON, footer.html),
+    text: `${input.text}${footer.text}`,
+    ...(headers ? { headers } : {}),
+    ...(input.attachments ? { attachments: input.attachments } : {}),
+  }, input.idempotencyKey ? { idempotencyKey: input.idempotencyKey } : undefined);
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+
+  return { sent: true, id: result.data?.id };
 }
 
 function buildLifecycleEmail(input: LifecycleEmailInput): LifecycleEmailTemplate {
@@ -224,7 +305,7 @@ function buildLifecycleEmail(input: LifecycleEmailInput): LifecycleEmailTemplate
     return {
       subject: 'Your TypeJung map is unfinished',
       preview,
-      html: buildBaseHtml(preview, body),
+      bodyHtml: body,
       text: `You started the TypeJung assessment and stopped before the pattern could resolve.${progressCopy} Finish it here: ${assessmentUrl}`,
     };
   }
@@ -263,7 +344,7 @@ function buildLifecycleEmail(input: LifecycleEmailInput): LifecycleEmailTemplate
     return {
       subject: 'Your TypeJung map can go deeper',
       preview,
-      html: buildBaseHtml(preview, body),
+      bodyHtml: body,
       text: `If your free TypeJung map felt accurate enough to keep, the paid report turns it into a practical read.${axisCopy} Use code ${EMAIL_CAPTURE_OFFER.code} for ${EMAIL_CAPTURE_OFFER.percentOff}% off Insight or Mastery on Stripe. If you are still stuck between two types, the Personal Type Debrief is the human-reviewed path. Sample report: ${sampleReportUrl} Compare options: ${upgradeUrl} Personal Type Debrief: ${debriefUrl}`,
     };
   }
@@ -292,50 +373,25 @@ function buildLifecycleEmail(input: LifecycleEmailInput): LifecycleEmailTemplate
   return {
     subject: 'Your TypeJung map is ready',
     preview,
-    html: buildBaseHtml(preview, body),
+    bodyHtml: body,
     text: `Your TypeJung assessment was completed ${completedCopy}.${axisCopy} Read your map here: ${resultUrl}. If you are still stuck between two types, see the Personal Type Debrief: ${debriefUrl}`,
   };
 }
 
 export async function sendLifecycleEmail(input: LifecycleEmailInput): Promise<LifecycleEmailSendResult> {
-  if (!input.toEmail) {
-    return { sent: false, skipped: true, reason: 'missing_email' };
-  }
-
-  const credentials = await getCredentials();
-
-  if (!credentials) {
-    return { sent: false, skipped: true, reason: 'resend_not_configured' };
-  }
-
   const template = buildLifecycleEmail(input);
-  const client = new Resend(credentials.apiKey);
-  const result = await client.emails.send({
-    from: credentials.fromEmail,
+  return sendCustomerEmail({
+    category: 'marketing',
     to: input.toEmail,
     subject: template.subject,
-    html: template.html,
+    preview: template.preview,
+    bodyHtml: template.bodyHtml,
     text: template.text,
-  }, input.idempotencyKey ? { idempotencyKey: input.idempotencyKey } : undefined);
-
-  if (result.error) {
-    throw new Error(result.error.message);
-  }
-
-  return { sent: true, id: result.data?.id };
+    idempotencyKey: input.idempotencyKey,
+  });
 }
 
 export async function sendDiscountLeadEmail(input: DiscountLeadEmailInput): Promise<LifecycleEmailSendResult> {
-  if (!input.toEmail) {
-    return { sent: false, skipped: true, reason: 'missing_email' };
-  }
-
-  const credentials = await getCredentials();
-
-  if (!credentials) {
-    return { sent: false, skipped: true, reason: 'resend_not_configured' };
-  }
-
   const actionUrl = input.actionUrl || 'https://typejung.com/pricing';
   const tierName = input.tier ? PRICING[input.tier].name : null;
   const actionLabel = input.actionLabel || (tierName ? `Continue to ${tierName}` : 'Choose your report');
@@ -360,22 +416,18 @@ export async function sendDiscountLeadEmail(input: DiscountLeadEmailInput): Prom
     ${buildActionLink(actionUrl, actionLabel)}
   `;
 
-  const client = new Resend(credentials.apiKey);
-  const result = await client.emails.send({
-    from: credentials.fromEmail,
+  return sendCustomerEmail({
+    category: 'marketing',
     to: input.toEmail,
     subject: hasAxisContext ? 'Your TypeJung result path and upgrade code' : `Your private ${input.percentOff}% TypeJung upgrade code`,
-    html: buildBaseHtml(preview, body, 'You received this TypeJung email because you requested a discount code.'),
+    preview,
+    bodyHtml: body,
+    footerReason: 'You received this TypeJung email because you requested a discount code.',
     text: hasAxisContext
       ? `Your TypeJung result path centers on ${input.dominantLabel} with ${input.inferiorLabel} as the developmental edge. Your private upgrade code is ${input.discountCode}. Use it for ${input.percentOff}% off Insight or Mastery on the secure Stripe checkout step. ${actionLabel}: ${actionUrl}`
       : `Your private TypeJung upgrade code is ${input.discountCode}. Use it for ${input.percentOff}% off Insight or Mastery on the secure Stripe checkout step. ${actionLabel}: ${actionUrl}`,
-  }, input.idempotencyKey ? { idempotencyKey: input.idempotencyKey } : undefined);
-
-  if (result.error) {
-    throw new Error(result.error.message);
-  }
-
-  return { sent: true, id: result.data?.id };
+    idempotencyKey: input.idempotencyKey,
+  });
 }
 
 // Late drip steps (emails 4 and 5): kept as a self-contained template so the
@@ -383,7 +435,6 @@ export async function sendDiscountLeadEmail(input: DiscountLeadEmailInput): Prom
 // the paid interpretation adds; email 5 points still-stuck readers to the Debrief.
 async function sendDiscountSequenceLateEmail(
   input: DiscountLeadFollowupEmailInput,
-  credentials: ResendCredentials,
 ): Promise<LifecycleEmailSendResult> {
   const isFourth = input.stage === 'fourth';
   const safeCode = escapeHtml(input.discountCode);
@@ -427,35 +478,21 @@ async function sendDiscountSequenceLateEmail(
     ? `If your result is interesting but you are still unsure how to interpret it, the Personal Type Debrief is a founder-reviewed second read of your TypeJung map, likely mistype risks, and stress edge, delivered within 72 hours. Get a Personal Type Debrief: ${debriefUrl}`
     : `Free shows the pattern; Insight explains it; Mastery helps you keep working with it. Insight adds the developmental edge, stress-pattern reflection, relationship reflection, and practice prompts. ${input.discountCode} is ${input.percentOff}% off on Stripe. Sample report: ${sampleUrl} Personal Type Debrief: ${debriefUrl}`;
 
-  const client = new Resend(credentials.apiKey);
-  const result = await client.emails.send({
-    from: credentials.fromEmail,
+  return sendCustomerEmail({
+    category: 'marketing',
     to: input.toEmail,
     subject,
-    html: buildBaseHtml(preview, body),
+    preview,
+    bodyHtml: body,
+    footerReason: 'You received this TypeJung email because you requested a discount or checkout path.',
     text,
-  }, input.idempotencyKey ? { idempotencyKey: input.idempotencyKey } : undefined);
-
-  if (result.error) {
-    throw new Error(result.error.message);
-  }
-
-  return { sent: true, id: result.data?.id };
+    idempotencyKey: input.idempotencyKey,
+  });
 }
 
 export async function sendDiscountLeadFollowupEmail(input: DiscountLeadFollowupEmailInput): Promise<LifecycleEmailSendResult> {
-  if (!input.toEmail) {
-    return { sent: false, skipped: true, reason: 'missing_email' };
-  }
-
-  const credentials = await getCredentials();
-
-  if (!credentials) {
-    return { sent: false, skipped: true, reason: 'resend_not_configured' };
-  }
-
   if (input.stage === 'third' || input.stage === 'fourth') {
-    return sendDiscountSequenceLateEmail(input, credentials);
+    return sendDiscountSequenceLateEmail(input);
   }
 
   const tierName = input.tier ? PRICING[input.tier].name : null;
@@ -535,12 +572,13 @@ export async function sendDiscountLeadFollowupEmail(input: DiscountLeadFollowupE
     ${buildActionLink(input.actionUrl, input.actionLabel)}
   `;
 
-  const client = new Resend(credentials.apiKey);
-  const result = await client.emails.send({
-    from: credentials.fromEmail,
+  return sendCustomerEmail({
+    category: 'marketing',
     to: input.toEmail,
     subject,
-    html: buildBaseHtml(preview, body, 'You received this TypeJung email because you requested a discount or checkout path.'),
+    preview,
+    bodyHtml: body,
+    footerReason: 'You received this TypeJung email because you requested a discount or checkout path.',
     text: assessmentSource
       ? isSecondFollowup
         ? `One more note about the TypeJung path you saved. Finish the free function-stack map before deciding whether any paid report is worth it. Your saved code is ${input.discountCode} for ${input.percentOff}% off Insight or Mastery if the map feels useful. ${input.actionLabel}: ${input.actionUrl}`
@@ -552,26 +590,11 @@ export async function sendDiscountLeadFollowupEmail(input: DiscountLeadFollowupE
       : isSecondFollowup
         ? `One more note about the TypeJung path you saved${tierName ? ` for ${tierName}` : ''}.${axisCopy ? ` ${axisCopy.replace(/<[^>]*>/g, '')}` : ''} TypeJung is free-first, with one-time CAD upgrades and no subscription. Your saved code is ${input.discountCode}. ${input.actionLabel}: ${input.actionUrl}`
         : `You asked TypeJung to keep the ${input.discountCode} path available${tierName ? ` for ${tierName}` : ''}.${axisCopy ? ` ${axisCopy.replace(/<[^>]*>/g, '')}` : ''} This is a one-time CAD upgrade, not a subscription. ${input.actionLabel}: ${input.actionUrl}`,
-  }, input.idempotencyKey ? { idempotencyKey: input.idempotencyKey } : undefined);
-
-  if (result.error) {
-    throw new Error(result.error.message);
-  }
-
-  return { sent: true, id: result.data?.id };
+    idempotencyKey: input.idempotencyKey,
+  });
 }
 
 export async function sendCheckoutRecoveryEmail(input: CheckoutRecoveryEmailInput): Promise<LifecycleEmailSendResult> {
-  if (!input.toEmail) {
-    return { sent: false, skipped: true, reason: 'missing_email' };
-  }
-
-  const credentials = await getCredentials();
-
-  if (!credentials) {
-    return { sent: false, skipped: true, reason: 'resend_not_configured' };
-  }
-
   const tierName = input.tier ? PRICING[input.tier].name : 'paid report';
   const priceCopy = input.priceLabel ? ` for ${escapeHtml(input.priceLabel)}` : '';
   const preview = `Your secure TypeJung ${tierName} checkout can still be reopened.`;
@@ -599,20 +622,16 @@ export async function sendCheckoutRecoveryEmail(input: CheckoutRecoveryEmailInpu
     ${buildActionLink(input.recoveryUrl, 'Review checkout again')}
   `;
 
-  const client = new Resend(credentials.apiKey);
-  const result = await client.emails.send({
-    from: credentials.fromEmail,
+  return sendCustomerEmail({
+    category: 'marketing',
     to: input.toEmail,
     subject: `Reopen your TypeJung ${tierName} checkout`,
-    html: buildBaseHtml(preview, body, footerReason),
+    preview,
+    bodyHtml: body,
+    footerReason,
     text: `You started the secure Stripe step for the TypeJung ${tierName}${input.priceLabel ? ` for ${input.priceLabel}` : ''}, but payment was not completed before that checkout expired. Review checkout again here: ${input.recoveryUrl}. One-time CAD purchase, no subscription, with a 7-day money-back guarantee. If Stripe asks for a code, use ${EMAIL_CAPTURE_OFFER.code} for ${EMAIL_CAPTURE_OFFER.percentOff}% off.`,
-  }, input.idempotencyKey ? { idempotencyKey: input.idempotencyKey } : undefined);
-
-  if (result.error) {
-    throw new Error(result.error.message);
-  }
-
-  return { sent: true, id: result.data?.id };
+    idempotencyKey: input.idempotencyKey,
+  });
 }
 
 export type DebriefRequestNotificationInput = {
@@ -671,21 +690,17 @@ export async function sendDebriefRequestNotification(
     input.feltConfusing ? `Felt confusing: ${input.feltConfusing}` : '',
   ].filter(Boolean).join('\n');
 
-  const client = new Resend(credentials.apiKey);
-  const result = await client.emails.send({
-    from: credentials.fromEmail,
+  return sendCustomerEmail({
+    category: 'internal',
     to: notifyEmail,
     replyTo: input.customerEmail,
     subject: `New Personal Type Debrief — ${input.customerEmail}`,
-    html: buildBaseHtml(preview, body, 'Internal TypeJung notification for a paid Personal Type Debrief.'),
+    preview,
+    bodyHtml: body,
+    footerReason: 'Internal TypeJung notification for a paid Personal Type Debrief.',
     text,
-  }, input.idempotencyKey ? { idempotencyKey: input.idempotencyKey } : undefined);
-
-  if (result.error) {
-    throw new Error(result.error.message);
-  }
-
-  return { sent: true, id: result.data?.id };
+    idempotencyKey: input.idempotencyKey,
+  });
 }
 
 export async function sendPdfEmail(
@@ -694,66 +709,69 @@ export async function sendPdfEmail(
   userName: string,
   dominantFunction: string
 ) {
-  const { client, fromEmail } = await getResendClient();
-  
-  const result = await client.emails.send({
-    from: fromEmail,
+  const preview = 'Your TypeJung premium analysis is attached.';
+  const body = `
+    <h1 style="color: #121512; border-bottom: 2px solid #D2DCD3; padding-bottom: 10px;">
+      Your TypeJung Results
+    </h1>
+
+    <p style="color: #4B524C; font-size: 16px; line-height: 1.6;">
+      Dear ${escapeHtml(userName || 'Explorer')},
+    </p>
+
+    <p style="color: #4B524C; font-size: 16px; line-height: 1.6;">
+      Thank you for completing TypeJung. Your dominant cognitive function appears to be <strong>${escapeHtml(dominantFunction)}</strong>.
+    </p>
+
+    <p style="color: #4B524C; font-size: 16px; line-height: 1.6;">
+      Your complete 25+ page premium analysis is attached as a PDF. This report includes:
+    </p>
+
+    <ul style="color: #4B524C; font-size: 16px; line-height: 1.8;">
+      <li>Deep analysis of all 8 cognitive functions</li>
+      <li>Your archetypal stack with detailed descriptions</li>
+      <li>The Grip: Your stress patterns and recovery paths</li>
+      <li>Relationships & compatibility insights</li>
+      <li>Career alignment guidance</li>
+      <li>Individuation path with exercises</li>
+      <li>Active imagination prompts</li>
+      <li>Dream journaling guide</li>
+    </ul>
+
+    <p style="color: #4B524C; font-size: 16px; line-height: 1.6;">
+      Remember: Your type is a starting point for self-reflection, not a fixed label. As Jung wrote,
+      <em>"The classification of individuals means nothing, nothing at all."</em>
+    </p>
+
+    <div style="margin-top: 30px; padding: 15px; background-color: #FAFAF8; border-left: 4px solid #D2DCD3;">
+      <p style="color: #78716c; font-size: 14px; margin: 0;">
+        <strong>Next Steps:</strong> Visit your results page to explore interactive features,
+        compare with past results, or share with others.
+      </p>
+    </div>
+  `;
+
+  const result = await sendCustomerEmail({
+    category: 'transactional',
     to: toEmail,
     subject: 'Your TypeJung Results',
-    html: `
-      <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <h1 style="color: #121512; border-bottom: 2px solid #D2DCD3; padding-bottom: 10px;">
-          Your TypeJung Results
-        </h1>
-        
-        <p style="color: #4B524C; font-size: 16px; line-height: 1.6;">
-          Dear ${userName || 'Explorer'},
-        </p>
-        
-        <p style="color: #4B524C; font-size: 16px; line-height: 1.6;">
-          Thank you for completing TypeJung. Your dominant cognitive function appears to be <strong>${dominantFunction}</strong>.
-        </p>
-        
-        <p style="color: #4B524C; font-size: 16px; line-height: 1.6;">
-          Your complete 25+ page premium analysis is attached as a PDF. This report includes:
-        </p>
-        
-        <ul style="color: #4B524C; font-size: 16px; line-height: 1.8;">
-          <li>Deep analysis of all 8 cognitive functions</li>
-          <li>Your archetypal stack with detailed descriptions</li>
-          <li>The Grip: Your stress patterns and recovery paths</li>
-          <li>Relationships & compatibility insights</li>
-          <li>Career alignment guidance</li>
-          <li>Individuation path with exercises</li>
-          <li>Active imagination prompts</li>
-          <li>Dream journaling guide</li>
-        </ul>
-        
-        <p style="color: #4B524C; font-size: 16px; line-height: 1.6;">
-          Remember: Your type is a starting point for self-reflection, not a fixed label. As Jung wrote, 
-          <em>"The classification of individuals means nothing, nothing at all."</em>
-        </p>
-        
-        <div style="margin-top: 30px; padding: 15px; background-color: #FAFAF8; border-left: 4px solid #D2DCD3;">
-          <p style="color: #78716c; font-size: 14px; margin: 0;">
-            <strong>Next Steps:</strong> Visit your results page to explore interactive features, 
-            compare with past results, or share with others.
-          </p>
-        </div>
-        
-        <p style="color: #a8a29e; font-size: 12px; margin-top: 30px; text-align: center;">
-          TypeJung<br>
-          Based on the typological work of Carl Gustav Jung
-        </p>
-      </div>
-    `,
+    preview,
+    bodyHtml: body,
+    footerReason: 'You received this TypeJung email because you asked for your premium analysis by email.',
+    text: `Dear ${userName || 'Explorer'}, thank you for completing TypeJung. Your dominant cognitive function appears to be ${dominantFunction}. Your complete premium analysis is attached as a PDF. Your type is a starting point for self-reflection, not a fixed label.`,
     attachments: [
       {
         filename: 'jungian-typology-results.pdf',
         content: pdfBuffer.toString('base64'),
       }
-    ]
+    ],
   });
-  
+
+  // The send-pdf-email routes report success unless this throws, so a skipped
+  // send has to surface as an error.
+  if ('reason' in result) {
+    throw new Error(result.reason === 'resend_not_configured' ? 'Resend not configured' : `Email not sent: ${result.reason}`);
+  }
+
   return result;
 }

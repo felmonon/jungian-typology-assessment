@@ -189,7 +189,7 @@ Keep the tone direct, psychologically grounded, and useful. Use second person ("
 
   const fallbackInput = { scores, stack, attitudeScore, isUndifferentiated, resultVersion, depthResult };
   let analysis = fallbackFreeAnalysis(fallbackInput);
-  let generationSource: 'gemini' | 'template' = 'template';
+  let generationSource: 'gemini' | 'openrouter' | 'template' = 'template';
 
   try {
     const generated = await generateGeminiText(prompt, {
@@ -201,7 +201,7 @@ Keep the tone direct, psychologically grounded, and useful. Use second person ("
 
     if (isUsableFreeAnalysis(generated)) {
       analysis = generated.trim();
-      generationSource = 'gemini';
+      generationSource = process.env.REPORT_AI_PROVIDER === 'openrouter' ? 'openrouter' : 'gemini';
     } else {
       console.error('Using fallback free analysis: generated response was incomplete');
     }
@@ -282,7 +282,7 @@ ${JSON.stringify(depthResult || stack.depthResult || null, null, 2)}
     });
   }
 
-  return res.status(200).json({ analysis, generationSource: 'gemini' });
+  return res.status(200).json({ analysis, generationSource: process.env.REPORT_AI_PROVIDER === 'openrouter' ? 'openrouter' : 'gemini' });
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

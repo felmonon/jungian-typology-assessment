@@ -356,6 +356,8 @@ export const LockedPremiumPreview: React.FC<{
   onViewSampleReport: (location: string) => void;
   checkoutOpeningTier: PaidTierId | null;
   checkoutError: string | null;
+  /** Email-a-link option for visitors who are not ready to buy on first read. */
+  notReadyCapture?: React.ReactNode;
 }> = ({
   results,
   inferiorLabel,
@@ -365,6 +367,7 @@ export const LockedPremiumPreview: React.FC<{
   onViewSampleReport,
   checkoutOpeningTier,
   checkoutError,
+  notReadyCapture,
 }) => {
     const offerPrice = paidTierPrice(intendedTier);
     const regularPrice = PRICING[intendedTier].price;
@@ -489,6 +492,11 @@ export const LockedPremiumPreview: React.FC<{
               <ShieldCheck className="h-3.5 w-3.5 text-jung-accent" aria-hidden="true" />
               Secure payment by Stripe
             </p>
+            {notReadyCapture && (
+              <div className="mt-6 border-t border-jung-border pt-5" data-testid="offer-not-ready">
+                {notReadyCapture}
+              </div>
+            )}
             <details className="mt-6 border-t border-jung-border pt-4">
               <summary className="cursor-pointer text-xs font-semibold text-jung-secondary">How this connects to your free map</summary>
               <p className="mt-3 text-sm leading-7 text-jung-secondary">
@@ -1768,6 +1776,22 @@ export const Results: React.FC = () => {
                 onViewSampleReport={viewSampleReport}
                 checkoutOpeningTier={checkoutOpeningTier}
                 checkoutError={checkoutError}
+                notReadyCapture={
+                  <DiscountCaptureCard
+                    source="results_offer_not_ready"
+                    dominantLabel={dominantLabel}
+                    inferiorLabel={inferiorLabel}
+                    preferredTier={intendedTier}
+                    compact
+                    minimal
+                    showCheckoutButtons={false}
+                    minimalTitle="Not ready to decide?"
+                    minimalDescription="Email yourself a link back to this report, with your report code, and come back when you want it."
+                    minimalSubmitLabel="Email my link"
+                    minimalFootnote="By requesting this, you agree to receive the link and follow-up emails about the report. Every email has an unsubscribe link. Your complete map stays in this browser unless you save it to an account."
+                    minimalSentMessage="Your link and report code are in your inbox. Your complete map is still here on this device."
+                  />
+                }
               />
             </>
           )}

@@ -1,0 +1,13 @@
+# The repo root ignores *.log and logs/; run logs here are part of the record.
+!*.log
+!logs/
+
+# Never commit data or weights.
+data/
+fineweb_data/
+evaluation_data/
+*.pt
+*.bin
+*.safetensors
+*.ckpt
+wandb/

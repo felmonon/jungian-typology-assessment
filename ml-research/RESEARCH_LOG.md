@@ -28,3 +28,25 @@ Rules: never edit or delete past entries. Negative results stay. Each entry has:
 - **Next step:**
   - Waiting for lead approval on Q1–Q5 in PLAN.md §0: hardware and budget, GPU access, repo location, the FineWeb-vs-BabyLM deviation, and the S3 reproduction run.
   - Then Phase 1 checklist (PLAN.md §8).
+
+## 2026-10-18 — Lead asks for an overlooked, high-upside connection
+
+- **Hypothesis (H0):**
+  - In the data-wall regime, many winning tricks show the same text differently.
+  - Vision's leap came from augmentation *plus* invariance learning.
+  - Text has an exact, unlimited, meaning-preserving view family: re-segmentation.
+  - Prediction: training a model to agree with its EMA teacher across segmentations will extract more from repeated data than augmentation alone.
+- **Setup:** no runs (no GPU yet). Prior-art check via web search, abstracts only.
+- **Result:**
+  - My first version (random re-segmentation as augmentation) is **already published**: "Homotokens", arXiv 2601.02867, Jan 2026. It reports delayed overfitting and a better best loss at more than 16× repetition.
+  - Token-noise augmentation for data-constrained pretraining is also published (arXiv 2606.16246).
+  - The consistency-loss half exists only in encoder fine-tuning (MVR, NAACL 2021).
+  - Not found: consistency across exact segmentations in data-constrained AR pretraining.
+- **Interpretation:**
+  - The direction has independent support, but only the consistency component might be new.
+  - Prior P(≥2σ gain over the augmentation-only arm) ≈ 0.2.
+  - Upside is large if it works, because views are unlimited and the value should grow with epochs.
+- **Next step:**
+  - H0 added to PLAN.md §4 and screened first, with an augmentation-only arm as its control.
+  - H3 folded into H0 as a replication arm.
+  - Still blocked on GPU access (PLAN.md §0).

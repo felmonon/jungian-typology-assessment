@@ -170,6 +170,7 @@ How the score works:
 
 | Rank | ID | Hypothesis | G | P | C | Score |
 |---|---|---|---|---|---|---|
+| 0 (lead-directed moonshot) | H0 | Many-views invariance: train on random exact re-segmentations and require agreement with an EMA teacher reading the canonical segmentation | 5 | 0.2 | 2 | 0.50 |
 | 1 | H1 | Dual objective: AR + masked-diffusion loss on a fraction of sequences | 4 | 0.45 | 1.5 | 1.20 |
 | 2 | H2 | Input-token corruption: corrupt inputs, keep clean targets (cheap augmentation; also H1's ablation) | 2 | 0.35 | 1 | 0.70 |
 | 3 | H7 | Fixed-compute ensemble: k=2 half-size models, probability averaging, matched train and inference FLOPs | 3 | 0.30 | 1.5 | 0.60 |
@@ -179,6 +180,29 @@ How the score works:
 | 7 | H3 | Stochastic sub-tokenization augmentation (StochasTok-style splits, annealed to canonical) | 3 | 0.25 | 2 | 0.38 |
 | 8 | H5 | NextLat auxiliary loss: predict own next hidden state | 2.5 | 0.20 | 2 | 0.25 |
 | 9 | H8 | Adaptive recurrence: per-sequence or per-token pass count | 3 | 0.20 | 4 | 0.15 |
+
+**H0 — Many-views invariance pretraining.** Added 2026-10-18 at the lead's request for high-upside, overlooked connections. Screened first, alongside H1. Its formula score (0.50) is lower than H1's; it goes first because of its upside.
+- **The pattern behind it:** many Slowrun record gains show the same data differently or add noise: per-epoch shuffling (3.402 → 3.376), document-level shuffling, dropout, stochastic depth, MTP, SWA/EMA. Vision's data-efficiency jump came from augmentation **plus an invariance (consistency) loss**: mean teacher, UDA, FixMatch, BYOL/DINO.
+- **Why text never had this:** it seemed text had no exact meaning-preserving views. It does: **re-segmentation**. Any string has exponentially many valid tokenizations with identical bytes, so the meaning is guaranteed unchanged.
+- **Prior art (checked 2026-10-18, abstract level):**
+  - The *augmentation half* exists. "Homotokens" (arXiv 2601.02867): exposing multiple valid segmentations delays overfitting and gives a lower best loss when data is repeated more than 16×.
+  - BPE-dropout in low-resource pretraining (arXiv 2605.13436).
+  - Token-noise augmentation for data-constrained AR pretraining (arXiv 2606.16246; random replacement was the best single augmentation).
+  - The *consistency half* exists only in encoder fine-tuning: Multi-view Subword Regularization (Wang, Ruder, Neubig, NAACL 2021, up to +2.5 on XTREME).
+  - **Not found:** a consistency loss across exact segmentations during data-constrained AR pretraining.
+- **Implementation:**
+  - The student reads a random re-segmentation: StochasTok-style splits of tokens into two in-vocabulary tokens with identical bytes, rate p ∈ {0.05, 0.15}, annealed to 0 over the final 20% of training.
+  - The teacher is the EMA weights reading the canonical segmentation, with no gradient.
+  - Loss = NTP on the student view + λ·KL(p_teacher ‖ p_student), λ ∈ {0.1, 0.3, 1.0}. The KL applies only at *aligned* positions: byte offsets where both views have a token boundary and the next canonical token is unsplit in the student view.
+  - The teacher forward costs ≈ +33% FLOPs, so the method gets fewer steps at equal FLOPs.
+- **Arms (3 seeds each at S1):**
+  - baseline;
+  - augmentation only (≈ homotokens);
+  - augmentation + consistency (H0);
+  - consistency with *inexact* views (random token replacement) to test whether exactness matters;
+  - teacher = current weights vs EMA.
+- **Prediction:** the gain over augmentation-only grows with epochs (8 vs 15 vs 30) and holds from S1 to S2.
+- **Falsified if:** augmentation + consistency doesn't beat augmentation-only by ≥2σ over 3 seeds at S1, or the gain vanishes once the baseline's WD and dropout are re-swept.
 
 **H1 — Dual AR + masked-diffusion objective.**
 - **Mechanism:** a masked, any-order objective acts as implicit data augmentation, and repeated data is where that should pay. Supported by Samuel & Charpentier (ICLR 2026, best at every repetition level), Prabhudesai et al. (NeurIPS 2025) and GPT-BERT (BabyLM 2024 winner). I found no Slowrun record that uses it.
@@ -196,6 +220,7 @@ How the score works:
 **H2 — Input-token corruption.**
 - Replace a fraction q ∈ {2, 5, 10}% of input tokens with [MASK] or a random token, keeping clean targets. Optionally anneal q to 0.
 - Cheapest augmentation in the family; doubles as H1's mechanism ablation.
+- Prior art: arXiv 2606.16246 found random token replacement was the best single augmentation in data-constrained AR pretraining, and combining categories helped further. So this is a replication on a stronger baseline.
 - Falsifier as H1.
 
 **H7 — Fixed-compute ensemble.**
@@ -225,7 +250,7 @@ How the score works:
 - Precompute, for each GPT-2 token, all splits into two in-vocabulary tokens whose bytes concatenate to it.
 - Split each token with probability p ∈ {0.05, 0.1}, annealed to 0 over the final 20% of training. Each epoch then sees a different segmentation of the same text.
 - Eval on canonical tokens. FLOPs matched; splitting lengthens sequences, so fewer documents fit per step.
-- BPE-dropout helps low-resource pretraining (arXiv 2605.13436). I found no study in multi-epoch AR pretraining.
+- BPE-dropout helps low-resource pretraining (arXiv 2605.13436). **Correction (2026-10-18):** "Homotokens" (arXiv 2601.02867) already studies multiple segmentations under heavy repetition. H3 is therefore a replication, and it is folded into H0 as H0's augmentation-only arm.
 
 **H5 — NextLat.**
 - A small auxiliary MLP predicts the stop-gradient next final hidden state from (h_t, emb(x_{t+1})); λ ∈ {0.1, 0.3}. Minimal FLOPs.

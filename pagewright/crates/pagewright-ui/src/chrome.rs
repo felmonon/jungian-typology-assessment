@@ -644,7 +644,14 @@ fn color_items(app: &mut PagewrightApp, ui: &mut Ui) {
     });
 }
 
-const HIGHLIGHTS: &[(&str, &str)] = &[("Yellow", "FFFF00"), ("Bright green", "00FF00"), ("Turquoise", "00FFFF"), ("Pink", "FF00FF"), ("Light grey", "C0C0C0")];
+/// Word's highlight colours (`w:highlight` is a fixed set): label, engine name, swatch.
+const HIGHLIGHTS: &[(&str, &str, &str)] = &[
+    ("Yellow", "yellow", "FFFF00"),
+    ("Bright green", "brightGreen", "00FF00"),
+    ("Turquoise", "turquoise", "00FFFF"),
+    ("Pink", "pink", "FF00FF"),
+    ("Light grey", "gray25", "C0C0C0"),
+];
 
 fn highlight_menu(app: &mut PagewrightApp, ui: &mut Ui) {
     let pal = app.pal;
@@ -654,16 +661,16 @@ fn highlight_menu(app: &mut PagewrightApp, ui: &mut Ui) {
 
 fn highlight_items(app: &mut PagewrightApp, ui: &mut Ui) {
     if ui.button("No highlight").clicked() {
-        app.command("format.highlight", json!({"color": null}));
+        app.command("format.highlight", json!({"color": "none"}));
         ui.close();
     }
     ui.horizontal(|ui| {
-        for (name, hex) in HIGHLIGHTS {
+        for (label, name, hex) in HIGHLIGHTS {
             let c = crate::tokens::parse_hex(&format!("#{hex}")).unwrap_or(Color32::YELLOW);
             let (r, resp) = ui.allocate_exact_size(vec2(22.0, 22.0), Sense::click());
             ui.painter().rect_filled(r.shrink(2.0), 4.0, c);
-            if resp.on_hover_text(*name).clicked() {
-                app.command("format.highlight", json!({"color": hex}));
+            if resp.on_hover_text(*label).clicked() {
+                app.command("format.highlight", json!({"color": name}));
                 ui.close();
             }
         }
@@ -711,7 +718,7 @@ fn table_items(app: &mut PagewrightApp, ui: &mut Ui) {
             ui.separator();
             continue;
         }
-        let reason = app.ws.session.registry.get(id).and_then(|s| (s.enabled)(&app.ws.session));
+        let reason = app.unavailable(id);
         let resp = ui.add_enabled(reason.is_none(), egui::Button::new(label));
         let resp = match reason {
             Some(r) => resp.on_disabled_hover_text(r),

@@ -170,6 +170,7 @@ fn unreadable_files_fail_with_a_message_and_empty_files_open_blank() {
     for name in ["truncated.docx", "missing-document-part.docx"] {
         let e = Workspace::open(&fixtures().join("corrupt").join(name)).err().unwrap_or_else(|| panic!("{name} opened"));
         assert!(!e.is_empty() && !e.contains("panicked"), "{name}: {e}");
+        assert!(!e.starts_with("not a valid") && !e.starts_with("missing part"), "{name}: plain language first: {e}");
     }
     let ws = Workspace::open(&fixtures().join("corrupt/empty.docx")).unwrap();
     assert_eq!(ws.session.doc.plain_text(StoryRef::Body).trim(), "");

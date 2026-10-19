@@ -59,8 +59,8 @@ pub const ENTRIES: &[Entry] = &[
     e("format.allCaps", "{}", "All capitals", "Text", "uppercase caps"),
     e("format.growFont", "{}", "Larger text", "Text", "bigger increase font size grow"),
     e("format.shrinkFont", "{}", "Smaller text", "Text", "decrease font size shrink"),
-    e("format.highlight", r#"{"color":"FFFF00"}"#, "Highlight yellow", "Text", "marker highlighter"),
-    e("format.highlight", r#"{"color":null}"#, "Remove highlight", "Text", "no highlight clear marker"),
+    e("format.highlight", r#"{"color":"yellow"}"#, "Highlight yellow", "Text", "marker highlighter"),
+    e("format.highlight", r#"{"color":"none"}"#, "Remove highlight", "Text", "no highlight clear marker"),
     e("format.color", r#"{"color":"auto"}"#, "Automatic text colour", "Text", "black default color colour"),
     e("format.clear", "{}", "Clear formatting", "Text", "reset plain remove formatting"),
     // Paragraph
@@ -199,8 +199,7 @@ pub fn unavailable(app: &PagewrightApp, e: &Entry) -> Option<String> {
             _ => None,
         };
     }
-    let spec = app.ws.session.registry.get(e.id)?;
-    (spec.enabled)(&app.ws.session).map(str::to_string)
+    app.unavailable(e.id)
 }
 
 /// Runs a search entry.

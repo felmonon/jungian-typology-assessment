@@ -397,6 +397,11 @@ fn keyboard(app: &mut PagewrightApp, ui: &Ui) {
                 if key == Key::Escape && !app.canvas.preedit.is_empty() {
                     continue;
                 }
+                // Esc leaves a header or footer, as in Word.
+                if key == Key::Escape && modifiers.is_none() && app.ws.session.story() != StoryRef::Body {
+                    let _ = app.engine("insert.closeHeader", json!({}));
+                    continue;
+                }
                 if let Some((id, params)) = app.keys.lookup(key, modifiers) {
                     // Clipboard keys arrive as Copy/Cut/Paste events; Pagewright's own were handled globally.
                     if matches!(id.as_str(), "edit.copy" | "edit.cut" | "edit.paste") || id.starts_with("pw.") {

@@ -172,7 +172,7 @@ impl Workspace {
     /// Opens `path` into this session. On error the current document is left exactly as it was.
     pub fn open_in_place(&mut self, path: &Path) -> Result<(), String> {
         let named = FileKind::from_path(path);
-        let bytes = std::fs::read(path).map_err(|e| format!("{}: {e}", path.display()))?;
+        let bytes = std::fs::read(path).map_err(|e| friendly_open_error(&format!("{}: {e}", path.display())))?;
         let actual = FileKind::sniff(&bytes);
         let kind = actual.or(named).unwrap_or(FileKind::PlainText);
         if !kind.can_open() {
@@ -190,7 +190,7 @@ impl Workspace {
         }
 
         // The engine's open replaces the document only on success.
-        self.session.run("file.open", &json!({"path": path.to_string_lossy()})).map_err(|e| plain_error(&e.to_string()))?;
+        self.session.run("file.open", &json!({"path": path.to_string_lossy()})).map_err(|e| friendly_open_error(&plain_error(&e.to_string())))?;
         self.session.dirty = false;
         self.session.reset_history();
 
@@ -356,6 +356,27 @@ impl Workspace {
 
 fn file_name(path: &Path) -> String {
     path.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_else(|| path.display().to_string())
+}
+
+/// A plain-language explanation for an open failure, with the technical detail after it.
+pub fn friendly_open_error(e: &str) -> String {
+    let lower = e.to_ascii_lowercase();
+    let lead = if lower.contains("not a valid zip") || lower.contains("invalid zip") || lower.contains("eocd") {
+        "This file isn't a complete Word document. It may be damaged, or only partly downloaded or copied."
+    } else if lower.contains("missing part") {
+        "This file is a package with no document inside it, so there is nothing to open."
+    } else if lower.contains("password") || lower.contains("encrypt") {
+        "This document is protected with a password. Pagewright can't ask for passwords yet; open it in the app that protected it and remove the password, or save an unprotected copy."
+    } else if lower.contains("permission denied") || lower.contains("access is denied") {
+        "Pagewright isn't allowed to read this file. Check its permissions, or copy it somewhere you can read."
+    } else if lower.contains("no such file") || lower.contains("not found") || lower.contains("cannot find") {
+        "The file isn't there any more. It may have been moved, renamed or deleted."
+    } else if lower.contains("larger than 2 gb") {
+        "This file is larger than 2 GB, which is more than Pagewright opens."
+    } else {
+        return e.to_string();
+    };
+    format!("{lead}\n\nDetails: {e}")
 }
 
 /// Engine error text without the command prefix ("file.open: …", "not available: …").

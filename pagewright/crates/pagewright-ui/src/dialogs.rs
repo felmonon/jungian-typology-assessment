@@ -106,7 +106,15 @@ enum Act {
 }
 
 pub fn show(app: &mut PagewrightApp, ctx: &Context) {
-    let Some(mut dialog) = app.dialog.take() else { return };
+    let Some(mut dialog) = app.dialog.take() else {
+        app.dialog_frames = 0;
+        return;
+    };
+    // Keys count only once the dialog has been on screen for a frame: the Enter that chose a
+    // command in the search (earlier this frame) must not also confirm the dialog it opened.
+    let settled = app.dialog_frames > 0;
+    app.dialog_frames = app.dialog_frames.saturating_add(1);
+    let enter = settled && ctx.input(|i| i.key_pressed(Key::Enter));
     let pal = app.pal;
     let mut act = Act::None;
     let modal = egui::Modal::new(Id::new("pw-dialog")).backdrop_color(egui::Color32::from_black_alpha(if pal.dark { 120 } else { 70 })).frame(
@@ -123,7 +131,7 @@ pub fn show(app: &mut PagewrightApp, ctx: &Context) {
                 body(ui, app, "If you don't save, your changes are discarded.");
                 ui.add_space(12.0);
                 ui.horizontal(|ui| {
-                    if widgets::primary(ui, &pal, "Save").clicked() || ui.input(|i| i.key_pressed(Key::Enter)) {
+                    if widgets::primary(ui, &pal, "Save").clicked() || enter {
                         act = Act::Save(then.clone());
                     }
                     if widgets::danger(ui, &pal, "Don't save").clicked() {
@@ -155,7 +163,7 @@ pub fn show(app: &mut PagewrightApp, ctx: &Context) {
                             act = Act::SaveCopy(path.with_extension("docx"), then.clone());
                         }
                     } else {
-                        if widgets::primary(ui, &pal, "Save a copy…").clicked() || ui.input(|i| i.key_pressed(Key::Enter)) {
+                        if widgets::primary(ui, &pal, "Save a copy…").clicked() || enter {
                             act = Act::SaveCopy(app.copy_path(path), then.clone());
                         }
                         if widgets::danger(ui, &pal, "Replace original").clicked() {
@@ -177,11 +185,11 @@ pub fn show(app: &mut PagewrightApp, ctx: &Context) {
                 });
                 body(ui, app, b);
                 ui.add_space(12.0);
-                if widgets::primary(ui, &pal, "OK").clicked() || ui.input(|i| i.key_pressed(Key::Enter)) {
+                if widgets::primary(ui, &pal, "OK").clicked() || enter {
                     act = Act::Close;
                 }
             }
-            Dialog::Chooser(c) => act = chooser(ui, app, c),
+            Dialog::Chooser(c) => act = chooser(ui, app, c, enter),
             Dialog::InsertTable { rows, cols } => {
                 title(ui, app, "Insert table");
                 // A grid to pick a size by pointing, plus exact fields.
@@ -210,7 +218,7 @@ pub fn show(app: &mut PagewrightApp, ctx: &Context) {
                 });
                 ui.add_space(12.0);
                 ui.horizontal(|ui| {
-                    if widgets::primary(ui, &pal, &format!("Insert {rows} × {cols}")).clicked() {
+                    if widgets::primary(ui, &pal, &format!("Insert {rows} × {cols}")).clicked() || enter {
                         act = Act::Command("insert.table", json!({"rows": rows, "cols": cols}));
                     }
                     if widgets::secondary(ui, &pal, "Cancel").clicked() {
@@ -234,7 +242,7 @@ pub fn show(app: &mut PagewrightApp, ctx: &Context) {
                 }
                 ui.add_space(12.0);
                 ui.horizontal(|ui| {
-                    let go = widgets::primary(ui, &pal, "Insert link").clicked() || ui.input(|i| i.key_pressed(Key::Enter));
+                    let go = widgets::primary(ui, &pal, "Insert link").clicked() || enter;
                     if go {
                         match normalize_url(url) {
                             Some(full) => {
@@ -333,7 +341,7 @@ pub fn show(app: &mut PagewrightApp, ctx: &Context) {
                     body(ui, app, "Pages print exactly as they appear here; the PDF export is the same layout.");
                     ui.add_space(12.0);
                     ui.horizontal(|ui| {
-                        if widgets::primary(ui, &pal, "Print").clicked() {
+                        if widgets::primary(ui, &pal, "Print").clicked() || enter {
                             act = Act::Print(Some(printers[*printer].name.clone()), *copies, pages.trim().to_string());
                         }
                         if widgets::secondary(ui, &pal, "Cancel").clicked() {
@@ -346,6 +354,11 @@ pub fn show(app: &mut PagewrightApp, ctx: &Context) {
                 title(ui, app, "Recover unsaved work");
                 body(ui, app, "Pagewright kept copies of documents that were open with unsaved changes when it last closed unexpectedly. Restoring opens a copy; your files on disk are never changed.");
                 ui.add_space(8.0);
+                if enter
+                    && let Some(d) = docs.first()
+                {
+                    act = Act::Restore(d.id.clone());
+                }
                 for d in docs.iter() {
                     ui.horizontal(|ui| {
                         ui.label(RichText::new(&d.name).font(theme::strong(13.0)));
@@ -445,6 +458,15 @@ const SHORTCUTS: &[(&str, &str)] = &[
 ];
 
 fn apply(app: &mut PagewrightApp, dialog: Dialog, act: Act) {
+    let closing = !matches!(act, Act::None);
+    apply_act(app, dialog, act);
+    // A dialog that closed hands the keyboard back to the document (unless another took over).
+    if closing && app.dialog.is_none() && app.search.is_none() {
+        app.canvas.want_focus = true;
+    }
+}
+
+fn apply_act(app: &mut PagewrightApp, dialog: Dialog, act: Act) {
     match act {
         Act::None => app.dialog = Some(dialog),
         Act::Close => app.canvas.want_focus = true,
@@ -516,7 +538,7 @@ fn print(app: &mut PagewrightApp, dialog: Dialog, printer: Option<String>, copie
     }
 }
 
-fn chooser(ui: &mut Ui, app: &mut PagewrightApp, c: &mut Chooser) -> Act {
+fn chooser(ui: &mut Ui, app: &mut PagewrightApp, c: &mut Chooser, enter: bool) -> Act {
     let pal = app.pal;
     let mut act = Act::None;
     let (heading, button, exts): (&str, &str, &[&str]) = match &c.mode {
@@ -606,7 +628,7 @@ fn chooser(ui: &mut Ui, app: &mut PagewrightApp, c: &mut Chooser) -> Act {
     ui.horizontal(|ui| {
         let enabled = !c.name.trim().is_empty() || c.selected.as_ref().is_some_and(|p| p.is_file());
         let go = ui.add_enabled(enabled, egui::Button::new(RichText::new(button).color(pal.accent_text).font(theme::strong(13.0))).fill(pal.accent).min_size(vec2(96.0, 30.0)));
-        let enter = ui.input(|i| i.key_pressed(Key::Enter)) && enabled;
+        let enter = enter && enabled;
         if go.clicked() || enter {
             if saving {
                 let mut name = c.name.trim().to_string();

@@ -83,6 +83,8 @@ pub struct PagewrightApp {
     pub time: f64,
     /// Notice messages the person dismissed for this document.
     pub dismissed: Vec<String>,
+    /// Frames the current dialog has been on screen.
+    pub dialog_frames: u32,
     applied_dark: Option<bool>,
     fonts_ready: u8,
     allow_quit: bool,
@@ -115,6 +117,7 @@ impl PagewrightApp {
             prefs,
             time: 0.0,
             dismissed: Vec::new(),
+            dialog_frames: 0,
             applied_dark: None,
             fonts_ready: 0,
             allow_quit: false,
@@ -205,6 +208,15 @@ impl PagewrightApp {
             }
             "pw.find" | "edit.find" if params.get("text").is_none() => self.find.open_find(&self.ws.session.selected_text()),
             "pw.replace" | "edit.findReplace" => self.find.open_replace(&self.ws.session.selected_text()),
+            // Nothing searched yet: "find next" opens Find, as in Word.
+            "edit.findNext" | "edit.findPrevious" if self.ws.session.find.query.is_empty() => self.find.open_find(&self.ws.session.selected_text()),
+            "edit.findNext" | "edit.findPrevious" => {
+                let q = self.ws.session.find.query.clone();
+                match self.ws.session.run(id, &params) {
+                    Ok(_) => self.canvas.reveal_caret = true,
+                    Err(_) => self.toast(format!("No matches for “{q}”.")),
+                }
+            }
             "pw.new" | "file.new" if params.get("template").is_none() => self.after_discard_or_save(Then::New),
             "pw.open" => self.after_discard_or_save(Then::Open(None)),
             "file.open" => {
@@ -230,9 +242,22 @@ impl PagewrightApp {
             "pw.about" => self.dialog = Some(Dialog::About),
             "pw.recover" => self.offer_recovery(true),
             "pw.shortcuts" => self.dialog = Some(Dialog::Shortcuts),
-            _ => return self.engine(id, params).is_ok(),
+            _ => {
+                let ok = self.engine(id, params).is_ok();
+                self.return_focus();
+                return ok;
+            }
         }
+        self.return_focus();
         true
+    }
+
+    /// After a toolbar, menu or search action the keyboard belongs to the document again,
+    /// unless the action opened something that wants it (a dialog, the search, the find bar).
+    fn return_focus(&mut self) {
+        if self.dialog.is_none() && self.search.is_none() && !self.find.open {
+            self.canvas.want_focus = true;
+        }
     }
 
     /// Runs an engine command, shows a failure, and acts on the requests it leaves for the UI.
@@ -384,7 +409,7 @@ impl PagewrightApp {
             Err(e) => {
                 self.dialog = Some(Dialog::Message {
                     title: "Couldn't open this file".into(),
-                    body: format!("{e}\n\nNothing was changed. The document you had open is still here."),
+                    body: format!("{e}\n\nNothing was changed; the document you had open is still here."),
                     warn: true,
                 })
             }
@@ -563,6 +588,19 @@ impl PagewrightApp {
         self.dialog = Some(Dialog::Recover { docs });
     }
 
+    /// Why an engine command can't run right now: its own enablement, plus conditions the
+    /// engine only reports after trying (so the interface can say so before).
+    pub fn unavailable(&self, id: &str) -> Option<String> {
+        let s = &self.ws.session;
+        if let Some(why) = s.registry.get(id).and_then(|spec| (spec.enabled)(s)) {
+            return Some(why.to_string());
+        }
+        match id {
+            "table.merge" if s.cell_range().is_none() && !spans_cells(s) => Some("select two or more cells first".into()),
+            _ => None,
+        }
+    }
+
     pub fn recovery_enabled(&self) -> bool {
         self.recovery_enabled
     }
@@ -570,6 +608,12 @@ impl PagewrightApp {
     pub fn notice_messages(&self) -> Vec<(String, bool)> {
         self.ws.notices.iter().map(|n: &Notice| (n.message(), n.is_warning())).collect()
     }
+}
+
+/// Whether the selection runs across more than one table cell.
+fn spans_cells(s: &wordcraft_engine::Session) -> bool {
+    let (a, b) = s.sel.ordered();
+    a.path.cell().is_some() && b.path.cell().is_some() && a.path.cell() != b.path.cell()
 }
 
 fn load_prefs() -> Prefs {

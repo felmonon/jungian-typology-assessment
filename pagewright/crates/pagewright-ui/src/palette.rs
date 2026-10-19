@@ -92,6 +92,7 @@ pub const ENTRIES: &[Entry] = &[
     // Insert
     e("pw.insertTable", "{}", "Insert table…", "Insert", "grid rows columns"),
     e("pw.insertPicture", "{}", "Insert picture…", "Insert", "image photo figure graphic"),
+    e("pw.altText", "{}", "Picture description (alt text)…", "Insert", "alt text accessibility screen reader describe image"),
     e("pw.link", "{}", "Insert link…", "Insert", "hyperlink url web address"),
     e("insert.removeLink", "{}", "Remove link", "Insert", "unlink hyperlink"),
     e("text.pageBreak", "{}", "Page break", "Insert", "new page"),
@@ -198,6 +199,7 @@ pub fn unavailable(app: &PagewrightApp, e: &Entry) -> Option<String> {
             "pw.cut" | "pw.copy" if app.ws.session.sel.is_collapsed() => Some("select some text first".into()),
             "pw.recover" if !app.recovery_enabled() => Some("recovery copies are off for this session".into()),
             "pw.autosave" if !app.autosave => app.autosave_blocked(),
+            "pw.altText" => app.unavailable("pw.altText"),
             _ => None,
         };
     }

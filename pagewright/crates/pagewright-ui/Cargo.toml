@@ -24,3 +24,4 @@ log = { workspace = true }
 
 [dev-dependencies]
 egui_kittest = { workspace = true }
+zip = { workspace = true }

@@ -83,8 +83,9 @@ pub struct PagewrightApp {
     pub time: f64,
     /// Notice messages the person dismissed for this document.
     pub dismissed: Vec<String>,
-    /// Frames the current dialog has been on screen.
+    /// Frames the current dialog has been on screen, and which kind of dialog it is.
     pub dialog_frames: u32,
+    pub dialog_kind: Option<std::mem::Discriminant<Dialog>>,
     /// The format bar's first control, where F6 takes the keyboard.
     pub toolbar_first: Option<egui::Id>,
     /// Save automatically (this document only; see [`Self::set_autosave`]).
@@ -127,6 +128,7 @@ impl PagewrightApp {
             time: 0.0,
             dismissed: Vec::new(),
             dialog_frames: 0,
+            dialog_kind: None,
             toolbar_first: None,
             autosave: false,
             last_change: (0.0, 0),
@@ -254,6 +256,7 @@ impl PagewrightApp {
             "pw.exportPdf" | "file.exportPdf" => self.export_flow(FileKind::Pdf),
             "pw.link" | "insert.link" if params.get("url").is_none() => self.dialog = Some(Dialog::link(self)),
             "pw.insertTable" => self.dialog = Some(Dialog::InsertTable { rows: 3, cols: 3 }),
+            "pw.altText" => self.dialog = Some(Dialog::PictureAlt { path: None, alt: String::new() }),
             "pw.insertPicture" | "insert.picture" if params.get("path").is_none() && params.get("data").is_none() => self.pick_picture(),
             "pw.pageSetup" => self.dialog = Some(Dialog::page_setup(self)),
             "pw.zoomIn" => self.canvas.set_zoom(self.canvas.zoom * 1.1),
@@ -614,10 +617,9 @@ impl PagewrightApp {
         }
     }
 
+    /// Asks for a description (alt text) before inserting the picture at `path`.
     pub fn insert_picture(&mut self, path: &Path) {
-        if self.engine("insert.picture", json!({"path": path.to_string_lossy()})).is_ok() {
-            self.toast("Picture inserted. Add a description for screen readers from the command search: “Alt Text”.");
-        }
+        self.dialog = Some(Dialog::PictureAlt { path: Some(path.to_path_buf()), alt: String::new() });
     }
 
     fn remember(&mut self, path: &Path) {
@@ -706,6 +708,7 @@ impl PagewrightApp {
         }
         match id {
             "table.merge" if s.cell_range().is_none() && !spans_cells(s) => Some("select two or more cells first".into()),
+            "pw.altText" => s.registry.get("picture.altText").and_then(|spec| (spec.enabled)(s)).map(|_| "select a picture first".to_string()),
             _ => None,
         }
     }

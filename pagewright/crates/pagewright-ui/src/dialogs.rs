@@ -40,6 +40,9 @@ pub enum Dialog {
     Chooser(Chooser),
     InsertTable { rows: u32, cols: u32 },
     Link { text: String, url: String, had_selection: bool, error: Option<String> },
+    /// Describe a picture for people using screen readers: before inserting (`path`), or for
+    /// the selected picture (`None`).
+    PictureAlt { path: Option<PathBuf>, alt: String },
     PageSetup { paper: String, landscape: bool, margins: [f32; 4], metric: bool },
     Print { printers: Vec<PrinterInfo>, printer: usize, copies: u32, pages: String, status: Option<String> },
     Recover { docs: Vec<RecoveryInfo> },
@@ -108,8 +111,15 @@ enum Act {
 pub fn show(app: &mut PagewrightApp, ctx: &Context) {
     let Some(mut dialog) = app.dialog.take() else {
         app.dialog_frames = 0;
+        app.dialog_kind = None;
         return;
     };
+    // A different dialog (one dialog opening another) starts its count again.
+    let kind = std::mem::discriminant(&dialog);
+    if app.dialog_kind != Some(kind) {
+        app.dialog_kind = Some(kind);
+        app.dialog_frames = 0;
+    }
     // Keys count only once the dialog has been on screen for a frame: the Enter that chose a
     // command in the search (earlier this frame) must not also confirm the dialog it opened.
     let settled = app.dialog_frames > 0;
@@ -254,6 +264,32 @@ pub fn show(app: &mut PagewrightApp, ctx: &Context) {
                             }
                             None => *error = Some("Enter a web address (https://…) or an email address.".into()),
                         }
+                    }
+                    if widgets::secondary(ui, &pal, "Cancel").clicked() {
+                        act = Act::Close;
+                    }
+                });
+            }
+            Dialog::PictureAlt { path, alt } => {
+                title(ui, app, "Describe this picture");
+                body(ui, app, "A short description lets people using screen readers know what the picture shows. Leave it empty if the picture is only decoration.");
+                ui.add_space(6.0);
+                let r = ui.add(egui::TextEdit::multiline(alt).hint_text("For example: Bar chart of visits by month, peaking in July").desired_rows(2).desired_width(460.0).id_salt("pw-alt"));
+                if !settled {
+                    r.request_focus();
+                }
+                // Enter inserts; Shift+Enter would be a new line in the field.
+                let go_key = enter && !ui.input(|i| i.modifiers.shift);
+                ui.add_space(12.0);
+                ui.horizontal(|ui| {
+                    let label = if path.is_some() { "Insert picture" } else { "Save description" };
+                    if widgets::primary(ui, &pal, label).clicked() || go_key {
+                        let text = alt.trim().replace('\n', " ");
+                        act = match path {
+                            Some(p) => Act::Command("insert.picture", json!({"path": p.to_string_lossy(), "alt": text})),
+                            None if text.is_empty() => Act::Command("object.altText", json!({"decorative": true})),
+                            None => Act::Command("picture.altText", json!({"text": text})),
+                        };
                     }
                     if widgets::secondary(ui, &pal, "Cancel").clicked() {
                         act = Act::Close;

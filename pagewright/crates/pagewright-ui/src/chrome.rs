@@ -894,6 +894,13 @@ pub fn outline(app: &mut PagewrightApp, ui: &mut Ui) {
             // The section the caret is in: the last heading at or before it.
             let focus = app.ws.session.sel.focus.clone();
             let current = hs.iter().rposition(|(_, _, p)| p.path <= focus.path);
+            // Bring the current section into view when the caret moves into another one, and
+            // leave the list where the person scrolled it otherwise.
+            let followed = egui::Id::new("pw-outline-followed");
+            let follow = ui.data(|d| d.get_temp::<Option<usize>>(followed)) != Some(current);
+            if follow {
+                ui.data_mut(|d| d.insert_temp(followed, current));
+            }
             egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| {
                 for (i, (level, text, pos)) in hs.iter().enumerate() {
                     let indent = (*level as f32).min(5.0) * 14.0;
@@ -905,6 +912,9 @@ pub fn outline(app: &mut PagewrightApp, ui: &mut Ui) {
                     }
                     if active {
                         ui.painter().rect_filled(egui::Rect::from_min_size(r.min + vec2(0.0, 5.0), vec2(3.0, 16.0)), 1.5, pal.accent);
+                        if follow {
+                            ui.scroll_to_rect(r, Some(Align::Center));
+                        }
                     }
                     let font = if *level == 0 { theme::medium(12.5) } else { theme::ui(12.5) };
                     let color = if active { pal.text } else if *level == 0 { pal.text } else { pal.text_muted };

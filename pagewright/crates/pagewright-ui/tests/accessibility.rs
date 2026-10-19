@@ -90,6 +90,21 @@ fn outline_entries_are_announced_with_level_and_current_section() {
 }
 
 #[test]
+fn the_outline_scrolls_to_the_current_section() {
+    let long = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../fixtures/docx/long-document.docx");
+    let app = PagewrightApp::new(&egui::Context::default(), Box::new(NoPlatform::default()), AppOptions { open: Some(long), ..AppOptions::default() });
+    let mut h = Harness::builder().with_size(egui::vec2(1280.0, 860.0)).build_ui_state(|ui, app: &mut PagewrightApp| app.ui(ui), app);
+    h.run_steps(4);
+    h.state_mut().command("caret.docEnd", json!({}));
+    h.run_steps(6);
+    let current = h.get_by(|n| n.label().is_some_and(|l| l.ends_with("(current section)")));
+    let label = current.accesskit_node().label().unwrap_or_default();
+    assert!(label.contains("20.3"), "the last section is current: {label}");
+    let r = current.rect();
+    assert!(r.min.y >= 0.0 && r.max.y <= 860.0, "current section is on screen: {r:?}");
+}
+
+#[test]
 fn bold_reports_its_pressed_state() {
     let mut h = harness();
     h.state_mut().command("format.bold", json!({}));
@@ -98,4 +113,28 @@ fn bold_reports_its_pressed_state() {
     assert_eq!(toggled, "Some(True)");
     let italic = format!("{:?}", h.get_by_label("Italic").accesskit_node().toggled());
     assert_eq!(italic, "Some(False)");
+}
+
+#[test]
+fn a_dialog_opened_by_another_dialog_takes_the_keyboard() {
+    let mut h = harness();
+    // The chooser (no native dialogs in tests) hands over to the picture-description dialog.
+    let png = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../brand/png/pagewright-64.png");
+    h.state_mut().dialog = Some(pagewright_ui::dialogs::Dialog::chooser(pagewright_ui::dialogs::ChooserMode::Picture, png.parent().map(|p| p.to_path_buf()), None));
+    h.run_steps(3);
+    h.state_mut().insert_picture(&png);
+    h.run_steps(3);
+    // Typed text goes wherever the keyboard is: it must be the description field.
+    h.event(egui::Event::Text("Brand mark".into()));
+    h.run_steps(2);
+    h.key_press(egui::Key::Enter);
+    h.run_steps(4);
+    let app = h.state_mut();
+    assert!(app.dialog.is_none(), "inserted: {:?}", app.dialog);
+    let saved = std::env::temp_dir().join(format!("pagewright-alt-{}.docx", std::process::id()));
+    app.ws.save_as(&saved, true).unwrap();
+    let mut xml = String::new();
+    use std::io::Read;
+    zip::ZipArchive::new(std::fs::File::open(&saved).unwrap()).unwrap().by_name("word/document.xml").unwrap().read_to_string(&mut xml).unwrap();
+    assert!(xml.contains("descr=\"Brand mark\""), "alt text saved");
 }

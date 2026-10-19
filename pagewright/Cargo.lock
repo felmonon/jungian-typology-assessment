@@ -2707,6 +2707,7 @@ dependencies = [
  "wordcraft-fonts",
  "wordcraft-layout",
  "wordcraft-render",
+ "zip",
 ]
 
 [[package]]

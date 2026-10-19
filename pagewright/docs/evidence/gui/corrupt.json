@@ -1,0 +1,12 @@
+[
+  [
+    "app alive after an unreadable file",
+    true,
+    ""
+  ],
+  [
+    "app alive after a damaged file",
+    true,
+    ""
+  ]
+]

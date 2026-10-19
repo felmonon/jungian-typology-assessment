@@ -7,3 +7,6 @@ coverage/
 .config/
 .firebaserc
 firebase.json
+
+# Pagewright (Rust desktop app) is not part of the website deploy
+pagewright/

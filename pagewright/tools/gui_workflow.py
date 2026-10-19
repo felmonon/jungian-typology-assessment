@@ -290,6 +290,10 @@ def features(g: Gui):
     search(g, "insert picture")
     g.type(str(ROOT / "brand/png/pagewright-256.png"))
     g.key("Return", pause=1.0)
+    g.shot("picture-description")
+    g.type("Pagewright app icon")
+    g.key("Return", pause=1.0)
+    g.key("ctrl+End")
     g.key("Return")
     g.key("ctrl+Return")
     g.type("Second page.")
@@ -344,6 +348,7 @@ def features(g: Gui):
         g.check("one table", s["tables"] == 1, str(s["tables"]))
         g.check("hyperlink to example.org", "https://example.org/tour" in rels)
         g.check("picture embedded", any(n.startswith("word/media/") for n in names))
+        g.check("picture has its description (alt text)", 'descr="Pagewright app icon"' in xml)
         g.check("landscape section", 'w:orient="landscape"' in xml)
         g.check("footer with page number", any(n.startswith("word/footer") for n in names))
         g.check("replace all applied", not any("colour" in t for t in texts) and any("color, color" in t for t in texts))
@@ -396,12 +401,22 @@ def layout(g: Gui):
     subprocess.run(["convert", str(p), "-crop", "700x520+0+0", str(p)])
     subprocess.run(["xdotool", "windowsize", g.win, "1280", "860"])
     time.sleep(1.0)
-    g.launch_long = True
     g.check("app alive after resizing", g.alive())
     g.quit()
 
 
-SCENARIOS = {"slice1": slice1, "unsaved": unsaved, "fidelity": fidelity, "features": features, "recovery": recovery, "corrupt": corrupt, "layout": layout}
+def long(g: Gui):
+    """A 48-page document: the outline lists its headings and follows the caret to the end."""
+    g.launch(str(FIX / "docx/long-document.docx"), wait=6.0)
+    g.shot("long-start")
+    g.click(700, 300)
+    g.key("ctrl+End", pause=1.5)
+    g.shot("long-end")
+    g.check("app alive after moving through 48 pages", g.alive())
+    g.quit()
+
+
+SCENARIOS = {"slice1": slice1, "unsaved": unsaved, "fidelity": fidelity, "features": features, "recovery": recovery, "corrupt": corrupt, "layout": layout, "long": long}
 
 
 def main() -> int:

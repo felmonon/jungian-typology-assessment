@@ -43,6 +43,7 @@ fn every_entry_names_a_real_command() {
 fn every_entry_runs_or_explains_why_not() {
     let mut a = app();
     let mut ran = 0;
+    let mut skipped = Vec::new();
     for e in ENTRIES {
         a.toast = None;
         a.dialog = None;
@@ -61,6 +62,7 @@ fn every_entry_runs_or_explains_why_not() {
         }
         if let Some(why) = palette::unavailable(&a, e) {
             assert!(!why.trim().is_empty(), "{} is unavailable without a reason", e.label);
+            skipped.push(e.id);
             continue;
         }
         palette::run(&mut a, e);
@@ -73,7 +75,11 @@ fn every_entry_runs_or_explains_why_not() {
             a.command("text.insert", json!({"text": "Body text with colour and a link here."}));
         }
     }
-    assert!(ran >= ENTRIES.len() - 3, "only {ran} of {} entries ran", ENTRIES.len());
+    // Only these may be unavailable in this setup, each for a stated reason: recovery is off in
+    // tests, the document has no file (autosave), no cells or picture are selected.
+    skipped.sort();
+    assert_eq!(skipped, ["pw.altText", "pw.autosave", "pw.recover", "table.merge"], "unexpectedly unavailable");
+    assert_eq!(ran + skipped.len(), ENTRIES.len());
 }
 
 #[test]

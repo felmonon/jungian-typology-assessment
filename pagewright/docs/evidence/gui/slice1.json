@@ -1,0 +1,42 @@
+[
+  [
+    "app still running after typing",
+    true,
+    ""
+  ],
+  [
+    "file saved to Documents",
+    true,
+    "<out>/slice1/home/Documents/Quarterly letter.docx"
+  ],
+  [
+    "heading text and style",
+    true,
+    "[{\"text\": \"Quarterly letter\", \"style\": \"Heading 1\", \"align\": \"CENTER (1)\", \"bold\": [], \"italic\": []}]"
+  ],
+  [
+    "heading centred",
+    true,
+    "CENTER (1)"
+  ],
+  [
+    "body text",
+    true,
+    "Dear reader, this part is bold and this part is italic. Than"
+  ],
+  [
+    "bold run",
+    true,
+    "['bold']"
+  ],
+  [
+    "italic run",
+    true,
+    "['italic']"
+  ],
+  [
+    "saved file valid (Open XML SDK)",
+    true,
+    "0 schema errors"
+  ]
+]

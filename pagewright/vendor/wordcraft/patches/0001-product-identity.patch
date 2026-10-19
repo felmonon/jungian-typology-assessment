@@ -1,0 +1,257 @@
+diff --git a/a/doc/src/lib.rs b/b/doc/src/lib.rs
+index d313f6b..21be789 100644
+--- a/a/doc/src/lib.rs
++++ b/b/doc/src/lib.rs
+@@ -35,6 +35,7 @@ pub mod math_linear;
+ pub mod math_symbols;
+ pub mod numbering;
+ pub mod para;
++pub mod product;
+ pub mod props;
+ pub mod resolve;
+ pub mod section;
+diff --git a/b/doc/src/product.rs b/b/doc/src/product.rs
+new file mode 100644
+index 0000000..44b983c
+--- /dev/null
++++ b/b/doc/src/product.rs
+@@ -0,0 +1,20 @@
++//! Product identity. [Pagewright patch, see vendor/wordcraft/UPSTREAM.md]
++//!
++//! The application name the engine writes into file metadata (DOCX `Application`, PDF creator and
++//! producer, ODT/HTML/RTF/LaTeX generator) and uses in user-facing messages. A front end sets it
++//! once at start-up with [`set_name`]; until then it is upstream's "WordCraft", so upstream tests
++//! and tools behave exactly as before.
++
++use std::sync::OnceLock;
++
++static NAME: OnceLock<String> = OnceLock::new();
++
++/// Sets the product name once. Later calls are ignored (the first front end to start wins).
++pub fn set_name(name: &str) {
++    let _ = NAME.set(name.to_string());
++}
++
++/// The product name: the one given to [`set_name`], or "WordCraft".
++pub fn name() -> &'static str {
++    NAME.get().map(String::as_str).unwrap_or("WordCraft")
++}
+diff --git a/a/docx/src/crypt.rs b/b/docx/src/crypt.rs
+index a01545c..423a4fb 100644
+--- a/a/docx/src/crypt.rs
++++ b/b/docx/src/crypt.rs
+@@ -642,8 +642,8 @@ fn parse_info(info: &[u8]) -> Result<Info, DocxError> {
+     };
+     match (major, minor) {
+         (4, 4) => {}
+-        (2..=4, 2) => return Err(bad("this file uses Standard encryption (Office 2007), which WordCraft can't open yet")),
+-        (3 | 4, 3) => return Err(bad("this file uses extensible encryption, which WordCraft can't open")),
++        (2..=4, 2) => return Err(bad("this file uses Standard encryption (Office 2007), which can't be opened yet")),
++        (3 | 4, 3) => return Err(bad("this file uses extensible encryption, which can't be opened")),
+         _ => return Err(bad(format!("unknown encryption version {major}.{minor}"))),
+     }
+     let root = xml::parse(info.get(8..).unwrap_or(&[]))?;
+diff --git a/a/docx/src/write/mod.rs b/b/docx/src/write/mod.rs
+index 0fd312b..9bff23c 100644
+--- a/a/docx/src/write/mod.rs
++++ b/b/docx/src/write/mod.rs
+@@ -1276,7 +1276,7 @@ fn app_xml(doc: &Document) -> Vec<u8> {
+             ("xmlns:vt", "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"),
+         ],
+     );
+-    w.leaf("Application", &[], "WordCraft");
++    w.leaf("Application", &[], wordcraft_doc::product::name());
+     w.leaf("Words", &[], &doc.word_count().to_string());
+     w.leaf("Paragraphs", &[], &doc.paragraph_count().to_string());
+     w.leaf("DocSecurity", &[], "0");
+diff --git a/a/engine/src/cmd/chart.rs b/b/engine/src/cmd/chart.rs
+index 50321fb..45d1434 100644
+--- a/a/engine/src/cmd/chart.rs
++++ b/b/engine/src/cmd/chart.rs
+@@ -119,7 +119,7 @@ fn has_chart(s: &Session) -> Option<&'static str> {
+     match selected(s) {
+         Some((_, InlineObject::Graphic { graphic, .. })) if graphic.chart.is_some() => None,
+         Some((_, InlineObject::Graphic { graphic, .. })) if graphic.kind == GraphicKind::Chart => {
+-            Some("this chart was made in another program: WordCraft shows it but can't edit it")
++            Some("this chart was made in another program: it is shown and kept, but can't be edited here")
+         }
+         _ => Some("select a chart first"),
+     }
+diff --git a/a/engine/src/cmd/citations.rs b/b/engine/src/cmd/citations.rs
+index ece0721..e94749b 100644
+--- a/a/engine/src/cmd/citations.rs
++++ b/b/engine/src/cmd/citations.rs
+@@ -347,7 +347,7 @@ pub fn specs() -> Vec<CommandSpec> {
+             r#"{"kind"?: "footnote|endnote", "pos"?: "pageBottom|beneathText" (footnotes) | "sectEnd|docEnd" (endnotes), "numFmt"?: "decimal|lowerRoman|upperRoman|lowerLetter|upperLetter|…", "numStart"?: 1-32767, "numRestart"?: "continuous|eachSect|eachPage" (each page: footnotes only), "scope"?: "document|section", "footnoteFormat"?: …, "endnoteFormat"?: …} — no settings: the options in effect at the caret"#,
+         ),
+         CommandSpec::new("references.researcher", "Researcher", "References › Research", |s, _| {
+-            s.status = "Researcher needs an online service; WordCraft keeps your documents offline.".into();
++            s.status = format!("Researcher needs an online service; {} keeps your documents offline.", wordcraft_doc::product::name());
+             Ok(json!({"available": false}))
+         })
+         .pure(),
+diff --git a/a/engine/src/cmd/smart_art.rs b/b/engine/src/cmd/smart_art.rs
+index 5ebaea9..56cc251 100644
+--- a/a/engine/src/cmd/smart_art.rs
++++ b/b/engine/src/cmd/smart_art.rs
+@@ -152,7 +152,7 @@ fn has_smart_art(s: &Session) -> Option<&'static str> {
+     match selected(s) {
+         Some((_, InlineObject::Graphic { graphic, .. })) if graphic.smart_art.is_some() => None,
+         Some((_, InlineObject::Graphic { graphic, .. })) if graphic.kind == GraphicKind::Diagram => {
+-            Some("this SmartArt was made in another program: WordCraft shows it but can't edit it")
++            Some("this SmartArt was made in another program: it is shown and kept, but can't be edited here")
+         }
+         _ => Some("select a SmartArt graphic first"),
+     }
+diff --git a/a/engine/src/io/safe_save.rs b/b/engine/src/io/safe_save.rs
+index 97d78aa..a9809c3 100644
+--- a/a/engine/src/io/safe_save.rs
++++ b/b/engine/src/io/safe_save.rs
+@@ -57,10 +57,10 @@ fn create_directly(path: &Path, refused: io::Error, prepare: impl FnOnce(&mut Fi
+         Err(e) if e.kind() == io::ErrorKind::AlreadyExists => {
+             return Err(guided(
+                 refused,
+-                "This folder doesn't let WordCraft create the temporary file a safe save needs, so the existing file was left unchanged.",
++                "This folder doesn't allow creating the temporary file a safe save needs, so the existing file was left unchanged.",
+             ));
+         }
+-        Err(e) if e.kind() == io::ErrorKind::PermissionDenied => return Err(guided(e, "WordCraft can't create files in this folder.")),
++        Err(e) if e.kind() == io::ErrorKind::PermissionDenied => return Err(guided(e, "This app can't create files in this folder.")),
+         Err(e) => return Err(e),
+     };
+     let Err(failed) = prepare(&mut file) else {
+@@ -88,7 +88,7 @@ impl std::error::Error for Guided {}
+ /// `e`, then `why`, then how to save anyway: Save As to another folder, or access to this one.
+ fn guided(e: io::Error, why: &str) -> io::Error {
+     let access = if cfg!(target_os = "macos") {
+-        "allow WordCraft to use this folder in System Settings › Privacy & Security › Files and Folders"
++        "allow this app to use this folder in System Settings › Privacy & Security › Files and Folders"
+     } else {
+         "get write access to this folder"
+     };
+@@ -103,7 +103,7 @@ fn explain(e: io::Error) -> io::Error {
+         return io::Error::new(
+             e.kind(),
+             format!(
+-                "{e}. macOS may be blocking WordCraft from this folder: allow it in System Settings › Privacy & Security › Files and Folders, or save somewhere else"
++                "{e}. macOS may be blocking this app from this folder: allow it in System Settings › Privacy & Security › Files and Folders, or save somewhere else"
+             ),
+         );
+     }
+diff --git a/a/engine/src/io.rs b/b/engine/src/io.rs
+index 5c10293..65db7fd 100644
+--- a/a/engine/src/io.rs
++++ b/b/engine/src/io.rs
+@@ -331,10 +331,10 @@ fn open_by_content(
+     let (mut doc, encrypted) = if bytes.starts_with(OLE_SIG) && wordcraft_docx::is_encrypted(bytes) {
+         (wordcraft_docx::read_with_password(bytes, password).map_err(|e| e.to_string())?, true)
+     } else if bytes.starts_with(ZIP_SIG) {
+-        (wordcraft_docx::read(bytes).map_err(|e| format!("{name}: not a document WordCraft can open ({e})"))?, false)
++        (wordcraft_docx::read(bytes).map_err(|e| format!("{name}: not a document {} can open ({e})", wordcraft_doc::product::name()))?, false)
+     } else if bytes.starts_with(OLE_SIG) {
+         open_binary_doc(bytes, password)
+-            .map_err(|e| if needs_password(&e) || wrong_password(&e) { e } else { format!("{name}: not a document WordCraft can open ({e})") })?
++            .map_err(|e| if needs_password(&e) || wrong_password(&e) { e } else { format!("{name}: not a document {} can open ({e})", wordcraft_doc::product::name()) })?
+     } else if bytes.starts_with(b"{\\rtf") {
+         (wordcraft_formats::rtf::import(bytes)?, false)
+     } else if is_word_xml(bytes) {
+@@ -345,7 +345,7 @@ fn open_by_content(
+     } else if wordcraft_formats::txt::is_text(bytes) {
+         (wordcraft_formats::txt::import_on(bytes, page), false)
+     } else if ext.is_empty() {
+-        return Err(format!("{name}: not a document or text file WordCraft can open"));
++        return Err(format!("{name}: not a document or text file {} can open", wordcraft_doc::product::name()));
+     } else {
+         return Err(format!("{name}: unsupported format `.{ext}` (not a document or text file)"));
+     };
+diff --git a/a/engine/src/sample.rs b/b/engine/src/sample.rs
+index fd5ac64..8026372 100644
+--- a/a/engine/src/sample.rs
++++ b/b/engine/src/sample.rs
+@@ -30,7 +30,7 @@ fn italic() -> CharProps {
+ pub fn sample_document() -> Document {
+     let mut d = Document::new();
+     d.core.title = "The Open Studio Handbook".into();
+-    d.core.creator = "WordCraft".into();
++    d.core.creator = wordcraft_doc::product::name().into();
+     let mut b: Vec<Block> = Vec::new();
+     b.push(Block::Para(styled("The Open Studio Handbook", "Title")));
+     b.push(Block::Para(styled("How a small community of makers shares space, tools and time", "Subtitle")));
+diff --git a/a/engine/src/session.rs b/b/engine/src/session.rs
+index 671a53c..8fdd4fa 100644
+--- a/a/engine/src/session.rs
++++ b/b/engine/src/session.rs
+@@ -646,7 +646,7 @@ impl Session {
+             goal_x: None,
+             page_hint: 0,
+             registry: Arc::new(crate::cmd::registry()),
+-            author: "WordCraft User".into(),
++            author: format!("{} User", wordcraft_doc::product::name()),
+             initials: String::new(),
+             painter: None,
+             status: String::new(),
+diff --git a/a/formats/src/html.rs b/b/formats/src/html.rs
+index 4f2e438..7027568 100644
+--- a/a/formats/src/html.rs
++++ b/b/formats/src/html.rs
+@@ -1761,7 +1761,7 @@ pub fn export_flow(flow: &Flow, lang: &str) -> String {
+     let mut out = String::new();
+     out.push_str("<!DOCTYPE html>\n");
+     out.push_str(&format!("<html lang=\"{}\">\n<head>\n<meta charset=\"utf-8\">\n", esc(lang)));
+-    out.push_str("<meta name=\"generator\" content=\"WordCraft\">\n");
++    out.push_str(&format!("<meta name=\"generator\" content=\"{}\">\n", wordcraft_doc::product::name()));
+     out.push_str(&format!("<title>{}</title>\n", esc(&m.title)));
+     for (k, v) in [("author", &m.author), ("description", &m.description), ("keywords", &m.keywords), ("subject", &m.subject)] {
+         if !v.is_empty() {
+diff --git a/a/formats/src/latex.rs b/b/formats/src/latex.rs
+index cc21572..cb2fdea 100644
+--- a/a/formats/src/latex.rs
++++ b/b/formats/src/latex.rs
+@@ -52,7 +52,7 @@ pub fn export(doc: &Document) -> String {
+ 
+     let meta = &flow.meta;
+     let mut o = String::new();
+-    o.push_str("% Written by WordCraft (https://getartcraft.com/apps/wordcraft).\n");
++    o.push_str(&format!("% Written by {}.\n", wordcraft_doc::product::name()));
+     o.push_str("\\documentclass{article}\n");
+     o.push_str("\\usepackage[T1]{fontenc}\n");
+     if w.uses.ulem {
+diff --git a/a/formats/src/odt.rs b/b/formats/src/odt.rs
+index 2df9d45..8911bdb 100644
+--- a/a/formats/src/odt.rs
++++ b/b/formats/src/odt.rs
+@@ -875,7 +875,7 @@ fn styles_xml(pages: &[(String, wordcraft_doc::SectionProps)], body_font: &str)
+ 
+ fn meta_xml(m: &Meta) -> String {
+     let mut s =
+-        format!("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<office:document-meta {NS}><office:meta><meta:generator>WordCraft</meta:generator>");
++        format!("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<office:document-meta {NS}><office:meta><meta:generator>{}</meta:generator>", wordcraft_doc::product::name());
+     if !m.title.is_empty() {
+         s.push_str(&format!("<dc:title>{}</dc:title>", x(&m.title)));
+     }
+diff --git a/a/formats/src/rtf.rs b/b/formats/src/rtf.rs
+index 9562536..63114ce 100644
+--- a/a/formats/src/rtf.rs
++++ b/b/formats/src/rtf.rs
+@@ -746,7 +746,7 @@ fn export_with(m: &Meta, w: &Writer, body: &str, sec: &wordcraft_doc::SectionPro
+     for c in &w.t.colors {
+         out.push_str(&format!("\\red{}\\green{}\\blue{};", c.0, c.1, c.2));
+     }
+-    out.push_str("}\n{\\*\\generator WordCraft;}\n{\\stylesheet{\\s0\\snext0 Normal;}");
++    out.push_str(&format!("}}\n{{\\*\\generator {};}}\n{{\\stylesheet{{\\s0\\snext0 Normal;}}", wordcraft_doc::product::name()));
+     for n in 1..=6u32 {
+         let sz = HEAD_SIZES.get(n as usize - 1).copied().unwrap_or(12.0);
+         out.push_str(&format!("{{\\s{n}\\sbasedon0\\snext0\\outlinelevel{}\\keepn\\b\\fs{} heading {n};}}", n - 1, (sz * 2.0) as i32));
+diff --git a/a/pdf/src/lib.rs b/b/pdf/src/lib.rs
+index 7e85324..f4eb456 100644
+--- a/a/pdf/src/lib.rs
++++ b/b/pdf/src/lib.rs
+@@ -399,7 +399,7 @@ fn clamp_side(v: f32) -> f32 {
+ 
+ fn metadata(doc: &Document, opts: &PdfOptions) -> Metadata {
+     let c = &doc.core;
+-    let mut m = Metadata { creator: "WordCraft".into(), producer: "WordCraft".into(), ..Default::default() };
++    let mut m = Metadata { creator: wordcraft_doc::product::name().into(), producer: wordcraft_doc::product::name().into(), ..Default::default() };
+     let title = opts.title.clone().unwrap_or_else(|| c.title.clone());
+     if !title.trim().is_empty() {
+         m.title = Some(title);

@@ -159,6 +159,7 @@ fn search_button(app: &mut PagewrightApp, ui: &mut Ui) {
         ui.painter().rect(kr, 4.0, pal.surface, Stroke::new(1.0, pal.border), egui::StrokeKind::Inside);
         ui.painter().galley(kr.center() - g.size() / 2.0, g, pal.text_muted);
     }
+    resp.widget_info(|| egui::WidgetInfo::labeled(egui::WidgetType::Button, true, "Search commands"));
     if resp.on_hover_text("Find any command by name and run it").clicked() {
         app.command("pw.commandSearch", json!({}));
     }
@@ -219,6 +220,16 @@ fn more_menu(app: &mut PagewrightApp, ui: &mut Ui) {
         ui.separator();
         menu_item(app, ui, "Save", "pw.save");
         menu_item(app, ui, "Save as…", "pw.saveAs");
+        let mut auto = app.autosave;
+        let blocked = app.autosave_blocked();
+        let r = ui.add_enabled(blocked.is_none() || auto, egui::Checkbox::new(&mut auto, "Save automatically"));
+        let r = match &blocked {
+            Some(why) => r.on_disabled_hover_text(format!("Unavailable: {why}")),
+            None => r.on_hover_text("Write changes to this file a few seconds after you stop typing"),
+        };
+        if r.clicked() {
+            app.command("pw.autosave", json!({}));
+        }
         ui.add_enabled_ui(app.recovery_enabled(), |ui| {
             if ui.button("Recover unsaved work…").clicked() {
                 app.command("pw.recover", json!({}));
@@ -437,7 +448,7 @@ fn group(app: &mut PagewrightApp, ui: &mut Ui, g: Group, st: &FormatState) {
         }
         Group::Table => {
             divider(ui, &pal);
-            let btn = widgets::dropdown(ui, &pal, "Table", 72.0, Some((pal.accent_hover, pal.accent_weak)));
+            let btn = widgets::dropdown_named(ui, &pal, "Table tools", "Table", 72.0, Some((pal.accent_hover, pal.accent_weak)));
             let btn = btn.on_hover_text("Rows, columns and cells of this table");
             egui::Popup::menu(&btn).show(|ui| {
                 ui.set_min_width(200.0);
@@ -524,7 +535,8 @@ const CORE_STYLES: &[&str] = &["Normal", "Title", "Subtitle", "Heading1", "Headi
 
 fn style_menu(app: &mut PagewrightApp, ui: &mut Ui, st: &FormatState) {
     let pal = app.pal;
-    let btn = widgets::dropdown(ui, &pal, &st.style_name, 150.0, None);
+    let btn = widgets::dropdown_named(ui, &pal, "Paragraph style", &st.style_name, 150.0, None);
+    app.toolbar_first = Some(btn.id);
     let btn = btn.on_hover_text("Paragraph style: headings build the outline (Ctrl+Alt+1–3)");
     egui::Popup::menu(&btn).show(|ui| style_items(app, ui, st));
 }
@@ -567,7 +579,7 @@ fn style_items(app: &mut PagewrightApp, ui: &mut Ui, st: &FormatState) {
 fn font_menu(app: &mut PagewrightApp, ui: &mut Ui, st: &FormatState) {
     let pal = app.pal;
     let installed = wordcraft_fonts::FontDb::global().families().iter().any(|f| f.eq_ignore_ascii_case(&st.font));
-    let btn = widgets::dropdown(ui, &pal, &st.font, 150.0, None);
+    let btn = widgets::dropdown_named(ui, &pal, "Font", &st.font, 150.0, None);
     let btn = if installed { btn.on_hover_text("Font") } else { btn.on_hover_text(format!("Font: {} isn't installed on this computer, so a similar font is shown. The document keeps {}.", st.font, st.font)) };
     egui::Popup::menu(&btn).show(|ui| {
         ui.set_min_width(220.0);
@@ -587,7 +599,7 @@ const SIZES: &[f32] = &[8.0, 9.0, 10.0, 10.5, 11.0, 12.0, 14.0, 16.0, 18.0, 20.0
 fn size_menu(app: &mut PagewrightApp, ui: &mut Ui, st: &FormatState) {
     let pal = app.pal;
     let shown = if st.size.fract() == 0.0 { format!("{}", st.size as i32) } else { format!("{:.1}", st.size) };
-    let btn = widgets::dropdown(ui, &pal, &shown, 58.0, None);
+    let btn = widgets::dropdown_named(ui, &pal, "Font size", &shown, 58.0, None);
     let btn = btn.on_hover_text("Font size (Ctrl+] larger, Ctrl+[ smaller)");
     egui::Popup::menu(&btn).show(|ui| {
         ui.set_min_width(80.0);
@@ -900,9 +912,12 @@ pub fn outline(app: &mut PagewrightApp, ui: &mut Ui) {
                     let row = g.rows.first().map(|r| r.text()).unwrap_or_default();
                     let g = ui.painter().layout_no_wrap(if row.len() < text.len() { format!("{}…", row.trim_end()) } else { row }, if *level == 0 { theme::medium(12.5) } else { theme::ui(12.5) }, color);
                     ui.painter().galley(pos2(r.min.x + 10.0 + indent, r.center().y - g.size().y / 2.0), g, color);
+                    let spoken = format!("Heading level {}: {}{}", level + 1, text, if active { " (current section)" } else { "" });
+                    resp.widget_info(|| egui::WidgetInfo::labeled(egui::WidgetType::Button, true, &spoken));
                     let resp = resp.on_hover_text(text.as_str());
                     if resp.clicked() {
                         app.ws.session.sel = wordcraft_engine::Selection::caret(pos.clone());
+                        app.ws.session.pending = None;
                         app.canvas.reveal_caret = true;
                         app.canvas.want_focus = true;
                         if let Some(page) = app.ws.session.layout().page_of(pos) {

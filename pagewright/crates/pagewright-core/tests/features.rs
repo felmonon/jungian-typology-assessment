@@ -297,3 +297,14 @@ fn typing_into_a_new_table_fills_cells_without_extra_paragraphs() {
     assert!(cells.iter().any(|c| c.ends_with("=\"Item\"")), "{cells:?}");
     assert_eq!(cells.iter().filter(|c| c.contains("[1, 0, 0,")).count(), 1, "first cell has one paragraph: {cells:?}");
 }
+
+#[test]
+fn bold_with_the_caret_after_a_space_applies_to_new_text_only() {
+    let mut ws = Workspace::new_blank();
+    typ(&mut ws, "Plain ");
+    run(&mut ws, "format.bold", json!({}));
+    typ(&mut ws, "strong");
+    let para = ws.session.doc.para_at(&ws.session.sel.focus).unwrap().clone();
+    let marks: String = para.plain_text().char_indices().map(|(i, c)| if para.props_of_char(i).bold == Some(true) { c.to_ascii_uppercase() } else { c }).collect();
+    assert_eq!(marks, "Plain STRONG", "only the newly typed word is bold");
+}

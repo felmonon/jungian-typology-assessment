@@ -111,3 +111,36 @@ fn merge_explains_itself_then_merges_a_cell_selection() {
     assert!(a.command("table.merge", json!({})));
     assert!(a.toast.as_ref().is_none_or(|t| !t.warn), "{:?}", a.toast.as_ref().map(|t| &t.text));
 }
+
+#[test]
+fn autosave_writes_after_a_pause_and_refuses_files_it_cannot_keep() {
+    let dir = std::env::temp_dir().join(format!("pagewright-autosave-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(&dir).unwrap();
+    let mut a = app();
+    // No file yet: refused, with the reason.
+    a.set_autosave(true);
+    assert!(!a.autosave);
+    let path = dir.join("auto.docx");
+    a.save_to(&path, false, pagewright_ui::app::Then::Nothing);
+    a.set_autosave(true);
+    assert!(a.autosave);
+    a.command("text.insert", json!({"text": " More."}));
+    a.autosave_tick(100.0); // change noticed
+    assert!(a.ws.is_dirty());
+    a.autosave_tick(101.0); // still typing (under 2 s idle)
+    assert!(a.ws.is_dirty());
+    a.autosave_tick(102.5); // idle: saved
+    assert!(!a.ws.is_dirty(), "saved automatically");
+    let ws = pagewright_core::Workspace::open(&path).unwrap();
+    assert!(ws.session.doc.plain_text(wordcraft_engine::doc::StoryRef::Body).contains("More."));
+
+    // A file with content the engine can't keep: refused.
+    let src = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../fixtures/docx/unsupported-content.docx");
+    let copy = dir.join("unsupported.docx");
+    std::fs::copy(&src, &copy).unwrap();
+    a.open_path(&copy);
+    a.set_autosave(true);
+    assert!(!a.autosave);
+    assert!(a.autosave_blocked().unwrap().contains("can't keep"));
+}

@@ -29,6 +29,13 @@ pub fn icon_button(ui: &mut Ui, pal: &Palette, icon: Icon, tip: &str, enabled: R
         _ => pal.text,
     };
     icons::paint(ui.painter(), rect.shrink(6.0), icon, color);
+    let name = accessible_name(tip);
+    let on = enabled.is_ok();
+    if active {
+        resp.widget_info(|| egui::WidgetInfo::selected(egui::WidgetType::Checkbox, on, true, &name));
+    } else {
+        resp.widget_info(|| egui::WidgetInfo::labeled(egui::WidgetType::Button, on, &name));
+    }
     let resp = resp.on_hover_text(tip);
     match enabled {
         Ok(()) => resp,
@@ -70,7 +77,14 @@ pub fn letter_toggle(ui: &mut Ui, pal: &Palette, text: &str, font: egui::FontId,
         }
         Deco::None => {}
     }
+    let name = accessible_name(tip);
+    resp.widget_info(|| egui::WidgetInfo::selected(egui::WidgetType::Checkbox, true, active, &name));
     resp.on_hover_text(tip)
+}
+
+/// The spoken name of a control: its tooltip without the shortcut in brackets.
+pub fn accessible_name(tip: &str) -> String {
+    tip.split(" (").next().unwrap_or(tip).trim().to_string()
 }
 
 /// A thin vertical divider between groups.
@@ -120,5 +134,17 @@ pub fn dropdown(ui: &mut Ui, pal: &Palette, label: &str, min_width: f32, tint: O
     let clip = ui.painter().with_clip_rect(text_rect);
     clip.galley(egui::pos2(text_rect.min.x, rect.center().y - galley.size().y / 2.0), galley, fg);
     icons::paint(ui.painter(), egui::Rect::from_center_size(egui::pos2(rect.max.x - 12.0, rect.center().y), vec2(12.0, 12.0)), Icon::ChevronDown, pal.text_muted);
+    resp
+}
+
+/// [`dropdown`] with an accessible name ("Paragraph style") and its current value.
+pub fn dropdown_named(ui: &mut Ui, pal: &Palette, name: &str, value: &str, min_width: f32, tint: Option<(Color32, Color32)>) -> Response {
+    let resp = dropdown(ui, pal, value, min_width, tint);
+    let label = format!("{name}: {value}");
+    resp.widget_info(|| {
+        let mut i = egui::WidgetInfo::labeled(egui::WidgetType::ComboBox, true, &label);
+        i.current_text_value = Some(value.to_string());
+        i
+    });
     resp
 }

@@ -295,6 +295,15 @@ pub fn show(app: &mut PagewrightApp, ui: &mut Ui) {
         if response.hovered() {
             ui.ctx().set_cursor_icon(CursorIcon::Text);
         }
+        // Screen readers: the page is a document editor; its value is the paragraph at the caret.
+        let caret_page = layout.page_of(&app.ws.session.sel.focus).unwrap_or(0) + 1;
+        let para_text = app.ws.session.doc.para_at(&app.ws.session.sel.focus).map(|p| p.plain_text()).unwrap_or_default();
+        let label = format!("Document “{}”, page {} of {}", app.ws.title(), caret_page, layout.pages.len().max(1));
+        response.widget_info(|| {
+            let mut i = egui::WidgetInfo::labeled(egui::WidgetType::TextEdit, true, &label);
+            i.current_text_value = Some(para_text.clone());
+            i
+        });
         // Ctrl + wheel zooms.
         let zoom = ui.input(|i| i.zoom_delta());
         if response.hovered() && (zoom - 1.0).abs() > 0.001 {
@@ -333,6 +342,7 @@ fn mouse(app: &mut PagewrightApp, ui: &Ui, response: &egui::Response, rects: &[R
             if let Some(hit) = layout.hit(page, x, y, story) {
                 app.ws.session.sel.focus = hit;
                 app.ws.session.goal_x = None;
+                app.ws.session.pending = None;
             }
             return;
         }
@@ -363,6 +373,7 @@ fn mouse(app: &mut PagewrightApp, ui: &Ui, response: &egui::Response, rects: &[R
                 app.ws.session.sel.anchor = anchor;
                 app.ws.session.sel.focus = hit;
                 app.ws.session.goal_x = None;
+                app.ws.session.pending = None;
             }
         }
         // Dragging past the edge scrolls.

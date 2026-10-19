@@ -33,6 +33,7 @@ pub const ENTRIES: &[Entry] = &[
     e("pw.exportMarkdown", "{}", "Export as Markdown…", "File", "md markdown"),
     e("pw.exportText", "{}", "Export as plain text…", "File", "txt text"),
     e("pw.print", "{}", "Print…", "File", "printer paper"),
+    e("pw.autosave", "{}", "Save automatically (on or off)", "File", "autosave auto save continuous"),
     e("pw.recover", "{}", "Recover unsaved work…", "File", "autosave crash restore lost"),
     e("pw.close", "{}", "Close document", "File", "close"),
     // Edit
@@ -196,6 +197,7 @@ pub fn unavailable(app: &PagewrightApp, e: &Entry) -> Option<String> {
         return match e.id {
             "pw.cut" | "pw.copy" if app.ws.session.sel.is_collapsed() => Some("select some text first".into()),
             "pw.recover" if !app.recovery_enabled() => Some("recovery copies are off for this session".into()),
+            "pw.autosave" if !app.autosave => app.autosave_blocked(),
             _ => None,
         };
     }

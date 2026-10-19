@@ -85,6 +85,15 @@ pub struct PagewrightApp {
     pub dismissed: Vec<String>,
     /// Frames the current dialog has been on screen.
     pub dialog_frames: u32,
+    /// The format bar's first control, where F6 takes the keyboard.
+    pub toolbar_first: Option<egui::Id>,
+    /// Save automatically (this document only; see [`Self::set_autosave`]).
+    pub autosave: bool,
+    /// When the document last changed (app time) and which revision that was.
+    last_change: (f64, u64),
+    /// When the last automatic save happened (app time).
+    last_autosave: f64,
+    pub autosaved_at: Option<std::time::SystemTime>,
     applied_dark: Option<bool>,
     fonts_ready: u8,
     allow_quit: bool,
@@ -118,6 +127,11 @@ impl PagewrightApp {
             time: 0.0,
             dismissed: Vec::new(),
             dialog_frames: 0,
+            toolbar_first: None,
+            autosave: false,
+            last_change: (0.0, 0),
+            last_autosave: f64::NEG_INFINITY,
+            autosaved_at: None,
             applied_dark: None,
             fonts_ready: 0,
             allow_quit: false,
@@ -126,7 +140,6 @@ impl PagewrightApp {
             recovery_offered: false,
             pending_restore: None,
         };
-        theme::install_fonts(ctx);
         if opts.recovery
             && let Some(dir) = pagewright_core::identity::recovery_dir()
         {
@@ -146,15 +159,23 @@ impl PagewrightApp {
     pub fn ui(&mut self, ui: &mut Ui) {
         let ctx = ui.ctx().clone();
         self.time = ctx.input(|i| i.time);
-        // Fonts set in `new` take effect from the next frame.
-        if self.fonts_ready < 1 {
-            self.fonts_ready += 1;
+        // Pagewright's fonts are installed in the context that draws it; they take effect from
+        // the next frame, so the very first frame is left empty.
+        if self.fonts_ready == 0 {
+            theme::install_fonts(&ctx);
+            self.fonts_ready = 1;
             ctx.request_repaint();
+            return;
         }
         self.apply_theme(&ctx);
         self.recovery_tick(&ctx);
+        self.autosave_tick(self.time);
+        if self.autosave && self.ws.is_dirty() {
+            ctx.request_repaint_after(std::time::Duration::from_millis(500));
+        }
         self.close_request(&ctx);
         self.shell_shortcuts(&ctx);
+        self.region_keys(&ctx);
 
         chrome::title_bar(self, ui);
         chrome::format_bar(self, ui);
@@ -213,7 +234,10 @@ impl PagewrightApp {
             "edit.findNext" | "edit.findPrevious" => {
                 let q = self.ws.session.find.query.clone();
                 match self.ws.session.run(id, &params) {
-                    Ok(_) => self.canvas.reveal_caret = true,
+                    Ok(_) => {
+                        self.ws.session.pending = None;
+                        self.canvas.reveal_caret = true;
+                    }
                     Err(_) => self.toast(format!("No matches for “{q}”.")),
                 }
             }
@@ -242,6 +266,10 @@ impl PagewrightApp {
             "pw.about" => self.dialog = Some(Dialog::About),
             "pw.recover" => self.offer_recovery(true),
             "pw.shortcuts" => self.dialog = Some(Dialog::Shortcuts),
+            "pw.autosave" => {
+                let on = !self.autosave;
+                self.set_autosave(on);
+            }
             _ => {
                 let ok = self.engine(id, params).is_ok();
                 self.return_focus();
@@ -266,6 +294,11 @@ impl PagewrightApp {
         let r = self.ws.session.run(id, &params);
         let out = match r {
             Ok(v) => {
+                // A new selection drops formatting that was waiting for typing (Ctrl+B with no
+                // selection, then a click elsewhere), so the bar shows what's selected.
+                if id.starts_with("select.") || id.starts_with("edit.find") {
+                    self.ws.session.pending = None;
+                }
                 if mutates || id.starts_with("caret.") || id.starts_with("select.") {
                     self.canvas.reveal_caret = true;
                     self.canvas.restart_blink(self.time);
@@ -328,6 +361,25 @@ impl PagewrightApp {
         }
     }
 
+    /// F6 moves the keyboard between the page and the format bar (Word's pane key); Esc in the
+    /// bars goes back to the page. Tab and Shift+Tab move between controls within a bar.
+    fn region_keys(&mut self, ctx: &Context) {
+        if self.dialog.is_some() || self.search.is_some() {
+            return;
+        }
+        let focused = ctx.memory(|m| m.focused());
+        let on_page = focused.is_some() && focused == self.canvas.widget_id;
+        if ctx.input_mut(|i| i.consume_key(egui::Modifiers::NONE, egui::Key::F6)) {
+            match (on_page, self.toolbar_first) {
+                (true, Some(id)) => ctx.memory_mut(|m| m.request_focus(id)),
+                _ => self.canvas.want_focus = true,
+            }
+        } else if !on_page && !self.find.open && ctx.input(|i| i.key_pressed(egui::Key::Escape)) {
+            // egui has already released the focused control by now; give the page the keyboard.
+            self.canvas.want_focus = true;
+        }
+    }
+
     pub fn toast(&mut self, text: impl Into<String>) {
         self.toast = Some(Toast { text: text.into(), warn: false, until: self.time + 3.5 });
     }
@@ -354,6 +406,7 @@ impl PagewrightApp {
             Then::Nothing => {}
             Then::Quit => self.allow_quit = true,
             Then::New => {
+                self.autosave = false;
                 self.ws.new_in_place();
                 self.canvas.reset();
                 self.find.reset();
@@ -372,6 +425,59 @@ impl PagewrightApp {
             Then::Recover(id) => {
                 self.pending_restore = Some(self.ws.session.document_id());
                 let _ = self.engine("file.recover", json!({"restore": id}));
+            }
+        }
+    }
+
+    /// Why this document can't save itself automatically, if it can't.
+    pub fn autosave_blocked(&self) -> Option<String> {
+        let Some(f) = self.ws.file() else {
+            return Some("save the document to a file first".into());
+        };
+        if f.kind != FileKind::Word {
+            return Some(format!("automatic saving is for Word documents; this is a {}", f.kind.name()));
+        }
+        if !f.untouched_losses.is_empty() || f.damaged || f.mismatch.is_some() {
+            return Some("this file has content Pagewright can't keep; save a copy first".into());
+        }
+        None
+    }
+
+    /// Turns automatic saving on or off for this document. Turning it on is refused (with the
+    /// reason) when a save would need a decision: no file yet, a non-Word file, or a file with
+    /// content the fidelity guard reported.
+    pub fn set_autosave(&mut self, on: bool) {
+        if on && let Some(why) = self.autosave_blocked() {
+            self.warn(format!("Can't save automatically: {why}."));
+            return;
+        }
+        self.autosave = on;
+        if on {
+            self.toast("Saving automatically: changes are written to the file a few seconds after you stop typing.");
+        } else {
+            self.toast("Automatic saving is off. Save with Ctrl+S.");
+        }
+    }
+
+    /// Saves when the document has been idle for 2 s after a change, at most every 5 s.
+    pub fn autosave_tick(&mut self, now: f64) {
+        let rev = self.ws.session.rev();
+        if rev != self.last_change.1 {
+            self.last_change = (now, rev);
+        }
+        if !self.autosave || !self.ws.is_dirty() || now - self.last_change.0 < 2.0 || now - self.last_autosave < 5.0 {
+            return;
+        }
+        self.last_autosave = now;
+        match self.ws.save(false) {
+            Ok(SaveOutcome::Saved { .. }) => self.autosaved_at = Some(std::time::SystemTime::now()),
+            Ok(_) => {
+                self.autosave = false;
+                self.warn("Automatic saving stopped: this save needs your decision. Use Save (Ctrl+S).");
+            }
+            Err(e) => {
+                self.autosave = false;
+                self.warn(format!("Automatic saving stopped: {e}"));
             }
         }
     }
@@ -397,6 +503,7 @@ impl PagewrightApp {
     pub fn open_path(&mut self, path: &Path) {
         match self.ws.open_in_place(path) {
             Ok(()) => {
+                self.autosave = false;
                 self.canvas.reset();
                 self.find.reset();
                 self.remember(path);
@@ -541,6 +648,8 @@ impl PagewrightApp {
         match self.ws.save_status() {
             SaveStatus::NeverSaved { edited: false } => ("Not saved yet".into(), false),
             SaveStatus::NeverSaved { edited: true } => ("Unsaved · not in a file yet".into(), true),
+            SaveStatus::Saved { path, at } if self.autosave => (format!("Saving automatically · {}{}", folder_label(&path), ago(at).map(|a| format!(" · {a}")).unwrap_or_default()), false),
+            SaveStatus::Unsaved { path, .. } if self.autosave => (format!("Saving automatically · {}", folder_label(&path)), false),
             SaveStatus::Saved { path, at } => match ago(at) {
                 Some(a) => (format!("Saved to {} · {a}", folder_label(&path)), false),
                 None => (format!("In {} · no changes", folder_label(&path)), false),

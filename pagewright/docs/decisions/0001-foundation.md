@@ -20,7 +20,7 @@ product, or **(B)** as an independent application assembled from other licensed 
 | Hostile input | Empty, truncated, missing-part files: clean error, exit 1, no output. Malformed XML: **recovered silently** (text salvaged, no warning). HTML renamed `.docx`: **imported as HTML silently**. No crash on any | same file |
 | Unknown content | A paragraph-level element in an MCE-ignorable custom namespace was **dropped on save without warning** (permitted by ECMA-376 Part 3, but contrary to Pagewright's "never silently discard" rule) | same file |
 | Own gaps (upstream's words) | DOCX never tested on real-world files; pagination differs from Word (no Aptos metric-compatible font); screen-reader access to the canvas untested with real readers; native printing depth | upstream `docs/gaps.md` |
-| Unit tests | upstream suite run for the engine crates: see "Test run" below | `docs/evidence/foundation-tests.txt` |
+| Unit tests | Upstream suite for `doc`, `docx`, `layout`, `engine`, `pdf`, `render` (release, no fail-fast): **1,919 passed, 2 failed**, 47 test binaries. Both failures are in `layout`: a Myanmar shaping test that depends on an installed Myanmar font (the only one here is GNU Unifont, which lacks Myanmar reordering), and an inline text-box auto-fit pagination test (3 pages instead of 2; cause not determined) | `docs/evidence/foundation-tests.txt` |
 
 ## Option B, assessed
 

@@ -145,15 +145,32 @@ pub struct Workspace {
 impl Workspace {
     /// A new, blank document on the default template.
     pub fn new_blank() -> Self {
-        let mut session = Session::new(wordcraft_doc::Document::default());
-        let _ = session.run("file.new", &json!({}));
-        session.dirty = false;
-        session.reset_history();
-        Workspace { session, file: None, notices: Vec::new(), last_saved: None, lossy_ok: Vec::new() }
+        let mut ws = Workspace { session: Session::new(wordcraft_doc::Document::default()), file: None, notices: Vec::new(), last_saved: None, lossy_ok: Vec::new() };
+        ws.new_in_place();
+        ws
     }
 
-    /// Opens `path`. Errors are plain-language messages; nothing on disk is changed.
+    /// Opens `path` in a new session. Errors are plain-language messages; nothing on disk changes.
     pub fn open(path: &Path) -> Result<Self, String> {
+        let mut ws = Workspace { session: Session::new(wordcraft_doc::Document::default()), file: None, notices: Vec::new(), last_saved: None, lossy_ok: Vec::new() };
+        ws.open_in_place(path)?;
+        Ok(ws)
+    }
+
+    /// Replaces the document with a new blank one, keeping this session (and its recovery worker,
+    /// preferences and command registry).
+    pub fn new_in_place(&mut self) {
+        let _ = self.session.run("file.new", &json!({}));
+        self.session.dirty = false;
+        self.session.reset_history();
+        self.file = None;
+        self.notices.clear();
+        self.last_saved = None;
+        self.lossy_ok.clear();
+    }
+
+    /// Opens `path` into this session. On error the current document is left exactly as it was.
+    pub fn open_in_place(&mut self, path: &Path) -> Result<(), String> {
         let named = FileKind::from_path(path);
         let bytes = std::fs::read(path).map_err(|e| format!("{}: {e}", path.display()))?;
         let actual = FileKind::sniff(&bytes);
@@ -172,10 +189,10 @@ impl Workspace {
             notices.push(Notice::FormatMismatch { named, actual });
         }
 
-        let mut session = Session::new(wordcraft_doc::Document::default());
-        session.run("file.open", &json!({"path": path.to_string_lossy()})).map_err(|e| plain_error(&e.to_string()))?;
-        session.dirty = false;
-        session.reset_history();
+        // The engine's open replaces the document only on success.
+        self.session.run("file.open", &json!({"path": path.to_string_lossy()})).map_err(|e| plain_error(&e.to_string()))?;
+        self.session.dirty = false;
+        self.session.reset_history();
 
         let mut damaged = false;
         let mut untouched_losses = Vec::new();
@@ -187,7 +204,7 @@ impl Workspace {
                         notices.push(Notice::Damaged { parts: scan.damaged_parts.iter().map(|(p, _)| p.clone()).collect() });
                     }
                     // Untouched re-save, in memory: what the engine's model can't carry.
-                    match wordcraft_engine::io::save_bytes("untouched.docx", &session.doc).map(|b| fidelity::scan_package(&b)) {
+                    match wordcraft_engine::io::save_bytes("untouched.docx", &self.session.doc).map(|b| fidelity::scan_package(&b)) {
                         Ok(Ok(after)) => untouched_losses = fidelity::compare(&scan.inventory, &after.inventory),
                         Ok(Err(e)) | Err(e) => log::warn!("fidelity check skipped: {e}"),
                     }
@@ -201,8 +218,19 @@ impl Workspace {
         if kind == FileKind::LegacyWord {
             notices.push(Notice::Converted { from: kind });
         }
-        let file = FileInfo { path: path.to_path_buf(), kind, untouched_losses, damaged, mismatch };
-        Ok(Workspace { session, file: Some(file), notices, last_saved: None, lossy_ok: Vec::new() })
+        self.file = Some(FileInfo { path: path.to_path_buf(), kind, untouched_losses, damaged, mismatch });
+        self.notices = notices;
+        self.last_saved = None;
+        self.lossy_ok.clear();
+        Ok(())
+    }
+
+    /// Marks the document as restored from a recovery copy: unsaved, with no file.
+    pub fn adopt_recovered(&mut self) {
+        self.file = None;
+        self.notices.clear();
+        self.last_saved = None;
+        self.session.dirty = true;
     }
 
     pub fn file(&self) -> Option<&FileInfo> {

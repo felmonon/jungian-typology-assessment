@@ -1,0 +1,22 @@
+[
+  [
+    "original byte-for-byte unchanged",
+    true,
+    ""
+  ],
+  [
+    "edited copy saved beside it",
+    true,
+    "<out>/fidelity/home/Documents/unsupported-content (edited).docx"
+  ],
+  [
+    "copy has the edit",
+    true,
+    ""
+  ],
+  [
+    "copy valid (Open XML SDK)",
+    true,
+    "0 schema errors"
+  ]
+]

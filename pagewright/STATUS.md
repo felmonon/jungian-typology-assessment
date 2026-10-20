@@ -1,6 +1,6 @@
 # Pagewright status
 
-**Updated:** 2026-10-19 · **Version:** 0.1.0 (early release; WordCraft engine 0.8.0) · **Branch:** `claude/friendly-rubin-tu258l`
+**Updated:** 2026-10-20 · **Version:** 0.1.0 (early release; WordCraft engine 0.8.0) · **Branch:** `claude/friendly-rubin-tu258l`
 
 ## Where things stand
 
@@ -44,8 +44,11 @@ and screen readers. See [known gaps](docs/known-gaps.md).
 
 ## Decisions waiting on you
 
-- **Publishing.** Nothing has been deployed, published, released or submitted anywhere. The
-  code is on the branch above, with no pull request.
+- **Publishing.** Nothing has been deployed, published, released or submitted anywhere. Note
+  that this repository is **public**, so the code on the branch above can already be read by
+  anyone. No pull request has been opened. The Linux .deb and tarball build and install
+  locally; Windows and macOS compile but need their own machines (or CI) plus paid code
+  signing; a web version needs a browser shell first. See [deployment](docs/deployment.md).
 - **Licence.** Pagewright's own code is declared MIT OR Apache-2.0, matching the engine it
   builds on and compatible with this repository's MIT licence. Change it before any release if
   you want different terms. The engine's licence can't change.
@@ -60,6 +63,17 @@ prompt and whether the pages match the PDFs in `docs/samples/`. Then add the res
 `docs/research/word-behavior.md` as Observed findings (gap G-03).
 
 ## Recent changes
+
+- Keyboard shortcuts reach only features Pagewright offers. About 100 engine shortcuts were
+  live for features with no interface here, such as Ctrl+Shift+E (tracked changes), Ctrl+Shift+H
+  (hidden text) and Ctrl+Alt+M (comments). Test: `keys::keys_reach_only_commands_pagewright_offers`.
+- An independent parity audit found documentation claims stronger than their tests. Font
+  choice, margins, ODT/RTF open and save, and AutoCorrect now have tests. Odd/even headers and
+  margins in the real window are downgraded in the feature matrix. Spelling marks were already
+  drawn, which the docs had missed.
+- Two leftover upstream strings were removed from the engine (an ArtCraft link in a built-in
+  sample, a log message); the patch and `vendor/wordcraft/UPSTREAM.md` were updated.
+- `packaging/linux/build-packages.sh` builds a .deb and a portable tarball.
 
 - The outline now scrolls to the current section when the caret moves to another one. The real
   48-page document showed the highlight off-screen. Test:

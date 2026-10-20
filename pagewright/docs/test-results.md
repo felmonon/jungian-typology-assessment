@@ -6,8 +6,8 @@ were opened. **Not run: anything in Microsoft Word** (not available; [G-03](know
 
 | Suite | Result | Command | Evidence |
 |---|---|---|---|
-| Pagewright core (lifecycle, fidelity guard, formats, features, recovery) | **20 / 20 pass** | `cargo test -p pagewright-core` | — |
-| Pagewright UI (commands, accessibility tree, keys, tokens, dialogs) | **22 / 22 pass** | `cargo test -p pagewright-ui` | — |
+| Pagewright core (lifecycle, fidelity guard, formats, features, recovery) | **22 / 22 pass** | `cargo test -p pagewright-core` | — |
+| Pagewright UI (commands, accessibility tree, keys, tokens, dialogs) | **23 / 23 pass** | `cargo test -p pagewright-ui` | — |
 | Real window, release binary (Xvfb, xdotool) | **34 / 34 checks pass** in 8 scenarios | `python3 tools/gui_workflow.py --app target/release/pagewright --out /tmp/gui` | [`evidence/gui/`](evidence/gui/), [`screenshots/`](screenshots/) |
 | DOCX round trip, 10 fixtures | **10 / 10**: input and output valid, text equal, structure kept, nothing dropped silently | `python3 tools/roundtrip_check.py --cli target/release/pagewright-cli --out /tmp/rt` | [`evidence/roundtrip-pagewright.json`](evidence/roundtrip-pagewright.json) |
 | Damaged files, 5 fixtures | **5 / 5** handled without a crash, each with a plain-language message | same | same (`corrupt`) |
@@ -22,7 +22,7 @@ were opened. **Not run: anything in Microsoft Word** (not available; [G-03](know
 
 ### Headless tests (`cargo test`)
 
-- **Core, 20 tests.**
+- **Core, 22 tests.**
   - Slice 1 end to end: new → type → heading, centring, bold, italic → save → close → reopen,
     checked in the saved XML.
   - Undo and redo.
@@ -38,9 +38,11 @@ were opened. **Not run: anything in Microsoft Word** (not available; [G-03](know
   - The rich clipboard round trip.
   - Recovery never touches the original.
   - Typing in tables.
+  - Font choice kept in Word, OpenDocument and RTF (save after confirmation, reopen).
+  - AutoCorrect capitalises the first word of a sentence while typing.
   - Bold at a word edge.
   - Unit tests for file-type detection and the fidelity scan (6).
-- **UI, 22 tests,** run through the egui test harness against the real application code.
+- **UI, 23 tests,** run through the egui test harness against the real application code.
   - Every one of the 105 command-search entries runs or says why it can't. Exactly four must say
     why in a blank document: merge (needs selected cells), picture description (needs a
     picture), save automatically (needs a saved Word file) and recovered work (recovery is off in
@@ -53,7 +55,7 @@ were opened. **Not run: anything in Microsoft Word** (not available; [G-03](know
     paragraph; typing and Bold through the interface; F6, Tab and Esc; the outline announces
     level and current section and scrolls to it; Bold's pressed state; a dialog opened by
     another dialog takes the keyboard.
-  - Shortcut mapping.
+  - Shortcut mapping, and no key reaching a feature Pagewright has no interface for.
   - Colour contrast in both themes (WCAG 2.2 AA).
   - Link normalisation.
 

@@ -72,12 +72,14 @@ text wrapping aren't available.
 
 ### G-11
 
-**Different first-page or odd/even headers can't be switched on.** They are shown and kept when a
-file has them.
+**Different first-page or odd/even headers can't be switched on.** A first-page header in a file is
+shown and kept (tested); odd/even headers from files are not covered by any fixture yet.
 
 ### G-13
 
-**No spelling check in the interface.** No underlines, suggestions or language settings.
+**Spelling is marks only.** Unknown words get a red underline from the engine's word lists
+(screenshot 20), but there are no suggestions, no ignore or add-to-dictionary, and no language
+choice; non-English text may be marked throughout.
 
 ### G-14
 

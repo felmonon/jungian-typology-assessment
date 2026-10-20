@@ -37,13 +37,16 @@ describe files shipped by Pagewright.
 ## Pagewright's patch
 
 One patch, [`patches/0001-product-identity.patch`](patches/0001-product-identity.patch) (paths
-relative to `crates/`), 16 files, +41/−20 lines:
+relative to `crates/`), 17 files, +43/−22 lines:
 
 - Adds `wordcraft_doc::product` (`set_name`/`name`, default "WordCraft").
 - File metadata uses it: DOCX `docProps/app.xml` `Application`, PDF creator/producer, ODT, HTML,
   RTF and LaTeX generator, default comment author, sample document creator.
 - User-facing messages that named WordCraft now use the product name or neutral wording (open
-  errors, safe-save folder errors, encryption errors, read-only chart/SmartArt notes).
+  errors, safe-save folder errors, encryption errors, read-only chart/SmartArt notes, the log
+  line for pictures that can't be drawn).
+- The built-in sample document links to `https://example.org/community` instead of the ArtCraft
+  website.
 
 Internal identifiers are unchanged on purpose: `wordcraft:` passthrough keys, temporary-file
 names, the `urn:wordcraft:canvas-xfrm` DrawingML extension URI, crate names. Changing them would
@@ -53,6 +56,6 @@ break interchange with files WordCraft writes and would misdescribe where the co
 
 1. Check out the new upstream commit next to this directory.
 2. Copy the crates and assets listed above over `vendor/wordcraft/`.
-3. Re-apply `patches/0001-product-identity.patch` (`git apply -p1 --directory=pagewright/vendor/wordcraft/crates`).
+3. Re-apply `patches/0001-product-identity.patch` (from the repository root: `git apply -p2 --directory=pagewright/vendor/wordcraft/crates`).
 4. Update the commit above, run `cargo test` and `tools/roundtrip_check.py`, and review
    ATTRIBUTION.md for new assets.

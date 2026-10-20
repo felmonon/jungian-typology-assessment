@@ -73,7 +73,7 @@ vendor/wordcraft       WordCraft engine at e6c5a70, one small documented patch
 | Concern | Where |
 |---|---|
 | Document model | `vendor/wordcraft/crates/doc` (WordCraft) |
-| Editing commands, undo, selection | `vendor/wordcraft/crates/engine` (WordCraft, 422 commands) |
+| Editing commands, undo, selection | `vendor/wordcraft/crates/engine` (WordCraft, 633 commands; Pagewright offers a curated subset) |
 | Layout and pagination | `vendor/wordcraft/crates/layout` (WordCraft) |
 | File formats | `vendor/wordcraft/crates/{docx,docbin,formats}` (WordCraft); format policy and the fidelity guard in `pagewright-core` |
 | Rendering | `vendor/wordcraft/crates/{render,pdf}` (WordCraft); page textures, caret and selection in `pagewright-ui/src/canvas.rs` |
@@ -82,6 +82,7 @@ vendor/wordcraft       WordCraft engine at e6c5a70, one small documented patch
 Decisions: [why build on WordCraft](docs/decisions/0001-foundation.md). Behaviour:
 [findings about Word](docs/research/word-behavior.md) and [specifications with their
 tests](docs/specs/behavior.md). Brand: [BRAND.md](BRAND.md). Status: [STATUS.md](STATUS.md).
+Packaging and release routes: [docs/deployment.md](docs/deployment.md).
 
 ## Test it
 

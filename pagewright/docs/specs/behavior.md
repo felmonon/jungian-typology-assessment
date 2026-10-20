@@ -10,7 +10,8 @@ product decisions (P-xx). Test locations: `core:` = `crates/pagewright-core/test
 
 | ID | Rule | Test |
 |---|---|---|
-| E-1 | Typing on the page inserts text at the caret; AutoCorrect capitalises a sentence's first word | gui:`slice1`, ui:`accessibility::typing_and_toggling_bold_through_the_interface` |
+| E-1 | Typing on the page inserts text at the caret; AutoCorrect capitalises a sentence's first word | gui:`slice1`, ui:`accessibility::typing_and_toggling_bold_through_the_interface`, core:`features::autocorrect_capitalises_the_first_word_of_a_sentence` |
+| E-9 | Keys reach only commands Pagewright offers (command search, its file flows, basic editing); engine shortcuts for features without an interface do nothing | ui:`keys::keys_reach_only_commands_pagewright_offers` |
 | E-2 | Arrow keys move the caret; Shift+arrow (and Shift+Home/End, Ctrl+Shift+arrow) extends the selection | ui:`keys::shift_extends_caret_moves` |
 | E-3 | Click places the caret; double-click selects a word; triple-click a paragraph; drag selects; Shift+click extends | canvas code `mouse()`; exercised in gui:`slice1` (click to focus) |
 | E-4 | Undo reverses the last step (typing burst, formatting change); redo reapplies it | core:`slice1::undo_and_redo_restore_text_and_formatting` |

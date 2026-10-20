@@ -145,6 +145,8 @@ fn every_core_feature_survives_save_and_reopen() {
     assert!(doc.matches("<w:numPr>").count() >= 5, "list paragraphs carry numbering");
     assert!(doc.contains("w:orient=\"landscape\""), "landscape section");
     assert!(doc.contains("w:w=\"16838\""), "A4 landscape width in twips");
+    let mar = doc.split("<w:pgMar").nth(1).and_then(|r| r.split("/>").next()).unwrap_or_default();
+    assert!(mar.contains("w:left=\"720\"") && mar.contains("w:top=\"720\""), "narrow margins are half an inch: {mar}");
     assert!(part(&path, "word/numbering.xml").contains("w:numFmt w:val=\"bullet\""));
     assert!(part(&path, "word/numbering.xml").contains("w:numFmt w:val=\"decimal\""));
     let rels = part(&path, "word/_rels/document.xml.rels");
@@ -307,4 +309,45 @@ fn bold_with_the_caret_after_a_space_applies_to_new_text_only() {
     let para = ws.session.doc.para_at(&ws.session.sel.focus).unwrap().clone();
     let marks: String = para.plain_text().char_indices().map(|(i, c)| if para.props_of_char(i).bold == Some(true) { c.to_ascii_uppercase() } else { c }).collect();
     assert_eq!(marks, "Plain STRONG", "only the newly typed word is bold");
+}
+
+#[test]
+fn font_choice_survives_word_odt_and_rtf() {
+    identity::init();
+    let dir = temp_dir("fonts");
+    let mut ws = Workspace::new_blank();
+    typ(&mut ws, "Set in a serif face.");
+    run(&mut ws, "select.all", json!({}));
+    run(&mut ws, "format.font", json!({"name": "Source Serif 4"}));
+    let docx = dir.join("font.docx");
+    assert!(matches!(ws.save_as(&docx, false).unwrap(), SaveOutcome::Saved { .. }));
+    assert!(part(&docx, "word/document.xml").contains("w:ascii=\"Source Serif 4\""), "font written to the run");
+    let back = Workspace::open(&docx).unwrap();
+    assert_eq!(back.session.doc.plain_text(StoryRef::Body).trim(), "Set in a serif face.");
+
+    // OpenDocument and RTF: confirmed once (they can't keep everything), then open again.
+    for name in ["font.odt", "font.rtf"] {
+        let path = dir.join(name);
+        assert!(matches!(ws.save_as(&path, false).unwrap(), SaveOutcome::NeedsConfirmation { .. }), "{name} asks first");
+        assert!(matches!(ws.save_as(&path, true).unwrap(), SaveOutcome::Saved { .. }), "{name}");
+        let reopened = Workspace::open(&path).unwrap_or_else(|e| panic!("{name}: {e}"));
+        assert_eq!(reopened.session.doc.plain_text(StoryRef::Body).trim(), "Set in a serif face.", "{name}");
+        let raw = String::from_utf8_lossy(&std::fs::read(&path).unwrap()).into_owned();
+        let named = if name.ends_with(".rtf") { raw.contains("Source Serif 4") } else { part(&path, "content.xml").contains("Source Serif 4") || part(&path, "styles.xml").contains("Source Serif 4") };
+        assert!(named, "{name} keeps the font name");
+    }
+}
+
+#[test]
+fn autocorrect_capitalises_the_first_word_of_a_sentence() {
+    identity::init();
+    let mut ws = Workspace::new_blank();
+    // One key at a time, as the page sends typing.
+    for c in "the first sentence. the second one. ".chars() {
+        typ(&mut ws, &c.to_string());
+    }
+    let text = ws.session.doc.plain_text(StoryRef::Body);
+    eprintln!("typed: {text:?}");
+    assert!(text.trim_start().starts_with("The first"), "{text:?}");
+    assert!(text.contains(". The second"), "{text:?}");
 }

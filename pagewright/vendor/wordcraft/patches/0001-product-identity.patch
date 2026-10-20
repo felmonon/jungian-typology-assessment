@@ -36,6 +36,19 @@ index 0000000..44b983c
 +pub fn name() -> &'static str {
 +    NAME.get().map(String::as_str).unwrap_or("WordCraft")
 +}
+diff --git a/a/docbin/src/media.rs b/b/docbin/src/media.rs
+index 52e0aa9..8eb2c25 100644
+--- a/a/docbin/src/media.rs
++++ b/b/docbin/src/media.rs
+@@ -121,7 +121,7 @@ impl Pictures {
+         let key = format!("image{}.{ext}", self.media.len() + 1);
+         if placeholder {
+             if self.placeholders < 10 {
+-                log::warn!("docbin: picture `{key}` is in a format WordCraft can't draw ({ext}); it shows as a placeholder");
++                log::warn!("docbin: picture `{key}` is in a format that can't be drawn ({ext}); it shows as a placeholder");
+             }
+             self.placeholders = self.placeholders.saturating_add(1);
+         }
 diff --git a/a/docx/src/crypt.rs b/b/docx/src/crypt.rs
 index a01545c..423a4fb 100644
 --- a/a/docx/src/crypt.rs
@@ -165,7 +178,7 @@ index 5c10293..65db7fd 100644
          return Err(format!("{name}: unsupported format `.{ext}` (not a document or text file)"));
      };
 diff --git a/a/engine/src/sample.rs b/b/engine/src/sample.rs
-index fd5ac64..8026372 100644
+index fd5ac64..3b09fa7 100644
 --- a/a/engine/src/sample.rs
 +++ b/b/engine/src/sample.rs
 @@ -30,7 +30,7 @@ fn italic() -> CharProps {
@@ -177,6 +190,15 @@ index fd5ac64..8026372 100644
      let mut b: Vec<Block> = Vec::new();
      b.push(Block::Para(styled("The Open Studio Handbook", "Title")));
      b.push(Block::Para(styled("How a small community of makers shares space, tools and time", "Subtitle")));
+@@ -112,7 +112,7 @@ pub fn sample_document() -> Document {
+     add(
+         &mut h,
+         "Visit the community board",
+-        CharProps { style: Some("Hyperlink".into()), link: Some("https://getartcraft.com/".into()), ..Default::default() },
++        CharProps { style: Some("Hyperlink".into()), link: Some("https://example.org/community".into()), ..Default::default() },
+     );
+     add(&mut h, " for events.", CharProps::default());
+     b.push(Block::Para(h));
 diff --git a/a/engine/src/session.rs b/b/engine/src/session.rs
 index 671a53c..8fdd4fa 100644
 --- a/a/engine/src/session.rs

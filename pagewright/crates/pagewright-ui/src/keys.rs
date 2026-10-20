@@ -4,6 +4,11 @@
 //! is Ctrl, or ⌘ on macOS). This module turns a key event into the same canonical chord and looks
 //! it up, with two Pagewright additions on top: its own shell shortcuts (command search, outline,
 //! find panel) and Shift extending any caret movement, as in every text editor.
+//!
+//! Only commands Pagewright offers get a key: those in the command search, the file commands its
+//! own flows take over, and [`EDITING`]. The engine declares shortcuts for features Pagewright has
+//! no interface for (tracked changes, hidden text, comments, mail merge, other views); a stray
+//! chord must not switch on something the person can't see or turn off.
 
 use std::collections::HashMap;
 
@@ -30,6 +35,33 @@ pub const SHELL: &[(&str, &str, &str)] = &[
     ("Mod+-", "pw.zoomOut", "Zoom out"),
     ("Mod+0", "pw.zoomReset", "Zoom to 100%"),
 ];
+
+/// Engine commands that keep their keys although the command search doesn't list them: moving
+/// and deleting, the clipboard, and Word's familiar formatting keys whose effect is visible.
+pub const EDITING: &[&str] = &[
+    "text.newParagraph",
+    "text.backspace",
+    "text.delete",
+    "text.deleteWordBack",
+    "text.deleteWordForward",
+    "text.tab",
+    "text.backTab",
+    "select.collapse",
+    "edit.copy",
+    "edit.cut",
+    "edit.paste",
+    "para.normal",
+    "format.resetChar",
+    "format.growFont1",
+    "format.shrinkFont1",
+];
+
+/// Engine file commands; Pagewright runs its own flows for them (fidelity checks, dialogs).
+const FILE_FLOWS: &[&str] = &["file.new", "file.open", "file.save", "file.saveAs", "file.print", "file.close"];
+
+fn offered(id: &str) -> bool {
+    id.starts_with("caret.") || EDITING.contains(&id) || FILE_FLOWS.contains(&id) || crate::palette::ENTRIES.iter().any(|e| e.id == id)
+}
 
 /// The canonical chord for a key event, or `None` for keys that aren't shortcuts.
 pub fn chord(key: Key, m: Modifiers) -> Option<String> {
@@ -142,7 +174,7 @@ impl KeyMap {
         let mut map = HashMap::new();
         let mut display = HashMap::new();
         for spec in registry.all() {
-            if spec.shortcut.is_empty() {
+            if spec.shortcut.is_empty() || !offered(spec.id) {
                 continue;
             }
             for (i, k) in spec.shortcut.split(" / ").enumerate() {
@@ -226,6 +258,29 @@ mod tests {
         assert_eq!(id(Key::S, CTRL).as_deref(), Some("pw.save"), "Pagewright's save flow, not the engine's");
         assert_eq!(id(Key::Slash, CTRL).as_deref(), Some("pw.commandSearch"));
         assert_eq!(id(Key::K, CTRL).as_deref(), Some("pw.link"));
+    }
+
+    #[test]
+    fn keys_reach_only_commands_pagewright_offers() {
+        let k = km();
+        let id = |key, m| k.lookup(key, m).map(|(id, _)| id);
+        let ctrl_shift = Modifiers { shift: true, ..CTRL };
+        let ctrl_alt = Modifiers { alt: true, ..CTRL };
+        // Features with no interface in Pagewright: no key may switch them on.
+        assert_eq!(id(Key::E, ctrl_shift), None, "tracked changes");
+        assert_eq!(id(Key::H, ctrl_shift), None, "hidden text");
+        assert_eq!(id(Key::M, ctrl_alt), None, "new comment");
+        assert_eq!(id(Key::N, ctrl_alt), None, "draft view");
+        assert_eq!(id(Key::F8, Modifiers::ALT), None, "macros");
+        assert_eq!(id(Key::E, Modifiers { alt: true, shift: true, ..Modifiers::NONE }), None, "mail merge recipients");
+        // Familiar keys that stay.
+        assert_eq!(id(Key::N, ctrl_shift).as_deref(), Some("para.normal"));
+        assert_eq!(id(Key::Backspace, Modifiers::NONE).as_deref(), Some("text.backspace"));
+        assert_eq!(id(Key::Enter, Modifiers::SHIFT).as_deref(), Some("text.lineBreak"));
+        assert_eq!(id(Key::Num1, ctrl_alt).as_deref(), Some("para.heading1"));
+        for id in k.map.values() {
+            assert!(id.starts_with("pw.") || offered(id), "{id} has a key but no place in Pagewright");
+        }
     }
 
     #[test]

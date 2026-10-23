@@ -1,0 +1,301 @@
+/* ============================================================
+   TypeJung — Lamplight
+   Self-reflection as reading by lamplight: warm paper, deep ink,
+   one amber light for what you lead with. Loaded after
+   pattern-studio.css and overrides its look, not its structure.
+   ============================================================ */
+
+:root {
+  --lamp: #e3a23b;
+  --lamp-soft: #f3d49b;
+  --lamp-ink: #8a5310; /* amber that passes 4.5:1 on paper */
+  --night: #121a24;
+  --night-2: #1a2531;
+  --night-line: #2c3a4a;
+  --night-text: #f3eee4;
+  --night-muted: #b9c0c9;
+}
+
+/* ---------- Type ---------- */
+
+.font-display,
+.text-heading,
+.studio-hero h1,
+.journey-home h2,
+.journey-home h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+/* Let Fraunces size its own optical axis; the old fixed opsz values squeezed headings. */
+.text-display,
+.text-heading,
+.text-body,
+.font-body,
+.text-body-lg {
+  font-variation-settings: normal;
+}
+
+.text-display {
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+}
+
+.studio-wordmark {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.journey-eyebrow {
+  color: var(--lamp-ink);
+  letter-spacing: 0.08em;
+}
+
+/* ---------- Controls ---------- */
+
+.btn-premium {
+  border-radius: 999px;
+  background: var(--color-jung-dark);
+}
+
+.btn-premium:hover {
+  background: var(--color-jung-accent);
+}
+
+button.rounded-xl,
+a.rounded-xl {
+  border-radius: 999px;
+}
+
+.card-premium {
+  border-radius: 18px;
+  background: var(--color-jung-surface);
+}
+
+::selection {
+  background: var(--lamp-soft);
+  color: var(--color-jung-dark);
+}
+
+/* ---------- Header ---------- */
+
+.studio-header {
+  background: var(--color-jung-base);
+}
+
+/* ---------- Home hero: a night field lit by one lamp ---------- */
+
+.journey-home .studio-hero {
+  position: relative;
+  isolation: isolate;
+  color: var(--night-text);
+  padding-block: 72px 88px;
+}
+
+.journey-home .studio-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0 calc(50% - 50vw);
+  z-index: -1;
+  background:
+    radial-gradient(60rem 36rem at 78% 42%, rgba(227, 162, 59, 0.16), transparent 62%),
+    var(--night);
+}
+
+.journey-home .studio-kicker {
+  color: var(--night-muted);
+}
+
+.journey-home .studio-kicker > span {
+  background: var(--lamp);
+  box-shadow: 0 0 0 4px rgba(227, 162, 59, 0.18);
+}
+
+.journey-home .studio-hero h1 {
+  color: var(--night-text);
+  font-size: clamp(48px, 6vw, 84px);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+
+.journey-home .studio-hero h1 > span {
+  color: var(--lamp);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.journey-home .studio-hero-description {
+  color: var(--night-muted);
+}
+
+.journey-home .studio-hero-actions > button {
+  background: var(--lamp);
+  color: var(--night);
+  box-shadow: 0 10px 30px -12px rgba(227, 162, 59, 0.6);
+}
+
+.journey-home .studio-hero-actions > button:hover {
+  background: var(--lamp-soft);
+}
+
+.journey-home .studio-hero-actions > a,
+.journey-home .studio-reassurance,
+.journey-home .studio-time {
+  color: var(--night-muted);
+}
+
+.journey-home .studio-hero-actions > a:hover {
+  color: var(--night-text);
+}
+
+.journey-home .studio-reassurance svg {
+  color: var(--lamp);
+}
+
+.journey-home .studio-hero :focus-visible {
+  outline-color: var(--lamp);
+}
+
+/* ---------- The pattern lens: the one lamp-lit object, home and results ---------- */
+
+.pattern-lens {
+  background:
+    radial-gradient(28rem 20rem at 30% 22%, rgba(227, 162, 59, 0.14), transparent 65%),
+    var(--night-2);
+  border: 1px solid var(--night-line);
+  border-radius: 24px;
+  color: var(--night-text);
+}
+
+.pattern-lens-heading,
+.pattern-lens-note,
+.pattern-lens-center span + span {
+  color: var(--night-muted);
+}
+
+.pattern-lens-orbit {
+  border-color: rgba(227, 162, 59, 0.45);
+}
+
+/* Dominant is lamplit; the others recede toward the inferior, which is only an outline. */
+.pattern-node-0 { background: var(--lamp); color: var(--night); box-shadow: 0 0 48px -6px rgba(227, 162, 59, 0.55); }
+.pattern-node-1 { background: #2f5560; color: #e3eeec; }
+.pattern-node-2 { background: #3a4452; color: #ece4d6; }
+.pattern-node-3 { background: transparent; color: #c8d0da; border: 1px dashed #66788c; }
+
+.pattern-node.is-selected {
+  box-shadow: 0 0 0 3px var(--night-2), 0 0 0 5px var(--lamp);
+}
+
+.pattern-node:focus-visible {
+  outline-color: var(--lamp);
+}
+
+.pattern-lens-reading {
+  background: var(--night);
+  border: 1px solid var(--night-line);
+  border-radius: 16px;
+}
+
+.pattern-lens-reading > div > p,
+.pattern-lens-reading > p {
+  color: var(--night-muted);
+}
+
+.pattern-lens-reading h3 {
+  color: var(--night-text);
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.pattern-lens-reading > svg {
+  color: var(--lamp);
+}
+
+/* ---------- Results ---------- */
+
+.studio-results-title h1,
+.studio-result-overview h2,
+.studio-result-reflection h3,
+.studio-result-next strong,
+.studio-results h2,
+.studio-results h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.studio-results-title h1 {
+  font-size: clamp(36px, 5vw, 52px);
+  line-height: 1.05;
+}
+
+.studio-result-overview h2 {
+  font-size: clamp(32px, 4vw, 44px);
+  line-height: 1.08;
+}
+
+.studio-result-nav .is-active {
+  color: var(--color-jung-dark);
+  border-bottom-color: var(--lamp);
+  background: none;
+}
+
+.studio-result-next button {
+  background: var(--color-jung-surface);
+  transition: border-color .2s, transform .2s;
+}
+
+.studio-result-next button:last-child {
+  background: var(--night);
+  border-color: var(--night);
+  color: var(--night-text);
+}
+
+.studio-result-next button:last-child span > span {
+  color: var(--night-muted);
+}
+
+.studio-result-next button:last-child svg {
+  color: var(--lamp);
+}
+
+.studio-result-next button:hover {
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .studio-result-next button:hover { transform: none; }
+}
+
+/* ---------- Footer ---------- */
+
+footer.studio-footer,
+.studio-footer {
+  background: var(--night);
+  color: var(--night-text);
+}
+
+/* ---------- Function map and report offer ---------- */
+
+.studio-eight-map > div:first-child .studio-eight-track > span {
+  background: var(--lamp);
+}
+
+.studio-eight-symbol {
+  background: var(--color-jung-surface-alt);
+  color: var(--color-jung-accent);
+}
+
+/* The buy action carries the lamp colour, same as the home page's start action. */
+.studio-report-offer button.bg-jung-accent {
+  background: var(--lamp);
+  color: var(--night);
+}
+
+.studio-report-offer button.bg-jung-accent:hover {
+  background: var(--lamp-soft);
+}

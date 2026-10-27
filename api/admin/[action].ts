@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSessionUserFromCookie } from '../_lib/auth-utils.js';
 import { getSupabaseAdminClient, hasSupabaseAdminConfig } from '../_lib/supabase.js';
+import { loadBrowserFunnel } from '../_lib/browser-funnel.js';
 import {
   dailyAssessmentCounts,
   summarizeCheckoutIntents,
@@ -141,17 +142,19 @@ async function handleStats(req: VercelRequest, res: VercelResponse) {
   if (!auth) return;
 
   try {
-    const [userCount, assessmentCount, purchases, leads, intents] = await Promise.all([
+    const [userCount, assessmentCount, purchases, leads, intents, browserFunnel] = await Promise.all([
       countRows(auth.supabase, 'users'),
       countRows(auth.supabase, 'assessment_results'),
       completedPurchases(auth.supabase),
       discountLeads(auth.supabase),
       checkoutIntents(auth.supabase),
+      loadBrowserFunnel(auth.supabase),
     ]);
 
     return res.status(200).json({
       userCount,
       assessmentCount,
+      browserFunnel,
       ...summarizePurchases(purchases),
       ...summarizeDiscountLeads(leads),
       ...summarizeCheckoutIntents(intents),

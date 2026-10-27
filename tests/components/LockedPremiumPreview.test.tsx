@@ -13,7 +13,7 @@ vi.mock('../../lib/analytics', () => ({
   getFunnelAnonymousId: vi.fn(),
 }));
 
-const results = calculateDepthResults({});
+const results = calculateDepthResults({ inferior_03: 'inferior-feeling' });
 const commonProps = {
   results,
   inferiorLabel: 'Extraverted feeling',
@@ -74,23 +74,22 @@ describe('optional report offer', () => {
     render(<LockedPremiumPreview {...commonProps} intendedTier="mastery" onViewSampleReport={onViewSampleReport} offerRef={offerRef} />);
     expect(offerRef).toHaveBeenCalledWith(document.getElementById('report-offer'));
     expect(trackEvent).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByRole('tab', { name: 'Work' }));
-    expect(trackEvent).toHaveBeenCalledWith('result_report_sample_explored', {
-      topic: 'work', source: 'results_locked_preview', tier: 'mastery',
-    });
+    fireEvent.click(screen.getByText('Why this reflection?'));
+    expect(screen.getByText('“I can be flooded by need, shame, or sensitivity I usually keep hidden”')).toBeVisible();
+    expect(trackEvent).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: 'Read the full illustrative sample' }));
     expect(onViewSampleReport).toHaveBeenCalledWith('results_locked_preview');
   });
 
-  it('names the dominant-inferior tension and offers checkout before the sample on phones', () => {
-    const onUnlock = vi.fn();
-    const price = discountedPriceLabel(PRICING.insight.amount);
-    render(<LockedPremiumPreview {...commonProps} onUnlock={onUnlock} />);
-    expect(screen.getByRole('heading', { level: 2, name: /tension\s*in everyday life/ })).toBeVisible();
-    expect(screen.getByText(PRICING.insight.price)).toBeVisible();
+  it('shows personal evidence before the paid offer and explains what remains free', () => {
+    render(<LockedPremiumPreview {...commonProps} />);
+    expect(screen.getByRole('heading', { level: 2, name: /Notice the shift/ })).toBeVisible();
+    expect(screen.getByText(/Your map, first read, and the reflection here stay free/)).toBeVisible();
+    expect(screen.getByText(/No retake needed/)).toBeVisible();
     expect(screen.getByText('Secure payment by Stripe')).toBeVisible();
-    fireEvent.click(screen.getByRole('button', { name: `Add the Insight report · ${price}` }));
-    expect(onUnlock).toHaveBeenCalledExactlyOnceWith('insight', 'results_locked_preview_top');
+    const preview = screen.getByRole('heading', { name: 'When feeling valued becomes the question.' });
+    const purchaseCard = document.getElementById('report-purchase')!;
+    expect(preview.compareDocumentPosition(purchaseCard) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it('places the not-ready email option inside the purchase card, after the checkout button', () => {

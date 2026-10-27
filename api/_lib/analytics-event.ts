@@ -176,11 +176,15 @@ function normalizeFunnelEvent(input: Record<string, unknown>, eventName: string)
   const reliability = cleanToken(firstDefined(input.reliability, properties.reliability), 80);
   const value = cleanNumber(firstDefined(input.value, properties.value, input.price, properties.price), 0, 100_000);
   const currency = cleanCurrency(firstDefined(input.currency, properties.currency));
-  const eventId = typeof input.eventId === 'string' && input.eventId.trim()
+  const submittedEventId = typeof input.eventId === 'string' && input.eventId.trim()
     ? input.eventId.trim().slice(0, 180)
     : typeof input.event_id === 'string' && input.event_id.trim()
       ? input.event_id.trim().slice(0, 180)
-      : `server:${eventName}:${randomUUID()}`;
+      : `${eventName}:${randomUUID()}`;
+  // Public submissions must never overwrite canonical server event IDs.
+  const eventId = submittedEventId.startsWith('client:')
+    ? submittedEventId
+    : `client:${submittedEventId}`.slice(0, 180);
 
   return {
     eventName,
@@ -211,6 +215,18 @@ export function normalizeAnalyticsEvent(body: unknown): NormalizedAnalyticsEvent
   if (!input) return null;
 
   const eventName = cleanToken(input.eventName ?? input.event ?? input.name, 80);
+  // Only the checkout handler and verified Stripe webhook may record these.
+  if (eventName && ['purchase', 'checkout_session_created', 'checkout_guard_blocked'].includes(eventName)) return null;
+
+  if (eventName === 'site_visited') {
+    return normalizeFunnelEvent({
+      eventId: input.eventId ?? input.event_id,
+      anonymousId: input.anonymousId ?? input.anonymous_id,
+      occurredAt: input.occurredAt ?? input.occurred_at,
+      path: '/',
+      properties: {},
+    }, eventName);
+  }
   if (eventName === 'result_reaction_submitted') {
     const properties = input.properties as Record<string, unknown> | undefined;
     const reaction = properties?.reaction;
@@ -239,8 +255,7 @@ export function normalizeAnalyticsEvent(body: unknown): NormalizedAnalyticsEvent
 }
 
 export async function trackNormalizedAnalyticsEvent(event: NormalizedAnalyticsEvent): Promise<void> {
-  // The existing browser event already reaches Vercel; this endpoint only adds
-  // first-party persistence for result feedback, not a second Vercel event.
-  if (event.eventName === 'result_reaction_submitted') return;
+  // Browser funnel events already reach Vercel. Mirroring only adds persistence.
+  if (event.funnelEvent) return;
   await trackVercelServerEvent(event.eventName, event.properties);
 }

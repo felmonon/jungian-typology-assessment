@@ -116,6 +116,7 @@ function vercelEventProperties(params?: Record<string, any>): Record<string, str
 
 const FUNNEL_ANONYMOUS_ID_STORAGE_KEY = 'typejung_funnel_anonymous_id';
 const FUNNEL_MIRROR_EVENT_NAMES = new Set([
+  'site_visited',
   'result_reaction_submitted',
   'assessment_started',
   'assessment_completed',
@@ -158,18 +159,21 @@ export function getFunnelAnonymousId(): string {
 }
 
 function mirrorFunnelEvent(eventName: string, params?: Record<string, any>): void {
+  // Count visits without copying titles, query parameters or private route IDs.
+  const isVisit = eventName === 'page_view';
+  if (isVisit) eventName = 'site_visited';
   if (typeof window === 'undefined' || !FUNNEL_MIRROR_EVENT_NAMES.has(eventName)) return;
 
   const isResultReaction = eventName === 'result_reaction_submitted';
   const reaction = params?.reaction;
   if (isResultReaction && !['yes', 'somewhat', 'not_yet'].includes(reaction)) return;
   // Result feedback needs only an enum, not scores, answers, or contact details.
-  const properties = isResultReaction ? { reaction } : vercelEventProperties(params);
+  const properties = isVisit ? {} : isResultReaction ? { reaction } : vercelEventProperties(params);
   const body = JSON.stringify({
     eventName,
     eventId: `client:${eventName}:${randomFunnelToken()}`,
     anonymousId: getFunnelAnonymousId(),
-    path: isResultReaction ? '/results' : `${window.location.pathname}${window.location.search}`,
+    path: isVisit ? '/' : isResultReaction ? '/results' : `${window.location.pathname}${window.location.search}`,
     occurredAt: new Date().toISOString(),
     properties,
   });

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { track } from '@vercel/analytics/server';
 import handler from '../../api/analytics';
-import { normalizeAnalyticsEvent } from '../../api/_lib/analytics-event';
+import { normalizeAnalyticsEvent, trackNormalizedAnalyticsEvent } from '../../api/_lib/analytics-event';
 
 vi.mock('@vercel/analytics/server', () => ({
   track: vi.fn(() => Promise.resolve()),
@@ -30,6 +30,30 @@ function createResponse() {
 }
 
 describe('analytics event normalization', () => {
+  it.each(['purchase', 'checkout_session_created', 'checkout_guard_blocked'])('rejects a public submission of server-only %s', (eventName) => {
+    expect(normalizeAnalyticsEvent({ eventName, eventId: `${eventName}:cs_fake`, anonymousId: 'browser' })).toBeNull();
+  });
+
+  it('keeps visits free of page titles, URL parameters and arbitrary properties', () => {
+    const result = normalizeAnalyticsEvent({
+      eventName: 'site_visited', eventId: 'visit:example', anonymousId: 'browser',
+      path: '/auth?email=private@example.com', properties: { page_title: 'private', email: 'private@example.com' },
+    });
+    expect(result?.funnelEvent).toMatchObject({ path: '/', properties: {}, anonymousId: 'browser', eventId: 'client:visit:example' });
+    expect(JSON.stringify(result)).not.toContain('private');
+  });
+
+  it('namespaces public event IDs so they cannot overwrite authoritative server rows', () => {
+    const result = normalizeAnalyticsEvent({ eventName: 'assessment_started', eventId: 'purchase:cs_real', anonymousId: 'browser' });
+    expect(result?.funnelEvent?.eventId).toBe('client:purchase:cs_real');
+  });
+
+  it.each(['assessment_completed', 'results_premium_preview_viewed', 'site_visited'])('does not transmit mirrored %s twice to Vercel', async (eventName) => {
+    const normalized = normalizeAnalyticsEvent({ eventName, anonymousId: 'browser' });
+    await trackNormalizedAnalyticsEvent(normalized!);
+    expect(track).not.toHaveBeenCalled();
+  });
+
   it('keeps creator safe-mention attribution and drops arbitrary fields', () => {
     const normalized = normalizeAnalyticsEvent({
       event: 'creator_safe_mention_copied',

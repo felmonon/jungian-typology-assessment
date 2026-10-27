@@ -25,7 +25,8 @@ import { DiscountCaptureCard } from '../components/discount/DiscountCaptureCard'
 import { FunctionEmblem } from '../components/brand/FunctionEmblem';
 import { FunctionStackArtwork } from '../components/brand/FunctionStackArtwork';
 import { PersonalReportReader } from '../components/results/PersonalReportReader';
-import { ReportSamplePreview } from '../components/results/ReportSamplePreview';
+import { ResultStressPreview } from '../components/results/ResultStressPreview';
+import { RESULT_OFFER_VERSION } from '../lib/result-stress-preview';
 import { useOfferImpression } from '../hooks/useOfferImpression';
 import { PAGE_SEO, useSEO } from '../hooks/useSEO';
 import { Button } from '../components/ui/Button';
@@ -372,8 +373,6 @@ export const LockedPremiumPreview: React.FC<{
     const offerPrice = paidTierPrice(intendedTier);
     const regularPrice = PRICING[intendedTier].price;
     const isOpening = checkoutOpeningTier === intendedTier;
-    const dominantCode = stackPositionCode(results, 'dominant');
-    const inferiorCode = stackPositionCode(results, 'inferior');
     return (
       <section
         id="report-offer"
@@ -382,34 +381,15 @@ export const LockedPremiumPreview: React.FC<{
       >
         <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
           <div className="studio-report-sample">
-            <p className="journey-eyebrow">Your map is a beginning</p>
+            <p className="journey-eyebrow">Understand your stress pattern</p>
             <h2 className="mt-3 font-display text-3xl leading-tight sm:text-4xl">
-              {dominantCode && inferiorCode ? (
-                <>See your {dominantCode}–{inferiorCode} tension<br />in everyday life.</>
-              ) : (
-                <>Bring the pattern<br />into your everyday life.</>
-              )}
+              Notice the shift.<br />Choose what to try next.
             </h2>
-            <p className="mt-4 mb-6 text-sm leading-7 text-jung-secondary">Your map points to {inferiorLabel.toLowerCase()} as a growth edge. Explore what a report can help you notice in stress, relationships, and work.</p>
-            {/* Phones reach the purchase card only after the full sample, so
-                offer the same checkout here with the price and refund terms. */}
-            <div className="mb-6 lg:hidden">
-              <Button
-                variant="accent"
-                size="lg"
-                className="w-full"
-                onClick={() => onUnlock(intendedTier, 'results_locked_preview_top')}
-                disabled={isOpening}
-                rightIcon={<ArrowRight className="h-4 w-4" />}
-              >
-                {`Add the ${PRICING[intendedTier].name} report · ${offerPrice}`}
-              </Button>
-              <p className="mt-2 text-center text-xs text-jung-muted">
-                One time · No subscription · 7-day refund ·{' '}
-                <a href="#report-purchase" className="font-semibold text-jung-accent underline underline-offset-4">What’s included</a>
-              </p>
-            </div>
-            <ReportSamplePreview onExplore={topic => trackEvent('result_report_sample_explored', { topic, source: 'results_locked_preview', tier: intendedTier })} />
+            <p className="mt-4 mb-6 text-sm leading-7 text-jung-secondary">Start with a reflection from your own answers. The optional report develops your stress pattern, relationship reactions, and growth practices in more depth.</p>
+            <a href="#report-purchase" className="mb-5 inline-flex min-h-11 items-center text-sm font-semibold text-jung-accent underline underline-offset-4 lg:hidden">
+              {PRICING[intendedTier].name} · {offerPrice} once · What’s included ↓
+            </a>
+            <ResultStressPreview results={results} />
           </div>
           <div id="report-purchase" className="scroll-mt-28 rounded-2xl border border-jung-border bg-white p-6 sm:p-8 lg:sticky lg:top-36">
             <p className="journey-eyebrow">
@@ -427,11 +407,13 @@ export const LockedPremiumPreview: React.FC<{
                 <s>{regularPrice}</s> regular price · current offer
               </p>
             )}
+            <p className="mt-5 text-sm font-semibold text-jung-dark">What the report adds</p>
+            <p className="mt-2 text-xs leading-6 text-jung-secondary">Your map, first read, and the reflection here stay free. {PRICING[intendedTier].name} adds ten AI-generated interpretation sections based on your completed assessment. No retake needed.</p>
             <ul className="my-6 space-y-3">
               {[
-                'Ten personalized, AI-generated sections',
-                'Stress and recovery reflections',
-                'Relationship, work, and growth prompts',
+                'A deeper read on your stress pattern and possible ways to respond',
+                'Growth practices to compare with your everyday experience',
+                'Relationship and work reflections from your function map',
                 'The Function Stack in Depth guide (PDF)',
                 ...(intendedTier === 'mastery'
                   ? ['AI Type Guide and practice tools']
@@ -651,6 +633,7 @@ export const Results: React.FC = () => {
       const destination = 'secure_stripe_checkout';
       trackEvent('results_unlock_clicked', {
         source: ctaSource,
+        offer_version: RESULT_OFFER_VERSION,
         tier: paidTier,
         destination,
         checkout_mode: 'direct',
@@ -812,6 +795,7 @@ export const Results: React.FC = () => {
     onImpression: () => {
       if (!currentResults) return;
       trackEvent('result_upgrade_offer_viewed', {
+        offer_version: RESULT_OFFER_VERSION,
         source: acquisition?.source || 'unknown',
         intended_tier: intendedTier,
         context_category: upgradeContext?.category || 'default',
@@ -833,6 +817,7 @@ export const Results: React.FC = () => {
           : {}),
       });
       const previewPayload = {
+        offer_version: RESULT_OFFER_VERSION,
         source: acquisition?.source || 'unknown',
         preview_source: 'results_locked_preview',
         intended_tier: intendedTier,
@@ -1488,12 +1473,10 @@ export const Results: React.FC = () => {
                 <strong>
                   {isPremium
                     ? 'Open your personal report'
-                    : dominantCode && inferiorCode
-                      ? `See your ${dominantCode}–${inferiorCode} tension in everyday life`
-                      : 'See your pattern in everyday life'}
+                    : 'Understand your stress pattern'}
                 </strong>
                 <span>
-                  {isPremium ? 'Your full interpretation is here.' : 'Preview the optional Insight report on stress, relationships, and work · ' + paidTierPrice('insight') + ' once.'}
+                  {isPremium ? 'Your full interpretation is here.' : `See what ${PRICING[intendedTier].name} adds, with a reflection from your answers · ${paidTierPrice(intendedTier)} once.`}
                 </span>
               </span>
               <ArrowRight />
@@ -1544,6 +1527,20 @@ export const Results: React.FC = () => {
               <ResultReaction completedAt={results.completedAt} />
             </div>
           </div>
+          {!premiumLoading && !isPremium && (
+            <section className="mt-8" aria-label="Your stress reflection and optional report">
+              <ResultStressPreview results={results} />
+              <div className="flex flex-col gap-4 rounded-b-2xl border-x border-b border-jung-border bg-jung-accent-light p-5 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-sm font-semibold">Want to explore this pattern further?</p>
+                  <p className="mt-1 text-xs leading-6 text-jung-secondary">Stress, relationships, and growth practices · {PRICING[intendedTier].name} · {paidTierPrice(intendedTier)} once.</p>
+                </div>
+                <Button variant="accent" onClick={() => selectResultView('report', true)} rightIcon={<ArrowRight className="h-4 w-4" />}>
+                  See what my report adds
+                </Button>
+              </div>
+            </section>
+          )}
 
         </div>
         <div role="tabpanel" id="result-panel-map" aria-labelledby="result-tab-map" tabIndex={0} hidden={resultView !== 'map'} className="studio-result-panel">

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { setAnalyticsEnabled, trackEvent } from '../../lib/analytics';
+import { setAnalyticsEnabled, trackEvent, trackPageView } from '../../lib/analytics';
 import { normalizeAnalyticsEvent } from '../../api/_lib/analytics-event';
 import { recordFunnelEvent } from '../../api/_lib/funnel-events';
 
@@ -19,7 +19,16 @@ describe('report-offer funnel stages', () => {
     vi.unstubAllGlobals();
   });
 
+  it('mirrors a real page view as a private-data-free visit', () => {
+    trackPageView('/auth?email=private@example.com', 'private account');
+    const [, request] = vi.mocked(fetch).mock.calls[0];
+    const payload = JSON.parse(request!.body as string);
+    expect(payload).toMatchObject({ eventName: 'site_visited', path: '/', properties: {} });
+    expect(JSON.stringify(payload)).not.toContain('private');
+  });
+
   it.each([
+    ['results_premium_preview_viewed', { source: 'results_locked_preview', tier: 'insight', offer_version: 'stress-reflection-v1' }],
     ['result_report_sample_explored', { topic: 'stress', source: 'results_locked_preview', tier: 'insight' }],
     ['results_direct_checkout_failed', { reason: 'checkout_unavailable', source: 'results_locked_preview', tier: 'insight' }],
   ])('persists %s from the browser through the first-party API', async (eventName, properties) => {

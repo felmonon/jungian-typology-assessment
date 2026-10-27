@@ -5,8 +5,10 @@ import { useAuth } from '../hooks/use-auth';
 import { questions, FUNCTION_DESCRIPTIONS, STACK_POSITIONS } from '../data/questions';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import type { FunctionAttitude } from '../types';
+import type { BrowserFunnelSummary } from '../api/_lib/browser-funnel';
 
 interface AdminStats {
+  browserFunnel?: BrowserFunnelSummary;
   userCount: number;
   assessmentCount: number;
   purchaseCount?: number;
@@ -199,6 +201,33 @@ export const AdminDashboard: React.FC = () => {
           </p>
         </div>
       </div>
+
+      <section aria-labelledby="browser-funnel-heading" className="bg-white rounded-lg shadow-sm border border-jung-border p-6 mb-8">
+        <h2 id="browser-funnel-heading" className="text-xl font-semibold text-jung-dark">Free result → paid report</h2>
+        <p className="mt-2 text-sm leading-6 text-jung-secondary">Last 30 days · Unique anonymous browsers, with each step occurring after the previous step.</p>
+        {statsLoading ? <p className="mt-5 text-sm text-jung-muted">Loading funnel…</p> : !stats?.browserFunnel || stats.browserFunnel.status === 'unavailable' ? (
+          <p role="status" className="mt-5 rounded-lg border border-jung-border p-4 text-sm text-jung-secondary">Funnel data is unavailable. Check the funnel events, purchases and checkout intents tables. This does not mean there were zero conversions.</p>
+        ) : (
+          <>
+            {stats.browserFunnel.status === 'partial' && <p role="status" className="mt-4 text-sm text-error">This window exceeds the event limit. Counts are partial and conversion rates are hidden; use a database export for a complete comparison.</p>}
+            <ol className="mt-5 grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
+              {stats.browserFunnel.stages.map((stage) => (
+                <li key={stage.key} className="rounded-lg border border-jung-border bg-jung-base px-4 py-3">
+                  <p className="text-xs text-jung-muted">{stage.label}</p>
+                  <p className="mt-1 text-2xl font-semibold text-jung-dark">{stage.browsers}</p>
+                  {stage.previousRate !== null && stats.browserFunnel?.status === 'available' && <p className="mt-1 text-xs text-jung-secondary">{percentFormatter.format(stage.previousRate)} of previous</p>}
+                </li>
+              ))}
+            </ol>
+            <div className="mt-5 rounded-lg bg-jung-surface p-4">
+              <h3 className="text-sm font-semibold text-jung-dark">Paying browsers / completing browsers</h3>
+              <p className="mt-2 text-3xl font-semibold text-jung-dark">{stats.browserFunnel.status === 'available' && stats.browserFunnel.completionToPaidRate !== null ? new Intl.NumberFormat('en-CA', { style: 'percent', maximumFractionDigits: 1 }).format(stats.browserFunnel.completionToPaidRate) : '—'}</p>
+              <p className="mt-2 text-sm leading-6 text-jung-secondary">{stats.browserFunnel.payingCompletingBrowsers} paid after completion / {stats.browserFunnel.completingBrowsers} completed. This comparison also includes completing browsers whose earlier visit was not tracked. Payments must match a completed, non-zero report purchase.</p>
+            </div>
+            <p className="mt-4 text-xs leading-5 text-jung-muted">Retakes and repeat purchases count once per browser. Devices are not linked. Blocked analytics, cleared storage and missing events undercount the journey. Visit tracking starts with this release, so the full funnel needs time to fill; recent completers have had less time to buy.</p>
+          </>
+        )}
+      </section>
 
       <div className="bg-white rounded-lg shadow-sm border border-jung-border p-6 mb-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">

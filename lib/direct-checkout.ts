@@ -1,5 +1,6 @@
 import type { PaidTierId } from '../data/pricing';
 import type { AcquisitionSource } from './acquisition-source';
+import { trafficAttributionParams } from './traffic-attribution';
 
 export type DirectCheckoutAttribution = {
   source?: string;
@@ -101,6 +102,7 @@ export async function createDirectCheckoutSession({
       tier,
       source,
       attribution,
+      trafficAttribution: trafficAttributionParams(),
       ...(customerEmail?.trim() ? { customerEmail: customerEmail.trim() } : {}),
       recoveryEmailOptIn: false,
       ...(anonymousId?.trim() ? { anonymousId: anonymousId.trim() } : {}),

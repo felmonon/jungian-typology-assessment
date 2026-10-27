@@ -38,6 +38,7 @@ import {
   trackEvent,
 } from '../lib/analytics';
 import { writePendingCheckout } from '../lib/pending-checkout';
+import { trafficAttributionParams } from '../lib/traffic-attribution';
 import {
   encodeResultCode,
   RESULT_CODE_HASH_KEY,
@@ -651,6 +652,7 @@ export const Checkout: React.FC = () => {
           tier: paidTier,
           source: checkoutSource,
           attribution: checkoutAttribution,
+          trafficAttribution: trafficAttributionParams(),
           customerEmail: recoveryEmail,
           recoveryEmailOptIn: shouldUseSiteRecoveryConsent,
           anonymousId: getFunnelAnonymousId(),

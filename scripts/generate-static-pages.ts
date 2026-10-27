@@ -6,7 +6,7 @@
 
 import { functionSEO, functionData, typeSEO, typeData } from '../data/seo-config.js';
 import { seoLandingPages } from './seo-data.mjs';
-import { standaloneAnalyticsSnippet } from './standalone-analytics.mjs';
+import { standaloneAnalyticsSnippet, writeTrafficAttributionScript } from './standalone-analytics.mjs';
 import { writeGeneratedFile } from './stable-dates.mjs';
 import { mkdirSync } from 'fs';
 import { dirname } from 'path';
@@ -1118,6 +1118,7 @@ ${standaloneAnalyticsSnippet}
 }
 
 // Main execution
+writeTrafficAttributionScript();
 console.log('🚀 Generating static HTML pages for SEO...\n');
 
 // Generate function pages

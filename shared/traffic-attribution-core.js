@@ -1,0 +1,201 @@
+/**
+ * Shared with the generated standalone-page script. Keep these functions
+ * self-contained so the browser asset and the server use the same validation.
+ */
+export function sanitizeTrafficAttribution(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+
+  const token = (value) => {
+    if (typeof value !== 'string') return undefined;
+    const clean = value.trim().toLowerCase();
+    // Campaign labels only: never repair an email, URL, phone or opaque ID into
+    // something that looks like a campaign. Discard it instead.
+    if (!/^[a-z][a-z0-9._-]{0,79}$/.test(clean)
+      || /\d{7,}/.test(clean)
+      || /[a-f0-9]{24,}/.test(clean)
+      || /(?:^|[._-])(?:email|phone|token|password|session|user_id)[._-]/.test(clean)) return undefined;
+    return clean;
+  };
+  const host = (value) => {
+    if (typeof value !== 'string' || value.length > 253) return undefined;
+    const clean = value.toLowerCase();
+    if (!/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/.test(clean)) return undefined;
+    return clean;
+  };
+  const route = (value) => {
+    if (typeof value !== 'string') return undefined;
+    const path = value.replace(/\/$/, '') || '/';
+    const known = new Set([
+      '/', '/assessment', '/results', '/auth', '/profile', '/settings', '/success',
+      '/learn', '/about', '/share', '/leaderboard', '/admin', '/history', '/privacy',
+      '/terms', '/pricing', '/sample-report', '/methodology', '/debrief', '/ai-run-store',
+      '/checkout/insight', '/checkout/mastery', '/other', '/guides', '/creator-preview', '/blog',
+      '/mbti-changes-with-mood', '/keys2cognition-alternative', '/mbti-test-alternative',
+      '/idrlabs-cognitive-function-test-alternative', '/mbti-alternative', '/mbti-mistype-test',
+      '/16selves-alternative', '/jungian-typology', '/michael-caloz-alternative',
+      '/shadow-work-test', '/sakinorva-alternative', '/dominant-function-test',
+      '/16personalities-alternative', '/free-cognitive-function-test', '/cognitive-functions-test',
+      '/best-cognitive-functions-test', '/cognitive-function-test', '/mbti-keeps-changing',
+      '/jungian-test', '/cognitive-functions-quiz', '/why-do-i-get-different-mbti-results',
+      '/mistype-investigator-alternative', '/inferior-function-test',
+      '/jungian-cognitive-functions-test', '/function-stack-test', '/am-i-infj-or-infp',
+      '/cognitive-functions', '/jungian-personality-test',
+    ]);
+    const blogSlugs = new Set([
+      'jungian-shadow-work-prompts-by-cognitive-function', 'intj-vs-intp-ni-te-vs-ti-ne',
+      'singer-loomis-vs-mbti', 'understanding-the-grip', 'best-mbti-alternative-tests',
+      'what-does-it-mean-to-be-in-the-grip', 'infj-vs-infp-cognitive-functions',
+      'what-is-the-inferior-function', 'why-mbti-type-keeps-changing',
+    ]);
+    if (known.has(path)
+      || /^\/types\/[ei][ns][tf][jp]$/.test(path)
+      || /^\/functions\/[nstf][ei]$/.test(path)
+      || /^\/[nstf][ei]-dominant-test$/.test(path)
+      || /^\/[ei][ns][tf][jp]-vs-[ei][ns][tf][jp]-test$/.test(path)
+      || (path.startsWith('/blog/') && blogSlugs.has(path.slice(6).replace(/\.html$/, '')))) return path;
+    return undefined;
+  };
+
+  if (raw.traffic_attribution_version !== '1'
+    || !['utm', 'referrer', 'direct_or_unknown'].includes(raw.traffic_source_kind)) return {};
+  const kind = raw.traffic_source_kind;
+  const source = kind === 'utm' ? token(raw.traffic_source)
+    : kind === 'referrer' ? host(raw.traffic_source)
+      : raw.traffic_source === 'direct_or_unknown' ? 'direct_or_unknown' : undefined;
+  const landing = route(raw.traffic_landing_path);
+  const captured = raw.traffic_captured_at;
+  if (!source || !landing || typeof captured !== 'string'
+    || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(captured)
+    || !Number.isFinite(Date.parse(captured))
+    || new Date(captured).toISOString() !== captured) return {};
+
+  const safe = {
+    traffic_attribution_version: '1',
+    traffic_source_kind: kind,
+    traffic_source: source,
+    traffic_landing_path: landing,
+    traffic_captured_at: captured,
+  };
+  const referrer = host(raw.traffic_referrer_host);
+  const medium = token(raw.traffic_medium);
+  const campaign = token(raw.traffic_campaign);
+  if (referrer) safe.traffic_referrer_host = referrer;
+  if (medium) safe.traffic_medium = medium;
+  if (campaign) safe.traffic_campaign = campaign;
+  return safe;
+}
+
+export function createTrafficAttributionApi(browser, sanitize, now = () => Date.now()) {
+  const storageKey = 'typejung_traffic_attribution_v1';
+  const inactivityMs = 30 * 60 * 1000;
+  const returnWindowMs = 24 * 60 * 60 * 1000;
+  let memory = null;
+  let initialized = false;
+
+  const privacyBlocked = () => ['1', 'yes'].includes(browser.navigator?.doNotTrack)
+    || ['1', 'yes'].includes(browser.doNotTrack)
+    || browser.navigator?.globalPrivacyControl === true
+    || browser.globalPrivacyControl === true;
+  const internalHost = (host) => host === browser.location.hostname.toLowerCase()
+    || (['typejung.com', 'www.typejung.com'].includes(host)
+      && ['typejung.com', 'www.typejung.com'].includes(browser.location.hostname.toLowerCase()));
+  const returnHost = (host) => ['checkout.stripe.com', 'billing.stripe.com', 'accounts.google.com',
+    'appleid.apple.com', 'login.microsoftonline.com'].includes(host) || host.endsWith('.supabase.co');
+
+  function read() {
+    let raw = memory;
+    if (!raw) {
+      try { raw = JSON.parse(browser.sessionStorage?.getItem(storageKey) || 'null'); } catch { /* denied or corrupt */ }
+    }
+    if (!raw) return null;
+    const props = sanitize(raw.props);
+    if (!props.traffic_attribution_version || !Number.isFinite(raw.lastSeen)
+      || raw.lastSeen > now() + 60_000 || Date.parse(props.traffic_captured_at) > now() + 60_000) return null;
+    return { props, lastSeen: raw.lastSeen };
+  }
+
+  function write(props) {
+    memory = { props, lastSeen: now() };
+    try { browser.sessionStorage?.setItem(storageKey, JSON.stringify(memory)); } catch { /* memory survives SPA navigation */ }
+    return { ...props };
+  }
+
+  function landingPath() {
+    const rawPath = browser.location.pathname || '/';
+    const path = rawPath.replace(/\/index\.html$/, '') || '/';
+    if (path.startsWith('/share/')) return '/share';
+    const checked = sanitize({
+      traffic_attribution_version: '1', traffic_source_kind: 'direct_or_unknown',
+      traffic_source: 'direct_or_unknown', traffic_landing_path: path,
+      traffic_captured_at: new Date(now()).toISOString(),
+    });
+    return checked.traffic_landing_path || '/other';
+  }
+
+  function capture() {
+    if (!browser?.location) return {};
+    if (privacyBlocked()) {
+      memory = null;
+      initialized = false;
+      try { browser.sessionStorage?.removeItem(storageKey); } catch { /* denied */ }
+      return {};
+    }
+    const previous = read();
+    // A document's referrer is fixed, even after React navigation. Inspect it
+    // only on the first capture; otherwise an idle session could revive it.
+    let externalHost;
+    let internalReferrer = false;
+    if (!initialized) {
+      try {
+        const ref = new URL(browser.document?.referrer || '');
+        if (['https:', 'http:'].includes(ref.protocol)) {
+          internalReferrer = internalHost(ref.hostname.toLowerCase());
+          if (!internalReferrer) externalHost = ref.hostname.toLowerCase();
+        }
+      } catch { /* missing or deliberately suppressed referrer */ }
+    }
+    const query = new URLSearchParams(browser.location.search || '');
+    const returning = (!initialized && !!externalHost && returnHost(externalHost))
+      || ['/auth', '/success'].includes(browser.location.pathname)
+      || query.get('checkout') === 'cancelled';
+    const fresh = previous && now() - previous.lastSeen <= inactivityMs;
+    const stillReturning = previous && returning
+      && now() - previous.lastSeen <= returnWindowMs;
+    const newExternalArrival = !initialized && externalHost && !returnHost(externalHost) && !returning;
+    const base = {
+      traffic_attribution_version: '1', traffic_source_kind: 'direct_or_unknown',
+      traffic_source: 'direct_or_unknown', traffic_landing_path: landingPath(),
+      traffic_captured_at: new Date(now()).toISOString(),
+    };
+    // Only initial entry UTM labels are acquisition evidence. Internal source,
+    // ref, parent_source and source_chain describe CTA intent, not traffic.
+    // An expired session followed by an internal document navigation can still
+    // carry its old UTM query; those forwarded labels are not a new arrival.
+    const staleInternalCampaign = previous && !fresh && internalReferrer;
+    const candidate = !initialized && !returning && !staleInternalCampaign ? sanitize({
+      ...base, traffic_source_kind: 'utm', traffic_source: query.get('utm_source'),
+      traffic_medium: query.get('utm_medium'), traffic_campaign: query.get('utm_campaign'),
+      traffic_referrer_host: externalHost,
+    }) : {};
+    // A changed campaign with a suppressed referrer is a new external entry.
+    // Same-campaign reloads and CTAs from internal pages retain first-touch.
+    const newCampaignArrival = !initialized && !browser.document?.referrer
+      && candidate.traffic_attribution_version && previous
+      && ['traffic_source_kind', 'traffic_source', 'traffic_medium', 'traffic_campaign']
+        .some((key) => candidate[key] !== previous.props[key]);
+    if (previous && ((fresh && !newExternalArrival && !newCampaignArrival) || stillReturning)) {
+      initialized = true;
+      return write(previous.props);
+    }
+
+    const fromReferrer = !initialized && !returning && externalHost ? sanitize({
+      ...base, traffic_source_kind: 'referrer', traffic_source: externalHost,
+      traffic_referrer_host: externalHost,
+    }) : {};
+    initialized = true;
+    return write(candidate.traffic_attribution_version ? candidate
+      : fromReferrer.traffic_attribution_version ? fromReferrer : base);
+  }
+
+  return { capture };
+}

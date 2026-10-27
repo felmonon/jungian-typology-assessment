@@ -4,7 +4,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { growthBlogArticles } from './growth-blog-data.mjs';
-import { standaloneAnalyticsSnippet, withStandaloneAnalytics } from './standalone-analytics.mjs';
+import { standaloneAnalyticsSnippet, withStandaloneAnalytics, writeTrafficAttributionScript } from './standalone-analytics.mjs';
 import { writeGeneratedFile } from './stable-dates.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -18,6 +18,7 @@ const sameAs = [
   'https://www.linkedin.com/in/felmonfekadu/',
 ];
 const buildDate = new Date().toISOString().split('T')[0];
+writeTrafficAttributionScript();
 
 const escapeHtml = (value) =>
   String(value)

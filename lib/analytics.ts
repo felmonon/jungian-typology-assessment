@@ -1,6 +1,8 @@
 // Google Analytics 4 integration with validation
 import { track as trackVercelEvent } from '@vercel/analytics';
 import { z } from 'zod';
+import { trafficAttributionParams } from './traffic-attribution';
+import { sanitizeTrafficAttributionParams } from '../shared/traffic-attribution';
 
 declare global {
   interface Window {
@@ -122,6 +124,9 @@ const FUNNEL_MIRROR_EVENT_NAMES = new Set([
   'assessment_completed',
   'results_viewed',
   'results_premium_preview_viewed',
+  'result_upgrade_prompt_viewed',
+  'result_upgrade_entry_clicked',
+  'result_report_opened',
   'result_report_sample_explored',
   'results_unlock_clicked',
   'results_direct_checkout_failed',
@@ -168,7 +173,7 @@ function mirrorFunnelEvent(eventName: string, params?: Record<string, any>): voi
   const reaction = params?.reaction;
   if (isResultReaction && !['yes', 'somewhat', 'not_yet'].includes(reaction)) return;
   // Result feedback needs only an enum, not scores, answers, or contact details.
-  const properties = isVisit ? {} : isResultReaction ? { reaction } : vercelEventProperties(params);
+  const properties = isVisit ? sanitizeTrafficAttributionParams(params) : isResultReaction ? { reaction } : vercelEventProperties(params);
   const body = JSON.stringify({
     eventName,
     eventId: `client:${eventName}:${randomFunnelToken()}`,
@@ -201,9 +206,12 @@ function safeTrackEvent(
   params?: Record<string, any>,
   schema?: z.ZodSchema<any>
 ): boolean {
-  if (!isAnalyticsEnabled() || !canTrackEvent()) {
+  if (!isAnalyticsEnabled()) {
     return false;
   }
+  // A burst of question/UI events must not suppress a completion or offer view.
+  const isFunnelEvent = eventName === 'page_view' || FUNNEL_MIRROR_EVENT_NAMES.has(eventName);
+  if (!canTrackEvent() && !isFunnelEvent) return false;
 
   try {
     let eventParams = params || {};
@@ -218,6 +226,7 @@ function safeTrackEvent(
       }
     }
 
+    eventParams = { ...eventParams, ...trafficAttributionParams() };
     let tracked = false;
 
     // First-party funnel data must not depend on a third-party SDK succeeding.
@@ -591,23 +600,17 @@ const analyticsState: AnalyticsState = {
   eventCount: 0,
   errors: [],
 };
+let eventWindowStartedAt = Date.now();
 
 // Rate limiting helper
 export function canTrackEvent(): boolean {
   const now = Date.now();
-  const timeSinceLastEvent = now - analyticsState.lastEventTime;
-  
-  // Limit to 100 events per minute
-  if (timeSinceLastEvent < 600 && analyticsState.eventCount > 100) {
-    return false;
-  }
-  
-  // Reset counter after a minute
-  if (timeSinceLastEvent > 60000) {
+  // Count a real one-minute window, not the entire visit until a minute of idle time.
+  if (now - eventWindowStartedAt >= 60000 || now < eventWindowStartedAt) {
+    eventWindowStartedAt = now;
     analyticsState.eventCount = 0;
   }
-  
-  return true;
+  return analyticsState.eventCount < 100;
 }
 
 // Get analytics status (for debugging)

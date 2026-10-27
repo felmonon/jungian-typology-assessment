@@ -21,6 +21,7 @@ import { requestLogger, errorLogger } from './server/middleware/logger';
 import { validate, schemas } from './server/middleware/validate';
 import { findActivePromotionCodeId, getAutoPromotionCode, getStripePriceIdForTier, getStripeWebhookSecret, resolveCheckoutBaseUrl } from './server/checkout';
 import { serveGeneratedStaticPages } from './server/static-pages';
+import { sanitizeTrafficAttributionParams } from './shared/traffic-attribution';
 
 const analysisInputSchema = z.object({
   scores: z.array(z.object({
@@ -286,6 +287,7 @@ async function startServer() {
         ? await findActivePromotionCodeId(stripe, autoPromotionCode)
         : null;
 
+      const trafficAttribution = sanitizeTrafficAttributionParams(req.body?.trafficAttribution);
       const sessionParams: any = {
         mode: 'payment',
         payment_method_types: ['card'],
@@ -297,7 +299,9 @@ async function startServer() {
         ],
         success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${baseUrl}/results`,
+        payment_intent_data: { metadata: { ...trafficAttribution } },
         metadata: {
+          ...trafficAttribution,
           product: 'jungian_assessment_premium',
           tier: resolvedTier,
         },
@@ -306,11 +310,7 @@ async function startServer() {
       if (activePromotionCodeId) {
         sessionParams.discounts = [{ promotion_code: activePromotionCodeId }];
         sessionParams.metadata.discount_code = autoPromotionCode;
-        sessionParams.payment_intent_data = {
-          metadata: {
-            discount_code: autoPromotionCode,
-          },
-        };
+        sessionParams.payment_intent_data.metadata.discount_code = autoPromotionCode;
       } else {
         sessionParams.allow_promotion_codes = true;
       }

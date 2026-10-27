@@ -4,6 +4,17 @@ import {
   createDirectCheckoutSession,
 } from '../../lib/direct-checkout';
 
+vi.mock('../../lib/traffic-attribution', () => ({
+  trafficAttributionParams: () => ({
+    traffic_attribution_version: '1',
+    traffic_source_kind: 'referrer',
+    traffic_source: 'google.com',
+    traffic_referrer_host: 'google.com',
+    traffic_landing_path: '/inferior-function-test',
+    traffic_captured_at: '2026-10-27T12:00:00.000Z',
+  }),
+}));
+
 const acquisition = {
   source: 'seo_inferior_function_test_hero',
   entryPage: '/inferior-function-test',
@@ -63,6 +74,14 @@ describe('direct checkout', () => {
       customerEmail: 'buyer@example.com',
       anonymousId: 'anon-123',
       recoveryEmailOptIn: false,
+      trafficAttribution: {
+        traffic_attribution_version: '1',
+        traffic_source_kind: 'referrer',
+        traffic_source: 'google.com',
+        traffic_referrer_host: 'google.com',
+        traffic_landing_path: '/inferior-function-test',
+        traffic_captured_at: '2026-10-27T12:00:00.000Z',
+      },
     });
     expect(body.attribution.sourceChain).toBe(
       'google>seo_inferior_function_test_hero>results_locked_preview',

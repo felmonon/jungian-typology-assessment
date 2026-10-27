@@ -46,4 +46,18 @@ describe('generated page build dates', () => {
     expect(readFileSync(file, 'utf8')).toContain('new');
     expect(readDateModified(file)).toBe('2026-10-14');
   });
+
+  it('writes traffic instrumentation without restamping unchanged editorial content', () => {
+    const file = join(mkdtempSync(join(tmpdir(), 'seo-')), 'index.html');
+    const trafficScript = '<script data-typejung-traffic-attribution src="/traffic-attribution.js"></script>\n';
+    writeFileSync(file, page('2026-09-05', 'same'));
+
+    expect(writeGeneratedFile(file, trafficScript + page('2026-10-14', 'same'))).toBe(true);
+    expect(readFileSync(file, 'utf8')).toContain(trafficScript);
+    expect(readDateModified(file)).toBe('2026-09-05');
+    expect(writeGeneratedFile(file, trafficScript + page('2026-10-15', 'same'))).toBe(false);
+
+    expect(writeGeneratedFile(file, trafficScript + page('2026-10-16', 'actual editorial change'))).toBe(true);
+    expect(readDateModified(file)).toBe('2026-10-16');
+  });
 });

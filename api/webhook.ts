@@ -9,6 +9,7 @@ import { getSupabaseAdminClient, hasSupabaseAdminConfig } from './_lib/supabase.
 import { getStripeSecretKey, getStripeWebhookSecret } from '../server/checkout.js';
 import { sendDebriefRequestNotification } from '../server/resend.js';
 import { DEBRIEF_OFFER } from '../data/debrief.js';
+import { sanitizeTrafficAttributionParams } from '../shared/traffic-attribution.js';
 
 // Personal Type Debrief is a human-delivered service, not a premium unlock.
 // Notify the founder with the intake and mark the request paid, but never run
@@ -65,10 +66,11 @@ async function buffer(readable: any) {
   return Buffer.concat(chunks);
 }
 
-function checkoutAttributionEventParams(session: Stripe.Checkout.Session) {
+export function checkoutAttributionEventParams(session: Pick<Stripe.Checkout.Session, 'metadata'>) {
   const metadata = session.metadata || {};
 
   return {
+    ...sanitizeTrafficAttributionParams(metadata),
     acquisition_source: metadata.acquisition_source || metadata.source || 'unknown',
     acquisition_ref: metadata.acquisition_ref || 'unknown',
     utm_campaign: metadata.utm_campaign || 'unknown',

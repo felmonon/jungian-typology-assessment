@@ -25,8 +25,8 @@ const runSnippet = (url: string, signals: { dnt?: string; gpc?: boolean } = {}):
     });
   }
 
-  const code = standaloneAnalyticsSnippet.match(/^<script[^>]*>([\s\S]*)<\/script>$/)?.[1];
-  if (!code) throw new Error('Expected one executable analytics script.');
+  const code = standaloneAnalyticsSnippet.match(/<script data-typejung-standalone-analytics>([\s\S]*?)<\/script>/)?.[1];
+  if (!code) throw new Error('Expected the inline standalone analytics script.');
   window.eval(code);
   window.eval(code); // Re-execution must not install a second tracker.
   return window as unknown as AnalyticsWindow;
@@ -87,6 +87,7 @@ describe('standalone generated-page analytics', () => {
     for (const page of generatedPages) {
       const html = readFileSync(join(process.cwd(), page), 'utf8');
       expect((html.match(/<script data-typejung-standalone-analytics>/g) || []).length, page).toBe(1);
+      expect((html.match(/<script data-typejung-traffic-attribution src="\/traffic-attribution.js"><\/script>/g) || []).length, page).toBe(1);
       expect(html).toContain('/_vercel/insights/script.js');
       expect(html).not.toContain('@vercel/analytics');
     }

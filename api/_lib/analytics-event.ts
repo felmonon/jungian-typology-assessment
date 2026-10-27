@@ -1,6 +1,7 @@
 import { track as trackVercelServerEvent } from '@vercel/analytics/server';
 import { randomUUID } from 'node:crypto';
 import { isFunnelEventName, type FunnelEventInput } from './funnel-events.js';
+import { sanitizeTrafficAttributionParams } from '../../shared/traffic-attribution.js';
 
 type AnalyticsProperty = string | number | boolean | null;
 
@@ -164,7 +165,12 @@ function normalizeWebVitalEvent(input: Record<string, unknown>): NormalizedAnaly
 function normalizeFunnelEvent(input: Record<string, unknown>, eventName: string): NormalizedAnalyticsEvent | null {
   if (!isFunnelEventName(eventName)) return null;
 
-  const properties = cleanAnalyticsProperties(input.properties);
+  const cleanedProperties = cleanAnalyticsProperties(input.properties);
+  // Traffic fields have a stricter contract than existing event properties.
+  const properties: Record<string, AnalyticsProperty> = {
+    ...Object.fromEntries(Object.entries(cleanedProperties).filter(([key]) => !key.startsWith('traffic_'))),
+    ...sanitizeTrafficAttributionParams(input.properties),
+  };
   const source = cleanToken(firstDefined(input.source, properties.source, properties.acquisition_source), 120);
   const path = cleanPath(firstDefined(input.path, input.pagePath, input.page_path, properties.page_path, properties.entry_page));
   const tier = cleanToken(firstDefined(input.tier, properties.tier, properties.plan), 80);
@@ -224,7 +230,7 @@ export function normalizeAnalyticsEvent(body: unknown): NormalizedAnalyticsEvent
       anonymousId: input.anonymousId ?? input.anonymous_id,
       occurredAt: input.occurredAt ?? input.occurred_at,
       path: '/',
-      properties: {},
+      properties: sanitizeTrafficAttributionParams(input.properties),
     }, eventName);
   }
   if (eventName === 'result_reaction_submitted') {

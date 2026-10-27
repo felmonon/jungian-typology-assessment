@@ -71,6 +71,8 @@ import {
 } from '../utils/depthScoring';
 
 const RESULTS_KEY = 'jungian_assessment_results';
+const RESULT_VISIBILITY_VERSION = 'visibility-v1';
+type ReportEntrySource = 'navigation' | 'overview_next' | 'overview_reflection';
 const CHECKOUT_SESSION_KEY = 'jungian_assessment_checkout_session_id';
 const LIFECYCLE_EMAIL_ENDPOINT = '/api/lifecycle-email';
 const RESULT_READY_EMAIL_ATTEMPT_PREFIX =
@@ -571,7 +573,18 @@ export const Results: React.FC = () => {
   const location = useLocation();
   const resultView = resultViewForHash(location.hash);
   const pendingPanelFocusRef = useRef<ResultView | null>(null);
-  const selectResultView = (view: ResultView, focusPanel = false) => {
+  const reportEntrySourceRef = useRef<ReportEntrySource | 'direct_link'>('direct_link');
+  const openedReportKeysRef = useRef(new Set<string>());
+  const selectResultView = (view: ResultView, focusPanel = false, entrySource: ReportEntrySource = 'navigation') => {
+    if (view === 'report' && currentResults && !premiumLoading && !isPremium) {
+      reportEntrySourceRef.current = entrySource;
+      trackEvent('result_upgrade_entry_clicked', {
+        source: entrySource,
+        offer_version: RESULT_OFFER_VERSION,
+        measurement_version: RESULT_VISIBILITY_VERSION,
+        tier: intendedTier,
+      });
+    }
     pendingPanelFocusRef.current = focusPanel ? view : null;
     const hashes: Record<ResultView, string> = { overview: '', map: '#free-map', report: isPremium ? '#premium-report' : '#report-offer', save: '#save-share' };
     navigate({ pathname: location.pathname, search: location.search, hash: hashes[view] }, { replace: true, preventScrollReset: true });
@@ -788,6 +801,39 @@ export const Results: React.FC = () => {
     currentResults,
     inboundSharedResultSlug,
   ]);
+
+  // Opening the report pane and exposing an offer in the viewport are distinct
+  // steps. Neither event is evidence that somebody read or understood the offer.
+  useEffect(() => {
+    if (!currentResults || premiumLoading || isPremium || resultView !== 'report') return;
+    const key = currentResults.completedAt;
+    const reportOpen = () => {
+      if (document.visibilityState === 'hidden' || openedReportKeysRef.current.has(key)) return;
+      openedReportKeysRef.current.add(key);
+      trackEvent('result_report_opened', {
+        source: reportEntrySourceRef.current,
+        offer_version: RESULT_OFFER_VERSION,
+        measurement_version: RESULT_VISIBILITY_VERSION,
+        tier: intendedTier,
+      });
+    };
+    reportOpen();
+    document.addEventListener('visibilitychange', reportOpen);
+    return () => document.removeEventListener('visibilitychange', reportOpen);
+  }, [currentResults, intendedTier, isPremium, premiumLoading, resultView]);
+
+  const upgradePromptRef = useOfferImpression<HTMLButtonElement>({
+    impressionKey: currentResults ? `${currentResults.completedAt}_${intendedTier}` : null,
+    enabled: Boolean(currentResults) && !premiumLoading && !isPremium && resultView === 'overview',
+    onImpression: () => {
+      trackEvent('result_upgrade_prompt_viewed', {
+        source: 'overview_next',
+        offer_version: RESULT_OFFER_VERSION,
+        measurement_version: RESULT_VISIBILITY_VERSION,
+        tier: intendedTier,
+      });
+    },
+  });
 
   const offerRef = useOfferImpression<HTMLElement>({
     impressionKey: currentResults ? `${currentResults.completedAt}_${intendedTier}_${upgradeContext?.category || 'default'}` : null,
@@ -1468,7 +1514,7 @@ export const Results: React.FC = () => {
               </span>
               <ArrowRight />
             </button>
-            <button type="button" onClick={() => selectResultView('report', true)}>
+            <button ref={upgradePromptRef} type="button" onClick={() => selectResultView('report', true, 'overview_next')}>
               <span>
                 <strong>
                   {isPremium
@@ -1535,7 +1581,7 @@ export const Results: React.FC = () => {
                   <p className="text-sm font-semibold">Want to explore this pattern further?</p>
                   <p className="mt-1 text-xs leading-6 text-jung-secondary">Stress, relationships, and growth practices · {PRICING[intendedTier].name} · {paidTierPrice(intendedTier)} once.</p>
                 </div>
-                <Button variant="accent" onClick={() => selectResultView('report', true)} rightIcon={<ArrowRight className="h-4 w-4" />}>
+                <Button variant="accent" onClick={() => selectResultView('report', true, 'overview_reflection')} rightIcon={<ArrowRight className="h-4 w-4" />}>
                   See what my report adds
                 </Button>
               </div>

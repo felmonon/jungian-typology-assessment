@@ -15,6 +15,7 @@ import { PRICING } from '../data/pricing.js';
 import type { PaidTierId } from '../data/pricing.js';
 import { createDebriefCheckoutSession } from './_lib/debrief-checkout.js';
 import { createMasteryUpgradeSession } from './_lib/mastery-upgrade.js';
+import { sanitizeTrafficAttributionParams } from '../shared/traffic-attribution.js';
 
 const CHECKOUT_PRODUCT_COPY: Record<PaidTierId, { name: string; description: string }> = {
   insight: {
@@ -318,6 +319,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const productCopy = CHECKOUT_PRODUCT_COPY[resolvedTier];
     const checkoutSource = cleanCheckoutSource(req.body?.source);
     const checkoutAttribution = cleanCheckoutAttribution(req.body?.attribution);
+    const trafficAttribution = sanitizeTrafficAttributionParams(req.body?.trafficAttribution);
     const suppliedCustomerEmail = cleanCheckoutEmail(req.body?.customerEmail);
     const checkoutCustomerEmail = suppliedCustomerEmail || customerEmail;
     const checkoutEmailSource = suppliedCustomerEmail ? 'typed_or_captured' : customerEmail ? 'account' : 'none';
@@ -410,6 +412,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       addCheckoutMetadata(checkoutParams, checkoutAttributionMetadata(checkoutAttribution));
+      addCheckoutMetadata(checkoutParams, trafficAttribution);
 
       if (includeStripePromotionConsent) {
         checkoutParams.set('consent_collection[promotions]', 'auto');
@@ -490,6 +493,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           value: typeof session.amount_total === 'number' ? session.amount_total / 100 : tierPricing.amount,
           currency: typeof session.currency === 'string' ? session.currency.toUpperCase() : tierPricing.currency,
           properties: {
+            ...trafficAttribution,
             acquisition_source: checkoutAttribution.source || 'unknown',
             acquisition_ref: checkoutAttribution.ref || 'unknown',
             utm_campaign: checkoutAttribution.utmCampaign || 'unknown',
@@ -510,6 +514,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     void trackCheckoutServerEvent('server_checkout_session_created', {
+      ...trafficAttribution,
       tier: resolvedTier,
       source: checkoutSource,
       acquisition_source: checkoutAttribution.source || 'unknown',

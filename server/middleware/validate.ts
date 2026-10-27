@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import { z, ZodSchema } from 'zod';
+import { sanitizeTrafficAttributionParams } from '../../shared/traffic-attribution';
 
 export const validate = (schema: ZodSchema) => {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -113,6 +114,7 @@ export const schemas = {
   // Checkout session
   checkoutSession: z.object({
     tier: z.enum(['insight', 'mastery']),
+    trafficAttribution: z.unknown().optional().transform(sanitizeTrafficAttributionParams),
   }),
 
   // Verify session

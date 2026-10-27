@@ -59,8 +59,11 @@ function ResultsRoute({ initial = '/results?source=integration' }: { initial?: s
 
 const reportFixture = Object.fromEntries(PREMIUM_REPORT_KEYS.map((key) => [key, `Personal interpretation for ${key}.`])) as PremiumAnalysis;
 const offerImpressions = () => vi.mocked(trackEvent).mock.calls.filter(([event]) => event === 'result_upgrade_offer_viewed');
+const diagnostics = (name: string) => vi.mocked(trackEvent).mock.calls.filter(([event]) => event === name);
+const offerObservers = () => ObserverMock.instances.filter((observer) => observer.targets[0]?.id === 'report-offer');
 
 beforeEach(() => {
+  vi.mocked(trackEvent).mockClear();
   for (const name of ['localStorage', 'sessionStorage']) {
     const entries = new Map<string, string>();
     vi.stubGlobal(name, {
@@ -115,11 +118,11 @@ describe('result views and report visibility', () => {
   it('only counts an offer actually seen in the report pane, rejecting queued hidden-pane entries', async () => {
     render(<ResultsRoute />);
     await screen.findByRole('tab', { name: 'Overview' });
-    expect(ObserverMock.instances).toHaveLength(0);
+    expect(offerObservers()).toHaveLength(0);
     expect(offerImpressions()).toHaveLength(0);
 
     fireEvent.click(screen.getByRole('tab', { name: 'Go deeper' }));
-    const firstObserver = ObserverMock.instances[0];
+    const firstObserver = offerObservers()[0];
     expect(firstObserver.targets[0]).toBe(document.getElementById('report-offer'));
     act(() => firstObserver.emit(false));
     expect(offerImpressions()).toHaveLength(0);
@@ -129,12 +132,80 @@ describe('result views and report visibility', () => {
     expect(offerImpressions()).toHaveLength(0);
 
     fireEvent.click(screen.getByRole('tab', { name: 'Go deeper' }));
-    act(() => ObserverMock.instances[1].emit(true));
+    act(() => offerObservers()[1].emit(true));
     expect(offerImpressions()).toHaveLength(1);
     fireEvent.click(screen.getByRole('tab', { name: 'Function map' }));
     fireEvent.click(screen.getByRole('tab', { name: 'Go deeper' }));
-    expect(ObserverMock.instances).toHaveLength(2);
+    expect(offerObservers()).toHaveLength(2);
     expect(offerImpressions()).toHaveLength(1);
+  });
+
+  it('distinguishes a visible overview prompt, opening Go deeper, and seeing the offer', async () => {
+    render(<ResultsRoute />);
+    const prompt = await screen.findByRole('button', { name: /Understand your stress pattern/ });
+    const promptObserver = ObserverMock.instances.find((observer) => observer.targets[0] === prompt)!;
+    expect(diagnostics('result_upgrade_prompt_viewed')).toHaveLength(0);
+    expect(diagnostics('result_report_opened')).toHaveLength(0);
+    act(() => promptObserver.emit(false));
+    expect(diagnostics('result_upgrade_prompt_viewed')).toHaveLength(0);
+    act(() => promptObserver.emit(true));
+    expect(diagnostics('result_upgrade_prompt_viewed')).toEqual([
+      ['result_upgrade_prompt_viewed', { source: 'overview_next', offer_version: 'stress-reflection-v1', measurement_version: 'visibility-v1', tier: 'insight' }],
+    ]);
+    expect(offerImpressions()).toHaveLength(0);
+
+    fireEvent.click(screen.getByRole('tab', { name: 'Go deeper' }));
+    expect(diagnostics('result_upgrade_entry_clicked')[0][1]).toMatchObject({ source: 'navigation' });
+    expect(diagnostics('result_report_opened')[0][1]).toMatchObject({ source: 'navigation', measurement_version: 'visibility-v1' });
+    expect(offerImpressions()).toHaveLength(0);
+    act(() => offerObservers()[0].emit(true));
+    expect(offerImpressions()).toHaveLength(1);
+
+    fireEvent.click(screen.getByRole('tab', { name: 'Overview' }));
+    fireEvent.click(screen.getByRole('tab', { name: 'Go deeper' }));
+    expect(diagnostics('result_report_opened')).toHaveLength(1);
+    expect(diagnostics('result_upgrade_prompt_viewed')).toHaveLength(1);
+  });
+
+  it('rejects a queued overview prompt impression after leaving the overview', async () => {
+    render(<ResultsRoute />);
+    const prompt = await screen.findByRole('button', { name: /Understand your stress pattern/ });
+    const promptObserver = ObserverMock.instances.find((observer) => observer.targets[0] === prompt)!;
+    fireEvent.click(screen.getByRole('tab', { name: 'Go deeper' }));
+    act(() => promptObserver.emit(true));
+    expect(diagnostics('result_upgrade_prompt_viewed')).toHaveLength(0);
+  });
+
+  it.each([
+    [/Understand your stress pattern/, 'overview_next'],
+    [/See what my report adds/, 'overview_reflection'],
+  ])('records the source of the %s overview action', async (name, source) => {
+    render(<ResultsRoute />);
+    fireEvent.click(await screen.findByRole('button', { name }));
+    expect(diagnostics('result_upgrade_entry_clicked')).toHaveLength(1);
+    expect(diagnostics('result_upgrade_entry_clicked')[0][1]).toMatchObject({ source, offer_version: 'stress-reflection-v1', measurement_version: 'visibility-v1', tier: 'insight' });
+    expect(diagnostics('result_report_opened')[0][1]).toMatchObject({ source });
+    expect(offerImpressions()).toHaveLength(0);
+  });
+
+  it('counts a report deep link as opened without inventing a click or prompt impression', async () => {
+    render(<ResultsRoute initial="/results#report-offer" />);
+    await screen.findByRole('tabpanel', { name: 'Go deeper' });
+    expect(diagnostics('result_report_opened')).toHaveLength(1);
+    expect(diagnostics('result_report_opened')[0][1]).toMatchObject({ source: 'direct_link' });
+    expect(diagnostics('result_upgrade_entry_clicked')).toHaveLength(0);
+    expect(diagnostics('result_upgrade_prompt_viewed')).toHaveLength(0);
+    expect(offerImpressions()).toHaveLength(0);
+  });
+
+  it('waits for the foreground before recording a report opened in a hidden document', async () => {
+    const visibility = vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('hidden');
+    render(<ResultsRoute initial="/results#report-offer" />);
+    await screen.findByRole('tabpanel', { name: 'Go deeper' });
+    expect(diagnostics('result_report_opened')).toHaveLength(0);
+    visibility.mockReturnValue('visible');
+    fireEvent(document, new Event('visibilitychange'));
+    expect(diagnostics('result_report_opened')).toHaveLength(1);
   });
 
   it('hands focus to the new pane from an overview action while keeping tab navigation focused on its tabs', async () => {
@@ -190,5 +261,11 @@ describe('result views and report visibility', () => {
     fireEvent.click(screen.getByRole('tab', { name: 'Your report' }));
     expect(screen.getByLabelText('Current location')).toHaveTextContent('/results#premium-report');
     expect(scrolledIds.at(-1)).toBe('premium-report');
+    expect(diagnostics('result_upgrade_prompt_viewed')).toHaveLength(0);
+    expect(diagnostics('result_upgrade_entry_clicked')).toHaveLength(0);
+    expect(diagnostics('result_report_opened')).toHaveLength(0);
+    expect(offerObservers()).toHaveLength(0);
+    const paidOverviewButton = document.querySelector('.studio-result-next button:last-child');
+    expect(ObserverMock.instances.some((observer) => observer.targets.includes(paidOverviewButton!))).toBe(false);
   });
 });

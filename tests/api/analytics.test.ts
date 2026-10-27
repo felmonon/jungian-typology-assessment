@@ -48,6 +48,19 @@ describe('analytics event normalization', () => {
     expect(result?.funnelEvent?.eventId).toBe('client:purchase:cs_real');
   });
 
+  it.each(['site_visited', 'assessment_completed', 'results_premium_preview_viewed'])('retains only the safe traffic snapshot for %s', eventName => {
+    const traffic = {
+      traffic_attribution_version: '1', traffic_source_kind: 'utm', traffic_source: 'newsletter',
+      traffic_landing_path: '/inferior-function-test', traffic_captured_at: '2026-10-27T14:00:00.000Z',
+    };
+    const normalized = normalizeAnalyticsEvent({ eventName, properties: {
+      ...traffic, traffic_campaign: 'private@example.com', traffic_referrer_host: 'https://example.com/private',
+      traffic_full_url: 'https://example.com/private',
+    } });
+    expect(normalized?.funnelEvent?.properties).toEqual(traffic);
+    expect(JSON.stringify(normalized)).not.toContain('private');
+  });
+
   it.each(['assessment_completed', 'results_premium_preview_viewed', 'site_visited'])('does not transmit mirrored %s twice to Vercel', async (eventName) => {
     const normalized = normalizeAnalyticsEvent({ eventName, anonymousId: 'browser' });
     await trackNormalizedAnalyticsEvent(normalized!);

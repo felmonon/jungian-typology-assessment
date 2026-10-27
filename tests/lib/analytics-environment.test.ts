@@ -3,6 +3,7 @@ import { track as trackVercelEvent } from '@vercel/analytics';
 import { initAnalytics, isAnalyticsEnabled, setAnalyticsEnabled, trackEvent, trackPageView } from '../../lib/analytics';
 
 vi.mock('@vercel/analytics', () => ({ track: vi.fn() }));
+vi.mock('../../lib/traffic-attribution', () => ({ trafficAttributionParams: () => ({}) }));
 
 const beacon = vi.fn(() => false);
 const gtag = vi.fn();

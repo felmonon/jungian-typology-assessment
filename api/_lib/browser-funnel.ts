@@ -1,4 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { filterResearchTrafficEvents } from '../../shared/research-traffic.js';
 
 const WINDOW_DAYS = 30;
 const PAGE_SIZE = 1000;
@@ -13,6 +14,7 @@ export type BrowserFunnelEvent = {
   checkout_intent_id?: string | null;
   stripe_session_id?: string | null;
   purchase_id?: string | null;
+  properties?: Record<string, unknown> | null;
 };
 type VerifiedPurchase = { id: string; stripe_session_id: string; status: string; amount: number; tier: string };
 type VerifiedIntent = { id: string; stripe_session_id: string; created_at: string };
@@ -26,6 +28,8 @@ export type BrowserFunnelSummary = {
   payingCompletingBrowsers: number;
   completionToPaidRate: number | null;
   visitTrackingFirstSeen: string | null;
+  researchExcludedBrowsers: number;
+  researchExcludedEvents: number;
 };
 
 export function summarizeBrowserFunnel(
@@ -43,8 +47,14 @@ export function summarizeBrowserFunnel(
   const byBrowser = new Map<string, BrowserFunnelEvent[]>();
   const seenEvents = new Set<string>();
   let visitTrackingFirstSeen: string | null = null;
+  const inWindow = events.filter((event) => {
+    const time = Date.parse(event.occurred_at);
+    return Boolean(event.anonymous_id) && EVENT_NAMES.includes(event.event_name)
+      && Number.isFinite(time) && time >= start && time <= end;
+  });
+  const customerTraffic = filterResearchTrafficEvents(inWindow);
 
-  for (const event of [...events].sort((a, b) => Date.parse(a.occurred_at) - Date.parse(b.occurred_at))) {
+  for (const event of [...customerTraffic.events].sort((a, b) => Date.parse(a.occurred_at) - Date.parse(b.occurred_at))) {
     const time = Date.parse(event.occurred_at);
     if (!event.anonymous_id || !EVENT_NAMES.includes(event.event_name) || !Number.isFinite(time)
       || time < start || time > end || seenEvents.has(event.event_id)) continue;
@@ -102,6 +112,8 @@ export function summarizeBrowserFunnel(
     payingCompletingBrowsers,
     completionToPaidRate: completingBrowsers > 0 ? payingCompletingBrowsers / completingBrowsers : null,
     visitTrackingFirstSeen,
+    researchExcludedBrowsers: customerTraffic.excludedBrowserCount,
+    researchExcludedEvents: customerTraffic.excludedEventCount,
   };
 }
 
@@ -112,7 +124,7 @@ export async function loadBrowserFunnel(supabase: SupabaseClient, now = new Date
     let partial = false;
     for (let offset = 0; offset <= MAX_EVENTS; offset += PAGE_SIZE) {
       const { data, error } = await supabase.from('funnel_events')
-        .select('event_id,event_name,anonymous_id,occurred_at,checkout_intent_id,stripe_session_id,purchase_id')
+        .select('event_id,event_name,anonymous_id,occurred_at,checkout_intent_id,stripe_session_id,purchase_id,properties')
         .in('event_name', EVENT_NAMES)
         .gte('occurred_at', empty.windowStart).lte('occurred_at', empty.windowEnd)
         .order('occurred_at', { ascending: true }).order('event_id', { ascending: true })

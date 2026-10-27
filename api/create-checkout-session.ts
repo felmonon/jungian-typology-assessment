@@ -16,6 +16,7 @@ import type { PaidTierId } from '../data/pricing.js';
 import { createDebriefCheckoutSession } from './_lib/debrief-checkout.js';
 import { createMasteryUpgradeSession } from './_lib/mastery-upgrade.js';
 import { sanitizeTrafficAttributionParams } from '../shared/traffic-attribution.js';
+import { isResearchBrowserId, RESEARCH_CAMPAIGN, RESEARCH_SOURCE } from '../shared/research-traffic.js';
 
 const CHECKOUT_PRODUCT_COPY: Record<PaidTierId, { name: string; description: string }> = {
   insight: {
@@ -319,6 +320,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const productCopy = CHECKOUT_PRODUCT_COPY[resolvedTier];
     const checkoutSource = cleanCheckoutSource(req.body?.source);
     const checkoutAttribution = cleanCheckoutAttribution(req.body?.attribution);
+    // A dedicated study browser remains research even if storage/privacy
+    // settings removed its UTM snapshot before checkout.
+    if (isResearchBrowserId(req.body?.anonymousId ?? req.body?.anonymous_id)) {
+      checkoutAttribution.utmSource = RESEARCH_SOURCE;
+      checkoutAttribution.utmCampaign = RESEARCH_CAMPAIGN;
+    }
     const trafficAttribution = sanitizeTrafficAttributionParams(req.body?.trafficAttribution);
     const suppliedCustomerEmail = cleanCheckoutEmail(req.body?.customerEmail);
     const checkoutCustomerEmail = suppliedCustomerEmail || customerEmail;

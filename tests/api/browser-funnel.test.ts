@@ -20,6 +20,34 @@ const journey = (browser: string) => [
 ];
 
 describe('browser funnel', () => {
+  it('separates explicitly tagged study browsers across their complete journey', () => {
+    const study = journey('study');
+    study[2].properties = {
+      traffic_attribution_version: '1', traffic_source_kind: 'utm',
+      traffic_source: 'typejung_research', traffic_campaign: 'offer_observation_2026_10',
+    };
+    const summary = summarizeBrowserFunnel([
+      ...study, ...journey('customer'),
+    ], [paid('study'), paid('customer')], [intent('study'), intent('customer')], now);
+    expect(summary.stages.map(stage => stage.browsers)).toEqual([1, 1, 1, 1, 1, 1]);
+    expect(summary).toMatchObject({ completingBrowsers: 1, payingCompletingBrowsers: 1, researchExcludedBrowsers: 1, researchExcludedEvents: 6 });
+  });
+
+  it('excludes a dedicated study browser when privacy settings omit traffic fields', () => {
+    const summary = summarizeBrowserFunnel([
+      ...journey('research_observation_v1_private'), ...journey('legacy-untagged'),
+    ], [paid('research_observation_v1_private'), paid('legacy-untagged')], [intent('research_observation_v1_private'), intent('legacy-untagged')], now);
+    expect(summary).toMatchObject({ completingBrowsers: 1, payingCompletingBrowsers: 1, researchExcludedBrowsers: 1 });
+  });
+
+  it('does not let an out-of-window campaign marker remove ordinary in-window activity', () => {
+    const summary = summarizeBrowserFunnel([
+      ...journey('returning'),
+      event('assessment_completed', 'returning', 28, { properties: { utm_source: 'typejung_research', utm_campaign: 'offer_observation_2026_10' } }),
+    ], [paid('returning')], [intent('returning')], now);
+    expect(summary).toMatchObject({ completingBrowsers: 1, payingCompletingBrowsers: 1, researchExcludedBrowsers: 0 });
+  });
+
   it('accepts steps emitted in the same millisecond regardless of delivery order', () => {
     const rows = journey('buyer').map((row) => ({ ...row, occurred_at: at(26) })).reverse();
     expect(summarizeBrowserFunnel(rows, [paid('buyer')], [intent('buyer')], now).stages.map((stage) => stage.browsers)).toEqual([1, 1, 1, 1, 1, 1]);

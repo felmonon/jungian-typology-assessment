@@ -8,7 +8,7 @@ Observe whether people notice the upgrade, understand what the CA$7 Insight repo
 
 Recruit five adults who are interested in understanding their personality and would realistically consider taking this assessment. Include people with different levels of familiarity with cognitive functions. Aim for three phone sessions and two desktop sessions if those resemble the actual audience. Record traffic source and device separately; do not infer source from the internal button they clicked.
 
-Do not contact participants or start recording without their agreement. If compensation is offered, make it independent of their answers or buying decision.
+Recruit through the owner-selected public community using the invitation and screening in `volunteer-recruitment.md`. Follow up privately only with people who opt in. This round is unpaid. Obtain consent to observe and separate permission before recording.
 
 ## Before each session
 
@@ -33,8 +33,8 @@ After their natural exploration, ask:
 
 1. “What have you learned from this result?”
 2. “What options do you think you have from here?”
-3. If they noticed the paid report: “In your own words, what would you receive? What does it cost? Is that a one-time payment or ongoing?”
-4. “What, if anything, would make that useful to you right now?”
+3. “What did you think the paid report would add?” If they never noticed it, record that before any prompted exploration.
+4. “What made you consider buying or decide against it?” Then, if useful: “What does it cost? Is that a one-time payment or ongoing?”
 5. “What information is missing or unclear?”
 6. “What would you do next if I weren't here?”
 

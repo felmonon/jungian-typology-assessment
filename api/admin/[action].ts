@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSessionUserFromCookie } from '../_lib/auth-utils.js';
 import { getSupabaseAdminClient, hasSupabaseAdminConfig } from '../_lib/supabase.js';
 import { loadBrowserFunnel } from '../_lib/browser-funnel.js';
+import { isResearchTrafficEvent } from '../../shared/research-traffic.js';
 import {
   dailyAssessmentCounts,
   summarizeCheckoutIntents,
@@ -150,6 +151,11 @@ async function handleStats(req: VercelRequest, res: VercelResponse) {
       checkoutIntents(auth.supabase),
       loadBrowserFunnel(auth.supabase),
     ]);
+    // Filter explicitly tagged study attempts in reports only. A missing UTM
+    // (including old schema fallbacks) is not evidence of research traffic.
+    const customerIntents = intents.filter((intent) => !isResearchTrafficEvent({
+      properties: { utm_source: intent.utm_source, utm_campaign: intent.utm_campaign },
+    }));
 
     return res.status(200).json({
       userCount,
@@ -157,7 +163,8 @@ async function handleStats(req: VercelRequest, res: VercelResponse) {
       browserFunnel,
       ...summarizePurchases(purchases),
       ...summarizeDiscountLeads(leads),
-      ...summarizeCheckoutIntents(intents),
+      ...summarizeCheckoutIntents(customerIntents),
+      researchCheckoutIntentsExcluded: intents.length - customerIntents.length,
     });
   } catch (error) {
     console.error('Error fetching admin stats:', error);

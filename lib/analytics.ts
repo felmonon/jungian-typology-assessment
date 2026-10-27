@@ -3,6 +3,7 @@ import { track as trackVercelEvent } from '@vercel/analytics';
 import { z } from 'zod';
 import { trafficAttributionParams } from './traffic-attribution';
 import { sanitizeTrafficAttributionParams } from '../shared/traffic-attribution';
+import { researchAnonymousId } from './research-session';
 
 declare global {
   interface Window {
@@ -143,6 +144,8 @@ function randomFunnelToken(): string {
 
 export function getFunnelAnonymousId(): string {
   if (typeof window === 'undefined') return randomFunnelToken();
+  const studyId = researchAnonymousId(randomFunnelToken);
+  if (studyId) return studyId;
   if (window.__typejungFunnelAnonymousId) return window.__typejungFunnelAnonymousId;
 
   try {

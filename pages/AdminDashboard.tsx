@@ -36,6 +36,7 @@ interface AdminStats {
   secondFollowupCoverage?: number;
   leadsLast7Days?: number;
   checkoutIntentCount?: number;
+  researchCheckoutIntentsExcluded?: number;
   checkoutSessionsCreatedCount?: number;
   checkoutCompletedIntentCount?: number;
   checkoutExpiredIntentCount?: number;
@@ -203,13 +204,14 @@ export const AdminDashboard: React.FC = () => {
       </div>
 
       <section aria-labelledby="browser-funnel-heading" className="bg-white rounded-lg shadow-sm border border-jung-border p-6 mb-8">
-        <h2 id="browser-funnel-heading" className="text-xl font-semibold text-jung-dark">Free result → paid report</h2>
+        <h2 id="browser-funnel-heading" className="text-xl font-semibold text-jung-dark">Customer funnel: free result → paid report</h2>
         <p className="mt-2 text-sm leading-6 text-jung-secondary">Last 30 days · Unique anonymous browsers, with each step occurring after the previous step.</p>
         {statsLoading ? <p className="mt-5 text-sm text-jung-muted">Loading funnel…</p> : !stats?.browserFunnel || stats.browserFunnel.status === 'unavailable' ? (
           <p role="status" className="mt-5 rounded-lg border border-jung-border p-4 text-sm text-jung-secondary">Funnel data is unavailable. Check the funnel events, purchases and checkout intents tables. This does not mean there were zero conversions.</p>
         ) : (
           <>
             {stats.browserFunnel.status === 'partial' && <p role="status" className="mt-4 text-sm text-error">This window exceeds the event limit. Counts are partial and conversion rates are hidden; use a database export for a complete comparison.</p>}
+            <p className="mt-4 text-sm text-jung-secondary">{stats.browserFunnel.researchExcludedBrowsers ?? 0} research browsers excluded from these conversion rates. Revenue totals retain all actual payments.</p>
             <ol className="mt-5 grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
               {stats.browserFunnel.stages.map((stage) => (
                 <li key={stage.key} className="rounded-lg border border-jung-border bg-jung-base px-4 py-3">
@@ -234,11 +236,12 @@ export const AdminDashboard: React.FC = () => {
           <div>
             <div className="flex items-center gap-2">
               <CreditCard className="w-5 h-5 text-jung-primary" />
-              <h2 className="text-xl font-serif font-semibold text-jung-dark">Checkout Funnel</h2>
+              <h2 className="text-xl font-serif font-semibold text-jung-dark">Customer checkout funnel</h2>
             </div>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-jung-secondary">
               Durable intent rows show whether buyers are reaching Stripe, failing before Stripe, or abandoning after the handoff.
             </p>
+            <p className="mt-2 text-xs text-jung-muted">{stats?.researchCheckoutIntentsExcluded ?? 0} research checkout attempts excluded from this section.</p>
           </div>
           <div className="grid gap-3 sm:grid-cols-3 lg:w-[36rem]">
             <div className="rounded-lg bg-jung-surface px-4 py-3">

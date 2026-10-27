@@ -1,4 +1,5 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { getFunnelAnonymousId, setAnalyticsEnabled, trackEvent } from '../../lib/analytics';
 import {
   captureAcquisitionSourceFromLocation,
   pathWithSource,
@@ -6,6 +7,8 @@ import {
   sourceForCheckout,
   sourceFromSearch,
 } from '../../lib/acquisition-source';
+
+vi.mock('@vercel/analytics', () => ({ track: vi.fn() }));
 
 function createMemoryStorage(): Storage {
   const values = new Map<string, string>();
@@ -27,6 +30,56 @@ describe('acquisition source storage', () => {
       configurable: true,
       value: createMemoryStorage(),
     });
+    Object.defineProperty(window, 'sessionStorage', { configurable: true, value: createMemoryStorage() });
+    delete window.__typejungResearchAnonymousId;
+    delete window.__typejungResearchAcquisition;
+    delete window.__typejungFunnelAnonymousId;
+    window.history.replaceState({}, '', '/');
+    setAnalyticsEnabled(true);
+  });
+  afterEach(() => { window.history.replaceState({}, '', '/'); setAnalyticsEnabled(true); });
+
+  it('isolates study CTA attribution and restores the unchanged ordinary source in a later tab', () => {
+    captureAcquisitionSourceFromLocation('?source=home_hero&utm_source=google&utm_campaign=organic', '/');
+    const savedCustomer = window.localStorage.getItem('typejung_acquisition_source');
+    const study = '/?utm_source=typejung_research&utm_campaign=offer_observation_2026_10';
+    window.history.replaceState({}, '', study);
+    captureAcquisitionSourceFromLocation(window.location.search, study);
+    expect(readAcquisitionSource()).toMatchObject({ utmSource: 'typejung_research', utmCampaign: 'offer_observation_2026_10' });
+    const next = pathWithSource('/assessment', 'home_hero');
+    expect(next).toContain('utm_source=typejung_research');
+    window.history.replaceState({}, '', next);
+    captureAcquisitionSourceFromLocation(window.location.search, next);
+    expect(readAcquisitionSource()?.source).toBe('home_hero');
+    expect(window.localStorage.getItem('typejung_acquisition_source')).toBe(savedCustomer);
+
+    // A full reload restores the study's tab-scoped acquisition.
+    delete window.__typejungResearchAnonymousId;
+    delete window.__typejungResearchAcquisition;
+    window.history.replaceState({}, '', '/results');
+    expect(readAcquisitionSource()).toMatchObject({ source: 'home_hero', utmSource: 'typejung_research' });
+
+    // A new normal tab has no study session storage, but shares localStorage.
+    delete window.__typejungResearchAnonymousId;
+    delete window.__typejungResearchAcquisition;
+    Object.defineProperty(window, 'sessionStorage', { configurable: true, value: createMemoryStorage() });
+    window.history.replaceState({}, '', '/');
+    expect(captureAcquisitionSourceFromLocation('', '/')).toMatchObject({ utmSource: 'google', utmCampaign: 'organic' });
+    expect(window.localStorage.getItem('typejung_acquisition_source')).toBe(savedCustomer);
+    expect(pathWithSource('/assessment', 'home_hero')).not.toContain('typejung_research');
+  });
+
+  it('captures research identity before an analytics-disabled entry loses its query', () => {
+    setAnalyticsEnabled(false);
+    window.history.replaceState({}, '', '/?utm_source=typejung_research&utm_campaign=offer_observation_2026_10');
+    captureAcquisitionSourceFromLocation(window.location.search, '/');
+    const identity = window.__typejungResearchAnonymousId;
+    expect(identity).toMatch(/^research_observation_v1_/);
+    expect(trackEvent('site_visited')).toBe(false);
+    expect(fetch).not.toHaveBeenCalled();
+    window.history.replaceState({}, '', '/results');
+    expect(getFunnelAnonymousId()).toBe(identity);
+    expect(window.localStorage.getItem('typejung_acquisition_source')).toBeNull();
   });
 
   it('reads source from explicit SEO query params', () => {

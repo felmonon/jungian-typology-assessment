@@ -1,4 +1,8 @@
+import { researchAnonymousId } from './research-session';
+import { isResearchTrafficEvent } from '../shared/research-traffic';
+
 const STORAGE_KEY = 'typejung_acquisition_source';
+const RESEARCH_STORAGE_KEY = 'typejung_research_acquisition_v1';
 
 const SOURCE_QUERY_KEYS = ['source', 'ref', 'utm_source', 'utm_campaign'];
 
@@ -14,6 +18,12 @@ export type AcquisitionSource = {
   parentSource?: string;
   sourceChain?: string;
 };
+
+declare global {
+  interface Window {
+    __typejungResearchAcquisition?: { browserId: string; acquisition: AcquisitionSource };
+  }
+}
 
 const cleanSourceToken = (value: unknown): string | null => {
   if (typeof value !== 'string') return null;
@@ -116,7 +126,15 @@ export function readAcquisitionSource(): AcquisitionSource | null {
   if (typeof window === 'undefined') return null;
 
   try {
-    const parsed = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '{}');
+    const researchId = researchAnonymousId();
+    const research = researchId
+      ? window.__typejungResearchAcquisition || JSON.parse(window.sessionStorage?.getItem(RESEARCH_STORAGE_KEY) || 'null')
+      : null;
+    // Study CTA history belongs to its tab. Do not read the customer's stored
+    // acquisition into a study or leak study UTMs back into ordinary visits.
+    const parsed = researchId
+      ? research?.browserId === researchId ? research.acquisition : {}
+      : JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '{}');
     const source = cleanSourceToken(parsed.source);
     if (!source) return null;
 
@@ -183,6 +201,9 @@ export function captureAcquisitionSourceFromLocation(
   referrer?: string,
 ): AcquisitionSource | null {
   if (typeof window === 'undefined') return null;
+  // This runs before the analytics-enabled guard in usePageTracking. Capture
+  // study identity on entry without emitting an analytics event.
+  const researchId = researchAnonymousId();
 
   const source = sourceFromSearch(search);
   if (!source) return readAcquisitionSource();
@@ -195,10 +216,17 @@ export function captureAcquisitionSourceFromLocation(
     ...attributionFromSearch(search),
   };
 
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-  } catch {
-    // Attribution is useful but should never block the user journey.
+  if (researchId) {
+    window.__typejungResearchAcquisition = { browserId: researchId, acquisition: payload };
+    try {
+      window.sessionStorage?.setItem(RESEARCH_STORAGE_KEY, JSON.stringify(window.__typejungResearchAcquisition));
+    } catch { /* Keep study attribution in memory when session storage is denied. */ }
+  } else if (!isResearchTrafficEvent({ properties: { utm_source: payload.utmSource, utm_campaign: payload.utmCampaign } })) {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    } catch {
+      // Attribution is useful but should never block the user journey.
+    }
   }
 
   return payload;

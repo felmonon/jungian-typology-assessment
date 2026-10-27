@@ -3,6 +3,8 @@ import handler from '../../api/create-checkout-session';
 import { checkoutAttributionEventParams } from '../../api/webhook';
 import { recordFunnelEvent } from '../../api/_lib/funnel-events';
 import { schemas } from '../../server/middleware/validate';
+import { recordCheckoutIntentStarted } from '../../api/_lib/checkout-intents';
+import { isResearchTrafficEvent, RESEARCH_CAMPAIGN, RESEARCH_SOURCE } from '../../shared/research-traffic';
 
 vi.mock('@vercel/analytics/server', () => ({ track: vi.fn().mockResolvedValue(undefined) }));
 vi.mock('../../api/_lib/auth-utils', () => ({ getSessionUserFromCookie: vi.fn().mockResolvedValue(null) }));
@@ -43,13 +45,13 @@ const response = () => {
   return res;
 };
 
-const createCheckout = async (trafficAttribution?: unknown) => {
+const createCheckout = async (trafficAttribution?: unknown, anonymousId = 'fixture_browser') => {
   const res = response();
   await handler({
     method: 'POST',
     headers: { origin: 'https://typejung.com' },
     body: {
-      tier: 'insight', source: 'results_locked_preview', anonymousId: 'fixture_browser',
+      tier: 'insight', source: 'results_locked_preview', anonymousId,
       attribution: { source: 'seo_inferior_function_test_hero' },
       trafficAttribution,
     },
@@ -66,6 +68,27 @@ describe('checkout traffic snapshot', () => {
       ok: true,
       json: async () => ({ id: 'cs_fixture', url: 'https://checkout.stripe.com/c/pay/cs_fixture', amount_total: 700, currency: 'cad' }),
     } as Response);
+  });
+
+  it('marks a prefix-only research checkout for intent-report exclusion and Stripe without changing pricing', async () => {
+    const params = await createCheckout(undefined, 'research_observation_v1_private');
+    const recordedIntent = vi.mocked(recordCheckoutIntentStarted).mock.calls[0][1];
+    expect(recordedIntent.attribution).toMatchObject({
+      source: 'seo_inferior_function_test_hero', utmSource: RESEARCH_SOURCE, utmCampaign: RESEARCH_CAMPAIGN,
+    });
+    expect(params.get('metadata[utm_source]')).toBe(RESEARCH_SOURCE);
+    expect(params.get('metadata[utm_campaign]')).toBe(RESEARCH_CAMPAIGN);
+    expect(params.get('payment_intent_data[metadata][utm_source]')).toBe(RESEARCH_SOURCE);
+    expect(params.get('line_items[0][price_data][unit_amount]')).toBe('1000');
+    // These are the persisted columns the admin intent report classifies.
+    expect(isResearchTrafficEvent({ properties: {
+      utm_source: recordedIntent.attribution?.utmSource,
+      utm_campaign: recordedIntent.attribution?.utmCampaign,
+    } })).toBe(true);
+    expect(recordFunnelEvent).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({
+      anonymousId: 'research_observation_v1_private',
+      properties: expect.objectContaining({ utm_source: RESEARCH_SOURCE, utm_campaign: RESEARCH_CAMPAIGN }),
+    }));
   });
 
   it('preserves external traffic through Stripe and server events independently of internal CTA source', async () => {

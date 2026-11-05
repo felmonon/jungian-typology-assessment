@@ -1,9 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="TypeJung folded compass">
-<rect width="96" height="96" fill="#f8f9fc"/>
-<g transform="translate(10 10) scale(.7916667)">
-  <g transform="rotate(0 48 48)"><path d="M48 7 70 29 59 40 48 29 37 40 26 29Z" fill="#4144b8"/><path d="m48 7 22 22-11 11-11-11Z" fill="#787bd6"/></g>
-  <g transform="rotate(90 48 48)"><path d="M48 7 70 29 59 40 48 29 37 40 26 29Z" fill="#4144b8"/><path d="m48 7 22 22-11 11-11-11Z" fill="#787bd6"/></g>
-  <g transform="rotate(180 48 48)"><path d="M48 7 70 29 59 40 48 29 37 40 26 29Z" fill="#4144b8"/><path d="m48 7 22 22-11 11-11-11Z" fill="#787bd6"/></g>
-  <g transform="rotate(270 48 48)"><path d="M48 7 70 29 59 40 48 29 37 40 26 29Z" fill="#4144b8"/><path d="m48 7 22 22-11 11-11-11Z" fill="#787bd6"/></g>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="TypeJung lamplight mark">
+<rect width="96" height="96" fill="#18202b"/>
+<g transform="translate(22 22) scale(.5417)"><defs><clipPath id="tj-disc"><circle cx="48" cy="48" r="38"/></clipPath></defs><circle cx="48" cy="48" r="38" fill="#e3a23b"/><circle cx="71" cy="41" r="31" fill="#2f6a76" clip-path="url(#tj-disc)"/></g>
 </svg>

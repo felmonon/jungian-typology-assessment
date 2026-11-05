@@ -24,11 +24,11 @@ export const TypeJungMark: React.FC<TypeJungMarkProps> = ({
 }) => (
   <div className={`inline-flex items-center gap-3 ${className}`.trim()}>
     <img
-      src="/logo.svg?v=folded-compass-1"
+      src="/logo.svg?v=lamplight-1"
       className={`${sizeClasses[size]} shrink-0`}
       width={96}
       height={96}
-      alt="TypeJung folded compass"
+      alt=""
     />
     {showLabel && <span className="studio-wordmark font-display text-lg leading-none text-jung-dark">TypeJung</span>}
   </div>

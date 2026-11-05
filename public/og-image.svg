@@ -1,19 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-<rect width="1200" height="630" fill="#f8f9fc"/>
-<g transform="translate(56 44) scale(.58)">  <g transform="rotate(0 48 48)"><path d="M48 7 70 29 59 40 48 29 37 40 26 29Z" fill="#4144b8"/><path d="m48 7 22 22-11 11-11-11Z" fill="#787bd6"/></g>
-  <g transform="rotate(90 48 48)"><path d="M48 7 70 29 59 40 48 29 37 40 26 29Z" fill="#4144b8"/><path d="m48 7 22 22-11 11-11-11Z" fill="#787bd6"/></g>
-  <g transform="rotate(180 48 48)"><path d="M48 7 70 29 59 40 48 29 37 40 26 29Z" fill="#4144b8"/><path d="m48 7 22 22-11 11-11-11Z" fill="#787bd6"/></g>
-  <g transform="rotate(270 48 48)"><path d="M48 7 70 29 59 40 48 29 37 40 26 29Z" fill="#4144b8"/><path d="m48 7 22 22-11 11-11-11Z" fill="#787bd6"/></g></g>
-<text x="125" y="86" font-family="Schibsted Grotesk,Arial,sans-serif" font-size="34" font-weight="700" letter-spacing="-1.5" fill="#202230">TypeJung</text>
-<text x="64" y="190" font-family="Schibsted Grotesk,Arial,sans-serif" font-size="18" font-weight="500" fill="#515566">A little more self-understanding</text>
-<g font-family="Schibsted Grotesk,Arial,sans-serif" font-size="78" font-weight="700" letter-spacing="-4"><text x="60" y="297" fill="#202230">You’re more</text><text x="60" y="391" fill="#4144b8">than four letters.</text></g>
-<text x="64" y="464" font-family="Schibsted Grotesk,Arial,sans-serif" font-size="23" fill="#515566">Find your pattern with a free cognitive-function map.</text>
-<path d="M64 511H689" stroke="#dce0eb"/>
-<text x="64" y="553" font-family="Schibsted Grotesk,Arial,sans-serif" font-size="18" fill="#515566">42 questions · Free results · No signup or card required</text>
-<rect x="817" y="147" width="323" height="365" rx="38" fill="#edeefa"/>
-<g transform="translate(848 192) scale(2.72)">  <g transform="rotate(0 48 48)"><path d="M48 7 70 29 59 40 48 29 37 40 26 29Z" fill="#4144b8"/><path d="m48 7 22 22-11 11-11-11Z" fill="#787bd6"/></g>
-  <g transform="rotate(90 48 48)"><path d="M48 7 70 29 59 40 48 29 37 40 26 29Z" fill="#4144b8"/><path d="m48 7 22 22-11 11-11-11Z" fill="#787bd6"/></g>
-  <g transform="rotate(180 48 48)"><path d="M48 7 70 29 59 40 48 29 37 40 26 29Z" fill="#4144b8"/><path d="m48 7 22 22-11 11-11-11Z" fill="#787bd6"/></g>
-  <g transform="rotate(270 48 48)"><path d="M48 7 70 29 59 40 48 29 37 40 26 29Z" fill="#4144b8"/><path d="m48 7 22 22-11 11-11-11Z" fill="#787bd6"/></g></g>
-<text x="979" y="482" text-anchor="middle" font-family="Schibsted Grotesk,Arial,sans-serif" font-size="15" fill="#515566">A pattern. Room to grow.</text>
+<defs>
+  <radialGradient id="glow" cx="78%" cy="45%" r="55%"><stop offset="0" stop-color="#e3a23b" stop-opacity=".22"/><stop offset="1" stop-color="#e3a23b" stop-opacity="0"/></radialGradient>
+  <clipPath id="tj-disc"><circle cx="48" cy="48" r="38"/></clipPath>
+  <clipPath id="big-disc"><circle cx="930" cy="315" r="170"/></clipPath>
+</defs>
+<rect width="1200" height="630" fill="#121a24"/>
+<rect width="1200" height="630" fill="url(#glow)"/>
+<circle cx="930" cy="315" r="170" fill="#e3a23b"/>
+<circle cx="1033" cy="284" r="139" fill="#2f6a76" clip-path="url(#big-disc)"/>
+<g transform="translate(60 52) scale(.62)"><circle cx="48" cy="48" r="38" fill="#e3a23b"/><circle cx="71" cy="41" r="31" fill="#2f6a76" clip-path="url(#tj-disc)"/></g>
+<text x="128" y="96" font-family="Fraunces,Georgia,serif" font-size="38" font-weight="600" fill="#f3eee4">TypeJung</text>
+<g font-family="Fraunces,Georgia,serif" font-size="84" font-weight="500" letter-spacing="-1.5"><text x="60" y="300" fill="#f3eee4">You’re more</text><text x="60" y="392" fill="#e3a23b" font-style="italic" font-weight="400">than four letters.</text></g>
+<text x="62" y="470" font-family="Schibsted Grotesk,Arial,sans-serif" font-size="26" fill="#b9c0c9">A free map of all eight cognitive functions.</text>
+<text x="62" y="560" font-family="Schibsted Grotesk,Arial,sans-serif" font-size="20" fill="#8d96a1">typejung.com</text>
 </svg>

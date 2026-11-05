@@ -7,32 +7,32 @@
 
 @theme {
   /* Typography */
-  --font-display: "Schibsted Grotesk", "Helvetica Neue", sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
   --font-serif: "Fraunces", Georgia, serif;
   --font-sans: "Schibsted Grotesk", "Helvetica Neue", sans-serif;
   --font-mono: "Spline Sans Mono", "Menlo", monospace;
 
   /* Paper and ink */
-  --color-jung-base: #f8f9fc;
-  --color-jung-surface: #ffffff;
-  --color-jung-surface-elevated: #ffffff;
-  --color-jung-surface-alt: #eef0f6;
+  --color-jung-base: #f6f3ed;
+  --color-jung-surface: #fffdf9;
+  --color-jung-surface-elevated: #fffdf9;
+  --color-jung-surface-alt: #ede8de;
 
-  --color-jung-dark: #202230;
-  --color-jung-secondary: #515566;
-  --color-jung-muted: #656a7a;
-  --color-jung-subtle: #a8afc0;
+  --color-jung-dark: #18202b;
+  --color-jung-secondary: #4a5260;
+  --color-jung-muted: #626976;
+  --color-jung-subtle: #b5b0a4;
 
-  --color-jung-border: #dce0eb;
-  --color-jung-border-light: #e9ecf2;
+  --color-jung-border: #e2dccf;
+  --color-jung-border-light: #ece7dc;
 
   /* Green ink */
-  --color-jung-primary: #4144b8;
-  --color-jung-accent: #4144b8;
-  --color-jung-accent-hover: #323494;
-  --color-jung-accent-light: #eeeefe;
-  --color-jung-accent-muted: #8589d5;
-  --color-jung-gold: #785435;
+  --color-jung-primary: #1d4a55;
+  --color-jung-accent: #1d4a55;
+  --color-jung-accent-hover: #143841;
+  --color-jung-accent-light: #e3ecea;
+  --color-jung-accent-muted: #7fa3a6;
+  --color-jung-gold: #8a5310;
 
   /* The tension accent — used sparingly, like red ink on a proof */
   --color-jung-tension: #b23c1a;
@@ -46,11 +46,11 @@
   --color-warning: #8c4e0b;
 
   /* Dark plate (used by dark panels and the paywall preview) */
-  --color-dark-base: #0c0f0a;
-  --color-dark-surface: #12160e;
-  --color-dark-surface-elevated: #181d13;
-  --color-dark-text: #f2efe5;
-  --color-dark-border: #262c1e;
+  --color-dark-base: #121a24;
+  --color-dark-surface: #19232f;
+  --color-dark-surface-elevated: #202c3a;
+  --color-dark-text: #f3eee4;
+  --color-dark-border: #2c3a4a;
 
   --shadow-sm: 0 1px 2px 0 rgba(21, 25, 15, 0.05);
   --shadow-md: 0 14px 32px -14px rgba(21, 25, 15, 0.1), 0 3px 10px -4px rgba(21, 25, 15, 0.04);

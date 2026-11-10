@@ -29,14 +29,14 @@ describe('optional report offer', () => {
     const onUnlock = vi.fn();
     render(<LockedPremiumPreview {...commonProps} intendedTier={tier} onUnlock={onUnlock} />);
     const price = discountedPriceLabel(PRICING[tier].amount);
-    expect(screen.getByText(`Optional ${PRICING[tier].name} report`)).toBeVisible();
+    expect(screen.getByText(`Your ${PRICING[tier].name} report`)).toBeVisible();
     expect(screen.getByText('one time · CAD')).toBeVisible();
     const button = screen.getByRole('button', { name: `Get my report — ${price}` });
     fireEvent.click(button);
     expect(onUnlock).toHaveBeenCalledExactlyOnceWith(tier, 'results_locked_preview');
     fireEvent.click(screen.getByText('How this connects to your free map'));
     expect(screen.getByText(results.narrative.developmentalEdge)).toBeVisible();
-    expect(screen.getByText(/Your free map is complete. No subscription./)).toBeVisible();
+    expect(screen.getByText(/One-time payment. No subscription./)).toBeVisible();
     expect(screen.getByText(/7-day refund policy/)).toBeVisible();
     expect(Boolean(screen.queryByText('AI Type Guide and practice tools'))).toBe(tier === 'mastery');
   });
@@ -65,7 +65,7 @@ describe('optional report offer', () => {
     expect(alert).toHaveTextContent('Secure checkout is temporarily unavailable. Please try again.');
     expect(within(alert).getByRole('link', { name: 'Contact support' })).toHaveAttribute('href', expect.stringMatching(/^mailto:/));
     expect(screen.getByRole('button', { name: /Get my report/ })).toBeEnabled();
-    expect(screen.getByText(/Your free map is complete. No subscription./)).toBeVisible();
+    expect(screen.getByText(/One-time payment. No subscription./)).toBeVisible();
   });
 
   it('keeps sample exploration connected to its offer tier and exposes the actual section to impression tracking', () => {

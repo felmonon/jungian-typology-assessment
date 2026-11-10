@@ -38,7 +38,7 @@ describe('report-offer funnel stages', () => {
   });
 
   it.each([
-    ['results_premium_preview_viewed', { source: 'results_locked_preview', tier: 'insight', offer_version: 'stress-reflection-v1' }],
+    ['results_premium_preview_viewed', { source: 'results_locked_preview', tier: 'insight', offer_version: 'direct-unlock-v1' }],
     ['result_report_sample_explored', { topic: 'stress', source: 'results_locked_preview', tier: 'insight' }],
     ['results_direct_checkout_failed', { reason: 'checkout_unavailable', source: 'results_locked_preview', tier: 'insight' }],
     ['result_upgrade_prompt_viewed', { source: 'results_locked_preview', tier: 'insight', measurement_version: 'visibility-v1' }],

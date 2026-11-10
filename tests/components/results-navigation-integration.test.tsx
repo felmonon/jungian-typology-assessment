@@ -150,7 +150,7 @@ describe('result views and report visibility', () => {
     expect(diagnostics('result_upgrade_prompt_viewed')).toHaveLength(0);
     act(() => promptObserver.emit(true));
     expect(diagnostics('result_upgrade_prompt_viewed')).toEqual([
-      ['result_upgrade_prompt_viewed', { source: 'overview_next', offer_version: 'stress-reflection-v1', measurement_version: 'visibility-v1', tier: 'insight' }],
+      ['result_upgrade_prompt_viewed', { source: 'overview_next', offer_version: 'direct-unlock-v1', measurement_version: 'visibility-v1', tier: 'insight' }],
     ]);
     expect(offerImpressions()).toHaveLength(0);
 
@@ -183,7 +183,7 @@ describe('result views and report visibility', () => {
     render(<ResultsRoute />);
     fireEvent.click(await screen.findByRole('button', { name }));
     expect(diagnostics('result_upgrade_entry_clicked')).toHaveLength(1);
-    expect(diagnostics('result_upgrade_entry_clicked')[0][1]).toMatchObject({ source, offer_version: 'stress-reflection-v1', measurement_version: 'visibility-v1', tier: 'insight' });
+    expect(diagnostics('result_upgrade_entry_clicked')[0][1]).toMatchObject({ source, offer_version: 'direct-unlock-v1', measurement_version: 'visibility-v1', tier: 'insight' });
     expect(diagnostics('result_report_opened')[0][1]).toMatchObject({ source });
     expect(offerImpressions()).toHaveLength(0);
   });

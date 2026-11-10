@@ -63,7 +63,7 @@ const plans = [
     description: 'A personal report to connect the map to your everyday life.',
     features: [
       'Everything in your free map',
-      'Ten AI-generated interpretation sections',
+      'Ten sections written for your result',
       'Stress, relationships, work, and growth',
       'The Function Stack in Depth guide (PDF)',
     ],

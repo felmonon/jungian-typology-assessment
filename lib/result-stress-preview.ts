@@ -1,7 +1,7 @@
 import { depthQuestions, FUNCTION_LABELS, type FunctionChannel } from '../data/depthAssessment';
 import type { DepthAssessmentResult } from '../utils/depthScoring';
 
-export const RESULT_OFFER_VERSION = 'stress-reflection-v1';
+export const RESULT_OFFER_VERSION = 'direct-unlock-v1';
 
 // Quote a real stress-situation answer, not a desired quality or attraction
 // response. This explains existing results; it does not rescore the assessment.

@@ -137,8 +137,8 @@ export function shellHead({ title, description, path, keywords = [], ogType = 'a
 const mapCta = (source, className = 'btn btn-sm') =>
   `<a class="${className}" href="/assessment?source=${escapeHtml(source)}" data-map-cta data-source="${escapeHtml(source)}">Get my free map</a>`;
 
-/** @param {{ active?: string }} [options] */
-export function shellHeader({ active = '' } = {}) {
+/** @param {{ active?: string, ctaSource?: string }} [options] */
+export function shellHeader({ active = '', ctaSource = 'shell_header' } = {}) {
   const link = (item) =>
     `<a href="${item.href}"${item.key === active ? ' aria-current="page"' : ''}>${escapeHtml(item.label)}</a>`;
   return `<a class="skip-link" href="#main-content">Skip to content</a>
@@ -153,7 +153,7 @@ export function shellHeader({ active = '' } = {}) {
     </nav>
     <div class="shell-actions">
       <a class="shell-signin" href="/auth">Sign in</a>
-      <a class="btn btn-sm shell-cta" href="/assessment?source=shell_header" data-map-cta data-source="shell_header" data-label-map="My map" data-label-resume="Resume"><span class="cta-long">Get my free map</span><span class="cta-short">Free map</span></a>
+      <a class="btn btn-sm shell-cta" href="/assessment?source=${escapeHtml(ctaSource)}" data-map-cta data-source="${escapeHtml(ctaSource)}" data-label-map="My map" data-label-resume="Resume"><span class="cta-long">Get my free map</span><span class="cta-short">Free map</span></a>
       <button class="shell-menu-toggle" type="button" aria-expanded="false" aria-controls="shell-mobile-menu" aria-label="Toggle menu" data-shell-toggle>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
@@ -274,9 +274,9 @@ export const shellScripts = `<script data-typejung-shell>
 
 /**
  * A complete standalone document.
- * @param {{ head: string, main: string, active?: string, schemas?: object[], scripts?: string, mainClass?: string }} options
+ * @param {{ head: string, main: string, active?: string, ctaSource?: string, schemas?: object[], scripts?: string, mainClass?: string }} options
  */
-export function shellDocument({ head, main, active = '', schemas = [], scripts = '', mainClass = '' }) {
+export function shellDocument({ head, main, active = '', ctaSource, schemas = [], scripts = '', mainClass = '' }) {
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -285,7 +285,7 @@ ${schemas.map(jsonLd).join('\n')}
 ${standaloneAnalyticsSnippet}
 </head>
 <body>
-${shellHeader({ active })}
+${shellHeader({ active, ctaSource })}
 <main id="main-content"${mainClass ? ` class="${mainClass}"` : ''}>
 ${main}
 </main>

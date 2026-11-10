@@ -81,7 +81,7 @@ The underlying model is Carl Jung's original typology — not the simplified MBT
 | Layer | Technology |
 |-------|-----------|
 | **Frontend** | React 19, TypeScript, TailwindCSS, Recharts |
-| **Backend** | Express.js, Vercel Serverless Functions |
+| **Backend** | Vercel Serverless Functions in [`api/`](api) |
 | **Database** | Supabase (PostgreSQL, real-time subscriptions) |
 | **Auth** | Google OAuth 2.0, Email/Password |
 | **Payments** | Stripe (3-tier: Free / Insight CA$10 / Mastery CA$29) |
@@ -139,7 +139,6 @@ The repo includes:
    SUPABASE_URL=your_supabase_url
    SUPABASE_ANON_KEY=your_supabase_anon_key
    SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-   DATABASE_URL=your_database_url
    SESSION_SECRET=your_session_secret
    GOOGLE_CLIENT_ID=your_google_client_id
    GOOGLE_CLIENT_SECRET=your_google_client_secret
@@ -168,7 +167,11 @@ The repo includes:
    npm run dev
    ```
 
-5. Open [http://localhost:5000](http://localhost:5000)
+   This starts Vite with hot reload and answers `/api/*` with the same handlers in [`api/`](api) that Vercel deploys, including the `/api` rewrites from [`vercel.json`](vercel.json). There is no separate backend process to start. The adapter lives in [`scripts/dev-api.ts`](scripts/dev-api.ts); it reads `.env` and `.env.local` for the handlers.
+
+5. Open [http://127.0.0.1:5000](http://127.0.0.1:5000)
+
+   The server listens on `127.0.0.1` only. On macOS, AirPlay Receiver also listens on port 5000 and answers `http://localhost:5000` with a 403, so use the `127.0.0.1` address, or turn AirPlay Receiver off, or pick another port with `PORT=5173 npm run dev`. Set `HOST=0.0.0.0` to reach the dev server from another device.
 
 ### Running Tests
 
@@ -184,19 +187,22 @@ npm run test:coverage
 ## Project Structure
 
 ```
-├── api/                  # Vercel serverless functions
+├── api/                  # Vercel serverless functions (the only backend)
+│   ├── _lib/            # Helpers shared by the functions (not routable)
 │   ├── auth/            # Authentication endpoints
 │   ├── ai/              # AI analysis endpoints
 │   └── ...
+├── server/              # Checkout, email and env helpers imported by api/
 ├── components/          # React components
 ├── pages/               # Page components
 ├── shared/              # Shared types and schemas
+├── scripts/             # Build generators, ops scripts and the dev API adapter
 ├── tests/               # Test files
 │   ├── api/            # API tests
 │   ├── components/     # Component tests
 │   ├── e2e/            # End-to-end tests
 │   └── utils/          # Utility tests
-└── server.ts            # Express development server
+└── vercel.json          # Routes, rewrites, headers and cron jobs
 ```
 
 ---

@@ -7,10 +7,10 @@ TypeJung is a consumer Jungian cognitive-functions assessment at `typejung.com`.
 ## Stack And Commands
 
 - Frontend: React 19, TypeScript, Vite, TailwindCSS, Framer Motion, Recharts.
-- Backend: Express/Vercel API routes with Supabase, Stripe, Google auth, and Gemini.
+- Backend: Vercel API routes in `api/` with Supabase, Stripe, Google auth, and Gemini. `npm run dev` serves the same handlers locally; there is no separate server.
 - Run `npm test` for unit coverage.
 - Run `npm run build` when changing routes, SEO/static generation, Vite config, or production behavior.
-- Run `npm run dev` for local testing. The app is expected at `http://localhost:5000`.
+- Run `npm run dev` for local testing. The app is expected at `http://127.0.0.1:5000` (on macOS, AirPlay Receiver answers `localhost:5000`).
 
 ## Product And Copy Constraints
 

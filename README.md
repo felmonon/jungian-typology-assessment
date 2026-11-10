@@ -171,7 +171,7 @@ The repo includes:
 
 5. Open [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
-   The server listens on `127.0.0.1` only. On macOS, AirPlay Receiver also listens on port 5000 and answers `http://localhost:5000` with a 403, so use the `127.0.0.1` address, or turn AirPlay Receiver off, or pick another port with `PORT=5173 npm run dev`. Set `HOST=0.0.0.0` to reach the dev server from another device.
+   The server listens on `127.0.0.1` only. On macOS, AirPlay Receiver also listens on port 5000 and answers `http://localhost:5000` with a 403, so use the `127.0.0.1` address or turn AirPlay Receiver off. Vite's flags change the address: `npm run dev -- --port 5173` picks another port, and `npm run dev -- --host 0.0.0.0 --port 5173` makes the server reachable from another device.
 
 ### Running Tests
 

@@ -695,6 +695,7 @@ export const AdminDashboard: React.FC = () => {
             <div className="flex items-center gap-2">
               <Filter className="w-4 h-4 text-jung-muted" />
               <select
+                aria-label="Filter by function"
                 value={functionFilter}
                 onChange={(e) => setFunctionFilter(e.target.value)}
                 className="text-sm border border-jung-border rounded-md px-2 py-2 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-jung-primary"
@@ -706,6 +707,7 @@ export const AdminDashboard: React.FC = () => {
               </select>
             </div>
             <select
+              aria-label="Filter by category"
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
               className="text-sm border border-jung-border rounded-md px-2 py-2 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-jung-primary"

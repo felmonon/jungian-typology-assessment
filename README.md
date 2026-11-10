@@ -40,7 +40,7 @@ flowchart LR
   B --> C[(Supabase / Postgres)]
   B --> D[Google auth]
   B --> E[Stripe checkout + webhook]
-  B --> F[Gemini analysis]
+  B --> F[AI analysis: OpenRouter or Gemini]
   G[GitHub Actions CI/CD] --> A
   G --> B
 ```
@@ -85,7 +85,7 @@ The underlying model is Carl Jung's original typology — not the simplified MBT
 | **Database** | Supabase (PostgreSQL, real-time subscriptions) |
 | **Auth** | Google OAuth 2.0, Email/Password |
 | **Payments** | Stripe (3-tier: Free / Insight CA$10 / Mastery CA$29) |
-| **AI** | Google Gemini API |
+| **AI** | OpenRouter or Google Gemini, selected with `REPORT_AI_PROVIDER` |
 | **CI/CD** | GitHub Actions, Vercel |
 | **Testing** | Vitest, E2E suite |
 
@@ -151,8 +151,15 @@ The repo includes:
    STRIPE_INSIGHT_PRICE_ID=price_your_insight_price_id
    STRIPE_MASTERY_PRICE_ID=price_your_mastery_price_id
    STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
+   REPORT_AI_PROVIDER=gemini
    GEMINI_API_KEY=your_gemini_api_key
+   OPENROUTER_API_KEY=only_needed_when_REPORT_AI_PROVIDER_is_openrouter
+   RESEND_API_KEY=your_resend_api_key
+   RESEND_FROM_EMAIL="TypeJung <results@your-domain.com>"
+   CRON_SECRET=your_cron_secret
    ```
+
+   [`.env.example`](.env.example) lists every variable with notes on which ones are optional.
 
    Stripe should send checkout events to `/api/stripe/webhook`, which is rewritten to [`api/webhook.ts`](api/webhook.ts) in Vercel.
 

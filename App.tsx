@@ -2,6 +2,7 @@ import React, { lazy, Suspense, useLayoutEffect } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { Layout } from './components/layout/Layout';
 import { Home } from './pages/Home';
 
@@ -24,6 +25,12 @@ const SampleReport = lazy(() => import('./pages/SampleReport').then(({ SampleRep
 const Methodology = lazy(() => import('./pages/Methodology').then(({ Methodology }) => ({ default: Methodology })));
 const Debrief = lazy(() => import('./pages/Debrief').then(({ Debrief }) => ({ default: Debrief })));
 const AIRunStore = lazy(() => import('./pages/AIRunStore').then(({ AIRunStore }) => ({ default: AIRunStore })));
+
+// Clears a caught page error as soon as the visitor navigates elsewhere.
+const RouteErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { pathname } = useLocation();
+  return <ErrorBoundary resetKey={pathname}>{children}</ErrorBoundary>;
+};
 
 const RouteFallback: React.FC = () => (
   <div className="lab-container flex min-h-[calc(100svh-5rem)] items-center justify-center py-16" aria-live="polite" aria-busy="true">
@@ -67,6 +74,7 @@ const App: React.FC = () => {
     <BrowserRouter>
       <ScrollToTop />
       <Layout>
+        <RouteErrorBoundary>
         <Suspense fallback={<RouteFallback />}>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -93,6 +101,7 @@ const App: React.FC = () => {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
+        </RouteErrorBoundary>
       </Layout>
       <VercelAnalyticsRouter />
       <SpeedInsights />

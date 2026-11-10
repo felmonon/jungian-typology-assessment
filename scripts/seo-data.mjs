@@ -1458,7 +1458,7 @@ const competitorLandingPages = [
         bullets: [
           'You want the inferior-function edge named explicitly',
           'You want paid report content previewed before checkout',
-          'You want one-time CAD pricing and a 30-day refund window',
+          'You want one-time CAD pricing and a 7-day refund policy',
           'You want a shareable result page that can bring friends into the free assessment',
         ],
       },

@@ -60,7 +60,7 @@ export const About: React.FC = () => {
                 <h4 className="text-ui font-semibold text-jung-dark mb-2">Simple Analogy</h4>
                 <p className="text-body text-jung-secondary">
                   Typology is like a mirror showing your current "driving style" (habits). The goal isn't
-                  "I'm a sedan!"—it's learning to drive better in all conditions.
+                  "I'm a sedan!" It is learning to drive better in all conditions.
                 </p>
               </div>
             </div>
@@ -184,12 +184,12 @@ export const About: React.FC = () => {
             </h3>
             <div className="text-body text-jung-secondary space-y-4 pl-10">
               <p>
-                Self-report often shows "who we want to be" (Persona—social mask). Following
+                Self-report often shows "who we want to be" (the persona, or social mask). Following
                 <strong> Marie-Louise von Franz</strong>: We include questions on stress reactivity,
                 emotional "touchiness," and rigid behaviors.
               </p>
               <p>
-                These can point toward the <strong>inferior function</strong> (least conscious in this framework)—what
+                These can point toward the <strong>inferior function</strong> (least conscious in this framework), which
                 von Franz called the "ever-bleeding wound," but also "treasure hard to attain."
               </p>
               <div className="bg-jung-surface rounded-lg p-4 border border-jung-border">
@@ -240,11 +240,11 @@ export const About: React.FC = () => {
 
         <div className="prose-editorial">
           <p>
-            Jung saw type as <strong>problematic bias</strong>—strengths create blind spots. Over-rely on logic?
+            Jung saw type as <strong>problematic bias</strong>: strengths create blind spots. Over-rely on logic?
             Emotions become primitive/unconscious.
           </p>
           <p>
-            The goal: <strong>Individuation</strong>—integrate opposites for wholeness.
+            The goal: <strong>Individuation</strong>, which means bringing the opposites into a fuller whole.
           </p>
           <ul className="space-y-2 my-6">
             <li className="flex items-start gap-3">
@@ -253,13 +253,13 @@ export const About: React.FC = () => {
             </li>
             <li className="flex items-start gap-3">
               <span className="w-2 h-2 rounded-full bg-jung-accent mt-2.5 flex-shrink-0" />
-              <span><strong>High scores?</strong> Your strengths—but watch for over-one-sidedness.</span>
+              <span><strong>High scores?</strong> Your strengths. Watch for one-sidedness.</span>
             </li>
           </ul>
 
           <div className="card-elevated p-6 my-8 bg-jung-accent-light border-jung-accent">
             <p className="text-body text-jung-dark">
-              <strong>Analogy:</strong> Like exercising weak muscles—the "inferior" is where real development happens.
+              <strong>Analogy:</strong> Like exercising weak muscles. The "inferior" function is where real development happens.
             </p>
           </div>
         </div>
@@ -272,7 +272,7 @@ export const About: React.FC = () => {
             <AlertTriangle className="w-8 h-8 flex-shrink-0 text-jung-accent mt-1" />
             <div>
               <h3 className="text-heading text-xl md:text-2xl text-jung-dark mb-4">Honest Limitations</h3>
-              <p className="text-body text-jung-secondary mb-6">We're transparent—no tool is perfect.</p>
+              <p className="text-body text-jung-secondary mb-6">No tool is perfect. Here is where this one falls short.</p>
 
               <div className="space-y-6">
                 <div>

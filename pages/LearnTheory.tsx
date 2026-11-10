@@ -101,7 +101,7 @@ export const LearnTheory: React.FC = () => {
               Learn the Theory
             </h1>
             <p className="text-xl text-jung-secondary max-w-2xl mx-auto leading-relaxed">
-              A comprehensive guide to Carl Jung's psychological typology—the authentic foundation behind modern personality frameworks.
+              A plain guide to Carl Jung's psychological typology, the source that later personality frameworks drew on.
             </p>
           </div>
         </div>
@@ -143,7 +143,7 @@ export const LearnTheory: React.FC = () => {
                 In 1921, Swiss psychiatrist <strong>Carl Gustav Jung</strong> published <em>Psychological Types</em>,
                 a groundbreaking work that would reshape our understanding of human cognition. It wasn't about
                 putting people in boxes or assigning labels. Jung wanted to understand
-                <strong> why we all perceive and judge the world differently</strong>—and how this natural "one-sidedness"
+                <strong> why we all perceive and judge the world differently</strong>, and how this natural "one-sidedness"
                 shapes our strengths, blind spots, and paths toward psychological growth.
               </p>
 
@@ -154,9 +154,9 @@ export const LearnTheory: React.FC = () => {
 
               <p>
                 Jung noticed that everyone gravitates toward certain ways of thinking, feeling, perceiving, and deciding.
-                This creates natural biases—like wearing tinted glasses that color everything we see.
+                This creates natural biases, like wearing tinted glasses that color everything we see.
                 Typology helps us recognize our particular "tint" so we can transcend it through
-                <strong> individuation</strong>—the lifelong journey of becoming a more whole, integrated self.
+                <strong> individuation</strong>, the lifelong work of becoming a more whole person.
               </p>
 
               <div className="card-elevated p-6 my-8">
@@ -167,7 +167,7 @@ export const LearnTheory: React.FC = () => {
                 <p className="text-jung-secondary">
                   Imagine driving a car. Some people love the accelerator (outward action), others prefer the brakes
                   (inner reflection). Some focus on the map (logic/values), others on the scenery (details/possibilities).
-                  Your "driving style" is your type—but the goal is learning to drive skillfully in all conditions.
+                  Your "driving style" is your type, but the goal is learning to drive skillfully in all conditions.
                 </p>
               </div>
             </div>
@@ -240,14 +240,14 @@ export const LearnTheory: React.FC = () => {
             <div className="prose-editorial">
               <p>
                 Jung conceived of the mind as a dynamic system powered by energy called <strong>libido</strong>
-                (not strictly sexual—rather, a general life force akin to motivation, attention, or psychic vitality).
+                (not strictly sexual, but a general life force akin to motivation, attention, or psychic vitality).
                 This energy flows in characteristic patterns, creating habitual ways of engaging with reality.
               </p>
 
               <div className="bg-jung-accent-light rounded-xl p-6 my-8 border-l-4 border-jung-accent">
                 <h4 className="font-bold text-jung-dark mb-2">Analogy</h4>
                 <p className="text-jung-secondary">
-                  Libido flows like water in a river. It naturally takes one main course—but dams or blocks
+                  Libido flows like water in a river. It naturally takes one main course, but dams or blocks
                   cause floods (unconscious eruptions). Understanding your flow pattern is the first step
                   toward psychological balance.
                 </p>
@@ -265,8 +265,8 @@ export const LearnTheory: React.FC = () => {
 
             <div className="prose-editorial mb-8">
               <p>
-                Libido flows in one primary direction—this creates <strong>Extraversion</strong> or <strong>Introversion</strong>.
-                This is not about being shy or outgoing—it's a deeper orientation of psychic energy.
+                Libido flows in one primary direction. This creates <strong>Extraversion</strong> or <strong>Introversion</strong>.
+                This is not about being shy or outgoing. It is a deeper orientation of psychic energy.
               </p>
             </div>
 
@@ -274,7 +274,7 @@ export const LearnTheory: React.FC = () => {
               <div className="card-elevated p-6 border-l-4 border-jung-accent">
                 <h3 className="text-xl font-bold text-jung-dark mb-3 flex items-center gap-2">
                   <span className="text-2xl text-jung-accent">→</span>
-                  Extraversion — Outward Flow
+                  Extraversion: Outward Flow
                 </h3>
                 <p className="text-jung-secondary mb-4">
                   Energy moves <strong>from you toward the world</strong>. The external object (people, facts, situations)
@@ -285,14 +285,14 @@ export const LearnTheory: React.FC = () => {
                   <p><span className="font-semibold text-rose-700">Blind Spots:</span> Can overlook inner needs; may fear boredom or solitude</p>
                 </div>
                 <p className="text-jung-muted text-sm mt-4 italic font-serif">
-                  Example: At a gathering, you naturally dive in—initiate conversations, organize activities, feed off the collective energy.
+                  Example: At a gathering, you naturally dive in: you start conversations, organize activities, and feed off the collective energy.
                 </p>
               </div>
 
               <div className="card-elevated p-6 border-l-4 border-jung-secondary">
                 <h3 className="text-xl font-bold text-jung-dark mb-3 flex items-center gap-2">
                   <span className="text-2xl text-jung-secondary">←</span>
-                  Introversion — Inward Flow
+                  Introversion: Inward Flow
                 </h3>
                 <p className="text-jung-secondary mb-4">
                   Energy moves <strong>from the world back to you</strong>. The subject (inner impressions, values)
@@ -315,7 +315,7 @@ export const LearnTheory: React.FC = () => {
 
             <div className="bg-jung-surface-alt rounded-xl p-6">
               <p className="text-jung-secondary">
-                <strong className="text-jung-dark">Key insight:</strong> Everyone possesses both attitudes—but one dominates
+                <strong className="text-jung-dark">Key insight:</strong> Everyone possesses both attitudes, but one dominates
                 conscious life. The opposite builds in the unconscious, creating a compensatory dynamic that shapes our growth.
               </p>
             </div>
@@ -331,7 +331,7 @@ export const LearnTheory: React.FC = () => {
 
             <div className="prose-editorial mb-8">
               <p>
-                We take in and evaluate experience via four basic cognitive "tools"—two pairs of natural opposites.
+                We take in and evaluate experience via four basic cognitive "tools," arranged as two pairs of natural opposites.
               </p>
             </div>
 
@@ -341,7 +341,7 @@ export const LearnTheory: React.FC = () => {
                   Perceiving Functions (Irrational)
                 </h3>
                 <p className="text-jung-muted text-sm mb-4">
-                  "Irrational" means "beyond reason"—they simply register data without judgment.
+                  "Irrational" means "beyond reason." They simply register data without judgment.
                 </p>
                 <div className="space-y-4">
                   <div>
@@ -394,7 +394,7 @@ export const LearnTheory: React.FC = () => {
               <h4 className="font-bold text-jung-dark mb-3">Law of Opposites</h4>
               <p className="text-jung-secondary">
                 Functions compensate each other. Strong Thinking → weak/unconscious Feeling (and vice versa).
-                Strong Sensation → weak Intuition. Like left and right hands—one dominant, the other
+                Strong Sensation → weak Intuition. Like left and right hands: one dominant, the other
                 underdeveloped but still present (and sometimes "possesses" you under stress).
               </p>
             </div>
@@ -429,7 +429,7 @@ export const LearnTheory: React.FC = () => {
                   'Ni': 'Deep foresight and symbolic vision'
                 };
                 return (
-                  <AccordionItem key={code} code={code} title={`${func.title} — ${shortDesc[code]}`}>
+                  <AccordionItem key={code} code={code} title={`${func.title}: ${shortDesc[code]}`}>
                     <div className="space-y-4">
                       <p className="text-jung-secondary leading-relaxed">{func.desc}</p>
 
@@ -465,7 +465,7 @@ export const LearnTheory: React.FC = () => {
 
             <div className="prose-editorial mb-8">
               <p>
-                Functions aren't equal in influence—one dominates consciousness while others operate at different levels of awareness.
+                Functions aren't equal in influence. One dominates consciousness while others operate at different levels of awareness.
               </p>
             </div>
 
@@ -501,7 +501,7 @@ export const LearnTheory: React.FC = () => {
 
             <div className="bg-jung-accent-light rounded-xl p-5 border border-jung-accent">
               <p className="text-sm text-jung-dark">
-                <strong>Note:</strong> Archetypal labels like "Hero/Parent" are modern extensions (John Beebe)—helpful
+                <strong>Note:</strong> Archetypal labels like "Hero/Parent" are modern extensions (John Beebe), helpful
                 metaphors for understanding the stack, though not Jung's exact terminology.
               </p>
             </div>
@@ -517,7 +517,7 @@ export const LearnTheory: React.FC = () => {
 
             <div className="prose-editorial mb-8">
               <p>
-                Under extreme pressure, the inferior function "erupts" primitively—behaviors that feel "not like you."
+                Under extreme pressure, the inferior function "erupts" primitively, in behaviors that feel "not like you."
               </p>
             </div>
 
@@ -594,7 +594,7 @@ export const LearnTheory: React.FC = () => {
 
             <div className="prose-editorial">
               <p>
-                Jung didn't want you to "find your type" and stop there. Typology reveals <strong>one-sidedness</strong>—your
+                Jung didn't want you to "find your type" and stop there. Typology reveals <strong>one-sidedness</strong>: your
                 natural strengths create corresponding blind spots.
               </p>
 
@@ -622,7 +622,7 @@ export const LearnTheory: React.FC = () => {
               <div className="bg-jung-accent-light rounded-xl p-6 border-l-4 border-jung-accent">
                 <h4 className="font-bold text-jung-dark mb-3">Key Insight</h4>
                 <p className="text-jung-secondary">
-                  Your lowest scores? That's your <strong>growth edge</strong>—the "treasure hard to attain" that holds
+                  Your lowest scores? That's your <strong>growth edge</strong>, the "treasure hard to attain" that holds
                   the key to psychological wholeness.
                 </p>
               </div>
@@ -636,7 +636,7 @@ export const LearnTheory: React.FC = () => {
               Ready to Reflect?
             </h2>
             <p className="text-body text-jung-secondary mb-8 max-w-xl mx-auto">
-              Take the assessment to discover your current cognitive profile. Use it as a mirror—not a label.
+              Take the assessment to discover your current cognitive profile. Use it as a mirror, not a label.
             </p>
             <Link to="/assessment" className="inline-block">
               <Button variant="accent" size="lg">

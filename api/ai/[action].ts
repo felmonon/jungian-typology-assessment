@@ -3,6 +3,7 @@ import { getSessionUser } from '../_lib/auth.js';
 import { generateGeminiText } from '../_lib/gemini.js';
 import { findCompletedPurchaseForUser, isCheckoutSessionRedeemableBy, resolveTierFromCheckoutSession } from '../_lib/purchases.js';
 import { enforceRateLimit } from '../_lib/rate-limit.js';
+import { isJsonObject, readJsonObjectBody, type JsonObject } from '../_lib/request-body.js';
 import { getSupabaseAdminClient, hasSupabaseAdminConfig } from '../_lib/supabase.js';
 import { getStripeSecretKey } from '../../server/checkout.js';
 import { PREMIUM_REPORT_KEYS, readCompletePremiumReport } from '../../lib/premium-report.js';
@@ -52,8 +53,47 @@ const CHANNEL_NAMES: Record<string, string> = {
   intuition: 'Intuition',
 };
 
+const STACK_POSITIONS = ['dominant', 'auxiliary', 'tertiary', 'inferior'] as const;
+
 function actionName(value: string | string[] | undefined): string {
   return Array.isArray(value) ? value[0] : value || '';
+}
+
+function isFunctionScore(value: unknown): value is FunctionScore {
+  return isJsonObject(value) && typeof value.function === 'string' && typeof value.score === 'number';
+}
+
+// A JSON object can shadow toString, which makes string conversion throw, so
+// a value that is interpolated into a prompt has to be a primitive.
+function isPrintable(value: unknown): boolean {
+  return value === null || typeof value !== 'object';
+}
+
+// The free analysis formats these fields into its prompt and fallback text,
+// so each one must have the type that formatting relies on. Anything else is
+// the caller's mistake and is answered with 400 rather than failing later.
+function isFreeAnalysisInput(body: JsonObject): body is JsonObject & AnalysisInput {
+  const { scores, stack, attitudeScore } = body;
+
+  if (!Array.isArray(scores) || !scores.every(isFunctionScore)) return false;
+  if (!isJsonObject(stack) || !STACK_POSITIONS.every((position) => isFunctionScore(stack[position]))) return false;
+  // A score the browser could not compute arrives as null.
+  if (attitudeScore !== undefined && attitudeScore !== null && typeof attitudeScore !== 'number') return false;
+
+  const depth = body.depthResult || stack.depthResult;
+  if (!isJsonObject(depth)) return true;
+
+  const reliability = isJsonObject(depth.reliability) ? depth.reliability : {};
+  const narrative = isJsonObject(depth.narrative) ? depth.narrative : {};
+  return [
+    depth.dominant,
+    depth.auxiliary,
+    depth.inferior,
+    reliability.score,
+    reliability.label,
+    narrative.developmentalEdge,
+    narrative.complexVulnerability,
+  ].every(isPrintable);
 }
 
 function formatScoresForPrompt(input: AnalysisInput): string {
@@ -170,11 +210,13 @@ async function verifyPaidCheckoutSession(sessionId: unknown): Promise<boolean> {
 }
 
 async function handleFreeAnalysis(req: VercelRequest, res: VercelResponse) {
-  const { scores, stack, attitudeScore, isUndifferentiated, resultVersion, depthResult } = req.body as AnalysisInput;
+  const body = readJsonObjectBody(req);
 
-  if (!scores || !stack) {
+  if (!body || !isFreeAnalysisInput(body)) {
     return res.status(400).json({ error: 'Invalid assessment data format' });
   }
+
+  const { scores, stack, attitudeScore, isUndifferentiated, resultVersion, depthResult } = body;
 
   const prompt = `Write as an educational Jungian typology guide. Based on the following TypeJung self-reflection results, provide a brief but insightful personalized analysis.
 
@@ -213,12 +255,16 @@ Keep the tone direct, psychologically grounded, and useful. Use second person ("
 }
 
 async function handlePremiumAnalysis(req: VercelRequest, res: VercelResponse) {
-  const user = await getSessionUser(req.headers.cookie);
-  const { scores, stack, attitudeScore, isUndifferentiated, depthResult, checkoutSessionId } = req.body || {};
+  const body: JsonObject = readJsonObjectBody(req) ?? {};
+  const { scores, stack, attitudeScore, isUndifferentiated, depthResult, checkoutSessionId } = body;
 
-  if (!scores || !stack) {
+  // The report prompt embeds these values as JSON, so their container types
+  // are all it depends on.
+  if (!Array.isArray(scores) || !isJsonObject(stack)) {
     return res.status(400).json({ error: 'Invalid assessment data format' });
   }
+
+  const user = await getSessionUser(req.headers.cookie);
 
   let hasPremiumAccess = false;
 

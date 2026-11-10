@@ -3,6 +3,7 @@ import { getSessionUser } from './_lib/auth.js';
 import { generateGeminiText } from './_lib/gemini.js';
 import { findCompletedPurchaseForUser } from './_lib/purchases.js';
 import { enforceRateLimit } from './_lib/rate-limit.js';
+import { isJsonObject, readJsonObjectBody, type JsonObject } from './_lib/request-body.js';
 import { getSupabaseAdminClient } from './_lib/supabase.js';
 
 interface ChatMessage {
@@ -33,6 +34,22 @@ const FUNCTION_NAMES: Record<string, string> = {
   Ne: 'Extraverted Intuition',
   Ni: 'Introverted Intuition',
 };
+
+function isChatMessage(value: unknown): value is ChatMessage {
+  return isJsonObject(value) && typeof value.role === 'string' && typeof value.content === 'string';
+}
+
+// The prompt formats every one of these fields, so each must have the type
+// that formatting relies on. A score the browser could not compute is null.
+function isUserProfile(value: unknown): value is NonNullable<ChatRequest['userProfile']> {
+  if (!isJsonObject(value)) return false;
+
+  const { dominantFunction, auxiliaryFunction, tertiaryFunction, inferiorFunction, scores, attitudeScore } = value;
+  return [dominantFunction, auxiliaryFunction, tertiaryFunction, inferiorFunction].every((code) => typeof code === 'string')
+    && Array.isArray(scores)
+    && scores.every((entry) => isJsonObject(entry) && typeof entry.function === 'string' && typeof entry.score === 'number')
+    && (attitudeScore === undefined || attitudeScore === null || typeof attitudeScore === 'number');
+}
 
 function fallbackChatResponse(profile: ChatRequest['userProfile'], message: string): string {
   if (!profile) {
@@ -74,9 +91,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(401).json({ error: 'Authentication required' });
     }
 
-    const { message, history = [], userProfile } = (req.body || {}) as ChatRequest;
-    if (!message?.trim() || !userProfile) {
+    const body: JsonObject = readJsonObjectBody(req) ?? {};
+    const { message, history = [], userProfile } = body;
+    if (typeof message !== 'string' || !message.trim() || !userProfile) {
       return res.status(400).json({ error: 'Message and user profile are required' });
+    }
+    if (!isUserProfile(userProfile) || !Array.isArray(history) || !history.every(isChatMessage)) {
+      return res.status(400).json({ error: 'Invalid chat request format' });
     }
 
     const supabase = getSupabaseAdminClient();

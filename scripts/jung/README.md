@@ -100,7 +100,7 @@ functions. It does not measure the shadow, archetypes or complexes.
   answer: 'The shadow is Jung\'s name for the parts of your personality that you do not identify with: traits, wishes and capacities that were pushed out of awareness because they did not fit the person you needed to be. It is not evil by definition. It holds what is unlived, including strengths.',
   jung: [
     { text: 'The shadow is a moral problem that challenges the whole ego-personality, for no one can become conscious of the shadow without considerable moral effort.', work: 'cw9ii', essay: 'The Shadow', locator: '§14', verifiedAt: 'https://www.psychologyclub.ch/en/cg-jung/work/jungian-terms' },
-    { text: 'Everyone carries a shadow, and the less it is embodied in the individual\'s conscious life, the blacker and denser it is.', work: 'cw11', essay: 'Psychology and Religion', locator: '§131', verifiedAt: 'https://en.wikiquote.org/wiki/Carl_Jung' },
+    { text: 'The shadow [is] that hidden, repressed, for the most part inferior and guilt-laden personality whose ultimate ramifications reach back into the realm of our animal ancestors and so comprise the whole historical aspect of the unconscious.', work: 'cw9ii', essay: 'Conclusion', locator: '§422', verifiedAt: 'https://www.psychologyclub.ch/en/cg-jung/work/jungian-terms' },
   ],
   sections: [
     { h: 'What Jung meant', p: [

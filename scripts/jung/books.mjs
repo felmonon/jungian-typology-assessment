@@ -204,7 +204,7 @@ export const books = [
     sections: [
       { h: 'What is in it', p: [
         'The book appeared in German in 1921 and in English in 1923. Its first nine chapters trace the opposition of two attitudes through the history of thought: early Christian theology, Schiller\'s letters on aesthetic education, Nietzsche\'s Apollonian and Dionysian, a long study of Carl Spitteler\'s epic *Prometheus and Epimetheus*, psychiatry, aesthetics, and William James\'s tough-minded and tender-minded thinkers.',
-        'Chapter X, "General Description of the Types", then describes each of the eight types: the four functions in their extraverted and introverted forms, with the unconscious side of each. Chapter XI, "Definitions", is a lexicon of about sixty of his terms, from abstraction to will, and includes his fullest definitions of [[symbols|symbol]], [[individuation]] and the [[self]].',
+        'Chapter X, "General Description of the Types", then describes each of the eight types: the four functions in their extraverted and introverted forms, with the unconscious side of each. Chapter XI, "Definitions", is a lexicon of several dozen of his terms, from abstraction to will, and includes his fullest definitions of [[symbols|symbol]], [[individuation]] and the [[self]].',
       ] },
       { h: 'How to read it', p: [
         'Read Chapter X first. It is under a hundred pages and can be read alone. Use Chapter XI as a reference. The historical chapters are for readers who enjoy the history of ideas, and the one on Schiller and the one on Spitteler contain important passages on the reconciling symbol. The short papers in the appendix, especially "Psychological Typology" from 1936, give his later and simpler statement of the theory.',
@@ -377,7 +377,7 @@ export const books = [
     whoFor: 'Readers who want to know what Jung actually claimed about synchronicity. Start with the lecture "On Synchronicity".',
     sections: [
       { h: 'What is in it', p: [
-        'Jung first outlined the idea in public in a lecture at the Eranos meeting of 1951. The full essay followed in 1952 in a volume titled *The Interpretation of Nature and the Psyche*, which also contained Pauli\'s essay on archetypal ideas in the work of the astronomer Kepler.',
+        'Jung had used the word since about 1930, and he first set the idea out in full in a lecture at the Eranos meeting of 1951. The full essay followed in 1952 in a volume titled *The Interpretation of Nature and the Psyche*, which also contained Pauli\'s essay on archetypal ideas in the work of the astronomer Kepler.',
         'The essay has four chapters. The first presents the problem and the famous case of the scarab. The second reports an astrological experiment on the horoscopes of married couples, which Jung acknowledges did not give a statistically meaningful result. The third reviews forerunners of the idea, from Chinese thought to Leibniz and Schopenhauer. The fourth states his conclusion: that alongside cause and effect there may be a principle that connects events by meaning.',
       ] },
       { h: 'How to read it', p: [

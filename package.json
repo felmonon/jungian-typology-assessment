@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "npx tsx server.ts",
-    "build": "npm run generate:blog && npm run generate:static && npm run generate:ai-index && vite build && npm run generate:spa-routes && npm run generate:sitemap",
+    "build": "npm run generate:blog && npm run generate:static && npm run generate:jung && npm run generate:ai-index && vite build && npm run generate:spa-routes && npm run generate:sitemap",
     "build:full": "npm run generate:static && npm run generate:ai-index && vite build && npm run generate:sitemap && node scripts/prerender.mjs",
     "prerender": "node scripts/prerender.mjs",
     "generate:blog": "node scripts/generate-growth-blog-pages.mjs",
     "generate:static": "npx tsx scripts/generate-static-pages.ts",
+    "generate:jung": "node scripts/jung/validate.mjs && node scripts/generate-jung-library.mjs",
     "generate:ai-index": "node scripts/generate-ai-index.mjs",
     "generate:spa-routes": "node scripts/generate-spa-route-html.mjs",
     "generate:sitemap": "npx tsx scripts/generate-sitemap.ts",

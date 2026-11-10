@@ -28,6 +28,26 @@
       "permanent": true
     },
     {
+      "source": "/jung/",
+      "destination": "/jung",
+      "permanent": true
+    },
+    {
+      "source": "/jung/books/:slug/",
+      "destination": "/jung/books/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/jung/practice/:slug/",
+      "destination": "/jung/practice/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/jung/:slug/",
+      "destination": "/jung/:slug",
+      "permanent": true
+    },
+    {
       "source": "/assessment%3Fsource=:source",
       "destination": "/assessment?source=:source",
       "permanent": true
@@ -158,6 +178,22 @@
     {
       "source": "/types/:type",
       "destination": "/types/:type/index.html"
+    },
+    {
+      "source": "/jung",
+      "destination": "/jung/index.html"
+    },
+    {
+      "source": "/jung/books/:slug",
+      "destination": "/jung/books/:slug/index.html"
+    },
+    {
+      "source": "/jung/practice/:slug",
+      "destination": "/jung/practice/:slug/index.html"
+    },
+    {
+      "source": "/jung/:slug",
+      "destination": "/jung/:slug/index.html"
     },
     {
       "source": "/blog",

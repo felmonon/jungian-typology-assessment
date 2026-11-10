@@ -1,6 +1,6 @@
 # TypeJung - Map All 8 Cognitive Functions
 # Website: https://typejung.com
-# Last Updated: 2026-10-14
+# Last Updated: 2026-11-10
 
 ================================================================================
 ABOUT
@@ -60,6 +60,185 @@ HOW IT WORKS
 3. Read the synthesis of your dominant-inferior pattern.
 4. Explore detailed function and type pages.
 5. Optionally upgrade for deeper analysis only after seeing the free map.
+
+================================================================================
+THE JUNG LIBRARY
+================================================================================
+
+Plain-language explanations of Carl Jung's concepts, with quotations checked against published sources.
+Hub: https://typejung.com/jung
+Glossary: https://typejung.com/jung/glossary
+Quotes, with sources: https://typejung.com/jung/quotes
+Book guides: https://typejung.com/jung/books
+Where to start: https://typejung.com/jung/where-to-start
+Jung's life: https://typejung.com/jung/life
+Editorial standards: https://typejung.com/jung/editorial-standards
+
+The psyche:
+https://typejung.com/jung/psyche
+For Jung the psyche is the totality of all psychological processes, conscious and unconscious. It is wider than the mind you are aware of and wider than the ego. He treated it as a self-regulating system with its own reality, one that answers what happens to it instead of merely reacting.
+
+The ego:
+https://typejung.com/jung/ego
+The ego is Jung's term for the center of consciousness, the sense of "I" that gives you continuity and identity. It is what a content must be connected to in order to be conscious at all. Jung valued a strong ego but denied that it is the whole personality or its master.
+
+The persona:
+https://typejung.com/jung/persona
+The persona is the role or public face a person develops to deal with the world: the professional manner, the family part, the social self. Jung named it after the mask worn by actors in antiquity. It is necessary and useful. Trouble starts when a person identifies with it.
+
+The shadow:
+https://typejung.com/jung/shadow
+The shadow is Jung's name for the parts of your personality that you do not identify with: traits, wishes and capacities that were pushed out of awareness because they did not fit the person you needed to be. It is not evil by definition. It holds what is unlived, including strengths.
+
+The anima:
+https://typejung.com/jung/anima
+The anima is Jung's term for the unconscious feminine side of a man, experienced as an inner figure and as moods, attractions and fantasies. He saw it as both a personal complex, shaped by a man's history with women, and an archetype. Later Jungians have widened and questioned the idea.
+
+The animus:
+https://typejung.com/jung/animus
+The animus is Jung's term for the unconscious masculine side of a woman, the counterpart of the anima in a man. He described it as a source of unexamined opinions when unconscious and of focus, courage and meaning when related to. It is among his most criticized ideas.
+
+The Self:
+https://typejung.com/jung/self
+The Self is Jung's term for the totality of the personality, conscious and unconscious, and for its organizing center. The ego is only the center of consciousness. The Self is larger, can never be fully known, and is experienced through symbols of wholeness such as the circle or the mandala.
+
+The personal unconscious:
+https://typejung.com/jung/personal-unconscious
+The personal unconscious is the layer of the unconscious that comes from an individual's own life: forgotten experiences, repressed memories and wishes, impressions too faint to register, and contents not yet ready for awareness. It is organized in complexes and contains the shadow. Beneath it Jung placed the collective unconscious.
+
+The collective unconscious:
+https://typejung.com/jung/collective-unconscious
+The collective unconscious is Jung's hypothesis that beneath the personal unconscious lies a layer of the psyche that is inherited and common to all people. It does not hold memories or ideas. It holds archetypes: inborn patterns that shape how humans typically perceive, feel and imagine.
+
+Archetypes:
+https://typejung.com/jung/archetypes
+Archetypes are, in Jung's theory, the inherited structuring patterns of the collective unconscious. They are not images or ideas in themselves. They are tendencies to form certain images and to respond in typical ways to typical situations, such as birth, death, the mother, the hero or the stranger.
+
+Complexes:
+https://typejung.com/jung/complexes
+A complex is a cluster of feelings, memories and ideas gathered around a charged theme, such as mother, father, power or inferiority. Complexes are normal and everyone has them. Jung discovered that they behave like small independent personalities, and that the ones we do not recognize are the ones that run us.
+
+Libido as psychic energy:
+https://typejung.com/jung/psychic-energy
+Jung used libido to mean psychic energy in general: the intensity or value invested in any mental activity, whether hunger, sex, power, creativity or religious feeling. This was his decisive break with Freud, who defined libido as sexual. Jung treated it as a quantity that flows, gets blocked and is transformed.
+
+Individuation:
+https://typejung.com/jung/individuation
+Individuation is Jung's term for the process by which a person becomes a distinct, integrated individual: more conscious of what is unconscious in them, less identified with roles and with collective expectations. He saw it as the natural aim of psychological development, especially in the second half of life.
+
+Projection:
+https://typejung.com/jung/projection
+Projection is the automatic process by which unconscious contents of your own psyche are experienced as belonging to someone or something else. Nobody decides to project. It happens, and it is discovered afterward. Jung treated it as the ordinary way the unconscious first becomes visible.
+
+Compensation:
+https://typejung.com/jung/compensation
+Compensation is Jung's principle that the unconscious balances the conscious attitude. Whatever consciousness overvalues, ignores or excludes gathers weight in the unconscious and pushes back, most visibly in dreams. He saw it as the self-regulation of the psyche, comparable to the way the body maintains equilibrium.
+
+Enantiodromia:
+https://typejung.com/jung/enantiodromia
+Enantiodromia means running counter to. Jung took the word from accounts of the Greek philosopher Heraclitus and used it for a psychological law: an extreme, one-sided attitude builds up its opposite in the unconscious, which eventually breaks through and takes over. The persecutor becomes the convert, the rationalist the believer.
+
+The transcendent function:
+https://typejung.com/jung/transcendent-function
+The transcendent function is Jung's name for what happens when a conscious position and its unconscious opposite are both held, without choosing either. Out of the tension a new attitude emerges, usually announced by a symbol. Transcendent here means that it bridges the two sides. It has nothing to do with metaphysics.
+
+Active imagination:
+https://typejung.com/jung/active-imagination
+Active imagination is the method Jung developed for meeting the unconscious while awake. You let a mood, dream image or inner figure take shape on its own, and then you engage it as yourself: watching, speaking, answering, and afterward drawing the consequences. He considered it potent, and not suitable for everyone.
+
+Dreams:
+https://typejung.com/jung/dreams
+Jung regarded dreams as natural, undisguised expressions of the unconscious. A dream does not hide a wish, as Freud held. It shows the dreamer's situation from a side that consciousness has missed, in the language of images. Its usual function is to compensate the conscious attitude.
+
+Symbols:
+https://typejung.com/jung/symbols
+For Jung a symbol is the best possible expression of something not yet fully known. It is different from a sign, which stands for something already understood. A living symbol carries meaning and energy that cannot be translated into plain statement without loss, and it changes the person who takes it seriously.
+
+Synchronicity:
+https://typejung.com/jung/synchronicity
+Synchronicity is Jung's term for a meaningful coincidence: an inner event, such as a dream or thought, and an outer event that correspond in meaning without any causal link. He proposed it as a principle of connection alongside causality. It is a hypothesis, and it is not accepted by mainstream science.
+
+Inflation:
+https://typejung.com/jung/inflation
+Inflation is Jung's term for a state in which the ego takes on contents that do not belong to it, usually archetypal ones, and becomes puffed up. The person feels special, chosen or all-knowing, or, in the negative form, uniquely worthless. Either way the ordinary human scale has been lost.
+
+The tension of opposites:
+https://typejung.com/jung/opposites
+Jung held that the psyche is structured in pairs of opposites: conscious and unconscious, thinking and feeling, spirit and instinct, good and evil. Psychic energy flows from the tension between them. Development comes from holding a pair in awareness until something new arises, and not from choosing one side and suppressing the other.
+
+The numinous:
+https://typejung.com/jung/numinous
+Numinous describes an experience that grips a person with awe, fascination or dread and feels like contact with something far greater than themselves. The theologian Rudolf Otto coined the word. Jung adopted it for the emotional charge of archetypal contents, and regarded such experiences as central to psychological change.
+
+Psychological types:
+https://typejung.com/jung/psychological-types
+Psychological types is Jung's theory that people differ in a regular way: in the direction of their interest, inward or outward, and in which of four functions they rely on most. He published it in 1921. Every later type system, including the sixteen four-letter types, descends from it and departs from it.
+
+Introversion and extraversion:
+https://typejung.com/jung/introversion-and-extraversion
+Jung introduced introversion and extraversion to describe two attitudes of consciousness. In extraversion, interest moves toward the outer world and takes its bearings from it. In introversion, interest moves inward and takes its bearings from the subject's own response. He was describing the direction of psychic energy. He was not describing shyness or sociability.
+
+The four functions:
+https://typejung.com/jung/four-functions
+Jung described four functions of consciousness. Sensation registers what is there. Thinking says what it is. Feeling judges what it is worth. Intuition senses where it came from and where it is going. Everyone uses all four, but one is usually developed far more than the others, and it shapes the personality.
+
+The inferior function:
+https://typejung.com/jung/inferior-function
+The inferior function is the least developed of a person's four functions and the opposite of the one they rely on most. It stays partly unconscious, so it is slow, awkward and easily upset. Jung saw it as a weak point and as the opening through which neglected life returns.
+
+The mandala:
+https://typejung.com/jung/mandala
+Mandala is the Sanskrit word for circle. Jung used it for circular images, often divided into four and organized around a center, that appear in religious art and, spontaneously, in dreams and drawings. He interpreted them as symbols of the Self: the psyche representing its own order, especially in times of confusion.
+
+Jung and alchemy:
+https://typejung.com/jung/alchemy
+Jung read medieval and Renaissance alchemy as an unwitting psychology. He argued that the alchemists, working on substances they did not understand, projected their own unconscious processes into matter, so that their strange images describe the stages of inner transformation. He treated alchemy as the historical forerunner of his psychology of individuation.
+
+The hero:
+https://typejung.com/jung/hero
+The hero is an archetypal figure found in myths everywhere: the one who leaves home, faces a monster and wins a treasure. Jung interpreted the pattern as an image of consciousness freeing itself from unconsciousness, and of the ego's struggle to become independent. He also held that the heroic attitude must eventually be outgrown.
+
+The trickster:
+https://typejung.com/jung/trickster
+The trickster is a figure in myth and folklore who cheats, blunders, changes shape and upsets every order, and who sometimes brings a gift by accident. Jung saw in him a collective image of the shadow: a memory of an earlier, less conscious state of mind that survives in everyone.
+
+The mother archetype:
+https://typejung.com/jung/great-mother
+The mother archetype is, in Jung's theory, the inborn pattern that shapes how humans experience mothering and everything that resembles it: care, shelter, origin, and also engulfment. It has a nourishing side and a devouring side. A person's mother complex forms where this pattern meets their actual mother.
+
+The wise old man:
+https://typejung.com/jung/wise-old-man
+The wise old man is Jung's name for the archetype of spirit and meaning, personified as a sage, teacher, magician or grandfather. In dreams and stories he appears when someone is stuck and needs an insight they cannot produce by will. Jung regarded the figure as helpful, ambiguous, and dangerous to identify with.
+
+Puer aeternus:
+https://typejung.com/jung/puer-aeternus
+Puer aeternus is Latin for eternal boy. In myth it names a youthful god who never ages. In Jungian psychology it describes both an archetype of renewal and a pattern in adults who stay emotionally adolescent, living provisionally and avoiding commitment. Most of the familiar portrait comes from Marie-Louise von Franz, who built on Jung.
+
+The wounded healer:
+https://typejung.com/jung/wounded-healer
+The wounded healer is the archetypal image, drawn from Greek myth, of a healer who carries an incurable wound. Jung used it for a fact of therapeutic work: an analyst can help only as far as they have dealt with their own suffering, and remains exposed to being affected by the patient's.
+
+Reading guides:
+Memories, Dreams, Reflections (1962): https://typejung.com/jung/books/memories-dreams-reflections
+Man and His Symbols (1964): https://typejung.com/jung/books/man-and-his-symbols
+Modern Man in Search of a Soul (1933): https://typejung.com/jung/books/modern-man-in-search-of-a-soul
+The Undiscovered Self (1957): https://typejung.com/jung/books/the-undiscovered-self
+The Portable Jung (1971): https://typejung.com/jung/books/the-portable-jung
+Two Essays on Analytical Psychology (1917/1928): https://typejung.com/jung/books/two-essays-on-analytical-psychology
+Psychological Types (1921): https://typejung.com/jung/books/psychological-types
+The Archetypes and the Collective Unconscious (1934-1954): https://typejung.com/jung/books/archetypes-and-the-collective-unconscious
+Aion: Researches into the Phenomenology of the Self (1951): https://typejung.com/jung/books/aion
+Symbols of Transformation (1912/1952): https://typejung.com/jung/books/symbols-of-transformation
+Psychology and Alchemy (1944): https://typejung.com/jung/books/psychology-and-alchemy
+Answer to Job (1952): https://typejung.com/jung/books/answer-to-job
+Synchronicity: An Acausal Connecting Principle (1952): https://typejung.com/jung/books/synchronicity
+The Red Book: Liber Novus (2009): https://typejung.com/jung/books/the-red-book
+Mysterium Coniunctionis (1955-56): https://typejung.com/jung/books/mysterium-coniunctionis
+
+Practices:
+A shadow practice: working with a strong reaction: https://typejung.com/jung/practice/shadow-work
+A dream practice: recording and reading your dreams: https://typejung.com/jung/practice/dream-journal
+Making room for your inferior function: https://typejung.com/jung/practice/inferior-function-practice
 
 ================================================================================
 HIGH-INTENT LANDING PAGES

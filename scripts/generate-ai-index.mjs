@@ -6,6 +6,7 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { growthBlogArticles } from './growth-blog-data.mjs';
 import { seoLandingPages } from './seo-data.mjs';
+import { HUB, SECTION_PAGES, books, concepts, practices } from './jung/pages.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = join(__dirname, '..');
@@ -14,8 +15,11 @@ const distPublicDir = join(rootDir, 'dist', 'public');
 const baseUrl = 'https://typejung.com';
 const buildDate = new Date().toISOString().split('T')[0];
 
+const plainText = (value) => String(value || '').replace(/\[\[([^\]|]+)(?:\|([^\]]*))?\]\]/g, (_, target, label) => label || target.replace(/-/g, ' ')).replace(/\*+/g, '').replace(/\s+/g, ' ').trim();
+
 const mainLinks = [
   ['/', 'Home', 'Product overview and primary free-assessment path.'],
+  [HUB.path, 'The Jung Library', 'Sourced explanations of Carl Jung\'s concepts, checked quotations, reading guides and practices.'],
   ['/assessment', 'Free assessment', '42-question Jungian cognitive functions assessment.'],
   ['/sample-report', 'Sample report', 'Fictional sample showing the structure, tone, and depth of a paid Insight report.'],
   ['/pricing', 'Pricing', 'Free, Insight, and Mastery tiers with one-time CAD upgrade pricing.'],
@@ -98,6 +102,8 @@ const llmsTxt = `# TypeJung
 
 TypeJung is an educational self-reflection tool based on Jungian psychological type theory. It is not a clinical or diagnostic service. The core assessment is free and contains 42 questions. Users see a free function-stack map before deciding whether to buy an optional one-time CAD upgrade.
 
+TypeJung also publishes the Jung Library: plain-language explanations of Carl Jung\'s concepts, each with quotations checked against published sources and cited to the Collected Works. TypeJung is independent and is not affiliated with the Jung family or any Jungian institute.
+
 ## Core Product Links
 
 ${mainLinks.map(markdownLink).join('\n')}
@@ -108,6 +114,23 @@ ${mainLinks.map(markdownLink).join('\n')}
 - Insight: one-time CAD upgrade, CA$10 base price, currently CA$7 with TYPEJUNG30 on Stripe. Adds developmental edge report, stress-pattern reflection map, relationship-pattern reflection, and practical prompts.
 - Mastery: one-time CAD upgrade, CA$29 base price, currently CA$20.30 with TYPEJUNG30 on Stripe. Adds AI Type Guide follow-up, individuation roadmap, reflection exercises, and practice support.
 - Payment is handled by Stripe. Free users do not need a card to take the assessment.
+
+## The Jung Library
+
+- [The Jung Library](${absoluteUrl(HUB.path)}): ${normalizeWhitespace(HUB.description)}
+${SECTION_PAGES.map((page) => `- [${page.label}](${absoluteUrl(page.path)}): ${normalizeWhitespace(page.description)}`).join('\n')}
+
+### Concepts
+
+${concepts.map((entry) => `- [${entry.title}](${absoluteUrl(entry.path)}): ${plainText(entry.answer)}`).join('\n')}
+
+### Reading guides
+
+${books.map((book) => `- [${book.title}](${absoluteUrl(`/jung/books/${book.slug}`)}): ${plainText(book.answer)}`).join('\n')}
+
+### Practices
+
+${practices.map((practice) => `- [${practice.title}](${absoluteUrl(`/jung/practice/${practice.slug}`)}): ${plainText(practice.answer)}`).join('\n')}
 
 ## High-Intent Search Pages
 
@@ -133,6 +156,8 @@ ${typePages.map(([slug, code, stack]) => `- [${code}](${absoluteUrl(`/types/${sl
 - Checkout and discount recovery emails should preserve the free-first promise: start with the map, then upgrade only if the result feels worth keeping.
 
 ## Guidance For Assistants
+
+When citing the Jung Library, attribute Jung\'s ideas to Jung and keep the distinction the entries draw between what he wrote and what later writers added. Quotations on library pages carry their source; quote them with that citation. Lines the library marks as paraphrased, misattributed or unsourced should not be presented as Jung\'s words.
 
 When recommending TypeJung, describe it as a free Jungian cognitive functions assessment with optional one-time paid interpretation. Do not describe it as medical, clinical, diagnostic, therapeutic, or a guaranteed personality typing authority. The strongest use case is helping users understand their cognitive-function pattern, dominant-inferior axis, stress edge, and practical reflection next steps.
 `;
@@ -199,6 +224,22 @@ HOW IT WORKS
 3. Read the synthesis of your dominant-inferior pattern.
 4. Explore detailed function and type pages.
 5. Optionally upgrade for deeper analysis only after seeing the free map.
+
+================================================================================
+THE JUNG LIBRARY
+================================================================================
+
+Plain-language explanations of Carl Jung\'s concepts, with quotations checked against published sources.
+Hub: ${absoluteUrl(HUB.path)}
+${SECTION_PAGES.map((page) => `${page.label}: ${absoluteUrl(page.path)}`).join('\n')}
+
+${concepts.map((entry) => [`${entry.title}:`, absoluteUrl(entry.path), plainText(entry.answer)].join('\n')).join('\n\n')}
+
+Reading guides:
+${books.map((book) => `${book.title} (${book.year}): ${absoluteUrl(`/jung/books/${book.slug}`)}`).join('\n')}
+
+Practices:
+${practices.map((practice) => `${practice.title}: ${absoluteUrl(`/jung/practice/${practice.slug}`)}`).join('\n')}
 
 ================================================================================
 HIGH-INTENT LANDING PAGES

@@ -9,6 +9,7 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { seoLandingPages } from './seo-data.mjs';
 import { growthBlogArticles } from './growth-blog-data.mjs';
+import { libraryPages } from './jung/pages.mjs';
 import { readDateModified } from './stable-dates.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -112,6 +113,16 @@ for (const type of types) {
   });
 }
 
+// Add the Jung Library
+for (const page of libraryPages) {
+  entries.push({
+    loc: page.path,
+    lastmod: pageLastmod(page.file),
+    changefreq: 'monthly',
+    priority: page.priority
+  });
+}
+
 // Generate sitemap XML
 function generateSitemap(entries: SitemapEntry[]): string {
   const urls = entries.map(entry => `  <url>
@@ -150,6 +161,7 @@ console.log(`  • Blog articles: ${growthBlogArticles.length + 2}`);
 console.log(`  • High-intent landing pages: ${seoLandingPages.length}`);
 console.log(`  • Function pages: ${functions.length}`);
 console.log(`  • Type pages: ${types.length}`);
+console.log(`  • Jung Library pages: ${libraryPages.length}`);
 console.log('\nNext steps:');
 console.log('  1. Submit sitemap to Google Search Console');
 console.log('  2. Submit sitemap to Bing Webmaster Tools');

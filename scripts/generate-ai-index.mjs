@@ -23,7 +23,7 @@ const mainLinks = [
   ['/assessment', 'Free assessment', '42-question Jungian cognitive functions assessment.'],
   ['/sample-report', 'Sample report', 'Fictional sample showing the structure, tone, and depth of a paid Insight report.'],
   ['/pricing', 'Pricing', 'Free, Insight, and Mastery tiers with one-time CAD upgrade pricing.'],
-  ['/ai-run-store', 'AI-run TypeJung lab', 'Transparent supervised AI operator loop, guardrails, and shipped change ledger.'],
+  ['/about#how-ai-is-used', 'How AI is used', 'Where AI does work at TypeJung, and what is never allowed.'],
   ['/learn', 'Learn', 'Jungian theory and cognitive functions guide.'],
   ['/content.txt', 'Content index', 'Plain-text site and topic index.'],
 ];
@@ -294,7 +294,7 @@ Save-link behavior:
 - Feed recoverable discount_leads records for follow-up.
 
 Sample report: ${absoluteUrl('/sample-report')}
-AI-run TypeJung lab: ${absoluteUrl('/ai-run-store')}
+How AI is used: ${absoluteUrl('/about#how-ai-is-used')}
 Pricing: ${absoluteUrl('/pricing')}
 Assessment: ${absoluteUrl('/assessment')}
 `;

@@ -283,9 +283,9 @@ export const SharePage: React.FC = () => {
       <div className="min-h-screen flex items-center justify-center bg-jung-surface px-4">
         <div className="text-center max-w-md mx-auto">
           <div className="w-16 h-16 rounded-full bg-jung-accent/10 flex items-center justify-center mx-auto mb-5">
-            <span className="text-3xl font-serif text-jung-accent">ψ</span>
+            <span className="text-3xl text-jung-accent">ψ</span>
           </div>
-          <h1 className="text-xl md:text-2xl font-serif font-bold text-jung-dark mb-3">Result Not Found</h1>
+          <h1 className="text-xl md:text-2xl font-bold text-jung-dark mb-3">Result Not Found</h1>
           <p className="text-jung-secondary mb-6 text-sm md:text-base">{error || 'This shared result could not be found.'}</p>
           <Link to={assessmentHref} onClick={() => trackSharedResultCta('missing_shared_result_start_assessment', 'Take Your Own Assessment', assessmentHref, slug)}>
             <Button className="w-full sm:w-auto min-h-[48px]">Take Your Own Assessment</Button>
@@ -351,7 +351,7 @@ export const SharePage: React.FC = () => {
         </div>
 
         <div className="mt-8 rounded-lg border border-jung-border bg-jung-surface p-6 md:p-10 text-center">
-          <h2 className="text-xl md:text-2xl font-serif font-bold text-jung-dark mb-3">
+          <h2 className="text-xl md:text-2xl font-bold text-jung-dark mb-3">
             Build your own function-stack map
           </h2>
           <p className="text-jung-secondary mb-6 max-w-xl mx-auto text-sm md:text-base">
@@ -420,12 +420,13 @@ export const SharePage: React.FC = () => {
       <div className="bg-jung-dark text-white p-6 md:p-10 rounded-2xl mb-8 shadow-xl">
         <div className="text-center">
           <p className="text-xs md:text-sm uppercase tracking-widest opacity-70 mb-3 font-data">Dominant Function</p>
-          <h1 className="text-2xl md:text-4xl font-serif font-bold mb-3">
+          <h1 className="text-2xl md:text-4xl font-bold mb-3">
             {funcDescription?.title || dominantFunc} ({dominantFunc})
           </h1>
           <p className="text-base md:text-xl opacity-90 italic max-w-2xl mx-auto font-serif">
             "{funcDescription?.quote}"
           </p>
+          <p className="mt-3 font-data text-[11px] uppercase tracking-wider opacity-60">Jung, Psychological Types, Chapter X (condensed)</p>
         </div>
       </div>
 
@@ -469,23 +470,23 @@ export const SharePage: React.FC = () => {
         {/* Function stack */}
         <div className="flex flex-col justify-center">
           <div className="card-elevated p-6 rounded-2xl mb-5">
-            <h3 className="text-base md:text-lg font-serif font-bold text-jung-dark mb-4">Function Stack</h3>
+            <h3 className="text-base md:text-lg font-bold text-jung-dark mb-4">Function Stack</h3>
             <div className="space-y-3">
               <div className="flex justify-between items-center py-3 border-b border-jung-border">
-                <span className="font-medium text-jung-accent text-sm md:text-base font-serif">1. Dominant</span>
-                <span className="font-serif font-bold text-base md:text-lg">{result.stack.dominant.function}</span>
+                <span className="font-medium text-jung-accent text-sm md:text-base">1. Dominant</span>
+                <span className="font-bold text-base md:text-lg">{result.stack.dominant.function}</span>
               </div>
               <div className="flex justify-between items-center py-3 border-b border-jung-border">
-                <span className="font-medium text-jung-secondary text-sm md:text-base font-serif">2. Auxiliary</span>
-                <span className="font-serif font-bold text-base md:text-lg">{result.stack.auxiliary.function}</span>
+                <span className="font-medium text-jung-secondary text-sm md:text-base">2. Auxiliary</span>
+                <span className="font-bold text-base md:text-lg">{result.stack.auxiliary.function}</span>
               </div>
               <div className="flex justify-between items-center py-3 border-b border-jung-border">
-                <span className="font-medium text-jung-muted text-sm md:text-base font-serif">3. Tertiary</span>
-                <span className="font-serif font-bold text-base md:text-lg">{result.stack.tertiary.function}</span>
+                <span className="font-medium text-jung-muted text-sm md:text-base">3. Tertiary</span>
+                <span className="font-bold text-base md:text-lg">{result.stack.tertiary.function}</span>
               </div>
               <div className="flex justify-between items-center py-3">
-                <span className="font-medium text-jung-muted/70 text-sm md:text-base font-serif">4. Inferior</span>
-                <span className="font-serif font-bold text-base md:text-lg text-jung-muted">{result.stack.inferior.function}</span>
+                <span className="font-medium text-jung-muted/70 text-sm md:text-base">4. Inferior</span>
+                <span className="font-bold text-base md:text-lg text-jung-muted">{result.stack.inferior.function}</span>
               </div>
             </div>
           </div>
@@ -498,7 +499,7 @@ export const SharePage: React.FC = () => {
 
       {/* CTA section */}
       <div className="bg-jung-surface rounded-2xl p-6 md:p-10 text-center border border-jung-border">
-        <h2 className="text-xl md:text-2xl font-serif font-bold text-jung-dark mb-3">
+        <h2 className="text-xl md:text-2xl font-bold text-jung-dark mb-3">
           Discover Your Own Psychological Type
         </h2>
         <p className="text-jung-secondary mb-6 max-w-xl mx-auto text-sm md:text-base">

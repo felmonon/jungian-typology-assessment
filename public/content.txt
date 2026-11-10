@@ -657,6 +657,6 @@ Save-link behavior:
 - Feed recoverable discount_leads records for follow-up.
 
 Sample report: https://typejung.com/sample-report
-AI-run TypeJung lab: https://typejung.com/ai-run-store
+How AI is used: https://typejung.com/about#how-ai-is-used
 Pricing: https://typejung.com/pricing
 Assessment: https://typejung.com/assessment

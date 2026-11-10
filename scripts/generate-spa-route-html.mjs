@@ -107,26 +107,16 @@ const routePages = [
     path: '/about',
     title: 'About TypeJung: Free Jungian Function-Stack Map',
     description:
-      'TypeJung maps all 8 cognitive functions, inferior-function pressure, somatic signals, and attitude direction instead of forcing a shallow four-letter label.',
+      'TypeJung is a sourced library of Carl Jung\'s ideas and a free map of your own function pattern. Why it is not another MBTI clone, and what it does not claim.',
     h1: 'About TypeJung',
     cta: 'Start the free assessment',
-  },
-  {
-    path: '/ai-run-store',
-    title: 'AI-Run TypeJung Lab - Transparent AI Operator',
-    description:
-      'See how TypeJung is being run as a supervised AI-operated software store with a public operating loop, guardrails, shipped changes, and current experiments.',
-    h1: 'AI-run TypeJung lab',
-    cta: 'Start the free assessment',
-    body: [
-      'TypeJung is being operated as a measurable AI-assisted software store: the operator audits the funnel, ships improvements, verifies them, and reports what changed.',
-      'The public lab shows the operating loop, guardrails, shipped ledger, and AI roles without inventing revenue, testimonials, or unsupported product claims.',
-      'The core product still comes first: take the free function-stack map, then upgrade only if the paid interpretation is worth keeping.',
-    ],
   },
 ];
 
 const guideLinks = [
+  ['/jung', 'The Jung Library'],
+  ['/jung/quotes', 'Carl Jung Quotes, With Sources'],
+  ['/jung/where-to-start', 'Where to Start With Jung'],
   ['/jungian-test', 'Jungian Test'],
   ['/jungian-typology', 'Jungian Typology Guide'],
   ['/cognitive-functions', 'Cognitive Functions Guide'],
@@ -219,14 +209,14 @@ const pageJsonLd = (page) => {
 
 const buildNoscript = (page) => `
     <noscript>
-      <main style="max-width: 900px; margin: 0 auto; padding: 40px 20px; font-family: Georgia, serif; line-height: 1.8; color: #333;">
+      <main style="max-width: 900px; margin: 0 auto; padding: 40px 20px; font-family: 'Schibsted Grotesk', 'Helvetica Neue', Arial, sans-serif; line-height: 1.8; color: #202230;">
         <nav style="margin-bottom: 24px;"><a href="/">Home</a> &gt; ${escapeHtml(routeLabel(page.path))}</nav>
-        <h1 style="font-size: 2.35em; color: #451a03; margin-bottom: 12px;">${escapeHtml(page.h1)}</h1>
-        <p style="font-size: 1.18em; color: #57534e; margin-bottom: 24px;">${escapeHtml(page.description)}</p>
+        <h1 style="font-size: 2.35em; color: #202230; margin-bottom: 12px;">${escapeHtml(page.h1)}</h1>
+        <p style="font-size: 1.18em; color: #515566; margin-bottom: 24px;">${escapeHtml(page.description)}</p>
         ${(page.body || []).map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join('\n        ')}
-        <p><a href="${page.path === '/pricing' ? '/pricing' : '/assessment'}" style="display: inline-block; padding: 14px 24px; background: #451a03; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">${escapeHtml(page.cta)}</a></p>
+        <p><a href="${page.path === '/pricing' ? '/pricing' : '/assessment'}" style="display: inline-block; padding: 14px 24px; background: #202230; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">${escapeHtml(page.cta)}</a></p>
         <section style="margin-top: 36px;">
-          <h2 style="color: #451a03; border-bottom: 1px solid #e7e5e4; padding-bottom: 8px;">Popular TypeJung guides</h2>
+          <h2 style="color: #202230; border-bottom: 1px solid #dce0eb; padding-bottom: 8px;">Popular TypeJung guides</h2>
           <ul style="columns: 2; column-gap: 30px;">
             ${guideLinks.map(([href, label]) => `<li><a href="${href}">${escapeHtml(label)}</a></li>`).join('\n            ')}
           </ul>

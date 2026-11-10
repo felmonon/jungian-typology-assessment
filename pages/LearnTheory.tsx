@@ -28,7 +28,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ title, code, children, de
               {code}
             </span>
           )}
-          <span className="font-serif text-lg md:text-xl font-semibold text-jung-dark">{title}</span>
+          <span className="text-lg md:text-xl font-semibold text-jung-dark">{title}</span>
         </div>
         <ChevronDown
           className={`w-5 h-5 text-jung-muted transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}
@@ -49,21 +49,33 @@ const SectionHeader: React.FC<{ icon: React.ReactNode; title: string; subtitle?:
       {icon}
     </div>
     <div>
-      <h2 className="text-display text-2xl md:text-3xl text-jung-dark font-serif">{title}</h2>
-      {subtitle && <p className="text-body text-jung-muted mt-1 font-serif">{subtitle}</p>}
+      <h2 className="text-display text-2xl md:text-3xl text-jung-dark">{title}</h2>
+      {subtitle && <p className="text-body text-jung-muted mt-1">{subtitle}</p>}
     </div>
   </div>
 );
 
-const BlockQuote: React.FC<{ children: React.ReactNode; author: string }> = ({ children, author }) => (
+const BlockQuote: React.FC<{ children: React.ReactNode; author: string; source?: string }> = ({ children, author, source }) => (
   <blockquote className="relative pl-6 py-4 my-8 border-l-4 border-jung-accent bg-jung-surface-alt rounded-r-lg">
     <Quote className="absolute -left-3 -top-3 w-6 h-6 text-jung-accent bg-jung-surface rounded-full p-1" />
     <p className="text-lg text-jung-secondary italic font-serif leading-relaxed">
       {children}
     </p>
-    <footer className="text-sm font-bold mt-3 text-jung-accent">— {author}</footer>
+    <footer className="text-sm font-bold mt-3 text-jung-accent">
+      — {author}
+      {source && <span className="mt-1 block font-mono text-xs font-normal text-jung-muted">{source}</span>}
+    </footer>
   </blockquote>
 );
+
+const libraryEntries = [
+  ['/jung/psychological-types', 'Psychological types'],
+  ['/jung/introversion-and-extraversion', 'Introversion and extraversion'],
+  ['/jung/four-functions', 'The four functions'],
+  ['/jung/inferior-function', 'The inferior function'],
+  ['/jung/individuation', 'Individuation'],
+  ['/jung', 'All concepts'],
+];
 
 export const LearnTheory: React.FC = () => {
   const functionOrder = ['Te', 'Ti', 'Fe', 'Fi', 'Se', 'Si', 'Ne', 'Ni'];
@@ -82,13 +94,13 @@ export const LearnTheory: React.FC = () => {
         <div className="editorial-container relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center gap-3 text-jung-accent mb-6">
-              <span className="text-5xl font-serif">ψ</span>
+              <span className="text-5xl">ψ</span>
               <BookOpen className="w-8 h-8" />
             </div>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-jung-dark mb-6 leading-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-jung-dark mb-6 leading-tight">
               Learn the Theory
             </h1>
-            <p className="text-xl text-jung-secondary max-w-2xl mx-auto leading-relaxed font-serif">
+            <p className="text-xl text-jung-secondary max-w-2xl mx-auto leading-relaxed">
               A comprehensive guide to Carl Jung's psychological typology—the authentic foundation behind modern personality frameworks.
             </p>
           </div>
@@ -99,6 +111,25 @@ export const LearnTheory: React.FC = () => {
       <div className="editorial-container pb-20">
         <div className="max-w-4xl mx-auto">
 
+          <aside className="mb-16 rounded-2xl border border-jung-accent-muted/50 bg-jung-accent-light p-6">
+            <p className="journey-eyebrow">The Jung Library</p>
+            <p className="mt-2 text-base leading-7 text-jung-dark">
+              This page is the short version of Jung&rsquo;s typology. For each idea in his own words, with sources
+              and the common misreadings, use the library.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {libraryEntries.map(([href, label]) => (
+                <a
+                  key={href}
+                  href={href}
+                  className="inline-flex min-h-10 items-center rounded-full border border-jung-border bg-jung-surface px-4 text-sm font-medium text-jung-dark hover:border-jung-accent-muted hover:text-jung-accent"
+                >
+                  {label}
+                </a>
+              ))}
+            </div>
+          </aside>
+
           {/* Section 1: Origins */}
           <section className="mb-20">
             <SectionHeader
@@ -107,7 +138,7 @@ export const LearnTheory: React.FC = () => {
               subtitle="The origins and philosophy"
             />
 
-            <div className="prose-editorial font-serif">
+            <div className="prose-editorial">
               <p>
                 In 1921, Swiss psychiatrist <strong>Carl Gustav Jung</strong> published <em>Psychological Types</em>,
                 a groundbreaking work that would reshape our understanding of human cognition. It wasn't about
@@ -116,9 +147,9 @@ export const LearnTheory: React.FC = () => {
                 shapes our strengths, blind spots, and paths toward psychological growth.
               </p>
 
-              <BlockQuote author="Carl Jung">
-                The classification of individuals means nothing, nothing at all. It is only the instrument...
-                To understand them, you have to be on the spot.
+              <BlockQuote author="Carl Jung" source="Foreword to the Argentine edition of Psychological Types, 1934">
+                My typology is far rather a critical apparatus serving to sort out and organize the welter of
+                empirical material, but not in any sense to stick labels on people at first sight.
               </BlockQuote>
 
               <p>
@@ -129,11 +160,11 @@ export const LearnTheory: React.FC = () => {
               </p>
 
               <div className="card-elevated p-6 my-8">
-                <h4 className="font-serif font-bold text-jung-dark mb-3 flex items-center gap-2">
+                <h4 className="font-bold text-jung-dark mb-3 flex items-center gap-2">
                   <Compass className="w-5 h-5 text-jung-accent" />
                   Simple Analogy
                 </h4>
-                <p className="text-jung-secondary font-serif">
+                <p className="text-jung-secondary">
                   Imagine driving a car. Some people love the accelerator (outward action), others prefer the brakes
                   (inner reflection). Some focus on the map (logic/values), others on the scenery (details/possibilities).
                   Your "driving style" is your type—but the goal is learning to drive skillfully in all conditions.
@@ -150,7 +181,7 @@ export const LearnTheory: React.FC = () => {
               subtitle="A more nuanced approach than MBTI"
             />
 
-            <div className="prose-editorial mb-8 font-serif">
+            <div className="prose-editorial mb-8">
               <p>
                 The popular Myers-Briggs Type Indicator (MBTI) uses forced-choice questions
                 (e.g., "Logic OR feelings?") and outputs 16 fixed "types" (like INFP).
@@ -167,8 +198,8 @@ export const LearnTheory: React.FC = () => {
                 },
                 {
                   icon: <Sparkles className="w-5 h-5 text-jung-accent" />,
-                  title: '8 Independent Scales',
-                  desc: 'Maps each cognitive process independently—no forcing opposites'
+                  title: 'All eight on one map',
+                  desc: 'Shows all eight function-attitudes, derived from four function channels and attention direction'
                 },
                 {
                   icon: <Compass className="w-5 h-5 text-jung-accent" />,
@@ -185,14 +216,14 @@ export const LearnTheory: React.FC = () => {
                   <div className="w-10 h-10 rounded-full bg-jung-accent/10 flex items-center justify-center mb-3">
                     {item.icon}
                   </div>
-                  <h4 className="font-serif font-semibold text-jung-dark mb-2">{item.title}</h4>
-                  <p className="text-sm text-jung-muted font-serif">{item.desc}</p>
+                  <h4 className="font-semibold text-jung-dark mb-2">{item.title}</h4>
+                  <p className="text-sm text-jung-muted">{item.desc}</p>
                 </div>
               ))}
             </div>
 
             <div className="bg-jung-surface-alt rounded-xl p-6 text-center">
-              <p className="text-jung-dark font-serif text-lg">
+              <p className="text-jung-dark text-lg">
                 No 4-letter codes. No rigid boxes. Just a mirror for your current psychic configuration.
               </p>
             </div>
@@ -206,7 +237,7 @@ export const LearnTheory: React.FC = () => {
               subtitle="Libido and how it flows"
             />
 
-            <div className="prose-editorial font-serif">
+            <div className="prose-editorial">
               <p>
                 Jung conceived of the mind as a dynamic system powered by energy called <strong>libido</strong>
                 (not strictly sexual—rather, a general life force akin to motivation, attention, or psychic vitality).
@@ -214,8 +245,8 @@ export const LearnTheory: React.FC = () => {
               </p>
 
               <div className="bg-jung-accent-light rounded-xl p-6 my-8 border-l-4 border-jung-accent">
-                <h4 className="font-serif font-bold text-jung-dark mb-2">Analogy</h4>
-                <p className="text-jung-secondary font-serif">
+                <h4 className="font-bold text-jung-dark mb-2">Analogy</h4>
+                <p className="text-jung-secondary">
                   Libido flows like water in a river. It naturally takes one main course—but dams or blocks
                   cause floods (unconscious eruptions). Understanding your flow pattern is the first step
                   toward psychological balance.
@@ -232,7 +263,7 @@ export const LearnTheory: React.FC = () => {
               subtitle="Where your energy flows"
             />
 
-            <div className="prose-editorial mb-8 font-serif">
+            <div className="prose-editorial mb-8">
               <p>
                 Libido flows in one primary direction—this creates <strong>Extraversion</strong> or <strong>Introversion</strong>.
                 This is not about being shy or outgoing—it's a deeper orientation of psychic energy.
@@ -241,15 +272,15 @@ export const LearnTheory: React.FC = () => {
 
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               <div className="card-elevated p-6 border-l-4 border-jung-accent">
-                <h3 className="font-serif text-xl font-bold text-jung-dark mb-3 flex items-center gap-2">
+                <h3 className="text-xl font-bold text-jung-dark mb-3 flex items-center gap-2">
                   <span className="text-2xl text-jung-accent">→</span>
                   Extraversion — Outward Flow
                 </h3>
-                <p className="text-jung-secondary mb-4 font-serif">
+                <p className="text-jung-secondary mb-4">
                   Energy moves <strong>from you toward the world</strong>. The external object (people, facts, situations)
                   "pulls" your attention. You adapt by engaging, influencing, exploring.
                 </p>
-                <div className="space-y-2 text-sm font-serif">
+                <div className="space-y-2 text-sm">
                   <p><span className="font-semibold text-emerald-700">Strengths:</span> Action-oriented, adaptable, confident in new situations</p>
                   <p><span className="font-semibold text-rose-700">Blind Spots:</span> Can overlook inner needs; may fear boredom or solitude</p>
                 </div>
@@ -259,15 +290,15 @@ export const LearnTheory: React.FC = () => {
               </div>
 
               <div className="card-elevated p-6 border-l-4 border-jung-secondary">
-                <h3 className="font-serif text-xl font-bold text-jung-dark mb-3 flex items-center gap-2">
+                <h3 className="text-xl font-bold text-jung-dark mb-3 flex items-center gap-2">
                   <span className="text-2xl text-jung-secondary">←</span>
                   Introversion — Inward Flow
                 </h3>
-                <p className="text-jung-secondary mb-4 font-serif">
+                <p className="text-jung-secondary mb-4">
                   Energy moves <strong>from the world back to you</strong>. The subject (inner impressions, values)
                   takes precedence. You filter reality through your inner lens before responding.
                 </p>
-                <div className="space-y-2 text-sm font-serif">
+                <div className="space-y-2 text-sm">
                   <p><span className="font-semibold text-emerald-700">Strengths:</span> Deep reflection, independence, sustained concentration</p>
                   <p><span className="font-semibold text-rose-700">Blind Spots:</span> Can withdraw excessively; risk of inertia or isolation</p>
                 </div>
@@ -277,12 +308,13 @@ export const LearnTheory: React.FC = () => {
               </div>
             </div>
 
-            <BlockQuote author="Carl Jung">
-              The introvert... tries to withdraw libido from the object, as though to prevent the object from gaining power over him.
+            <BlockQuote author="Carl Jung" source="Psychological Types (CW 6), Definitions, §769">
+              Everyone whose attitude is introverted thinks, feels, and acts in a way that clearly demonstrates that
+              the subject is the prime motivating factor and that the object is of secondary importance.
             </BlockQuote>
 
             <div className="bg-jung-surface-alt rounded-xl p-6">
-              <p className="text-jung-secondary font-serif">
+              <p className="text-jung-secondary">
                 <strong className="text-jung-dark">Key insight:</strong> Everyone possesses both attitudes—but one dominates
                 conscious life. The opposite builds in the unconscious, creating a compensatory dynamic that shapes our growth.
               </p>
@@ -297,7 +329,7 @@ export const LearnTheory: React.FC = () => {
               subtitle="How you process reality"
             />
 
-            <div className="prose-editorial mb-8 font-serif">
+            <div className="prose-editorial mb-8">
               <p>
                 We take in and evaluate experience via four basic cognitive "tools"—two pairs of natural opposites.
               </p>
@@ -305,13 +337,13 @@ export const LearnTheory: React.FC = () => {
 
             <div className="grid md:grid-cols-2 gap-8 mb-8">
               <div className="card-elevated p-6 border-t-4 border-jung-accent">
-                <h3 className="font-serif text-xl font-bold text-jung-accent mb-2">
+                <h3 className="text-xl font-bold text-jung-accent mb-2">
                   Perceiving Functions (Irrational)
                 </h3>
-                <p className="text-jung-muted text-sm mb-4 font-serif">
+                <p className="text-jung-muted text-sm mb-4">
                   "Irrational" means "beyond reason"—they simply register data without judgment.
                 </p>
-                <div className="space-y-4 font-serif">
+                <div className="space-y-4">
                   <div>
                     <span className="font-bold text-jung-dark">Sensation</span>
                     <p className="text-jung-secondary text-sm mt-1">
@@ -330,13 +362,13 @@ export const LearnTheory: React.FC = () => {
               </div>
 
               <div className="card-elevated p-6 border-t-4 border-jung-dark">
-                <h3 className="font-serif text-xl font-bold text-jung-dark mb-2">
+                <h3 className="text-xl font-bold text-jung-dark mb-2">
                   Judging Functions (Rational)
                 </h3>
-                <p className="text-jung-muted text-sm mb-4 font-serif">
+                <p className="text-jung-muted text-sm mb-4">
                   Make ordered judgments and systematic evaluations.
                 </p>
-                <div className="space-y-4 font-serif">
+                <div className="space-y-4">
                   <div>
                     <span className="font-bold text-jung-accent">Thinking</span>
                     <p className="text-jung-secondary text-sm mt-1">
@@ -359,8 +391,8 @@ export const LearnTheory: React.FC = () => {
             </div>
 
             <div className="bg-jung-surface-alt rounded-xl p-6">
-              <h4 className="font-serif font-bold text-jung-dark mb-3">Law of Opposites</h4>
-              <p className="text-jung-secondary font-serif">
+              <h4 className="font-bold text-jung-dark mb-3">Law of Opposites</h4>
+              <p className="text-jung-secondary">
                 Functions compensate each other. Strong Thinking → weak/unconscious Feeling (and vice versa).
                 Strong Sensation → weak Intuition. Like left and right hands—one dominant, the other
                 underdeveloped but still present (and sometimes "possesses" you under stress).
@@ -371,12 +403,12 @@ export const LearnTheory: React.FC = () => {
           {/* Section 6: The 8 Function-Attitudes */}
           <section className="mb-20">
             <SectionHeader
-              icon={<span className="text-3xl text-jung-accent font-serif">ψ</span>}
+              icon={<span className="text-3xl text-jung-accent">ψ</span>}
               title="The 8 Function-Attitudes"
               subtitle="The building blocks of cognition"
             />
 
-            <div className="prose-editorial mb-8 font-serif">
+            <div className="prose-editorial mb-8">
               <p>
                 Combine attitudes with functions and you get 8 distinct cognitive processes, each with its unique flavor.
                 Click each to explore its characteristics.
@@ -398,11 +430,12 @@ export const LearnTheory: React.FC = () => {
                 };
                 return (
                   <AccordionItem key={code} code={code} title={`${func.title} — ${shortDesc[code]}`}>
-                    <div className="space-y-4 font-serif">
+                    <div className="space-y-4">
                       <p className="text-jung-secondary leading-relaxed">{func.desc}</p>
 
-                      <blockquote className="border-l-4 border-jung-accent pl-4 italic text-jung-secondary text-sm py-2">
-                        "{func.quote}"
+                      <blockquote className="border-l-4 border-jung-accent pl-4 py-2">
+                        <p className="font-serif text-sm italic text-jung-secondary">"{func.quote}"</p>
+                        <footer className="mt-1 font-mono text-[11px] text-jung-muted">Jung, Psychological Types, Chapter X (condensed)</footer>
                       </blockquote>
 
                       <div className="grid md:grid-cols-2 gap-4 mt-4">
@@ -430,7 +463,7 @@ export const LearnTheory: React.FC = () => {
               subtitle="Your psychic 'stack'"
             />
 
-            <div className="prose-editorial mb-8 font-serif">
+            <div className="prose-editorial mb-8">
               <p>
                 Functions aren't equal in influence—one dominates consciousness while others operate at different levels of awareness.
               </p>
@@ -443,7 +476,7 @@ export const LearnTheory: React.FC = () => {
                   title={`${position.name}: ${position.archetype}`}
                   defaultOpen={key === 'dominant'}
                 >
-                  <div className="space-y-4 font-serif">
+                  <div className="space-y-4">
                     <p className="text-jung-secondary leading-relaxed">{position.description}</p>
 
                     <div className="grid md:grid-cols-2 gap-4">
@@ -461,12 +494,13 @@ export const LearnTheory: React.FC = () => {
               ))}
             </div>
 
-            <BlockQuote author="Marie-Louise von Franz">
-              The inferior function is the ever-bleeding wound... but through it the unconscious can always come in.
+            <BlockQuote author="Marie-Louise von Franz" source="Lectures on Jung's Typology, 1971">
+              The inferior function is the ever-bleeding wound of the conscious personality, but through it the
+              unconscious can always come in and so enlarge consciousness and bring forth a new attitude.
             </BlockQuote>
 
             <div className="bg-jung-accent-light rounded-xl p-5 border border-jung-accent">
-              <p className="text-sm text-jung-dark font-serif">
+              <p className="text-sm text-jung-dark">
                 <strong>Note:</strong> Archetypal labels like "Hero/Parent" are modern extensions (John Beebe)—helpful
                 metaphors for understanding the stack, though not Jung's exact terminology.
               </p>
@@ -481,15 +515,15 @@ export const LearnTheory: React.FC = () => {
               subtitle="When stress takes over"
             />
 
-            <div className="prose-editorial mb-8 font-serif">
+            <div className="prose-editorial mb-8">
               <p>
                 Under extreme pressure, the inferior function "erupts" primitively—behaviors that feel "not like you."
               </p>
             </div>
 
             <div className="bg-jung-accent-light border border-jung-accent rounded-xl p-6 mb-6">
-              <h4 className="font-serif font-bold text-jung-dark mb-4">Signs You May Be "In the Grip"</h4>
-              <ul className="space-y-3 text-jung-secondary font-serif">
+              <h4 className="font-bold text-jung-dark mb-4">Signs You May Be "In the Grip"</h4>
+              <ul className="space-y-3 text-jung-secondary">
                 {[
                   'Behaviors that feel foreign or "not like yourself"',
                   'Hypersensitivity in areas you\'re normally confident about',
@@ -505,11 +539,11 @@ export const LearnTheory: React.FC = () => {
             </div>
 
             <details className="card-elevated overflow-hidden group">
-              <summary className="p-5 cursor-pointer font-serif font-semibold text-jung-dark hover:bg-jung-surface-alt transition-colors flex items-center justify-between">
+              <summary className="p-5 cursor-pointer font-semibold text-jung-dark hover:bg-jung-surface-alt transition-colors flex items-center justify-between">
                 <span>View Grip Patterns by Dominant Function</span>
                 <ChevronDown className="w-5 h-5 text-jung-muted group-open:rotate-180 transition-transform" />
               </summary>
-              <div className="p-5 pt-0 space-y-4 border-t border-jung-border font-serif">
+              <div className="p-5 pt-0 space-y-4 border-t border-jung-border">
                 {Object.entries(THE_GRIP).map(([code, grip]) => (
                   <div key={code} className="border-b border-jung-border pb-4 last:border-0 last:pb-0">
                     <h5 className="font-semibold text-jung-dark mb-2">
@@ -541,8 +575,8 @@ export const LearnTheory: React.FC = () => {
                 { myth: '"Better types exist"', truth: 'All types have unique strengths and blind spots. No hierarchy.' }
               ].map((item, idx) => (
                 <div key={idx} className="card-elevated p-5">
-                  <h4 className="font-semibold text-jung-dark mb-2 font-serif">{item.myth}</h4>
-                  <p className="text-jung-muted text-sm font-serif">
+                  <h4 className="font-semibold text-jung-dark mb-2">{item.myth}</h4>
+                  <p className="text-jung-muted text-sm">
                     <strong className="text-jung-accent">Actually:</strong> {item.truth}
                   </p>
                 </div>
@@ -558,7 +592,7 @@ export const LearnTheory: React.FC = () => {
               subtitle="The real goal of typology"
             />
 
-            <div className="prose-editorial font-serif">
+            <div className="prose-editorial">
               <p>
                 Jung didn't want you to "find your type" and stop there. Typology reveals <strong>one-sidedness</strong>—your
                 natural strengths create corresponding blind spots.
@@ -579,13 +613,15 @@ export const LearnTheory: React.FC = () => {
                 </li>
               </ul>
 
-              <BlockQuote author="Carl Jung">
-                Individuation means becoming one's own self... our incomparable uniqueness.
+              <BlockQuote author="Carl Jung" source="Psychological Types (CW 6), Definitions, §757">
+                In general, it is the process by which individual beings are formed and differentiated; in
+                particular, it is the development of the psychological individual as a being distinct from the
+                general, collective psychology.
               </BlockQuote>
 
               <div className="bg-jung-accent-light rounded-xl p-6 border-l-4 border-jung-accent">
-                <h4 className="font-serif font-bold text-jung-dark mb-3">Key Insight</h4>
-                <p className="text-jung-secondary font-serif">
+                <h4 className="font-bold text-jung-dark mb-3">Key Insight</h4>
+                <p className="text-jung-secondary">
                   Your lowest scores? That's your <strong>growth edge</strong>—the "treasure hard to attain" that holds
                   the key to psychological wholeness.
                 </p>
@@ -595,11 +631,11 @@ export const LearnTheory: React.FC = () => {
 
           {/* CTA Section */}
           <section className="text-center py-16 border-t border-jung-border">
-            <div className="inline-block text-5xl font-serif text-jung-accent mb-6">ψ</div>
-            <h2 className="text-display text-jung-dark mb-4 font-serif">
+            <div className="inline-block text-5xl text-jung-accent mb-6">ψ</div>
+            <h2 className="text-display text-jung-dark mb-4">
               Ready to Reflect?
             </h2>
-            <p className="text-body text-jung-secondary mb-8 max-w-xl mx-auto font-serif">
+            <p className="text-body text-jung-secondary mb-8 max-w-xl mx-auto">
               Take the assessment to discover your current cognitive profile. Use it as a mirror—not a label.
             </p>
             <Link to="/assessment" className="inline-block">
@@ -610,21 +646,6 @@ export const LearnTheory: React.FC = () => {
             </Link>
           </section>
 
-          {/* Footer */}
-          <footer className="pt-12 border-t border-jung-border text-center">
-            <img src="/logo.svg" alt="TypeJung" className="w-12 h-12 mx-auto mb-3" />
-            <p className="font-serif text-jung-dark mb-2">TypeJung</p>
-            <p className="text-sm text-jung-muted mb-4 font-serif">
-              A self-exploration tool based on Jung's <em>Psychological Types</em> (1921). Not diagnostic—just reflection.
-            </p>
-            <p className="text-xs text-jung-muted mb-2 font-serif">
-              <strong>Key Concepts:</strong> Individuation • Differentiation • Dominant-Inferior • 8 Processes
-            </p>
-            <p className="text-xs text-jung-muted font-serif">
-              <strong>Disclaimer:</strong> Self-report only—cannot access unconscious fully. Results = snapshot, not fixed identity.
-            </p>
-            <p className="mt-6 text-xs text-jung-muted font-serif">© 2026 TypeJung</p>
-          </footer>
         </div>
       </div>
     </div>

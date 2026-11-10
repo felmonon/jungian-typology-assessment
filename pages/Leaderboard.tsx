@@ -98,7 +98,7 @@ export const Leaderboard: React.FC = () => {
         <div className="flex items-center justify-center gap-3 text-center">
           <Users className="w-6 h-6 sm:w-8 sm:h-8 text-jung-accent" />
           <div>
-            <p className="text-2xl sm:text-3xl font-bold text-jung-dark font-serif">{data?.total || 0}</p>
+            <p className="text-2xl sm:text-3xl font-bold text-jung-dark">{data?.total || 0}</p>
             <p className="text-xs sm:text-sm text-jung-muted font-data">Total Assessments Completed</p>
           </div>
         </div>
@@ -108,7 +108,7 @@ export const Leaderboard: React.FC = () => {
         <div className="bg-jung-accent/5 rounded-2xl border border-jung-accent/20 p-4 sm:p-6 mb-6 sm:mb-8">
           <div className="flex items-center gap-2 mb-3 sm:mb-4">
             <TrendingUp className="w-5 h-5 text-jung-accent" />
-            <h2 className="text-base sm:text-lg font-serif font-bold text-jung-dark">Most Common Dominant Functions</h2>
+            <h2 className="text-base sm:text-lg font-bold text-jung-dark">Most Common Dominant Functions</h2>
           </div>
           <div className="flex flex-wrap gap-2 sm:gap-3">
             {data.leaderboard.slice(0, 3).map((entry, index) => (
@@ -116,7 +116,7 @@ export const Leaderboard: React.FC = () => {
                 key={entry.function}
                 className="flex items-center gap-2 bg-jung-surface rounded-full px-4 py-2 shadow-sm border border-jung-border"
               >
-                <span className="text-lg font-bold text-jung-accent font-serif">#{index + 1}</span>
+                <span className="text-lg font-bold text-jung-accent">#{index + 1}</span>
                 <span className={`px-2 py-1 rounded-lg text-sm font-bold font-data ${FUNCTION_BG_COLORS[entry.function] || 'bg-jung-surface text-jung-muted'}`}>
                   {entry.function}
                 </span>
@@ -130,7 +130,7 @@ export const Leaderboard: React.FC = () => {
       <div className="card-elevated rounded-2xl overflow-hidden">
         <div className="px-4 sm:px-6 py-4 border-b border-jung-border flex items-center gap-2">
           <BarChart3 className="w-5 h-5 text-jung-accent" />
-          <h2 className="text-lg font-serif font-bold text-jung-dark">Function Distribution</h2>
+          <h2 className="text-lg font-bold text-jung-dark">Function Distribution</h2>
         </div>
 
         {!data || data.leaderboard.length === 0 ? (
@@ -138,13 +138,13 @@ export const Leaderboard: React.FC = () => {
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-jung-accent/10 flex items-center justify-center">
               <BarChart3 className="w-8 h-8 text-jung-accent/50" />
             </div>
-            <h3 className="text-lg font-semibold text-jung-dark mb-2 font-serif">Building Our Community</h3>
+            <h3 className="text-lg font-semibold text-jung-dark mb-2">Building Our Community</h3>
             <p className="text-jung-muted mb-6 max-w-md mx-auto font-body">
               Be among the first to complete the assessment and help establish the community baseline for cognitive function distribution.
             </p>
             <a
               href="/assessment"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-jung-accent text-white font-medium rounded-xl hover:bg-jung-accent/90 transition-colors font-serif"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-jung-accent text-white font-medium rounded-xl hover:bg-jung-accent/90 transition-colors"
             >
               Take the Assessment
             </a>
@@ -177,7 +177,7 @@ export const Leaderboard: React.FC = () => {
                     </div>
 
                     <div className="text-right flex-shrink-0">
-                      <p className="font-bold text-jung-dark font-serif text-sm sm:text-base">{entry.count}</p>
+                      <p className="font-bold text-jung-dark text-sm sm:text-base">{entry.count}</p>
                       <p className="text-xs text-jung-muted font-data">{percentage.toFixed(1)}%</p>
                     </div>
                   </div>

@@ -24,7 +24,6 @@ const Pricing = lazy(() => import('./pages/Pricing').then(({ Pricing }) => ({ de
 const SampleReport = lazy(() => import('./pages/SampleReport').then(({ SampleReport }) => ({ default: SampleReport })));
 const Methodology = lazy(() => import('./pages/Methodology').then(({ Methodology }) => ({ default: Methodology })));
 const Debrief = lazy(() => import('./pages/Debrief').then(({ Debrief }) => ({ default: Debrief })));
-const AIRunStore = lazy(() => import('./pages/AIRunStore').then(({ AIRunStore }) => ({ default: AIRunStore })));
 
 // Clears a caught page error as soon as the visitor navigates elsewhere.
 const RouteErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -80,7 +79,7 @@ const App: React.FC = () => {
             <Route path="/" element={<Home />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/settings" element={<ProfilePage />} />
+            <Route path="/settings" element={<Navigate to="/profile" replace />} />
             <Route path="/assessment" element={<Assessment />} />
             <Route path="/results" element={<Results />} />
             <Route path="/checkout/:tier" element={<Checkout />} />
@@ -97,7 +96,6 @@ const App: React.FC = () => {
             <Route path="/sample-report" element={<SampleReport />} />
             <Route path="/methodology" element={<Methodology />} />
             <Route path="/debrief" element={<Debrief />} />
-            <Route path="/ai-run-store" element={<AIRunStore />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>

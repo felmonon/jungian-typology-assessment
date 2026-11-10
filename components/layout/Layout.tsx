@@ -362,6 +362,9 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
           </Link>
 
           <nav className="hidden items-center gap-7 lg:flex">
+            <a href="/jung" className={navLinkClass({ isActive: false })}>
+              Jung Library
+            </a>
             {navigation.map((item) => (
               <NavLink
                 key={item.to}
@@ -386,7 +389,16 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
                   to={hasResult ? '/results' : '/assessment'}
                   className="btn-premium !min-h-11 !px-4 !py-2 text-xs sm:text-sm"
                 >
-                  {hasResult ? 'My map' : 'Start free'}
+                  {hasResult ? (
+                    'My map'
+                  ) : assessmentProgress ? (
+                    'Resume'
+                  ) : (
+                    <>
+                      <span className="sm:hidden">Free map</span>
+                      <span className="hidden sm:inline">Get my free map</span>
+                    </>
+                  )}
                 </Link>
               </div>
             )}
@@ -412,6 +424,9 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
           <div id="site-mobile-menu" className="lg:hidden">
             <div className="lab-container pb-4 pt-3">
               <div className="rounded-lg border border-jung-border bg-jung-surface p-2 shadow-lg">
+                <a href="/jung" className={mobileNavLinkClass({ isActive: false })}>
+                  Jung Library
+                </a>
                 {navigation.map((item) => (
                   <NavLink
                     key={item.to}
@@ -449,7 +464,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
                     to={hasResult ? '/results' : '/assessment'}
                     className="inline-flex min-h-11 items-center justify-center rounded-lg bg-jung-accent px-4 text-sm font-semibold text-white"
                   >
-                    {hasResult ? 'Open my map' : 'Start free assessment'}
+                    {hasResult ? 'Open my map' : assessmentProgress ? 'Resume my map' : 'Get my free map'}
                   </Link>
                   {isAuthenticated ? (
                     <button
@@ -565,15 +580,15 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
       <main id="main-content">{children}</main>
 
       <footer className="border-t border-jung-border bg-jung-surface">
-        <div className="lab-container grid gap-8 py-10 md:grid-cols-[1.2fr_1fr_1fr]">
+        <div className="lab-container grid gap-8 py-10 md:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">
           <div>
             <Link to="/" className="inline-flex min-h-11 items-center gap-2">
               <TypeJungMark size="sm" />
               <span className="studio-wordmark font-display text-2xl">TypeJung</span>
             </Link>
             <p className="mt-3 max-w-xs text-sm leading-6 text-jung-muted">
-              Explore the pattern behind your personality. A tool for
-              educational self-reflection.
+              Jung, made usable. A sourced library of his ideas and a free map
+              of your own function pattern, for educational self-reflection.
             </p>
             <a
               href="mailto:support@typejung.com"
@@ -582,8 +597,29 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
               support@typejung.com
             </a>
           </div>
+          <nav aria-label="Jung Library">
+            <p className="journey-eyebrow mb-3">Jung Library</p>
+            <div className="grid grid-cols-2 gap-x-4 text-xs text-jung-secondary">
+              {[
+                ['/jung', 'All concepts'],
+                ['/jung/glossary', 'Glossary'],
+                ['/jung/quotes', 'Quotes, with sources'],
+                ['/jung/where-to-start', 'Where to start'],
+                ['/jung/books', 'Book guides'],
+                ['/jung/life', 'Jung\u2019s life'],
+              ].map(([href, label]) => (
+                <a
+                  key={href}
+                  href={href}
+                  className="inline-flex min-h-11 items-center hover:text-jung-accent"
+                >
+                  {label}
+                </a>
+              ))}
+            </div>
+          </nav>
           <nav aria-label="Explore TypeJung">
-            <p className="journey-eyebrow mb-3">Explore</p>
+            <p className="journey-eyebrow mb-3">Your map</p>
             <div className="grid grid-cols-2 gap-x-4 text-xs text-jung-secondary">
               {[
                 ['/assessment', 'Free assessment'],
@@ -627,6 +663,12 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
                 All guides
               </a>
               <a
+                href="/jung/editorial-standards"
+                className="inline-flex min-h-11 items-center hover:text-jung-accent"
+              >
+                Editorial standards
+              </a>
+              <a
                 href="https://github.com/felmonon/jungian-typology-assessment"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -639,7 +681,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
         </div>
         <div className="lab-container flex flex-wrap justify-between gap-3 border-t border-jung-border-light py-5 text-[11px] text-jung-muted">
           <span>© {new Date().getFullYear()} TypeJung</span>
-          <span>Made for curiosity and reflection.</span>
+          <span>Independent. Not affiliated with the Jung family or any Jungian institute.</span>
         </div>
       </footer>
     </div>

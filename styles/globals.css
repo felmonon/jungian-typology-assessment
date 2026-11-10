@@ -155,15 +155,13 @@ select {
 
 .text-body,
 .font-body {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-weight: 400;
-  font-variation-settings: "opsz" 14;
   line-height: 1.7;
 }
 
 .text-body-lg {
-  font-family: var(--font-serif);
-  font-variation-settings: "opsz" 18;
+  font-family: var(--font-sans);
   font-size: 1.125rem;
   line-height: 1.75;
 }

@@ -165,7 +165,7 @@ export const AdminDashboard: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center gap-3 mb-6 sm:mb-8">
         <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-jung-primary" />
-        <h1 className="text-2xl sm:text-3xl font-serif font-bold text-jung-primary">Admin Dashboard</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-jung-primary">Admin Dashboard</h1>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
@@ -236,7 +236,7 @@ export const AdminDashboard: React.FC = () => {
           <div>
             <div className="flex items-center gap-2">
               <CreditCard className="w-5 h-5 text-jung-primary" />
-              <h2 className="text-xl font-serif font-semibold text-jung-dark">Customer checkout funnel</h2>
+              <h2 className="text-xl font-semibold text-jung-dark">Customer checkout funnel</h2>
             </div>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-jung-secondary">
               Durable intent rows show whether buyers are reaching Stripe, failing before Stripe, or abandoning after the handoff.
@@ -355,7 +355,7 @@ export const AdminDashboard: React.FC = () => {
         <div className="bg-white rounded-lg shadow-sm border border-jung-border p-6">
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="w-5 h-5 text-jung-primary" />
-            <h2 className="text-xl font-serif font-semibold text-jung-dark">100-Customer Sprint</h2>
+            <h2 className="text-xl font-semibold text-jung-dark">100-Customer Sprint</h2>
           </div>
           {statsLoading ? (
             <div className="animate-pulse text-jung-muted">Loading...</div>
@@ -406,7 +406,7 @@ export const AdminDashboard: React.FC = () => {
         <div className="bg-white rounded-lg shadow-sm border border-jung-border p-6">
           <div className="flex items-center gap-2 mb-4">
             <Activity className="w-5 h-5 text-jung-primary" />
-            <h2 className="text-xl font-serif font-semibold text-jung-dark">Recovery Pipeline</h2>
+            <h2 className="text-xl font-semibold text-jung-dark">Recovery Pipeline</h2>
           </div>
           {statsLoading ? (
             <div className="animate-pulse text-jung-muted">Loading...</div>
@@ -482,7 +482,7 @@ export const AdminDashboard: React.FC = () => {
           <div>
             <div className="flex items-center gap-2">
               <Activity className="w-5 h-5 text-jung-primary" />
-              <h2 className="text-xl font-serif font-semibold text-jung-dark">Revenue Priorities</h2>
+              <h2 className="text-xl font-semibold text-jung-dark">Revenue Priorities</h2>
             </div>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-jung-secondary">
               Focus on recoverable checkout intent before scaling new traffic.
@@ -544,7 +544,7 @@ export const AdminDashboard: React.FC = () => {
       <div className="bg-white rounded-lg shadow-sm border border-jung-border p-6 mb-8">
         <div className="flex items-center gap-2 mb-4">
           <BarChart3 className="w-5 h-5 text-jung-primary" />
-          <h2 className="text-xl font-serif font-semibold text-jung-dark">Paid Customer Sources</h2>
+          <h2 className="text-xl font-semibold text-jung-dark">Paid Customer Sources</h2>
         </div>
         {statsLoading ? (
           <div className="animate-pulse text-jung-muted">Loading...</div>
@@ -567,7 +567,7 @@ export const AdminDashboard: React.FC = () => {
         <div className="bg-white rounded-lg shadow-sm border border-jung-border p-6 mb-8">
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="w-5 h-5 text-jung-primary" />
-            <h2 className="text-xl font-serif font-semibold text-jung-dark">Paid Attribution Chains</h2>
+            <h2 className="text-xl font-semibold text-jung-dark">Paid Attribution Chains</h2>
           </div>
           <div className="divide-y divide-jung-border">
             {stats.topPurchaseChains.map((item) => (
@@ -585,7 +585,7 @@ export const AdminDashboard: React.FC = () => {
         <div className="bg-white rounded-lg shadow-sm border border-jung-border p-6">
           <div className="flex items-center gap-2 mb-4">
             <PieChart className="w-5 h-5 text-jung-primary" />
-            <h2 className="text-xl font-serif font-semibold text-jung-dark">Popular Types</h2>
+            <h2 className="text-xl font-semibold text-jung-dark">Popular Types</h2>
           </div>
           {analyticsLoading ? (
             <div className="animate-pulse text-jung-muted">Loading...</div>
@@ -625,7 +625,7 @@ export const AdminDashboard: React.FC = () => {
         <div className="bg-white rounded-lg shadow-sm border border-jung-border p-6">
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="w-5 h-5 text-jung-primary" />
-            <h2 className="text-xl font-serif font-semibold text-jung-dark">Engagement Metrics</h2>
+            <h2 className="text-xl font-semibold text-jung-dark">Engagement Metrics</h2>
           </div>
           {analyticsLoading ? (
             <div className="animate-pulse text-jung-muted">Loading...</div>
@@ -688,7 +688,7 @@ export const AdminDashboard: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6">
           <div className="flex items-center gap-2">
             <FileText className="w-5 h-5 text-jung-primary" />
-            <h2 className="text-lg sm:text-xl font-serif font-semibold text-jung-dark">Questions Management</h2>
+            <h2 className="text-lg sm:text-xl font-semibold text-jung-dark">Questions Management</h2>
             <span className="text-xs sm:text-sm text-jung-muted">({filteredQuestions.length})</span>
           </div>
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
@@ -790,7 +790,7 @@ export const AdminDashboard: React.FC = () => {
         <div className="bg-white rounded-lg shadow-sm border border-jung-border p-6">
           <div className="flex items-center gap-2 mb-4">
             <Settings className="w-5 h-5 text-jung-primary" />
-            <h2 className="text-xl font-serif font-semibold text-jung-dark">Function Descriptions</h2>
+            <h2 className="text-xl font-semibold text-jung-dark">Function Descriptions</h2>
           </div>
           <div className="space-y-2">
             {Object.entries(FUNCTION_DESCRIPTIONS).map(([key, desc]) => (
@@ -827,7 +827,7 @@ export const AdminDashboard: React.FC = () => {
         <div className="bg-white rounded-lg shadow-sm border border-jung-border p-6">
           <div className="flex items-center gap-2 mb-4">
             <Settings className="w-5 h-5 text-jung-primary" />
-            <h2 className="text-xl font-serif font-semibold text-jung-dark">Stack Positions</h2>
+            <h2 className="text-xl font-semibold text-jung-dark">Stack Positions</h2>
           </div>
           <div className="space-y-2">
             {Object.entries(STACK_POSITIONS).map(([key, pos]) => (

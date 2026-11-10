@@ -183,7 +183,7 @@ export const History: React.FC = () => {
       {/* Results table */}
       <div className="card-elevated rounded-2xl overflow-hidden">
         <div className="px-3 sm:px-5 py-4 border-b border-jung-border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
-          <h2 className="text-lg font-serif font-bold text-jung-dark">Your Results</h2>
+          <h2 className="text-lg font-bold text-jung-dark">Your Results</h2>
           <div className="flex gap-3 flex-wrap">
             {selectedResults.length > 0 && (
               <Button
@@ -217,7 +217,7 @@ export const History: React.FC = () => {
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-jung-accent/10 flex items-center justify-center">
               <HistoryIcon className="w-8 h-8 text-jung-accent/50" />
             </div>
-            <h3 className="text-lg font-semibold text-jung-dark mb-2 font-serif">No Results Yet</h3>
+            <h3 className="text-lg font-semibold text-jung-dark mb-2">No Results Yet</h3>
             <p className="text-jung-muted mb-6 max-w-md mx-auto font-body">
               Complete your first assessment to start tracking your cognitive function profile over time.
             </p>
@@ -253,8 +253,8 @@ export const History: React.FC = () => {
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-serif font-bold text-jung-dark text-sm sm:text-base truncate">{funcTitle}</span>
-                      <span className="text-xs font-serif font-medium bg-jung-accent/10 text-jung-accent px-2 py-0.5 rounded flex-shrink-0">
+                      <span className="font-bold text-jung-dark text-sm sm:text-base truncate">{funcTitle}</span>
+                      <span className="text-xs font-medium bg-jung-accent/10 text-jung-accent px-2 py-0.5 rounded flex-shrink-0">
                         {dominantFunc}
                       </span>
                     </div>
@@ -268,7 +268,7 @@ export const History: React.FC = () => {
                     {result.scores.slice(0, 4).map(score => (
                       <span
                         key={score.function}
-                        className="bg-jung-surface text-jung-secondary px-2 py-1 rounded font-serif"
+                        className="bg-jung-surface text-jung-secondary px-2 py-1 rounded"
                       >
                         {score.function}: {score.score}
                       </span>
@@ -370,7 +370,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ results, onClear, forma
   return (
     <div className="card-elevated rounded-2xl mb-8 overflow-hidden">
       <div className="p-5 border-b border-jung-border flex justify-between items-center">
-        <h2 className="text-xl font-serif font-bold text-jung-dark flex items-center gap-2">
+        <h2 className="text-xl font-bold text-jung-dark flex items-center gap-2">
           <GitCompare className="w-5 h-5 text-jung-accent" />
           Comparison Results
         </h2>
@@ -384,8 +384,8 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ results, onClear, forma
         {/* Result cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div className="bg-jung-accent/5 rounded-xl p-4 border-l-4 border-jung-accent">
-            <p className="text-xs text-jung-muted uppercase tracking-widest mb-1 font-serif">Earlier Result</p>
-            <p className="font-serif font-bold text-jung-dark">
+            <p className="text-xs text-jung-muted uppercase tracking-widest mb-1">Earlier Result</p>
+            <p className="font-bold text-jung-dark">
               {FUNCTION_DESCRIPTIONS[dominant1]?.title || dominant1}
             </p>
             <p className="text-sm text-jung-secondary flex items-center gap-1">
@@ -394,8 +394,8 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ results, onClear, forma
             </p>
           </div>
           <div className="bg-jung-dark/5 rounded-xl p-4 border-l-4 border-jung-dark">
-            <p className="text-xs text-jung-muted uppercase tracking-widest mb-1 font-serif">Later Result</p>
-            <p className="font-serif font-bold text-jung-dark">
+            <p className="text-xs text-jung-muted uppercase tracking-widest mb-1">Later Result</p>
+            <p className="font-bold text-jung-dark">
               {FUNCTION_DESCRIPTIONS[dominant2]?.title || dominant2}
             </p>
             <p className="text-sm text-jung-secondary flex items-center gap-1">
@@ -420,7 +420,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ results, onClear, forma
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Radar chart */}
           <div className="bg-jung-surface rounded-xl p-4">
-            <h3 className="text-center font-serif font-bold text-jung-secondary mb-4 text-sm uppercase tracking-widest">
+            <h3 className="text-center font-bold text-jung-secondary mb-4 text-sm uppercase tracking-widest">
               Overlaid Radar Comparison
             </h3>
             <div className="h-[300px] sm:h-[350px]">
@@ -456,7 +456,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ results, onClear, forma
 
           {/* Score changes table */}
           <div>
-            <h3 className="font-serif font-bold text-jung-secondary mb-4 text-sm uppercase tracking-widest">
+            <h3 className="font-bold text-jung-secondary mb-4 text-sm uppercase tracking-widest">
               Score Changes
             </h3>
             <div className="overflow-x-auto">

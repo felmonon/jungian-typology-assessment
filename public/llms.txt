@@ -13,7 +13,7 @@ TypeJung also publishes the Jung Library: plain-language explanations of Carl Ju
 - [Free assessment](https://typejung.com/assessment): 42-question Jungian cognitive functions assessment.
 - [Sample report](https://typejung.com/sample-report): Fictional sample showing the structure, tone, and depth of a paid Insight report.
 - [Pricing](https://typejung.com/pricing): Free, Insight, and Mastery tiers with one-time CAD upgrade pricing.
-- [AI-run TypeJung lab](https://typejung.com/ai-run-store): Transparent supervised AI operator loop, guardrails, and shipped change ledger.
+- [How AI is used](https://typejung.com/about#how-ai-is-used): Where AI does work at TypeJung, and what is never allowed.
 - [Learn](https://typejung.com/learn): Jungian theory and cognitive functions guide.
 - [Content index](https://typejung.com/content.txt): Plain-text site and topic index.
 

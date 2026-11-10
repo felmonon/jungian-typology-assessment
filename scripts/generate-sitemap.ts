@@ -40,7 +40,6 @@ const entries: SitemapEntry[] = [
   { loc: '/methodology', changefreq: 'monthly', priority: 0.7 },
   { loc: '/debrief', changefreq: 'monthly', priority: 0.7 },
   { loc: '/leaderboard', changefreq: 'daily', priority: 0.6 },
-  { loc: '/ai-run-store', changefreq: 'weekly', priority: 0.6 },
   { loc: '/about', changefreq: 'monthly', priority: 0.5 },
 
   // Note: /content.txt and /llms.txt are intentionally excluded from the HTML sitemap.
@@ -156,7 +155,7 @@ console.log('✅ Sitemap generated successfully!');
 console.log(`📄 Location: ${outputPath}`);
 console.log(`🔗 Total URLs: ${entries.length}`);
 console.log('\nBreakdown:');
-console.log(`  • Main pages: 10`);
+console.log(`  • Main pages: 9`);
 console.log(`  • Blog articles: ${growthBlogArticles.length + 2}`);
 console.log(`  • High-intent landing pages: ${seoLandingPages.length}`);
 console.log(`  • Function pages: ${functions.length}`);

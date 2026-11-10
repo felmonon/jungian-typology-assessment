@@ -104,7 +104,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
           className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-jung-dark hover:bg-jung-secondary text-white px-6 py-4 rounded-full shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl min-h-[56px]"
         >
           <MessageCircle className="w-5 h-5" />
-          <span className="font-serif font-medium tracking-wide">Ask Your Type Guide</span>
+          <span className="font-medium tracking-wide">Ask Your Type Guide</span>
         </button>
       )}
 
@@ -118,8 +118,8 @@ export const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
                 <Sparkles className="w-5 h-5 text-jung-accent" />
               </div>
               <div>
-                <h3 className="font-serif font-bold text-lg">Jungian Type Guide</h3>
-                <p className="text-xs text-white/70 font-serif">Educational reflection, not advice</p>
+                <h3 className="font-bold text-lg">Jungian Type Guide</h3>
+                <p className="text-xs text-white/70">Educational reflection, not advice</p>
               </div>
             </div>
             <button
@@ -146,7 +146,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
                         setInput(q);
                         inputRef.current?.focus();
                       }}
-                      className="w-full text-left text-sm p-3 bg-jung-surface rounded-xl border border-jung-border hover:border-jung-accent hover:bg-jung-accent/5 transition-all duration-200 text-jung-dark font-serif"
+                      className="w-full text-left text-sm p-3 bg-jung-surface rounded-xl border border-jung-border hover:border-jung-accent hover:bg-jung-accent/5 transition-all duration-200 text-jung-dark"
                     >
                       {q}
                     </button>
@@ -193,7 +193,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Ask about your type..."
-                className="flex-1 px-4 py-3 rounded-full border border-jung-border bg-jung-surface focus:outline-none focus:border-jung-accent focus:ring-2 focus:ring-jung-accent/20 text-sm text-jung-dark placeholder:text-jung-muted font-serif transition-all duration-200"
+                className="flex-1 px-4 py-3 rounded-full border border-jung-border bg-jung-surface focus:outline-none focus:border-jung-accent focus:ring-2 focus:ring-jung-accent/20 text-sm text-jung-dark placeholder:text-jung-muted transition-all duration-200"
                 disabled={isLoading}
               />
               <button

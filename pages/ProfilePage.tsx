@@ -591,7 +591,7 @@ export const ProfilePage: React.FC = () => {
                 <BarChart3 className="w-4 h-4" />
                 <span className="text-xs font-medium uppercase tracking-wide">Total Assessments</span>
               </div>
-              <p className="text-2xl sm:text-3xl font-serif font-bold text-jung-accent">{totalAssessments}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-jung-accent">{totalAssessments}</p>
             </div>
 
             <div className="bg-jung-surface-alt rounded-lg p-4 border border-jung-border-light">
@@ -599,7 +599,7 @@ export const ProfilePage: React.FC = () => {
                 <Eye className="w-4 h-4" />
                 <span className="text-xs font-medium uppercase tracking-wide">Recent Dominant</span>
               </div>
-              <p className="text-lg sm:text-xl font-serif font-bold text-jung-accent truncate">
+              <p className="text-lg sm:text-xl font-bold text-jung-accent truncate">
                 {mostRecentResult ? mostRecentResult.stack.dominant.function : '—'}
               </p>
               {mostRecentResult && (
@@ -614,7 +614,7 @@ export const ProfilePage: React.FC = () => {
                 <Clock className="w-4 h-4" />
                 <span className="text-xs font-medium uppercase tracking-wide">Member Since</span>
               </div>
-              <p className="text-lg sm:text-xl font-serif font-bold text-jung-accent">
+              <p className="text-lg sm:text-xl font-bold text-jung-accent">
                 {accountCreatedDate || '—'}
               </p>
             </div>

@@ -34,7 +34,7 @@ export const PAGE_SEO: Record<string, SEOConfig> = {
   },
   about: {
     title: 'About TypeJung: Free Jungian Function-Stack Map',
-    description: 'Learn why TypeJung maps all 8 cognitive functions, inferior-function pressure, somatic signals, and attitude direction instead of forcing a four-letter label.',
+    description: 'TypeJung is a sourced library of Carl Jung\'s ideas and a free map of your own function pattern. Why it is not another MBTI clone, and what it does not claim.',
   },
   pricing: {
     title: 'Pricing: Free Map, Insight CA$7, Mastery CA$20.30 | TypeJung',

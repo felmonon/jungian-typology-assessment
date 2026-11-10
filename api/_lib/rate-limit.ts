@@ -12,6 +12,13 @@ type RateLimitConfig = {
   message?: string;
 };
 
+// Limitation: these buckets live in the memory of a single serverless instance.
+// Vercel runs several instances at once and discards idle ones, so a limit is
+// enforced per instance rather than across the deployment. A caller whose
+// requests land on different instances can exceed it, and the counts start
+// again on every cold start. This slows casual abuse; it is not a hard cap.
+// A hard cap needs a shared store (Redis or a database table), which this
+// project does not run.
 const buckets = new Map<string, Bucket>();
 let lastCleanupAt = 0;
 

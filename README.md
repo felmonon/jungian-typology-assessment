@@ -207,6 +207,18 @@ npm run test:coverage
 
 ---
 
+## Operations
+
+### Rate limits
+
+Each API handler sets its own limit through [`api/_lib/rate-limit.ts`](api/_lib/rate-limit.ts). The counters are kept in memory, per serverless instance. Vercel runs several instances at once and discards idle ones, so a limit is not shared across the deployment: a caller whose requests land on different instances can exceed it, and the counts start again on every cold start. The limits slow down casual abuse of the AI, auth, email and checkout endpoints. They are not a hard cap on usage or spend; that would need a shared store such as Redis, which this project does not run.
+
+### Caching
+
+`GET /api/leaderboard` is the same for every visitor and is cached by the Vercel CDN for five minutes (`s-maxage=300`, with `stale-while-revalidate=600`), so a new result can take a few minutes to appear there. No other API response is cached.
+
+---
+
 ## Notes
 
 - This repo uses external services for auth, payments, storage, and AI generation, so a local run needs valid environment variables.

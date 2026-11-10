@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import handler from '../../api/create-checkout-session';
 import { checkoutAttributionEventParams } from '../../api/webhook';
 import { recordFunnelEvent } from '../../api/_lib/funnel-events';
-import { schemas } from '../../server/middleware/validate';
 import { recordCheckoutIntentStarted } from '../../api/_lib/checkout-intents';
 import { isResearchTrafficEvent, RESEARCH_CAMPAIGN, RESEARCH_SOURCE } from '../../shared/research-traffic';
 
@@ -132,11 +131,5 @@ describe('checkout traffic snapshot', () => {
     expect(properties).not.toHaveProperty('traffic_referrer_host');
     expect(properties.traffic_source).toBe('google');
     expect(checkoutAttributionEventParams({ metadata: null })).not.toHaveProperty('traffic_source');
-  });
-
-  it('keeps the same sanitized snapshot through Express request validation', () => {
-    const parsed = schemas.checkoutSession.parse({ tier: 'insight', trafficAttribution: { ...traffic, email: 'buyer@example.com' } });
-    expect(parsed.trafficAttribution).toEqual(traffic);
-    expect(schemas.checkoutSession.parse({ tier: 'insight' }).trafficAttribution).toEqual({});
   });
 });

@@ -63,23 +63,6 @@ export function getAutoPromotionCode(): string | null {
   return cleanPromotionCode(process.env.EMAIL_CAPTURE_DISCOUNT_CODE || EMAIL_CAPTURE_OFFER.code);
 }
 
-export async function findActivePromotionCodeId(
-  stripe: { promotionCodes: { list: (params: { code: string; active: boolean; limit: number }) => Promise<{ data: Array<{ id?: string }> }> } },
-  code: string,
-): Promise<string | null> {
-  try {
-    const promotionCodes = await stripe.promotionCodes.list({
-      code,
-      active: true,
-      limit: 1,
-    });
-    return promotionCodes.data[0]?.id || null;
-  } catch (error) {
-    console.warn('Stripe promotion code lookup failed:', error instanceof Error ? error.message : 'Unknown Stripe error');
-    return null;
-  }
-}
-
 export function resolveCheckoutBaseUrl(
   originHeader: string | string[] | undefined,
   hostHeader?: string | string[] | undefined,

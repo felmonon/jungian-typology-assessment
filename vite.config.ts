@@ -1,12 +1,19 @@
 import path from 'path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { devApiPlugin } from './scripts/dev-api';
 
 export default defineConfig(() => {
     return {
       server: {
-        port: 5000,
-        host: '0.0.0.0',
+        // Loopback by default: the dev server runs the API with local
+        // credentials, and macOS AirPlay Receiver already holds *:5000.
+        // Set HOST=0.0.0.0 to reach it from another device.
+        host: process.env.HOST || '127.0.0.1',
+        port: Number(process.env.PORT) || 5000,
+        // Fail instead of drifting to another port; OAuth callbacks and the
+        // docs assume this one.
+        strictPort: true,
         allowedHosts: true as const,
       },
       build: {
@@ -24,7 +31,7 @@ export default defineConfig(() => {
           }
         }
       },
-      plugins: [react()],
+      plugins: [react(), devApiPlugin()],
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),

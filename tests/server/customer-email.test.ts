@@ -28,11 +28,12 @@ vi.mock('../../api/_lib/supabase', () => ({
 
 import {
   sendCheckoutRecoveryEmail,
+  sendCustomerEmail,
   sendDebriefRequestNotification,
   sendDiscountLeadEmail,
   sendDiscountLeadFollowupEmail,
   sendLifecycleEmail,
-  sendPdfEmail,
+  type CustomerEmailInput,
 } from '../../server/resend';
 import { createUnsubscribeToken, verifyUnsubscribeToken } from '../../server/email-suppression';
 import { handleUnsubscribe } from '../../api/_lib/unsubscribe';
@@ -45,6 +46,16 @@ const reader = 'Reader@Example.com';
 function lastPayload() {
   return send.mock.calls[send.mock.calls.length - 1][0];
 }
+
+const requestedReport: CustomerEmailInput = {
+  category: 'transactional',
+  to: reader,
+  subject: 'Your TypeJung Results',
+  preview: 'Your report is attached.',
+  bodyHtml: '<p>Your report is attached.</p>',
+  text: 'Your report is attached.',
+  attachments: [{ filename: 'typejung-report.pdf', content: Buffer.from('pdf').toString('base64') }],
+};
 
 const marketingSends: [string, () => Promise<unknown>][] = [
   ['lifecycle', () => sendLifecycleEmail({ kind: 'result-ready', toEmail: reader })],
@@ -101,22 +112,22 @@ describe('sendCustomerEmail routing', () => {
     await expect(sendLifecycleEmail({ kind: 'result-ready', toEmail: reader })).resolves.toMatchObject({ sent: true });
   });
 
-  it('still delivers a requested PDF report to an unsubscribed reader, without unsubscribe headers', async () => {
+  it('still delivers transactional mail to an unsubscribed reader, without unsubscribe headers', async () => {
     lookup.mockResolvedValue({ data: { reason: 'unsubscribe' }, error: null });
 
-    await sendPdfEmail(reader, Buffer.from('pdf'), '<b>Sam</b>', 'Ni');
+    await expect(sendCustomerEmail(requestedReport)).resolves.toEqual({ sent: true, id: 'email_1' });
 
     const payload = lastPayload();
     expect(payload.headers).toBeUndefined();
-    expect(payload.attachments[0].filename).toBe('jungian-typology-results.pdf');
-    expect(payload.html).toContain('&lt;b&gt;Sam&lt;/b&gt;');
+    expect(payload.attachments[0].filename).toBe('typejung-report.pdf');
     expect(payload.html).not.toContain('Unsubscribe');
   });
 
-  it('refuses a PDF report to a bounced address', async () => {
+  it('refuses transactional mail to a bounced address', async () => {
     lookup.mockResolvedValue({ data: { reason: 'bounce' }, error: null });
 
-    await expect(sendPdfEmail(reader, Buffer.from('pdf'), 'Sam', 'Ni')).rejects.toThrow('email_suppressed');
+    await expect(sendCustomerEmail(requestedReport))
+      .resolves.toEqual({ sent: false, skipped: true, reason: 'email_suppressed' });
     expect(send).not.toHaveBeenCalled();
   });
 
@@ -141,7 +152,6 @@ describe('sendCustomerEmail routing', () => {
       }
     };
     ['server', 'api'].forEach(dir => walk(path.join(root, dir)));
-    files.push(path.join(root, 'server.ts'), path.join(root, 'server-prod.ts'));
 
     const sendSites = files.flatMap(file => (readFileSync(file, 'utf8').match(/emails\.send\(/g) || []).map(() => path.relative(root, file)));
     expect(sendSites).toEqual(['server/resend.ts']);

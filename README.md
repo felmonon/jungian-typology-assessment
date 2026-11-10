@@ -115,7 +115,7 @@ The repo includes:
 
 ### Prerequisites
 
-- Node.js 20+
+- Node.js 22 or newer (CI and [`.nvmrc`](.nvmrc) use 24)
 - npm or yarn
 - Supabase account
 - Stripe account (for payments)

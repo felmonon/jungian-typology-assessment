@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "vite",
     "build": "npm run generate:blog && npm run generate:static && npm run generate:jung && npm run generate:ai-index && vite build && npm run generate:spa-routes && npm run generate:sitemap",

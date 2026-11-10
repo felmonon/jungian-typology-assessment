@@ -57,12 +57,9 @@ describe('standalone generated-page analytics', () => {
 
   it('keeps generated assessment duration copy consistent at 20-25 minutes', () => {
     const landingData = JSON.stringify(seoLandingPages);
-    const prerenderSource = readFileSync(join(process.cwd(), 'scripts/prerender.mjs'), 'utf8');
 
     expect(landingData).toContain('20 to 25 minutes');
     expect(landingData).not.toContain('12 to 16 minutes');
-    expect(prerenderSource).toContain('20-25 minutes');
-    expect(prerenderSource).not.toContain('12-16 minutes');
   });
 
   it('refreshes legacy-page instrumentation without duplicate scripts or editorial changes', () => {

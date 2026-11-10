@@ -213,6 +213,17 @@ npm run test:coverage
 
 Each API handler sets its own limit through [`api/_lib/rate-limit.ts`](api/_lib/rate-limit.ts). The counters are kept in memory, per serverless instance. Vercel runs several instances at once and discards idle ones, so a limit is not shared across the deployment: a caller whose requests land on different instances can exceed it, and the counts start again on every cold start. The limits slow down casual abuse of the AI, auth, email and checkout endpoints. They are not a hard cap on usage or spend; that would need a shared store such as Redis, which this project does not run.
 
+### Maintenance scripts
+
+These are run by hand, never by the build or CI. They use the credentials in your local env files and talk to the live services, so read the script before running one.
+
+| Command | What it does |
+|---------|--------------|
+| `npm run ops:snapshot -- --output logs/business-snapshot.json` | Read-only business report for the last 90 days from Supabase and Stripe ([`scripts/business-snapshot.mjs`](scripts/business-snapshot.mjs)). Prints JSON; `--output` also saves it. Reads `.env.local`. |
+| `npm run ops:backfill-checkout-intents -- --env=.env.local` | Copies Stripe Checkout session metadata into `checkout_intents` ([`scripts/backfill-checkout-intents-from-stripe.mjs`](scripts/backfill-checkout-intents-from-stripe.mjs)). A dry run unless `--apply` is added; `--max-pages=N` limits how far back it reads. |
+| `npm run ops:indexnow` | Submits every URL in `public/sitemap.xml` to IndexNow ([`scripts/submit-indexnow.mjs`](scripts/submit-indexnow.mjs)). Run it after a deploy. |
+| `npm run ops:type-depth-guide` | Regenerates `public/downloads/typejung-type-depth-guide.pdf` with Puppeteer ([`scripts/generate-type-depth-guide.ts`](scripts/generate-type-depth-guide.ts)). |
+
 ### Caching
 
 `GET /api/leaderboard` is the same for every visitor and is cached by the Vercel CDN for five minutes (`s-maxage=300`, with `stale-while-revalidate=600`), so a new result can take a few minutes to appear there. No other API response is cached.

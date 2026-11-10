@@ -27,13 +27,6 @@ export const FUNCTION_LABELS: Record<FunctionChannel, string> = {
   intuition: 'Intuition',
 };
 
-export const FUNCTION_SHORT_LABELS: Record<FunctionChannel, string> = {
-  thinking: 'T',
-  feeling: 'F',
-  sensation: 'S',
-  intuition: 'N',
-};
-
 export const ATTITUDE_LABELS: Record<AttitudeDirection, string> = {
   introverted: 'Introverted',
   extraverted: 'Extraverted',

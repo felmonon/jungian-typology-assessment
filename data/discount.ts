@@ -23,6 +23,3 @@ export const discountSavingsAmount = (amount: number) =>
 
 export const discountedPriceLabel = (amount: number) =>
   formatCadAmount(discountedAmount(amount));
-
-export const discountSavingsLabel = (amount: number) =>
-  `Save ${formatCadAmount(discountSavingsAmount(amount))}`;

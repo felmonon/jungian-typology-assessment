@@ -140,12 +140,3 @@ export function useSEO(config: SEOConfig) {
 
   }, [config.title, config.description, config.image, config.url, config.type, config.noIndex]);
 }
-
-// Hook for dynamic share page SEO
-export function useSharePageSEO(dominantFunction: string) {
-  useSEO({
-    title: `${dominantFunction} Type Result | TypeJung`,
-    description: `See this ${dominantFunction} psychological type profile. Take TypeJung to discover your own cognitive function stack.`,
-    type: 'article',
-  });
-}

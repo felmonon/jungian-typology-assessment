@@ -24,11 +24,6 @@ function isAnalyticsEnvironmentAllowed(): boolean {
 }
 
 // Validation schemas for analytics events
-const EventParamsSchema = z.record(
-  z.string(),
-  z.union([z.string(), z.number(), z.boolean()])
-);
-
 const PageViewSchema = z.object({
   page_path: z.string().min(1).max(500),
   page_title: z.string().min(1).max(200),
@@ -614,11 +609,6 @@ export function canTrackEvent(): boolean {
     analyticsState.eventCount = 0;
   }
   return analyticsState.eventCount < 100;
-}
-
-// Get analytics status (for debugging)
-export function getAnalyticsStatus(): AnalyticsState {
-  return { ...analyticsState };
 }
 
 // Enable/disable analytics

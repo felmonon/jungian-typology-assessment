@@ -1,31 +1,4 @@
-// SEO Configuration for TypeJung
 
-export const siteConfig = {
-  name: 'TypeJung',
-  description: 'Free Jungian function-stack map that shows all 8 cognitive functions, dominant-inferior tension, and stress edges for educational self-reflection.',
-  url: 'https://typejung.com',
-  ogImage: 'https://typejung.com/og-image.png',
-  keywords: [
-    'Jung personality test',
-    'cognitive function test',
-    'Jungian typology',
-    '8 cognitive functions',
-    'psychological types',
-    'MBTI alternative',
-    'Ni Ne Si Se Ti Te Fi Fe',
-    'personality assessment',
-    'Carl Jung test',
-  ],
-  author: 'TypeJung',
-  twitterHandle: '@typejung',
-  sameAs: [
-    'https://x.com/typejung',
-    'https://www.reddit.com/user/typejung',
-    'https://github.com/felmonon/jungian-typology-assessment',
-    'https://github.com/felmonon',
-    'https://www.linkedin.com/in/felmonfekadu/',
-  ],
-}
 
 export const functionSEO: Record<string, {
   name: string;
@@ -724,11 +697,3 @@ export const typeData: Record<string, {
     growthPath: 'Develop long-term thinking (Ni), build practical structures (Te), and deepen commitment to core values (Fi).',
   },
 }
-
-export const validFunctions = ['ni', 'ne', 'si', 'se', 'ti', 'te', 'fi', 'fe'] as const
-export const validTypes = [
-  'intj', 'intp', 'entj', 'entp',
-  'infj', 'infp', 'enfj', 'enfp',
-  'istj', 'isfj', 'estj', 'esfj',
-  'istp', 'isfp', 'estp', 'esfp'
-] as const

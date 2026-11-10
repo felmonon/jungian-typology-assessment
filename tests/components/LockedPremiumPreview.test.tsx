@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { LockedPremiumPreview } from '../../pages/Results';
+import { LockedPremiumPreview } from '../../components/results/LockedPremiumPreview';
 import { discountedPriceLabel } from '../../data/discount';
 import { PRICING, type PaidTierId } from '../../data/pricing';
 import { calculateDepthResults } from '../../utils/depthScoring';

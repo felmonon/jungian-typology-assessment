@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import {
   ArrowRight,
   Check,
@@ -27,18 +26,17 @@ import { FunctionStackArtwork } from '../components/brand/FunctionStackArtwork';
 import { PersonalReportReader } from '../components/results/PersonalReportReader';
 import { ResultStressPreview } from '../components/results/ResultStressPreview';
 import { ReportUnlockCard, StickyReportBar } from '../components/results/ReportUnlockCard';
+import { LockedPremiumPreview } from '../components/results/LockedPremiumPreview';
+import { EnergyBars, Hierarchy, SignalGrid } from '../components/results/ResultCharts';
+import { ResultReaction } from '../components/results/ResultReaction';
 import { RESULT_OFFER_VERSION } from '../lib/result-stress-preview';
 import { useOfferImpression } from '../hooks/useOfferImpression';
 import { PAGE_SEO, useSEO } from '../hooks/useSEO';
 import { Button } from '../components/ui/Button';
 import {
   ATTITUDE_LABELS,
-  AttitudeDirection,
-  depthLayerMeta,
   FUNCTION_LABELS,
-  FunctionChannel,
 } from '../data/depthAssessment';
-import { discountedPriceLabel } from '../data/discount';
 import { PRICING, type PaidTierId } from '../data/pricing';
 import { SUPPORT_EMAIL } from '../data/support';
 import {
@@ -57,12 +55,15 @@ import {
   getFunnelAnonymousId,
   trackEvent,
 } from '../lib/analytics';
-import {
-  INTENT_RESULT_FRAMING,
-  readAssessmentIntent,
-} from '../lib/assessment-intent';
 import { createDirectCheckoutSession } from '../lib/direct-checkout';
 import { writePendingCheckout } from '../lib/pending-checkout';
+import {
+  formatDate,
+  getFunctionCode,
+  paidTierPrice,
+  positionLabels,
+  stackPositionCode,
+} from '../lib/result-format';
 import { resultUpgradeContextFromSource } from '../lib/result-upgrade-context';
 import { readUpgradeIntent } from '../lib/upgrade-intent';
 import { depthResultToLegacyAnalysisInput } from '../utils/depthCompatibility';
@@ -91,9 +92,6 @@ const inviteSourceByLocation: Record<InviteShareLocation, string> = {
   results_invite_card: 'result_compare_card',
 };
 
-const paidTierPrice = (tier: PaidTierId) =>
-  discountedPriceLabel(PRICING[tier].amount);
-
 const premiumReportSectionConfig: Array<{
   key: keyof PremiumAnalysis;
   title: string;
@@ -115,63 +113,6 @@ type ResultsState =
   | { status: 'no-results' }
   | { status: 'legacy' }
   | { status: 'ready'; results: DepthAssessmentResult };
-
-const positionLabels = {
-  dominant: 'Dominant',
-  auxiliary: 'Auxiliary',
-  tertiary: 'Tertiary',
-  inferior: 'Inferior',
-} as const;
-
-const functionCodeByChannel: Record<
-  FunctionChannel,
-  Record<AttitudeDirection, string>
-> = {
-  thinking: {
-    introverted: 'Ti',
-    extraverted: 'Te',
-  },
-  feeling: {
-    introverted: 'Fi',
-    extraverted: 'Fe',
-  },
-  sensation: {
-    introverted: 'Si',
-    extraverted: 'Se',
-  },
-  intuition: {
-    introverted: 'Ni',
-    extraverted: 'Ne',
-  },
-};
-
-const getFunctionCode = (
-  channel: FunctionChannel,
-  attitude: AttitudeDirection,
-) => functionCodeByChannel[channel]?.[attitude] ?? 'unknown';
-
-// Function code (for example "Ni") at a stack position, or null when absent.
-const stackPositionCode = (
-  results: DepthAssessmentResult,
-  position: 'dominant' | 'inferior',
-) => {
-  const item = results.hierarchy.find((entry) => entry.position === position);
-  return item ? getFunctionCode(item.channel, item.attitude) : null;
-};
-
-const formatDate = (iso: string) => {
-  try {
-    return new Intl.DateTimeFormat(undefined, {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-    }).format(new Date(iso));
-  } catch {
-    return 'Recently completed';
-  }
-};
 
 const readResults = (): ResultsState => {
   try {
@@ -211,360 +152,6 @@ const postLifecycleEmail = async (body: Record<string, unknown>) => {
   } catch {
     return false;
   }
-};
-
-const EnergyBars: React.FC<{ results: DepthAssessmentResult }> = ({
-  results,
-}) => (
-  <div className="card-premium p-6 sm:p-8">
-    <div className="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-      <div>
-        <p className="text-label">Energy distribution</p>
-        <h2 className="mt-2 text-heading text-3xl text-jung-dark">
-          Your four function channels
-        </h2>
-      </div>
-      <div className="rounded-lg bg-jung-accent-light px-3 py-2 text-sm font-semibold text-jung-accent">
-        {results.reliability.score}% consistency
-      </div>
-    </div>
-
-    <div className="space-y-5">
-      {results.energy.map((item) => {
-        const isDominant = item.channel === results.dominant;
-        const isInferior = item.channel === results.inferior;
-
-        return (
-          <div key={item.channel}>
-            <div className="mb-2 flex items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-jung-dark">
-                  {item.label}
-                </span>
-                {isDominant && (
-                  <span className="rounded-lg bg-jung-accent px-2 py-1 text-[11px] font-semibold text-white">
-                    Dominant
-                  </span>
-                )}
-                {isInferior && (
-                  <span className="rounded-lg border border-jung-border px-2 py-1 text-[11px] font-semibold text-jung-muted">
-                    Inferior
-                  </span>
-                )}
-              </div>
-              <span className="font-mono text-sm font-semibold text-jung-muted">
-                {item.score}%
-              </span>
-            </div>
-            <div className="h-3 overflow-hidden rounded-full bg-jung-border-light">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${item.score}%` }}
-                transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-                className={`h-full rounded-full ${isInferior ? 'bg-jung-accent-muted' : 'bg-jung-accent'}`}
-              />
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  </div>
-);
-
-const Hierarchy: React.FC<{ results: DepthAssessmentResult }> = ({
-  results,
-}) => (
-  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-    {results.hierarchy.map((item) => (
-      <div
-        key={item.position}
-        className={`rounded-lg border p-5 ${item.position === 'dominant' ? 'border-jung-accent-muted bg-jung-accent-light/70' : 'border-jung-border bg-jung-surface'}`}
-      >
-        <div className="flex items-center justify-between gap-4">
-          <p className="text-xs font-semibold text-jung-muted">
-            {positionLabels[item.position]}
-          </p>
-          <FunctionEmblem code={getFunctionCode(item.channel, item.attitude)} className="h-9 w-9 shrink-0 text-jung-accent" />
-        </div>
-        <h3 className="mt-3 text-2xl font-semibold text-jung-dark">
-          {item.label}
-        </h3>
-        <p className="mt-2 text-sm leading-6 text-jung-secondary">
-          {ATTITUDE_LABELS[item.attitude]} channel, {item.score}% of mapped
-          energy.
-        </p>
-      </div>
-    ))}
-  </div>
-);
-
-const SignalGrid: React.FC<{ results: DepthAssessmentResult }> = ({
-  results,
-}) => {
-  const signals = useMemo(
-    () =>
-      [
-        [
-          'behavioral',
-          results.layerSignals.behavioral
-            ? FUNCTION_LABELS[
-            results.layerSignals.behavioral as FunctionChannel
-            ]
-            : 'Mixed',
-        ],
-        [
-          'inferior',
-          results.layerSignals.inferior
-            ? FUNCTION_LABELS[results.layerSignals.inferior as FunctionChannel]
-            : FUNCTION_LABELS[results.inferior],
-        ],
-        [
-          'somatic',
-          results.layerSignals.somatic
-            ? FUNCTION_LABELS[results.layerSignals.somatic as FunctionChannel]
-            : 'Mixed',
-        ],
-        ['attitude', ATTITUDE_LABELS[results.attitude.dominant]],
-      ] as const,
-    [results],
-  );
-
-  return (
-    <div className="grid gap-3 sm:grid-cols-4">
-      {signals.map(([layer, value]) => {
-        const meta = depthLayerMeta[layer as keyof typeof depthLayerMeta];
-        return (
-          <div
-            key={layer}
-            className="rounded-lg border border-jung-border bg-jung-surface p-4"
-          >
-            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-jung-muted">
-              {meta.shortLabel}
-            </p>
-            <p className="mt-2 text-lg font-semibold text-jung-dark">
-              {value}
-            </p>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
-
-export const LockedPremiumPreview: React.FC<{
-  results: DepthAssessmentResult;
-  inferiorLabel: string;
-  offerRef?: React.Ref<HTMLElement>;
-  intendedTier: PaidTierId;
-  onUnlock: (tier: PaidTierId, location: string) => void;
-  onViewSampleReport: (location: string) => void;
-  checkoutOpeningTier: PaidTierId | null;
-  checkoutError: string | null;
-  /** Email-a-link option for visitors who are not ready to buy on first read. */
-  notReadyCapture?: React.ReactNode;
-}> = ({
-  results,
-  inferiorLabel,
-  offerRef,
-  intendedTier,
-  onUnlock,
-  onViewSampleReport,
-  checkoutOpeningTier,
-  checkoutError,
-  notReadyCapture,
-}) => {
-    const offerPrice = paidTierPrice(intendedTier);
-    const regularPrice = PRICING[intendedTier].price;
-    const isOpening = checkoutOpeningTier === intendedTier;
-    return (
-      <section
-        id="report-offer"
-        ref={offerRef}
-        className="studio-report-offer mb-8 scroll-mt-28"
-      >
-        <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-          <div className="studio-report-sample">
-            <p className="journey-eyebrow">Understand your stress pattern</p>
-            <h2 className="mt-3 font-display text-3xl leading-tight sm:text-4xl">
-              Notice the shift.<br />Choose what to try next.
-            </h2>
-            <p className="mt-4 mb-6 text-sm leading-7 text-jung-secondary">Start with a reflection from your own answers. Your report develops your stress pattern, relationship reactions, and growth practices across ten sections.</p>
-            <ResultStressPreview results={results} />
-          </div>
-          <div id="report-purchase" className="order-first scroll-mt-28 rounded-2xl border border-jung-accent-muted bg-white p-6 sm:p-8 lg:sticky lg:top-36 lg:order-none">
-            <p className="journey-eyebrow">
-              Your {PRICING[intendedTier].name} report
-            </p>
-            <p className="mt-4 font-display text-4xl">
-              {offerPrice}
-              <span className="ml-2 font-sans text-xs tracking-normal text-jung-muted">
-                one time · CAD
-              </span>
-            </p>
-            {regularPrice !== offerPrice && (
-              <p className="mt-1 text-xs text-jung-muted">
-                <span className="sr-only">Regular price </span>
-                <s>{regularPrice}</s> regular price · current offer
-              </p>
-            )}
-            <p className="mt-5 text-sm font-semibold text-jung-dark">What the report adds</p>
-            <p className="mt-2 text-xs leading-6 text-jung-secondary">Your map, first read, and the reflection here stay free. {PRICING[intendedTier].name} adds ten sections written for your result, generated by AI from your completed assessment. No retake needed.</p>
-            <ul className="my-6 space-y-3">
-              {[
-                'Your grip sequence: what stress can set off, and ways to recover',
-                'Relationship and work patterns from your function stack',
-                'Shadow triggers, individuation path, and growth practices',
-                'The Function Stack in Depth guide (PDF)',
-                ...(intendedTier === 'mastery'
-                  ? ['AI Type Guide and practice tools']
-                  : []),
-              ].map((item) => (
-                <li
-                  key={item}
-                  className="flex gap-3 text-sm leading-6 text-jung-secondary"
-                >
-                  <Check className="mt-1 h-4 w-4 shrink-0 text-jung-accent" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <div data-report-buy>
-            <Button
-              variant="accent"
-              size="lg"
-              className="w-full"
-              onClick={() => onUnlock(intendedTier, 'results_locked_preview')}
-              disabled={isOpening}
-              rightIcon={
-                isOpening ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <ArrowRight className="h-4 w-4" />
-                )
-              }
-            >
-              {isOpening
-                ? 'Checking availability…'
-                : `Get my report — ${offerPrice}`}
-            </Button>
-            </div>
-            {checkoutError && (
-              <p
-                className="mt-4 rounded-lg border border-error/20 bg-error/5 p-3 text-sm leading-6 text-error"
-                role="alert"
-              >
-                {checkoutError}
-                {' '}
-                <a href={`mailto:${SUPPORT_EMAIL}`} className="underline">
-                  Contact support
-                </a>
-              </p>
-            )}
-            <Button
-              variant="ghost"
-              className="mt-2 w-full"
-              onClick={() => onViewSampleReport('results_locked_preview')}
-            >
-              Read the full illustrative sample
-            </Button>
-            <p className="mt-3 text-center text-xs leading-6 text-jung-muted">
-              One-time payment. No subscription.
-              <br />
-              7-day refund policy.
-            </p>
-            <p className="mt-2 flex items-center justify-center gap-1.5 text-xs text-jung-muted">
-              <ShieldCheck className="h-3.5 w-3.5 text-jung-accent" aria-hidden="true" />
-              Secure payment by Stripe
-            </p>
-            {notReadyCapture && (
-              <div className="mt-6 border-t border-jung-border pt-5" data-testid="offer-not-ready">
-                {notReadyCapture}
-              </div>
-            )}
-            <details className="mt-6 border-t border-jung-border pt-4">
-              <summary className="cursor-pointer text-xs font-semibold text-jung-secondary">How this connects to your free map</summary>
-              <p className="mt-3 text-sm leading-7 text-jung-secondary">
-                {results.narrative.developmentalEdge}
-              </p>
-              <p className="mt-3 text-xs leading-6 text-jung-muted">Your paid report develops this pattern across ten sections, using your assessment result.</p>
-            </details>
-          </div>
-        </div>
-      </section>
-    );
-  };
-
-// Lightweight reaction prompt seeded as analytics (and a trust signal). Kept as
-// its own component so its hooks stay valid regardless of the parent's early
-// returns. Stores the answer per-result so it is asked once.
-const ResultReaction: React.FC<{ completedAt: string }> = ({ completedAt }) => {
-  const storageKey = `typejung_result_reaction_${completedAt}`;
-  const [reaction, setReaction] = useState<string | null>(null);
-
-  useEffect(() => {
-    try {
-      setReaction(localStorage.getItem(storageKey));
-    } catch {
-      /* storage unavailable */
-    }
-  }, [storageKey]);
-
-  const submit = (value: 'yes' | 'somewhat' | 'not_yet') => {
-    try {
-      localStorage.setItem(storageKey, value);
-    } catch {
-      /* storage unavailable */
-    }
-    setReaction(value);
-    trackEvent('result_reaction_submitted', { reaction: value });
-  };
-
-  const options: Array<{
-    value: 'yes' | 'somewhat' | 'not_yet';
-    label: string;
-  }> = [
-      { value: 'yes', label: 'Yes' },
-      { value: 'somewhat', label: 'Somewhat' },
-      { value: 'not_yet', label: 'Not yet' },
-    ];
-
-  return (
-    <section className="mb-10 rounded-lg border border-jung-border bg-jung-surface p-5 shadow-sm sm:p-6">
-      {reaction ? (
-        <div className="flex items-start gap-3">
-          <Check className="mt-0.5 h-5 w-5 flex-none text-jung-accent" />
-          <div>
-            <p className="text-sm font-semibold text-jung-dark">
-              Thanks — that helps tune the map.
-            </p>
-            <p className="mt-1 text-sm leading-6 text-jung-secondary">
-              {reaction === 'not_yet'
-                ? 'If the map missed you, the dominant–inferior axis and reliability signal below are the best places to inspect why.'
-                : 'Glad it named something real. Read the evidence layers below to see why the pattern resolved this way.'}
-            </p>
-          </div>
-        </div>
-      ) : (
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm font-semibold text-jung-dark">
-            Did this map name something real?
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {options.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => submit(option.value)}
-                className="rounded-full border border-jung-border bg-jung-base px-4 py-1.5 text-sm font-medium text-jung-dark transition-colors hover:border-jung-accent hover:text-jung-accent"
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-    </section>
-  );
 };
 
 export const Results: React.FC = () => {
@@ -1488,12 +1075,6 @@ export const Results: React.FC = () => {
       )}`
       : null;
   const isPreparingReferral = shareLinkState === 'creating' && !shareSlug;
-  // Plain const (not a hook) — this runs after the early returns above, so it
-  // must not be useMemo. readAssessmentIntent is a cheap localStorage read.
-  const resultIntent = readAssessmentIntent();
-  const intentFraming = resultIntent
-    ? INTENT_RESULT_FRAMING[resultIntent.id]
-    : null;
   const dominantLabel =
     lifecycleEmailSummary?.dominantLabel ??
     `${ATTITUDE_LABELS[results.attitude.dominant]} ${FUNCTION_LABELS[results.dominant]}`;
@@ -1891,11 +1472,6 @@ export const Results: React.FC = () => {
           {!premiumLoading && !isPremium && (
             <>
               <p className="journey-eyebrow mb-5">Your personal report · Built from your free map</p>
-              {intentFraming && (
-                <p className="mb-5 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 px-4 py-3 text-sm leading-6 text-jung-dark">
-                  {intentFraming.line}
-                </p>
-              )}
               <LockedPremiumPreview
                 results={results}
                 offerRef={offerRef}

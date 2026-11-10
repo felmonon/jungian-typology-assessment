@@ -1,5 +1,9 @@
 # Brand Diagnosis
 
+> Updated November 2026: [strategy/2026-11-jung-destination.md](strategy/2026-11-jung-destination.md)
+> extends this document with the Jung Library positioning ("Jung, made usable").
+> Where the two disagree, the newer document wins.
+
 ## Assumptions
 
 - Market category: Jungian cognitive-functions test, MBTI alternative, self-reflection assessment.

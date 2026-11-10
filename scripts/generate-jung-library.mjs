@@ -366,7 +366,7 @@ ${members.map((entry) => conceptCard(entry)).join('\n')}
   <a class="lib-door" href="${section.start.path}"><strong>New to Jung</strong><span>A reading order for where you are. Start with one book, not twenty.</span></a>
   <a class="lib-door" href="${section.glossary.path}"><strong>Look up a term</strong><span>Every concept defined in a sentence, A to Z.</span></a>
   <a class="lib-door" href="${section.quotes.path}"><strong>Check a quote</strong><span>What he wrote, where he wrote it, and the lines he never said.</span></a>
-  <a class="lib-door" href="/assessment?source=jung_hub_door" data-map-cta data-source="jung_hub_door" data-label-map="Open my map" data-label-resume="Resume my map"><strong>Map your own pattern</strong><span>The free function-stack map, built on Jung\u2019s typology.</span></a>
+  <a class="lib-door" href="/assessment?source=jung_hub_door" data-map-cta data-source="jung_hub_door" data-label-map="Open my map" data-label-resume="Resume my map" data-note-map="Your saved function-stack map, kept in this browser." data-note-resume="Pick up the questions where you left off."><strong data-map-label>Map your own pattern</strong><span data-map-note>The free function-stack map, built on Jung\u2019s typology.</span></a>
 </nav>
 
 <p class="lib-empty" data-search-empty hidden>Nothing matches that yet. Try the <a href="${section.glossary.path}">glossary</a>, or tell us what is missing: <a href="mailto:${SITE.supportEmail}">${SITE.supportEmail}</a>.</p>

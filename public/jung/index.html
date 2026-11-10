@@ -350,7 +350,7 @@
   <a class="lib-door" href="/jung/where-to-start"><strong>New to Jung</strong><span>A reading order for where you are. Start with one book, not twenty.</span></a>
   <a class="lib-door" href="/jung/glossary"><strong>Look up a term</strong><span>Every concept defined in a sentence, A to Z.</span></a>
   <a class="lib-door" href="/jung/quotes"><strong>Check a quote</strong><span>What he wrote, where he wrote it, and the lines he never said.</span></a>
-  <a class="lib-door" href="/assessment?source=jung_hub_door" data-map-cta data-source="jung_hub_door" data-label-map="Open my map" data-label-resume="Resume my map"><strong>Map your own pattern</strong><span>The free function-stack map, built on Jung’s typology.</span></a>
+  <a class="lib-door" href="/assessment?source=jung_hub_door" data-map-cta data-source="jung_hub_door" data-label-map="Open my map" data-label-resume="Resume my map" data-note-map="Your saved function-stack map, kept in this browser." data-note-resume="Pick up the questions where you left off."><strong data-map-label>Map your own pattern</strong><span data-map-note>The free function-stack map, built on Jung’s typology.</span></a>
 </nav>
 
 <p class="lib-empty" data-search-empty hidden>Nothing matches that yet. Try the <a href="/jung/glossary">glossary</a>, or tell us what is missing: <a href="mailto:support@typejung.com">support@typejung.com</a>.</p>
@@ -699,11 +699,20 @@
     if (hasMap || unfinished) {
       document.querySelectorAll('[data-map-cta]').forEach((link) => {
         const source = link.getAttribute('data-source') || 'shell';
+        // A card keeps its layout: only its title and note change. A plain
+        // button has no inner label, so its whole text is replaced.
+        const title = link.querySelector('[data-map-label]');
+        const note = link.querySelector('[data-map-note]');
+        const setLabel = (label, noteText) => {
+          if (title) title.textContent = label;
+          else link.textContent = label;
+          if (note && noteText) note.textContent = noteText;
+        };
         if (hasMap) {
-          link.textContent = link.getAttribute('data-label-map') || 'My map';
+          setLabel(link.getAttribute('data-label-map') || 'My map', link.getAttribute('data-note-map'));
           link.setAttribute('href', '/results');
         } else {
-          link.textContent = link.getAttribute('data-label-resume') || 'Resume my map';
+          setLabel(link.getAttribute('data-label-resume') || 'Resume my map', link.getAttribute('data-note-resume'));
           link.setAttribute('href', '/assessment?source=' + encodeURIComponent(source + '_resume'));
         }
       });

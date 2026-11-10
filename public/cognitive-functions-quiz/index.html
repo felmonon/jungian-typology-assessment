@@ -447,11 +447,20 @@
     if (hasMap || unfinished) {
       document.querySelectorAll('[data-map-cta]').forEach((link) => {
         const source = link.getAttribute('data-source') || 'shell';
+        // A card keeps its layout: only its title and note change. A plain
+        // button has no inner label, so its whole text is replaced.
+        const title = link.querySelector('[data-map-label]');
+        const note = link.querySelector('[data-map-note]');
+        const setLabel = (label, noteText) => {
+          if (title) title.textContent = label;
+          else link.textContent = label;
+          if (note && noteText) note.textContent = noteText;
+        };
         if (hasMap) {
-          link.textContent = link.getAttribute('data-label-map') || 'My map';
+          setLabel(link.getAttribute('data-label-map') || 'My map', link.getAttribute('data-note-map'));
           link.setAttribute('href', '/results');
         } else {
-          link.textContent = link.getAttribute('data-label-resume') || 'Resume my map';
+          setLabel(link.getAttribute('data-label-resume') || 'Resume my map', link.getAttribute('data-note-resume'));
           link.setAttribute('href', '/assessment?source=' + encodeURIComponent(source + '_resume'));
         }
       });

@@ -1,6 +1,6 @@
 // Google Analytics 4 integration with validation
 import { track as trackVercelEvent } from '@vercel/analytics';
-import { z } from 'zod';
+import { eventSchema, flag, listOf, numberBetween, text, type EventSchema } from './event-schema';
 import { trafficAttributionParams } from './traffic-attribution';
 import { sanitizeTrafficAttributionParams } from '../shared/traffic-attribution';
 import { researchAnonymousId } from './research-session';
@@ -24,78 +24,78 @@ function isAnalyticsEnvironmentAllowed(): boolean {
 }
 
 // Validation schemas for analytics events
-const PageViewSchema = z.object({
-  page_path: z.string().min(1).max(500),
-  page_title: z.string().min(1).max(200),
+const PageViewSchema = eventSchema({
+  page_path: text(1, 500),
+  page_title: text(1, 200),
 });
 
-const AssessmentEventSchema = z.object({
-  time_spent_seconds: z.number().min(0).max(7200).optional(), // Max 2 hours
-  duration_seconds: z.number().min(0).max(7200).optional(),
-  question_number: z.number().min(1).max(200).optional(),
-  progress_percent: z.number().min(0).max(100).optional(),
-  source: z.string().min(1).max(100).optional(),
-  entry_page: z.string().min(1).max(500).optional(),
-  utm_campaign: z.string().min(1).max(100).optional(),
-  utm_source: z.string().min(1).max(100).optional(),
-  shared_result: z.string().min(1).max(100).optional(),
-  parent_source: z.string().min(1).max(100).optional(),
-  source_chain: z.string().min(1).max(240).optional(),
-  result_type: z.string().min(1).max(50).optional(),
+const AssessmentEventSchema = eventSchema({
+  time_spent_seconds: numberBetween(0, 7200, true), // Max 2 hours
+  duration_seconds: numberBetween(0, 7200, true),
+  question_number: numberBetween(1, 200, true),
+  progress_percent: numberBetween(0, 100, true),
+  source: text(1, 100, true),
+  entry_page: text(1, 500, true),
+  utm_campaign: text(1, 100, true),
+  utm_source: text(1, 100, true),
+  shared_result: text(1, 100, true),
+  parent_source: text(1, 100, true),
+  source_chain: text(1, 240, true),
+  result_type: text(1, 50, true),
 });
 
-const ResultsEventSchema = z.object({
-  dominant_function: z.string().min(1).max(20).optional(),
-  share_method: z.string().min(1).max(50).optional(),
+const ResultsEventSchema = eventSchema({
+  dominant_function: text(1, 20, true),
+  share_method: text(1, 50, true),
 });
 
-const ResultSaveEventSchema = z.object({
-  source: z.string().min(1).max(100).optional(),
-  has_share_slug: z.boolean().optional(),
+const ResultSaveEventSchema = eventSchema({
+  source: text(1, 100, true),
+  has_share_slug: flag(true),
 });
 
-const PricingViewEventSchema = z.object({
-  source: z.string().min(1).max(100).optional(),
-  referrer: z.string().max(500).optional(),
+const PricingViewEventSchema = eventSchema({
+  source: text(1, 100, true),
+  referrer: text(0, 500, true),
 });
 
-const SignupEventSchema = z.object({
-  method: z.string().min(1).max(50).optional(),
-  source: z.string().min(1).max(100).optional(),
+const SignupEventSchema = eventSchema({
+  method: text(1, 50, true),
+  source: text(1, 100, true),
 });
 
-const EcommerceItemSchema = z.object({
-  item_id: z.string().min(1).max(100),
-  item_name: z.string().min(1).max(150),
-  item_brand: z.string().min(1).max(100).optional(),
-  item_category: z.string().min(1).max(100).optional(),
-  item_category2: z.string().min(1).max(100).optional(),
-  item_variant: z.string().min(1).max(100).optional(),
-  price: z.number().min(0).max(10000),
-  quantity: z.number().int().min(1).max(99),
+const EcommerceItemSchema = eventSchema({
+  item_id: text(1, 100),
+  item_name: text(1, 150),
+  item_brand: text(1, 100, true),
+  item_category: text(1, 100, true),
+  item_category2: text(1, 100, true),
+  item_variant: text(1, 100, true),
+  price: numberBetween(0, 10000),
+  quantity: numberBetween(1, 99, false, true),
 });
 
-const PurchaseEventSchema = z.object({
-  plan: z.string().min(1).max(50),
-  tier: z.string().min(1).max(50).optional(),
-  value: z.number().min(0).max(10000),
-  price: z.number().min(0).max(10000).optional(),
-  currency: z.string().length(3).default('CAD'),
-  transaction_id: z.string().min(1).max(100).optional(),
-  items: z.array(EcommerceItemSchema).min(1).max(10).optional(),
+const PurchaseEventSchema = eventSchema({
+  plan: text(1, 50),
+  tier: text(1, 50, true),
+  value: numberBetween(0, 10000),
+  price: numberBetween(0, 10000, true),
+  currency: text(3, 3, true),
+  transaction_id: text(1, 100, true),
+  items: listOf(EcommerceItemSchema, 1, 10, true),
 });
 
-const UpgradeEventSchema = z.object({
-  location: z.string().min(1).max(100),
-  tier: z.string().min(1).max(50),
+const UpgradeEventSchema = eventSchema({
+  location: text(1, 100),
+  tier: text(1, 50),
 });
 
-const CTAEventSchema = z.object({
-  cta_name: z.string().min(1).max(100),
-  location: z.string().min(1).max(100),
-  button_text: z.string().min(1).max(150).optional(),
-  destination: z.string().min(1).max(500).optional(),
-  tier: z.string().min(1).max(50).optional(),
+const CTAEventSchema = eventSchema({
+  cta_name: text(1, 100),
+  location: text(1, 100),
+  button_text: text(1, 150, true),
+  destination: text(1, 500, true),
+  tier: text(1, 50, true),
 });
 
 function vercelEventProperties(params?: Record<string, any>): Record<string, string | number | boolean | null> {
@@ -202,7 +202,7 @@ function mirrorFunnelEvent(eventName: string, params?: Record<string, any>): voi
 function safeTrackEvent(
   eventName: string,
   params?: Record<string, any>,
-  schema?: z.ZodSchema<any>
+  schema?: EventSchema
 ): boolean {
   if (!isAnalyticsEnabled()) {
     return false;

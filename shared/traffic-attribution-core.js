@@ -28,7 +28,7 @@ export function sanitizeTrafficAttribution(raw) {
     const known = new Set([
       '/', '/assessment', '/results', '/auth', '/profile', '/settings', '/success',
       '/learn', '/about', '/share', '/leaderboard', '/admin', '/history', '/privacy',
-      '/terms', '/pricing', '/sample-report', '/methodology', '/debrief', '/ai-run-store',
+      '/terms', '/pricing', '/sample-report', '/methodology', '/debrief',
       '/checkout/insight', '/checkout/mastery', '/other', '/guides', '/creator-preview', '/blog',
       '/mbti-changes-with-mood', '/keys2cognition-alternative', '/mbti-test-alternative',
       '/idrlabs-cognitive-function-test-alternative', '/mbti-alternative', '/mbti-mistype-test',
@@ -50,6 +50,9 @@ export function sanitizeTrafficAttribution(raw) {
     if (known.has(path)
       || /^\/types\/[ei][ns][tf][jp]$/.test(path)
       || /^\/functions\/[nstf][ei]$/.test(path)
+      // Jung Library: /jung, /jung/<entry>, /jung/books/<guide>, /jung/practice/<guide>.
+      // Letters and hyphens only, so no identifier can pass as a slug.
+      || /^\/jung(?:\/(?:books\/|practice\/)?[a-z][a-z-]{1,60})?$/.test(path)
       || /^\/[nstf][ei]-dominant-test$/.test(path)
       || /^\/[ei][ns][tf][jp]-vs-[ei][ns][tf][jp]-test$/.test(path)
       || (path.startsWith('/blog/') && blogSlugs.has(path.slice(6).replace(/\.html$/, '')))) return path;

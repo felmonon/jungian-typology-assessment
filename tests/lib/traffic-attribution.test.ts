@@ -185,6 +185,16 @@ describe('external traffic attribution', () => {
 });
 
 describe('server traffic-attribution boundary', () => {
+  it('keeps Jung Library pages as landing paths and rejects anything else under /jung', () => {
+    for (const path of ['/jung', '/jung/shadow', '/jung/books', '/jung/books/aion', '/jung/practice/shadow-work']) {
+      expect(sanitizeTrafficAttribution({ ...valid, traffic_landing_path: path }).traffic_landing_path).toBe(path);
+    }
+    expect(sanitizeTrafficAttribution({ ...valid, traffic_landing_path: '/jung/shadow/' }).traffic_landing_path).toBe('/jung/shadow');
+    for (const path of ['/jung/books/aion/extra', '/jung/1234567', '/jung/Shadow', '/jung/shadow?email=private@example.com', '/jungian', '/ai-run-store']) {
+      expect(sanitizeTrafficAttribution({ ...valid, traffic_landing_path: path })).toEqual({});
+    }
+  });
+
   it('keeps only safe versioned fields and hostname-only referrers', () => {
     expect(sanitizeTrafficAttributionParams({ ...valid, traffic_medium: 'organic', traffic_campaign: 'autumn_2026', traffic_referrer_host: 'google.com', source: 'cta', email: 'private@example.com' }))
       .toEqual({ ...valid, traffic_medium: 'organic', traffic_campaign: 'autumn_2026', traffic_referrer_host: 'google.com' });

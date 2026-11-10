@@ -95,8 +95,8 @@ describe('E2E API Tests', () => {
       expect(response.status).toBe(200);
     });
 
-    it('should return 200 for login page', async () => {
-      const response = await fetch(`${BASE_URL}/login`);
+    it('should return 200 for sign-in page', async () => {
+      const response = await fetch(`${BASE_URL}/auth`);
       expect(response.status).toBe(200);
     });
 

@@ -169,3 +169,13 @@ jobs:
             exit 1
           fi
           echo "Homepage check passed!"
+
+      - name: Check Jung Library
+        continue-on-error: true
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://typejung.com/jung)
+          if [ "$response" != "200" ]; then
+            echo "::warning::Jung Library check returned status: $response"
+            exit 1
+          fi
+          echo "Jung Library check passed!"

@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "node": "24.x"
   },
   "scripts": {
     "dev": "vite",
@@ -48,8 +48,7 @@
     "resend": "^6.37.0",
     "stripe": "^20.1.2",
     "tailwindcss": "^4.1.18",
-    "tsx": "^4.21.0",
-    "zod": "^4.6.7"
+    "tsx": "^4.21.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.0",

@@ -123,6 +123,63 @@ async function updatePurchaseStatusFromPaymentIntent(
   }
 }
 
+async function handleCheckoutSessionPaid(
+  stripe: Stripe,
+  supabase: ReturnType<typeof getSupabaseAdminClient>,
+  sessionId: string,
+) {
+  // Re-read the session from Stripe rather than trusting the event payload.
+  const session = await stripe.checkout.sessions.retrieve(sessionId, {
+    expand: ['line_items.data.price'],
+  });
+
+  if (session.metadata?.product === DEBRIEF_OFFER.productTag) {
+    if (session.payment_status !== 'paid') return;
+    await handleDebriefSessionCompleted(supabase, session);
+    await trackCheckoutWebhookEvent('server_debrief_paid', {
+      source: session.metadata?.source || 'unknown',
+      amount_cad: session.currency === 'cad' && session.amount_total ? session.amount_total / 100 : null,
+      status: session.payment_status || 'unknown',
+    });
+    return;
+  }
+
+  // Idempotent: a redelivered event updates the same row, keeps its account
+  // binding, and never revives a refunded or disputed purchase.
+  const purchase = await recordCheckoutPurchase(supabase, session);
+  console.log('Payment recorded for session:', session.id);
+  if (purchase && purchase.status === 'completed') {
+    try {
+      await recordFunnelEvent(supabase, {
+        eventId: `purchase:${session.id}`,
+        eventName: 'purchase',
+        anonymousId: session.metadata?.anonymous_id,
+        source: session.metadata?.source || 'unknown',
+        tier: purchase.tier,
+        checkoutIntentId: session.metadata?.checkout_intent_id,
+        stripeSessionId: session.id,
+        purchaseId: typeof purchase.id === 'string' ? purchase.id : null,
+        value: typeof session.amount_total === 'number' ? session.amount_total / 100 : null,
+        currency: typeof session.currency === 'string' ? session.currency.toUpperCase() : 'CAD',
+        properties: {
+          ...checkoutAttributionEventParams(session),
+          payment_status: session.payment_status || 'unknown',
+          stripe_customer_present: Boolean(session.customer),
+        },
+      });
+    } catch (funnelError) {
+      console.warn('Purchase funnel event insert failed:', funnelError instanceof Error ? funnelError.message : 'Unknown error');
+    }
+  }
+  await trackCheckoutWebhookEvent('server_purchase_recorded', {
+    tier: session.metadata?.tier || 'unknown',
+    source: session.metadata?.source || 'unknown',
+    ...checkoutAttributionEventParams(session),
+    amount_cad: session.currency === 'cad' && session.amount_total ? session.amount_total / 100 : null,
+    status: session.payment_status || 'unknown',
+  });
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -148,60 +205,31 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     event = stripe.webhooks.constructEvent(buf, sig, webhookSecret);
-  } catch (err: any) {
-    console.error(`Webhook signature verification failed: ${err.message}`);
-    return res.status(400).json({ error: `Webhook Error: ${err.message}` });
+  } catch (err) {
+    console.error('Webhook signature verification failed:', err instanceof Error ? err.message : 'unknown');
+    return res.status(400).json({ error: 'Invalid webhook signature' });
   }
 
   // Handle the event
   switch (event.type) {
-    case 'checkout.session.completed': {
+    // Card payments complete here. Delayed methods (bank debits, vouchers)
+    // complete with payment_status 'unpaid' and settle later through
+    // checkout.session.async_payment_succeeded; recordCheckoutPurchase only
+    // grants access once the session is paid.
+    case 'checkout.session.completed':
+    case 'checkout.session.async_payment_succeeded': {
       const checkoutSession = event.data.object as Stripe.Checkout.Session;
-      const session = await stripe.checkout.sessions.retrieve(checkoutSession.id, {
-        expand: ['line_items.data.price'],
-      });
+      await handleCheckoutSessionPaid(stripe, supabase, checkoutSession.id);
+      break;
+    }
 
-      if (session.metadata?.product === DEBRIEF_OFFER.productTag) {
-        await handleDebriefSessionCompleted(supabase, session);
-        await trackCheckoutWebhookEvent('server_debrief_paid', {
-          source: session.metadata?.source || 'unknown',
-          amount_cad: session.currency === 'cad' && session.amount_total ? session.amount_total / 100 : null,
-          status: session.payment_status || 'unknown',
-        });
-        break;
-      }
-
-      const purchase = await recordCheckoutPurchase(supabase, session);
-      console.log('Payment recorded for session:', session.id);
-      if (purchase) {
-        try {
-          await recordFunnelEvent(supabase, {
-            eventId: `purchase:${session.id}`,
-            eventName: 'purchase',
-            anonymousId: session.metadata?.anonymous_id,
-            source: session.metadata?.source || 'unknown',
-            tier: purchase.tier,
-            checkoutIntentId: session.metadata?.checkout_intent_id,
-            stripeSessionId: session.id,
-            purchaseId: typeof purchase.id === 'string' ? purchase.id : null,
-            value: typeof session.amount_total === 'number' ? session.amount_total / 100 : null,
-            currency: typeof session.currency === 'string' ? session.currency.toUpperCase() : 'CAD',
-            properties: {
-              ...checkoutAttributionEventParams(session),
-              payment_status: session.payment_status || 'unknown',
-              stripe_customer_present: Boolean(session.customer),
-            },
-          });
-        } catch (funnelError) {
-          console.warn('Purchase funnel event insert failed:', funnelError instanceof Error ? funnelError.message : 'Unknown error');
-        }
-      }
-      await trackCheckoutWebhookEvent('server_purchase_recorded', {
-        tier: session.metadata?.tier || 'unknown',
-        source: session.metadata?.source || 'unknown',
-        ...checkoutAttributionEventParams(session),
-        amount_cad: session.currency === 'cad' && session.amount_total ? session.amount_total / 100 : null,
-        status: session.payment_status || 'unknown',
+    case 'checkout.session.async_payment_failed': {
+      const failedSession = event.data.object as Stripe.Checkout.Session;
+      console.log('Async checkout payment failed for session:', failedSession.id);
+      await trackCheckoutWebhookEvent('server_checkout_async_payment_failed', {
+        tier: failedSession.metadata?.tier || 'unknown',
+        source: failedSession.metadata?.source || 'unknown',
+        ...checkoutAttributionEventParams(failedSession),
       });
       break;
     }

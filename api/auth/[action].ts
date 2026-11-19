@@ -3,7 +3,8 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import { buildRequestUrl, getSessionUserFromCookie, getVerifiedSessionId, parseCookies, shouldUseSecureCookie } from '../_lib/auth-utils.js';
-import { enforceRateLimit } from '../_lib/rate-limit.js';
+import { isUserEmailVerified } from '../_lib/purchases.js';
+import { enforceSharedRateLimit } from '../_lib/rate-limit.js';
 import { processQueuedRecoveryEmails } from '../_lib/recovery-emails.js';
 import { getSupabaseAdminClient, hasSupabaseAdminConfig } from '../_lib/supabase.js';
 import { handleUnsubscribe } from '../_lib/unsubscribe.js';
@@ -66,13 +67,83 @@ async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, SALT_ROUNDS);
 }
 
-async function verifyPassword(password: string, storedHash: string | null): Promise<boolean> {
-  if (!storedHash) return false;
-  if (storedHash.startsWith('$2a$') || storedHash.startsWith('$2b$') || storedHash.startsWith('$2y$')) {
-    return bcrypt.compare(password, storedHash);
+function isBcryptHash(storedHash: string): boolean {
+  return storedHash.startsWith('$2a$') || storedHash.startsWith('$2b$') || storedHash.startsWith('$2y$');
+}
+
+// needsRehash is true when the password matched a legacy unsalted SHA-256
+// hash, which the caller then replaces with bcrypt.
+async function verifyPassword(
+  password: string,
+  storedHash: string | null,
+): Promise<{ valid: boolean; needsRehash: boolean }> {
+  if (!storedHash || typeof password !== 'string') return { valid: false, needsRehash: false };
+  if (isBcryptHash(storedHash)) {
+    return { valid: await bcrypt.compare(password, storedHash), needsRehash: false };
   }
 
-  return legacySha256PasswordHash(password) === storedHash;
+  const candidate = Buffer.from(legacySha256PasswordHash(password));
+  const stored = Buffer.from(storedHash);
+  const valid = candidate.length === stored.length && crypto.timingSafeEqual(candidate, stored);
+  return { valid, needsRehash: valid };
+}
+
+// Columns added by migration 0020. Writes retry without them until it is applied.
+const OPTIONAL_USER_COLUMNS = ['apple_id', 'email_verified_at'] as const;
+
+function isMissingColumnError(error: { code?: string; message?: string } | null | undefined): boolean {
+  if (!error) return false;
+  if (error.code === 'PGRST204' || error.code === '42703') return true;
+  return /column .* does not exist|could not find the .* column/i.test(error.message || '');
+}
+
+function withoutOptionalUserColumns(payload: Record<string, unknown>): Record<string, unknown> {
+  const copy = { ...payload };
+  OPTIONAL_USER_COLUMNS.forEach((column) => { delete copy[column]; });
+  return copy;
+}
+
+async function insertUserRow(supabase: SupabaseClient, payload: Record<string, unknown>) {
+  const first = await supabase.from('users').insert(payload).select().single();
+  if (!isMissingColumnError(first.error)) return first;
+  return supabase.from('users').insert(withoutOptionalUserColumns(payload)).select().single();
+}
+
+async function updateUserRow(supabase: SupabaseClient, userId: string, payload: Record<string, unknown>) {
+  const first = await supabase.from('users').update(payload).eq('id', userId).select().single();
+  if (!isMissingColumnError(first.error)) return first;
+  return supabase.from('users').update(withoutOptionalUserColumns(payload)).eq('id', userId).select().single();
+}
+
+// Called when Google or Apple vouches for the email of an existing row. If the
+// row's email was never verified, whoever set its password did not prove they
+// own the address, so that password and its sessions are revoked before the
+// verified owner is signed in.
+async function linkVerifiedIdentity(
+  supabase: SupabaseClient,
+  user: any,
+  updates: Record<string, unknown>,
+) {
+  const wasVerified = isUserEmailVerified(user);
+  const revokeUnverifiedPassword = !wasVerified && Boolean(user.password_hash);
+  const payload: Record<string, unknown> = {
+    ...updates,
+    email_verified_at: user.email_verified_at || new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  };
+  if (revokeUnverifiedPassword) payload.password_hash = null;
+
+  const { data: updatedUser, error } = await updateUserRow(supabase, user.id, payload);
+  if (error) {
+    console.error('Linking verified identity failed:', error.message);
+    return null;
+  }
+
+  if (revokeUnverifiedPassword) {
+    await supabase.from('sessions').delete().contains('sess', { passport: { user: user.id } });
+  }
+
+  return updatedUser || null;
 }
 
 function getSupabase() {
@@ -438,8 +509,19 @@ async function handleLogin(req: VercelRequest, res: VercelResponse) {
   }
 
   const user = users[0];
-  if (!(await verifyPassword(password, user.password_hash))) {
+  const passwordCheck = await verifyPassword(password, user.password_hash);
+  if (!passwordCheck.valid) {
     return res.status(401).json({ message: 'Invalid email or password' });
+  }
+
+  if (passwordCheck.needsRehash) {
+    const { error: rehashError } = await supabase
+      .from('users')
+      .update({ password_hash: await hashPassword(password), updated_at: new Date().toISOString() })
+      .eq('id', user.id);
+    if (rehashError) {
+      console.error('Legacy password rehash failed:', rehashError.message);
+    }
   }
 
   await createSession(user.id, req, res);
@@ -466,43 +548,13 @@ async function handleSignup(req: VercelRequest, res: VercelResponse) {
   const supabase = getSupabase();
   const { data: existingUsers } = await supabase
     .from('users')
-    .select('id, email, first_name, last_name, profile_image_url, password_hash, google_id, created_at')
+    .select('id')
     .eq('email', email);
 
+  // Password signup never takes over an existing row, including rows made by
+  // Apple or Google sign-in that have no password of their own.
   if (existingUsers && existingUsers.length > 0) {
-    const existingUser = existingUsers[0];
-    if (existingUser.password_hash || existingUser.google_id) {
-      return res.status(400).json({ message: 'Email already registered' });
-    }
-
-    const passwordHash = await hashPassword(password);
-    const { data: claimedUser, error: claimError } = await supabase
-      .from('users')
-      .update({
-        password_hash: passwordHash,
-        first_name: firstName || existingUser.first_name || '',
-        last_name: lastName || existingUser.last_name || '',
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', existingUser.id)
-      .select()
-      .single();
-
-    if (claimError || !claimedUser) {
-      return res.status(500).json({ message: 'Failed to create account' });
-    }
-
-    await createSession(claimedUser.id, req, res);
-
-    return res.status(200).json({
-      id: claimedUser.id,
-      email: claimedUser.email,
-      firstName: claimedUser.first_name,
-      lastName: claimedUser.last_name,
-      profileImageUrl: claimedUser.profile_image_url,
-      isAdmin: Boolean(claimedUser.is_admin),
-      createdAt: claimedUser.created_at,
-    });
+    return res.status(400).json({ message: 'Email already registered' });
   }
 
   const passwordHash = await hashPassword(password);
@@ -518,6 +570,10 @@ async function handleSignup(req: VercelRequest, res: VercelResponse) {
     .single();
 
   if (error || !newUser) {
+    // The unique email constraint catches a concurrent signup for the same address.
+    if (error?.code === '23505') {
+      return res.status(400).json({ message: 'Email already registered' });
+    }
     return res.status(500).json({ message: 'Failed to create account' });
   }
 
@@ -635,8 +691,15 @@ async function handleProfile(req: VercelRequest, res: VercelResponse) {
     await supabase.from('sessions').delete().contains('sess', { passport: { user: user.id } });
     await supabase.from('assessment_results').delete().eq('user_id', user.id);
     await supabase.from('purchases').delete().eq('user_id', user.id);
-    if (user.email) {
-      await supabase.from('purchases').delete().eq('customer_email', user.email.trim().toLowerCase());
+    // Guest purchases under this email are only this account's to delete when
+    // a provider verified the email; otherwise they may belong to someone else.
+    const { data: accountRows } = await supabase.from('users').select('*').eq('id', user.id).limit(1);
+    if (user.email && isUserEmailVerified(accountRows?.[0])) {
+      await supabase
+        .from('purchases')
+        .delete()
+        .eq('customer_email', user.email.trim().toLowerCase())
+        .is('user_id', null);
     }
 
     const { error } = await supabase.from('users').delete().eq('id', user.id);
@@ -1279,7 +1342,10 @@ function handleGoogleStart(req: VercelRequest, res: VercelResponse) {
   googleAuthUrl.searchParams.set('scope', 'openid email profile');
   googleAuthUrl.searchParams.set('access_type', 'offline');
   googleAuthUrl.searchParams.set('prompt', 'select_account');
+  const state = crypto.randomBytes(18).toString('base64url');
+  googleAuthUrl.searchParams.set('state', state);
 
+  res.setHeader('Set-Cookie', oauthStateCookie(GOOGLE_STATE_COOKIE, state, req));
   return res.redirect(302, googleAuthUrl.toString());
 }
 
@@ -1289,21 +1355,31 @@ async function handleGoogleCallback(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { code, error: oauthError } = req.query;
+  const { code, state, error: oauthError } = req.query;
+  const storedState = parseCookies(req.headers.cookie)[GOOGLE_STATE_COOKIE];
+  const clearState = clearOauthStateCookie(GOOGLE_STATE_COOKIE, req);
+  const fail = (reason: string) => {
+    res.setHeader('Set-Cookie', clearState);
+    return res.redirect(302, `/auth?error=${encodeURIComponent(reason)}`);
+  };
 
   if (oauthError) {
-    return res.redirect(302, `/auth?error=${encodeURIComponent(oauthError as string)}`);
+    return fail(typeof oauthError === 'string' ? oauthError.slice(0, 80) : 'oauth_error');
   }
 
   if (!code || typeof code !== 'string') {
-    return res.redirect(302, '/auth?error=missing_code');
+    return fail('missing_code');
+  }
+
+  if (typeof state !== 'string' || !storedState || !safeEqual(state, storedState)) {
+    return fail('invalid_oauth_state');
   }
 
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
 
   if (!clientId || !clientSecret) {
-    return res.redirect(302, '/auth?error=oauth_not_configured');
+    return fail('oauth_not_configured');
   }
 
   try {
@@ -1323,9 +1399,8 @@ async function handleGoogleCallback(req: VercelRequest, res: VercelResponse) {
     });
 
     if (!tokenResponse.ok) {
-      const errorText = await tokenResponse.text();
-      console.error('Token exchange failed:', errorText);
-      return res.redirect(302, '/auth?error=token_exchange_failed');
+      console.error('Token exchange failed:', tokenResponse.status);
+      return fail('token_exchange_failed');
     }
 
     const tokens = await tokenResponse.json();
@@ -1338,14 +1413,21 @@ async function handleGoogleCallback(req: VercelRequest, res: VercelResponse) {
 
     if (!userInfoResponse.ok) {
       console.error('Failed to get user info');
-      return res.redirect(302, '/auth?error=userinfo_failed');
+      return fail('userinfo_failed');
     }
 
     const googleUser = await userInfoResponse.json();
-    const { email, given_name, family_name, picture, id: googleId } = googleUser;
+    const { given_name, family_name, picture, id: googleId } = googleUser;
+    const email = typeof googleUser.email === 'string' ? googleUser.email.trim().toLowerCase() : '';
 
     if (!email) {
-      return res.redirect(302, '/auth?error=no_email');
+      return fail('no_email');
+    }
+
+    // Only a Google-verified address may sign in to, or be linked with, a
+    // TypeJung account by email.
+    if (googleUser.verified_email !== true) {
+      return fail('no_verified_email');
     }
 
     const supabase = getSupabase();
@@ -1358,46 +1440,70 @@ async function handleGoogleCallback(req: VercelRequest, res: VercelResponse) {
     let user = existingUsers?.[0];
 
     if (user) {
-      const { data: updatedUser } = await supabase
-        .from('users')
-        .update({
-          google_id: googleId || user.google_id,
-          first_name: given_name || user.first_name,
-          last_name: family_name || user.last_name,
-          profile_image_url: picture || user.profile_image_url,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', user.id)
-        .select()
-        .single();
-      user = updatedUser || user;
+      const linkedUser = await linkVerifiedIdentity(supabase, user, {
+        google_id: googleId || user.google_id,
+        first_name: given_name || user.first_name,
+        last_name: family_name || user.last_name,
+        profile_image_url: picture || user.profile_image_url,
+      });
+      if (!linkedUser) return fail('user_creation_failed');
+      user = linkedUser;
     } else {
-      const { data: newUser, error: createError } = await supabase
-        .from('users')
-        .insert({
-          email,
-          google_id: googleId || null,
-          first_name: given_name || '',
-          last_name: family_name || '',
-          profile_image_url: picture || null,
-        })
-        .select()
-        .single();
+      const { data: newUser, error: createError } = await insertUserRow(supabase, {
+        email,
+        google_id: googleId || null,
+        first_name: given_name || '',
+        last_name: family_name || '',
+        profile_image_url: picture || null,
+        email_verified_at: new Date().toISOString(),
+      });
 
       if (createError || !newUser) {
-        console.error('Failed to create Google user:', createError);
-        return res.redirect(302, '/auth?error=user_creation_failed');
+        console.error('Failed to create Google user:', createError?.message);
+        return fail('user_creation_failed');
       }
 
       user = newUser;
     }
 
-    await createSession(user.id, req, res);
+    await createSession(user.id, req, res, [clearState]);
     return res.redirect(302, '/profile');
   } catch (error) {
-    console.error('OAuth callback error:', error);
-    return res.redirect(302, '/auth?error=callback_failed');
+    console.error('OAuth callback error:', error instanceof Error ? error.message : 'unknown');
+    return fail('callback_failed');
   }
+}
+
+const GOOGLE_STATE_COOKIE = 'typejung.google_oauth_state';
+const APPLE_STATE_COOKIE = 'typejung.apple_oauth_state';
+
+function safeEqual(a: string, b: string): boolean {
+  const left = Buffer.from(a);
+  const right = Buffer.from(b);
+  return left.length === right.length && crypto.timingSafeEqual(left, right);
+}
+
+function oauthStateCookie(name: string, value: string, req: VercelRequest): string {
+  return [
+    `${name}=${encodeURIComponent(value)}`,
+    'Path=/',
+    'HttpOnly',
+    'SameSite=Lax',
+    'Max-Age=600',
+    shouldUseSecureCookie(req) ? 'Secure' : '',
+  ].filter(Boolean).join('; ');
+}
+
+function clearOauthStateCookie(name: string, req: VercelRequest): string {
+  return [
+    `${name}=`,
+    'Path=/',
+    'Expires=Thu, 01 Jan 1970 00:00:00 GMT',
+    'Max-Age=0',
+    'HttpOnly',
+    'SameSite=Lax',
+    shouldUseSecureCookie(req) ? 'Secure' : '',
+  ].filter(Boolean).join('; ');
 }
 
 function getAppleClientId(): string {
@@ -1414,26 +1520,11 @@ function isAppleConfigured(): boolean {
 }
 
 function appleStateCookie(value: string, req: VercelRequest): string {
-  return [
-    `typejung.apple_oauth_state=${encodeURIComponent(value)}`,
-    'Path=/',
-    'HttpOnly',
-    'SameSite=Lax',
-    'Max-Age=600',
-    shouldUseSecureCookie(req) ? 'Secure' : '',
-  ].filter(Boolean).join('; ');
+  return oauthStateCookie(APPLE_STATE_COOKIE, value, req);
 }
 
 function clearAppleStateCookie(req: VercelRequest): string {
-  return [
-    'typejung.apple_oauth_state=',
-    'Path=/',
-    'Expires=Thu, 01 Jan 1970 00:00:00 GMT',
-    'Max-Age=0',
-    'HttpOnly',
-    'SameSite=Lax',
-    shouldUseSecureCookie(req) ? 'Secure' : '',
-  ].filter(Boolean).join('; ');
+  return clearOauthStateCookie(APPLE_STATE_COOKIE, req);
 }
 
 function normalizeInteger(value: Buffer, keySize: number): Buffer {
@@ -1611,9 +1702,9 @@ async function handleAppleCallback(req: VercelRequest, res: VercelResponse) {
   const body = getCallbackBody(req);
   const code = typeof req.query.code === 'string' ? req.query.code : body.code;
   const state = typeof req.query.state === 'string' ? req.query.state : body.state;
-  const storedState = parseCookies(req.headers.cookie)['typejung.apple_oauth_state'];
+  const storedState = parseCookies(req.headers.cookie)[APPLE_STATE_COOKIE];
 
-  if (!code || !state || !storedState || state !== storedState) {
+  if (!code || typeof state !== 'string' || !storedState || !safeEqual(state, storedState)) {
     res.setHeader('Set-Cookie', clearAppleStateCookie(req));
     return res.redirect(302, '/auth?error=invalid_oauth_state');
   }
@@ -1649,41 +1740,56 @@ async function handleAppleCallback(req: VercelRequest, res: VercelResponse) {
       return res.redirect(302, '/auth?error=no_verified_email');
     }
 
+    const appleId = typeof payload.sub === 'string' && payload.sub ? payload.sub : null;
+    if (!appleId) {
+      res.setHeader('Set-Cookie', clearAppleStateCookie(req));
+      return res.redirect(302, '/auth?error=callback_failed');
+    }
+
     const name = parseAppleName(body.user);
     const supabase = getSupabase();
-    const { data: existingUsers } = await supabase
+
+    // Recognise a returning Apple account by its Apple identity first. Until
+    // migration 0020 adds apple_id this lookup errors and email is used.
+    let user: any;
+    const { data: appleUsers, error: appleLookupError } = await supabase
       .from('users')
       .select('*')
-      .eq('email', email)
+      .eq('apple_id', appleId)
       .limit(1);
+    if (!appleLookupError) user = appleUsers?.[0];
 
-    let user = existingUsers?.[0];
+    if (!user) {
+      const { data: existingUsers } = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', email)
+        .limit(1);
+      user = existingUsers?.[0];
+    }
 
     if (user) {
-      const { data: updatedUser } = await supabase
-        .from('users')
-        .update({
-          first_name: user.first_name || name.firstName,
-          last_name: user.last_name || name.lastName,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', user.id)
-        .select()
-        .single();
-      user = updatedUser || user;
+      const linkedUser = await linkVerifiedIdentity(supabase, user, {
+        apple_id: user.apple_id || appleId,
+        first_name: user.first_name || name.firstName,
+        last_name: user.last_name || name.lastName,
+      });
+      if (!linkedUser) {
+        res.setHeader('Set-Cookie', clearAppleStateCookie(req));
+        return res.redirect(302, '/auth?error=user_creation_failed');
+      }
+      user = linkedUser;
     } else {
-      const { data: newUser, error: createError } = await supabase
-        .from('users')
-        .insert({
-          email,
-          first_name: name.firstName,
-          last_name: name.lastName,
-        })
-        .select()
-        .single();
+      const { data: newUser, error: createError } = await insertUserRow(supabase, {
+        email,
+        apple_id: appleId,
+        email_verified_at: new Date().toISOString(),
+        first_name: name.firstName,
+        last_name: name.lastName,
+      });
 
       if (createError || !newUser) {
-        console.error('Apple user creation failed:', createError);
+        console.error('Apple user creation failed:', createError?.message);
         res.setHeader('Set-Cookie', clearAppleStateCookie(req));
         return res.redirect(302, '/auth?error=user_creation_failed');
       }
@@ -1739,7 +1845,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           res.setHeader('Allow', 'POST');
           return res.status(405).json({ error: 'Method not allowed' });
         }
-        if (enforceRateLimit(req, res, {
+        if (await enforceSharedRateLimit(req, res, {
           keyPrefix: 'auth:login',
           limit: 10,
           windowMs: 15 * 60 * 1000,
@@ -1752,7 +1858,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           res.setHeader('Allow', 'POST');
           return res.status(405).json({ error: 'Method not allowed' });
         }
-        if (enforceRateLimit(req, res, {
+        if (await enforceSharedRateLimit(req, res, {
           keyPrefix: 'auth:signup',
           limit: 6,
           windowMs: 60 * 60 * 1000,
@@ -1775,7 +1881,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           res.setHeader('Allow', 'POST');
           return res.status(405).json({ error: 'Method not allowed' });
         }
-        if (enforceRateLimit(req, res, {
+        if (await enforceSharedRateLimit(req, res, {
           keyPrefix: 'email:lifecycle',
           limit: 4,
           windowMs: 24 * 60 * 60 * 1000,
@@ -1791,7 +1897,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           res.setHeader('Allow', 'POST');
           return res.status(405).json({ error: 'Method not allowed' });
         }
-        if (enforceRateLimit(req, res, {
+        if (await enforceSharedRateLimit(req, res, {
           keyPrefix: 'discount:lead',
           limit: 5,
           windowMs: 60 * 60 * 1000,

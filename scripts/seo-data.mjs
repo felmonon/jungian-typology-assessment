@@ -4,7 +4,6 @@ export const functionData = {
   ni: {
     code: 'Ni',
     name: 'Introverted Intuition',
-    nickname: 'The Pattern Seer',
     description: 'Synthesizes information into unified visions and insights. Operates unconsciously, delivering "aha" moments with deep conviction.',
     dominantTypes: ['INFJ', 'INTJ'],
     auxiliaryTypes: ['ENFJ', 'ENTJ'],
@@ -23,7 +22,6 @@ export const functionData = {
   ne: {
     code: 'Ne',
     name: 'Extraverted Intuition',
-    nickname: 'The Possibility Explorer',
     description: 'Explores possibilities and connections in the external world. Generates ideas rapidly, seeing multiple angles simultaneously.',
     dominantTypes: ['ENFP', 'ENTP'],
     auxiliaryTypes: ['INFP', 'INTP'],
@@ -42,7 +40,6 @@ export const functionData = {
   si: {
     code: 'Si',
     name: 'Introverted Sensing',
-    nickname: 'The Detail Keeper',
     description: 'Stores and recalls detailed sensory impressions from past experiences. Creates a rich internal library of "how things are."',
     dominantTypes: ['ISFJ', 'ISTJ'],
     auxiliaryTypes: ['ESFJ', 'ESTJ'],
@@ -61,7 +58,6 @@ export const functionData = {
   se: {
     code: 'Se',
     name: 'Extraverted Sensing',
-    nickname: 'The Present Moment Master',
     description: 'Engages directly with the present moment through the five senses. Attuned to aesthetics, physical environment, and immediate opportunities.',
     dominantTypes: ['ESFP', 'ESTP'],
     auxiliaryTypes: ['ISFP', 'ISTP'],
@@ -80,7 +76,6 @@ export const functionData = {
   ti: {
     code: 'Ti',
     name: 'Introverted Thinking',
-    nickname: 'The Logic Architect',
     description: 'Builds precise internal logical frameworks. Seeks to understand how things work at a fundamental level.',
     dominantTypes: ['INTP', 'ISTP'],
     auxiliaryTypes: ['ENTP', 'ESTP'],
@@ -99,7 +94,6 @@ export const functionData = {
   te: {
     code: 'Te',
     name: 'Extraverted Thinking',
-    nickname: 'The Efficiency Expert',
     description: 'Organizes the external world for efficiency and results. Values measurable outcomes, clear processes, and getting things done.',
     dominantTypes: ['ENTJ', 'ESTJ'],
     auxiliaryTypes: ['INTJ', 'ISTJ'],
@@ -118,7 +112,6 @@ export const functionData = {
   fi: {
     code: 'Fi',
     name: 'Introverted Feeling',
-    nickname: 'The Values Guardian',
     description: 'Evaluates everything against a deep internal value system. Attuned to authenticity, personal meaning, and emotional integrity.',
     dominantTypes: ['INFP', 'ISFP'],
     auxiliaryTypes: ['ENFP', 'ESFP'],
@@ -137,7 +130,6 @@ export const functionData = {
   fe: {
     code: 'Fe',
     name: 'Extraverted Feeling',
-    nickname: 'The Harmony Weaver',
     description: 'Focused on social harmony and group dynamics. Reads and responds to the emotional atmosphere and meets others\' emotional needs.',
     dominantTypes: ['ENFJ', 'ESFJ'],
     auxiliaryTypes: ['INFJ', 'ISFJ'],
@@ -3723,7 +3715,6 @@ export const seoLandingPages = [
         ],
         links: [
           { href: '/sample-report', label: 'See what the deeper read adds' },
-          { href: '/debrief', label: 'Get a human second read if you are still stuck' },
         ],
       },
     ],
@@ -3806,11 +3797,10 @@ export const seoLandingPages = [
         heading: 'Get a function-level answer',
         body: [
           'Rather than re-reading type descriptions, map your stack once and look at whether Fe or Fi sits higher, and whether Ni or Ne is your perceiving lead. TypeJung shows all eight functions so the close call is visible.',
-          'If the map is interesting but still feels 50/50, that is exactly the case a human second read is built for.',
+          'If the map still feels 50/50, look at the dominant-inferior axis and the stress edge: they are usually the clearest tiebreakers.',
         ],
         links: [
           { href: '/assessment', label: 'Map my stack free' },
-          { href: '/debrief', label: 'Get a Personal Type Debrief' },
         ],
       },
     ],
@@ -3823,15 +3813,10 @@ export const seoLandingPages = [
         question: 'What if my result is balanced between the two?',
         answer: 'TypeJung reports a balanced or low-confidence result as a working hypothesis rather than forcing a winner. The dominant-inferior axis and stress edge are the best tiebreakers.',
       },
-      {
-        question: 'Can I get a person to help me decide?',
-        answer: 'Yes. The optional Personal Type Debrief is a founder-reviewed read of your map, likely mistypes, and stress edge, delivered within 72 hours.',
-      },
     ],
     relatedLinks: [
       { href: '/assessment', label: 'Take the free assessment' },
       { href: '/infj-vs-infp-test', label: 'INFJ vs INFP test' },
-      { href: '/debrief', label: 'Personal Type Debrief' },
       { href: '/why-do-i-get-different-mbti-results', label: 'Why results keep changing' },
     ],
   },

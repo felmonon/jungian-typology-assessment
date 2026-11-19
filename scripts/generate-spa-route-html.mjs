@@ -160,7 +160,6 @@ const routePages = [
     ],
     links: [
       ['/sample-report', 'Read the sample report first'],
-      ['/debrief', 'Read about the Personal Type Debrief'],
     ],
   },
   {

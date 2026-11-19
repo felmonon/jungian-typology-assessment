@@ -1,9 +1,9 @@
 import { ArrowRight, Check, Minus, ShieldCheck } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { ResultFitNote } from '../components/discount/ResultFitNote';
 import { ReportSamplePreview } from '../components/results/ReportSamplePreview';
 import { Button } from '../components/ui/Button';
-import { discountedPriceLabel, EMAIL_CAPTURE_OFFER } from '../data/discount';
 import { PRICING, type PaidTierId } from '../data/pricing';
 import { SUPPORT_EMAIL } from '../data/support';
 import { PAGE_SEO, useSEO } from '../hooks/useSEO';
@@ -59,7 +59,7 @@ const plans = [
     id: 'insight',
     name: 'Insight',
     eyebrow: 'Understand your result',
-    price: discountedPriceLabel(PRICING.insight.amount),
+    price: PRICING.insight.price,
     description: 'A personal report to connect the map to your everyday life.',
     features: [
       'Everything in your free map',
@@ -162,7 +162,7 @@ export const Pricing: React.FC = () => {
             </p>
             <p className="mt-2 min-h-5 text-xs text-jung-muted">
               {plan.id === 'insight'
-                ? `Current offer · ${PRICING.insight.price} regular price`
+                ? 'Paid once, after you have read your free map'
                 : 'No payment needed to see your result'}
             </p>
             <ul className="my-7 flex-1 space-y-3">
@@ -208,7 +208,7 @@ export const Pricing: React.FC = () => {
           <h2 className="mt-2 font-display text-2xl">
             Mastery{' '}
             <span className="ml-2 whitespace-nowrap font-sans text-sm font-normal text-jung-secondary">
-              {discountedPriceLabel(PRICING.mastery.amount)} once
+              {PRICING.mastery.price} once
             </span>
           </h2>
           <p className="mt-2 text-sm leading-6 text-jung-secondary">
@@ -229,15 +229,16 @@ export const Pricing: React.FC = () => {
         <ShieldCheck className="mt-1 h-4 w-4 shrink-0" />
         Payments in Canadian dollars. No subscription. 7-day refund policy.
       </p>
+      <ResultFitNote className="mx-auto mt-2 max-w-4xl text-center" />
       <section className="mx-auto mt-14 grid max-w-4xl items-center gap-8 lg:grid-cols-[1fr_1.45fr]">
         <div>
           <p className="journey-eyebrow">Look inside before you decide</p>
           <h2 className="mt-3 font-display text-3xl leading-tight sm:text-4xl">A report you can<br />put into practice.</h2>
           <p className="mt-4 text-sm leading-7 text-jung-secondary">Explore a fictional example of the reading experience. Your free map is yours to keep; paid depth adds interpretation across ten sections.</p>
           <Button variant="accent" className="mt-5" onClick={() => choose('insight')}>
-            {hasResults ? `Get Insight — ${discountedPriceLabel(PRICING.insight.amount)}` : 'Start with my free map'}
+            {hasResults ? `Get Insight — ${PRICING.insight.price}` : 'Start with my free map'}
           </Button>
-          <p className="mt-3 text-xs leading-6 text-jung-muted">Insight: {discountedPriceLabel(PRICING.insight.amount)} once · CAD · 7-day refund</p>
+          <p className="mt-3 text-xs leading-6 text-jung-muted">Insight: {PRICING.insight.price} once · CAD · 7-day refund</p>
           <Link to="/sample-report" className="mt-3 inline-flex min-h-11 items-center text-xs font-semibold text-jung-accent underline underline-offset-4">Read all four sample excerpts</Link>
         </div>
         <ReportSamplePreview onExplore={topic => trackEvent('pricing_report_sample_explored', { topic, source: 'pricing_preview' })} />
@@ -313,8 +314,8 @@ export const Pricing: React.FC = () => {
             'Stripe confirms payment, then returns you to TypeJung to generate your report from the map saved in this browser. Use the purchase email when signing in to restore paid access. Keep your receipt.',
           ],
           [
-            'Do I need a discount code?',
-            `The ${EMAIL_CAPTURE_OFFER.code} offer is applied automatically. Insight is ${discountedPriceLabel(PRICING.insight.amount)} and Mastery is ${discountedPriceLabel(PRICING.mastery.amount)}. Review the final amount on Stripe before paying.`,
+            'What does it cost?',
+            `Insight is ${PRICING.insight.price} and Mastery is ${PRICING.mastery.price}, paid once in Canadian dollars. No code is needed and there is no subscription. Stripe shows the final total before you pay.`,
           ],
           [
             'What if the report is not useful?',

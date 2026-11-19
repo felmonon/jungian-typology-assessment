@@ -19,7 +19,7 @@ vi.mock('../../api/_lib/checkout-intents', () => ({
 }));
 vi.mock('../../api/_lib/funnel-events', () => ({ recordFunnelEvent: vi.fn() }));
 vi.mock('../../api/_lib/report-availability', () => ({ guardPaidReportCheckout: vi.fn().mockResolvedValue(true) }));
-vi.mock('../../api/_lib/rate-limit', () => ({ enforceRateLimit: vi.fn(() => false) }));
+vi.mock('../../api/_lib/rate-limit', () => ({ enforceRateLimit: vi.fn(() => false), enforceSharedRateLimit: vi.fn(async () => false) }));
 vi.mock('../../server/checkout', async (importOriginal) => ({
   ...await importOriginal<typeof import('../../server/checkout')>(),
   getAutoPromotionCode: () => null,
@@ -78,7 +78,7 @@ describe('checkout traffic snapshot', () => {
     expect(params.get('metadata[utm_source]')).toBe(RESEARCH_SOURCE);
     expect(params.get('metadata[utm_campaign]')).toBe(RESEARCH_CAMPAIGN);
     expect(params.get('payment_intent_data[metadata][utm_source]')).toBe(RESEARCH_SOURCE);
-    expect(params.get('line_items[0][price_data][unit_amount]')).toBe('1000');
+    expect(params.get('line_items[0][price_data][unit_amount]')).toBe('700');
     // These are the persisted columns the admin intent report classifies.
     expect(isResearchTrafficEvent({ properties: {
       utm_source: recordedIntent.attribution?.utmSource,

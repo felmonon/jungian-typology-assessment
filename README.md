@@ -84,7 +84,7 @@ The underlying model is Carl Jung's original typology — not the simplified MBT
 | **Backend** | Vercel Serverless Functions in [`api/`](api) |
 | **Database** | Supabase (PostgreSQL, real-time subscriptions) |
 | **Auth** | Google OAuth 2.0, Email/Password |
-| **Payments** | Stripe (3-tier: Free / Insight CA$10 / Mastery CA$29) |
+| **Payments** | Stripe (3-tier: Free / Insight CA$7 / Mastery CA$19) |
 | **AI** | OpenRouter or Google Gemini, selected with `REPORT_AI_PROVIDER` |
 | **CI/CD** | GitHub Actions, Vercel |
 | **Testing** | Vitest, E2E suite |
@@ -96,8 +96,8 @@ The underlying model is Carl Jung's original typology — not the simplified MBT
 | Tier | Price | What You Get |
 |------|-------|-------------|
 | **Free** | $0 | 42-question assessment, basic function-stack map, dominant-inferior axis |
-| **Insight** | CA$10 one-time | + deeper report, stress-pattern map, relationship-pattern reflection, practice prompts |
-| **Mastery** | CA$29 one-time | + AI Type Guide, individuation roadmap, practice library, reassessment tracking |
+| **Insight** | CA$7 one-time | + deeper report, stress-pattern map, relationship-pattern reflection, practice prompts |
+| **Mastery** | CA$19 one-time | + AI Type Guide, individuation roadmap, practice library, reassessment tracking |
 
 ---
 
@@ -181,6 +181,8 @@ npm run test:watch
 npm run test:e2e
 npm run test:coverage
 ```
+
+The E2E suite sends real requests, so point it at a preview deployment with `TEST_BASE_URL=https://<preview-url> npm run test:e2e`. Without `TEST_BASE_URL` it falls back to production. In CI it runs only when you start the workflow by hand from the Actions tab and give it a preview URL. It refuses `typejung.com`.
 
 ---
 

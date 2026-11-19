@@ -89,7 +89,7 @@ const articleSchema = (article) => JSON.stringify({
 
 const renderSaveLinkPanel = (sourceBase, idBase = sourceBase) => `<section class="save-link-panel" aria-labelledby="${escapeHtml(sourceSlug(idBase))}-save-link-title">
     <h2 id="${escapeHtml(sourceSlug(idBase))}-save-link-title">Want to take the free map later?</h2>
-    <p>Email yourself the assessment link and TYPEJUNG30 code. Start with the free result, then decide after the map.</p>
+    <p>Email yourself the assessment link and an email-only upgrade code. Start with the free result, then decide after the map.</p>
     <form class="save-link-form" data-discount-lead-form data-source="${escapeHtml(sourceFor(sourceBase, 'email_code'))}" data-tier="insight">
       <label class="sr-only" for="${escapeHtml(sourceSlug(idBase))}-save-link-email">Email address</label>
       <div class="save-link-form-row">

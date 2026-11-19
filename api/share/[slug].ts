@@ -1,7 +1,14 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSupabaseAdminClient, hasSupabaseAdminConfig } from '../_lib/supabase.js';
+import sharePageHandler from './_page.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // /share/:slug is rewritten here with view=page (see vercel.json) so crawlers
+  // get per-result preview tags. Served from this function, not a new one, to
+  // stay within the Vercel Hobby function limit.
+  const view = Array.isArray(req.query.view) ? req.query.view[0] : req.query.view;
+  if (view === 'page') return sharePageHandler(req, res);
+
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
     return res.status(405).json({ error: 'Method not allowed' });

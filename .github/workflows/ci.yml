@@ -5,6 +5,13 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  # Manual run, for the E2E job against a preview or staging deployment.
+  workflow_dispatch:
+    inputs:
+      e2e_base_url:
+        description: 'Deployment URL for the E2E tests (a preview URL, not https://typejung.com)'
+        required: true
+        type: string
 
 env:
   NODE_VERSION: '24'
@@ -87,13 +94,31 @@ jobs:
           path: dist/
           retention-days: 7
 
-  # Job 4: E2E Tests (optional, runs on main only)
+  # Job 4: E2E Tests (opt-in). The suite sends real requests, including auth
+  # attempts, so it never runs against production on its own. Start it from the
+  # Actions tab with a preview deployment URL.
   e2e-tests:
     name: E2E Tests
     runs-on: ubuntu-latest
     needs: [test, build]
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'workflow_dispatch'
     steps:
+      - name: Check the target URL
+        env:
+          TEST_BASE_URL: ${{ inputs.e2e_base_url }}
+        run: |
+          # Allowlist: only Vercel preview hosts. Parse with a real URL parser so
+          # userinfo, case, trailing dots or ports cannot smuggle in production.
+          node -e '
+            let u;
+            try { u = new URL(process.env.TEST_BASE_URL); } catch { console.log("::error::e2e_base_url is not a valid URL"); process.exit(1); }
+            const host = u.hostname.toLowerCase().replace(/\.$/, "");
+            if (u.protocol !== "https:" || u.username || u.password || u.port || !host.endsWith(".vercel.app")) {
+              console.log("::error::e2e_base_url must be a plain https://<preview>.vercel.app URL");
+              process.exit(1);
+            }
+          '
+
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -108,9 +133,8 @@ jobs:
 
       - name: Run E2E tests
         run: npm run test:e2e
-        continue-on-error: true
         env:
-          TEST_BASE_URL: https://typejung.com
+          TEST_BASE_URL: ${{ inputs.e2e_base_url }}
 
   # Job 5: Deploy to Vercel (only on main branch push)
   deploy:

@@ -158,7 +158,7 @@ export const functionData = {
 export const typeData = {
   intj: {
     code: 'INTJ',
-    name: 'The Architect',
+    name: 'Ni-Te',
     stack: 'Ni-Te-Fi-Se',
     description: 'Strategic visionaries who see the world as a chess board. They combine long-term vision with systematic execution to build complex systems and achieve ambitious goals.',
     cognitiveStack: [
@@ -175,7 +175,7 @@ export const typeData = {
   },
   intp: {
     code: 'INTP',
-    name: 'The Logician',
+    name: 'Ti-Ne',
     stack: 'Ti-Ne-Si-Fe',
     description: 'Analytical problem-solvers who love exploring theoretical frameworks. They seek to understand how things work at the deepest level.',
     cognitiveStack: [
@@ -192,7 +192,7 @@ export const typeData = {
   },
   entj: {
     code: 'ENTJ',
-    name: 'The Commander',
+    name: 'Te-Ni',
     stack: 'Te-Ni-Se-Fi',
     description: 'Bold, strategic leaders who mobilize resources and people toward ambitious goals. Natural executives who create order from chaos.',
     cognitiveStack: [
@@ -209,7 +209,7 @@ export const typeData = {
   },
   entp: {
     code: 'ENTP',
-    name: 'The Debater',
+    name: 'Ne-Ti',
     stack: 'Ne-Ti-Fe-Si',
     description: 'Quick-witted innovators who love intellectual challenges. They see possibilities everywhere and enjoy exploring ideas through debate.',
     cognitiveStack: [
@@ -226,7 +226,7 @@ export const typeData = {
   },
   infj: {
     code: 'INFJ',
-    name: 'The Advocate',
+    name: 'Ni-Fe',
     stack: 'Ni-Fe-Ti-Se',
     description: 'Insightful idealists driven to help others. They combine deep intuition with genuine care for people to create meaningful change.',
     cognitiveStack: [
@@ -243,7 +243,7 @@ export const typeData = {
   },
   infp: {
     code: 'INFP',
-    name: 'The Mediator',
+    name: 'Fi-Ne',
     stack: 'Fi-Ne-Si-Te',
     description: 'Imaginative idealists guided by their own values and beliefs. They seek meaning and authenticity in everything they do.',
     cognitiveStack: [
@@ -260,7 +260,7 @@ export const typeData = {
   },
   enfj: {
     code: 'ENFJ',
-    name: 'The Protagonist',
+    name: 'Fe-Ni',
     stack: 'Fe-Ni-Se-Ti',
     description: 'Charismatic leaders who inspire others toward growth. They combine genuine care for people with a vision for what they can become.',
     cognitiveStack: [
@@ -277,7 +277,7 @@ export const typeData = {
   },
   enfp: {
     code: 'ENFP',
-    name: 'The Campaigner',
+    name: 'Ne-Fi',
     stack: 'Ne-Fi-Te-Si',
     description: 'Enthusiastic, creative spirits who see life as full of possibilities. They inspire others with their energy and authenticity.',
     cognitiveStack: [
@@ -294,7 +294,7 @@ export const typeData = {
   },
   istj: {
     code: 'ISTJ',
-    name: 'The Logistician',
+    name: 'Si-Te',
     stack: 'Si-Te-Fi-Ne',
     description: 'Responsible and thorough individuals who value tradition and reliability. They are the backbone of institutions.',
     cognitiveStack: [
@@ -311,7 +311,7 @@ export const typeData = {
   },
   isfj: {
     code: 'ISFJ',
-    name: 'The Defender',
+    name: 'Si-Fe',
     stack: 'Si-Fe-Ti-Ne',
     description: 'Caring protectors who remember details about the people they care for. They quietly ensure others are looked after.',
     cognitiveStack: [
@@ -328,7 +328,7 @@ export const typeData = {
   },
   estj: {
     code: 'ESTJ',
-    name: 'The Executive',
+    name: 'Te-Si',
     stack: 'Te-Si-Ne-Fi',
     description: 'Organized leaders who value order, tradition, and getting things done. They excel at managing people and processes.',
     cognitiveStack: [
@@ -345,7 +345,7 @@ export const typeData = {
   },
   esfj: {
     code: 'ESFJ',
-    name: 'The Consul',
+    name: 'Fe-Si',
     stack: 'Fe-Si-Ne-Ti',
     description: 'Warm, social connectors who create harmony in their communities. They remember personal details and care deeply about others.',
     cognitiveStack: [
@@ -362,7 +362,7 @@ export const typeData = {
   },
   istp: {
     code: 'ISTP',
-    name: 'The Virtuoso',
+    name: 'Ti-Se',
     stack: 'Ti-Se-Ni-Fe',
     description: 'Cool-headed problem-solvers who excel with hands-on challenges. They understand how systems work and troubleshoot effectively.',
     cognitiveStack: [
@@ -379,7 +379,7 @@ export const typeData = {
   },
   isfp: {
     code: 'ISFP',
-    name: 'The Adventurer',
+    name: 'Fi-Se',
     stack: 'Fi-Se-Ni-Te',
     description: 'Gentle artists who live in the present and express themselves through action. They have strong values and aesthetic sense.',
     cognitiveStack: [
@@ -396,7 +396,7 @@ export const typeData = {
   },
   estp: {
     code: 'ESTP',
-    name: 'The Entrepreneur',
+    name: 'Se-Ti',
     stack: 'Se-Ti-Fe-Ni',
     description: 'Energetic risk-takers who thrive on action and live in the moment. They read situations quickly and act decisively.',
     cognitiveStack: [
@@ -413,7 +413,7 @@ export const typeData = {
   },
   esfp: {
     code: 'ESFP',
-    name: 'The Entertainer',
+    name: 'Se-Fi',
     stack: 'Se-Fi-Te-Ni',
     description: 'Spontaneous entertainers who bring joy and energy to every situation. They love people and new experiences.',
     cognitiveStack: [
@@ -449,7 +449,7 @@ export const pageData = {
   },
   '/pricing': {
     title: 'Pricing Plans | TypeJung',
-    description: 'Choose your TypeJung plan: Free, Insight (CA$7 with TYPEJUNG30), or Mastery (CA$20.30 with TYPEJUNG30). One-time CAD upgrades add deeper interpretation, practice prompts, and guided follow-up support.',
+    description: 'Choose your TypeJung plan: Free, Insight (CA$7), or Mastery (CA$19). One-time CAD upgrades add deeper interpretation, practice prompts, and guided follow-up support.',
   },
   '/privacy': {
     title: 'Privacy Policy | TypeJung',
@@ -726,7 +726,7 @@ const typeComparisonLandingPages = [
       {
         heading: 'Why a normal type description may not be enough',
         body: [
-          `A description of ${leftName} or ${rightName} can feel partly true even when the function order is not right. Type descriptions compress many signals into one story.`,
+          `A description of ${page.left} (${leftName}) or ${page.right} (${rightName}) can feel partly true even when the function order is not right. Type descriptions compress many signals into one story.`,
           'A stronger test checks what your attention does first, which support function appears next, and what becomes awkward or reactive under pressure.',
         ],
         bullets: [
@@ -2026,7 +2026,7 @@ export const seoLandingPages = [
     ],
     saveLink: {
       title: 'Send yourself the review path',
-      body: 'Email yourself the free assessment path and TYPEJUNG30 code. Start with the free map, then review the optional report only if the result earns interest.',
+      body: 'Email yourself the free assessment path and an email-only upgrade code. Start with the free map, then review the optional report only if the result earns interest.',
       button: 'Email the review path',
       tier: 'mastery',
     },
@@ -2166,7 +2166,7 @@ export const seoLandingPages = [
     h1: 'A Jungian test that goes beyond a four-letter label',
     intro: [
       'TypeJung is a Jungian self-assessment for people who want more than a quick type label. It maps self-reported patterns associated with all 8 cognitive functions, then turns that profile into an educational map of attention, decision-making, and stress patterns.',
-      'The free assessment takes about 20 to 25 minutes. Paid reports are optional one-time CAD upgrades; TYPEJUNG30 currently brings Insight to CA$7 and Mastery to CA$20.30 on Stripe.',
+      'The free assessment takes about 20 to 25 minutes. Paid reports are optional one-time CAD upgrades: Insight is CA$7 and Mastery is CA$19.',
     ],
     intent: {
       bestFor: 'Searchers who want a Jungian test with visible cognitive-function evidence, not only a fast type label.',
@@ -2228,7 +2228,7 @@ export const seoLandingPages = [
       {
         heading: 'When a paid report helps',
         body: [
-          'The free assessment gives you the function-stack map. Insight adds developmental edge analysis, a stress-pattern reflection map, relationship-pattern reflection, and practical prompts for a one-time CA$10 base price, currently CA$7 with TYPEJUNG30 on Stripe. Mastery adds the AI Type Guide, an individuation roadmap, reflection exercises, and practice support for a one-time CA$29 base price, currently CA$20.30 with the same code.',
+          'The free assessment gives you the function-stack map. Insight adds developmental edge analysis, a stress-pattern reflection map, relationship-pattern reflection, and practical prompts for a one-time CA$7. Mastery adds the AI Type Guide, an individuation roadmap, reflection exercises, and practice support for a one-time CA$19.',
           'The best path is to take the free test first. Upgrade only if the function map feels accurate enough to make deeper interpretation useful.',
         ],
         links: [
@@ -2583,7 +2583,7 @@ export const seoLandingPages = [
     h1: 'A cognitive function test for all 8 Jungian functions',
     intro: [
       'TypeJung maps Ni, Ne, Si, Se, Ti, Te, Fi, and Fe so you can see the shape of your cognitive profile instead of guessing from a type description.',
-      'The free assessment gives you a function map and likely type pattern. Optional paid reports add deeper analysis with one-time CAD pricing; TYPEJUNG30 currently brings Insight to CA$7 and Mastery to CA$20.30 on Stripe.',
+      'The free assessment gives you a function map and likely type pattern. Optional paid reports add deeper analysis with one-time CAD pricing: Insight is CA$7 and Mastery is CA$19.',
     ],
     intent: {
       bestFor: 'Searchers who want a cognitive function test that shows all 8 scores and explains the pattern behind them.',
@@ -2737,7 +2737,7 @@ export const seoLandingPages = [
         heading: 'Free first, upgrade only if the map earns it',
         body: [
           'The quiz is designed to reduce purchase anxiety. You get the function-stack map first, then choose whether a deeper paid interpretation is useful.',
-          'Insight currently shows CA$7 with TYPEJUNG30 on Stripe and adds a deeper report, stress-pattern reflection map, relationship-pattern reflection, and practice prompts. Mastery currently shows CA$20.30 with the same code and adds the AI Type Guide plus a practice roadmap.',
+          'Insight is CA$7 and adds a deeper report, stress-pattern reflection map, relationship-pattern reflection, and practice prompts. Mastery is CA$19 and adds the AI Type Guide plus a practice roadmap.',
         ],
         bullets: [
           'No card before the free result',
@@ -2831,7 +2831,7 @@ export const seoLandingPages = [
         heading: 'When to upgrade after the free test',
         body: [
           'Upgrade only if the map gives you a useful starting point and you want help interpreting the developmental edge behind it.',
-          'Insight is currently CA$7 with TYPEJUNG30 applied on Stripe. It adds the deeper report, stress-pattern reflection map, relationship-pattern reflection, and practice prompts. Mastery adds AI Type Guide support and a practice roadmap.',
+          'Insight is CA$7, paid once. It adds the deeper report, stress-pattern reflection map, relationship-pattern reflection, and practice prompts. Mastery adds AI Type Guide support and a practice roadmap.',
         ],
         bullets: [
           'Choose Insight when you want a deeper written report',
@@ -3670,7 +3670,7 @@ export const seoLandingPages = [
     ],
     saveLink: {
       title: 'Email yourself the free map path',
-      body: 'Send yourself the free assessment link and TYPEJUNG30 code. Map the function pattern first, then decide whether a deeper read is worth it.',
+      body: 'Send yourself the free assessment link and an email-only upgrade code. Map the function pattern first, then decide whether a deeper read is worth it.',
       button: 'Email the free map path',
       tier: 'insight',
     },
@@ -3762,7 +3762,7 @@ export const seoLandingPages = [
     ],
     saveLink: {
       title: 'Email yourself the comparison path',
-      body: 'Send yourself the free assessment link and TYPEJUNG30 code, then compare your own stack against both types before deciding.',
+      body: 'Send yourself the free assessment link and an email-only upgrade code, then compare your own stack against both types before deciding.',
       button: 'Email the comparison path',
       tier: 'insight',
     },
@@ -3849,7 +3849,7 @@ export const seoLandingPages = [
     ],
     saveLink: {
       title: 'Email yourself the free map path',
-      body: 'Send yourself the free assessment link and TYPEJUNG30 code, then take it on a neutral day to read the steadier pattern.',
+      body: 'Send yourself the free assessment link and an email-only upgrade code, then take it on a neutral day to read the steadier pattern.',
       button: 'Email the free map path',
       tier: 'insight',
     },

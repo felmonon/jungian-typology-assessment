@@ -250,7 +250,7 @@ export const Home: React.FC = () => {
               </span>
             </p>
             <p className="mt-2 text-xs text-jung-muted">
-              Current offer · {PRICING.insight.price} regular price
+              One-time price · no subscription
             </p>
             <ul className="my-6 space-y-3">
               {[

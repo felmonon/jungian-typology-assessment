@@ -10,11 +10,12 @@ import { recordFunnelEvent } from './_lib/funnel-events.js';
 import { guardPaidReportCheckout } from './_lib/report-availability.js';
 import { enforceRateLimit } from './_lib/rate-limit.js';
 import { getSupabaseAdminClient, hasSupabaseAdminConfig } from './_lib/supabase.js';
-import { cleanPromotionCode, getAutoPromotionCode, getStripePaymentMethodConfigurationId, getStripeSecretKey, parsePaidTier, resolveCheckoutBaseUrl } from '../server/checkout.js';
-import { PRICING } from '../data/pricing.js';
+import { getStripePaymentMethodConfigurationId, getStripeSecretKey, parsePaidTier, resolveCheckoutBaseUrl } from '../server/checkout.js';
+import { amountInCents, PRICING } from '../data/pricing.js';
 import type { PaidTierId } from '../data/pricing.js';
 import { createDebriefCheckoutSession } from './_lib/debrief-checkout.js';
 import { createMasteryUpgradeSession } from './_lib/mastery-upgrade.js';
+import { handleResultFitStatsRequest } from './_lib/result-fit-stats.js';
 import { sanitizeTrafficAttributionParams } from '../shared/traffic-attribution.js';
 import { isResearchBrowserId, RESEARCH_CAMPAIGN, RESEARCH_SOURCE } from '../shared/research-traffic.js';
 
@@ -29,7 +30,13 @@ const CHECKOUT_PRODUCT_COPY: Record<PaidTierId, { name: string; description: str
   },
 };
 
-const CHECKOUT_SESSION_EXPIRATION_SECONDS = 24 * 60 * 60;
+// Short expiry so the checkout.session.expired webhook, which queues the
+// recovery email, fires soon after someone leaves. Stripe's minimum is 30 min.
+export const CHECKOUT_SESSION_EXPIRATION_SECONDS = 60 * 60;
+
+// Identifies the consent wording shown next to the checkout email field, so a
+// recorded opt-in can be traced to the exact text the buyer agreed to.
+export const RECOVERY_EMAIL_CONSENT_VERSION = 'checkout_link_if_unfinished_v1';
 
 export type CheckoutAttribution = {
   source?: string;
@@ -162,7 +169,9 @@ function cleanCheckoutEmail(email: unknown): string | null {
   return cleaned;
 }
 
-function hasSiteRecoveryEmailConsent(value: unknown, suppliedCustomerEmail: string | null): boolean {
+// Site recovery consent is only the explicit, unticked-by-default checkbox on
+// the checkout review. It needs an email to be useful.
+export function hasSiteRecoveryEmailConsent(value: unknown, suppliedCustomerEmail: string | null): boolean {
   return value === true && Boolean(suppliedCustomerEmail);
 }
 
@@ -196,37 +205,6 @@ async function trackCheckoutServerEvent(eventName: string, params: Record<string
   } catch (error) {
     console.warn('Vercel checkout analytics event failed:', eventName, error instanceof Error ? error.message : 'Unknown error');
   }
-}
-
-async function findActivePromotionCodeId(
-  stripeSecretKey: string,
-  code: string,
-): Promise<{ id: string | null; error?: string }> {
-  const query = new URLSearchParams({
-    code,
-    active: 'true',
-    limit: '1',
-  });
-
-  const response = await fetch(`https://api.stripe.com/v1/promotion_codes?${query.toString()}`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${stripeSecretKey}`,
-    },
-  });
-
-  const payload = await response.json().catch(() => null);
-
-  if (!response.ok) {
-    const error = payload?.error?.message || response.statusText || 'Stripe promotion lookup failed';
-    console.warn('Stripe promotion code lookup failed:', error);
-    return { id: null, error };
-  }
-
-  const promotionCodeId = payload?.data?.[0]?.id;
-  return typeof promotionCodeId === 'string'
-    ? { id: promotionCodeId }
-    : { id: null, error: `Promotion code ${code} is not active` };
 }
 
 async function findStripeCustomerIdByEmail(
@@ -269,9 +247,109 @@ async function getCheckoutCustomerEmail(req: VercelRequest): Promise<string | nu
   return user?.email || null;
 }
 
+export function checkoutSessionExpiresAt(nowMs = Date.now()): number {
+  return Math.floor(nowMs / 1000) + CHECKOUT_SESSION_EXPIRATION_SECONDS;
+}
+
+export type CheckoutSessionParamsInput = {
+  tier: PaidTierId;
+  baseUrl: string;
+  checkoutSource: string;
+  attribution?: CheckoutAttribution;
+  trafficAttribution?: Record<string, string | undefined>;
+  expiresAt: number;
+  checkoutIntentId?: string | null;
+  paymentMethodConfigurationId?: string | null;
+  anonymousId?: string | null;
+  siteRecoveryEmailConsent: boolean;
+  consentRecordedAt?: string;
+  checkoutEmailSource: string;
+  checkoutCustomerEmail?: string | null;
+  stripeCustomerId?: string | null;
+  includeStripePromotionConsent: boolean;
+};
+
+// Stripe Checkout form params. Charges the list price; promotion codes are
+// accepted when typed (TYPEJUNG30 links still work) but none is pre-applied.
+export function buildCheckoutSessionParams(input: CheckoutSessionParamsInput): URLSearchParams {
+  const tierPricing = PRICING[input.tier];
+  const productCopy = CHECKOUT_PRODUCT_COPY[input.tier];
+  const attribution = input.attribution || {};
+  const recoveryConsent = input.siteRecoveryEmailConsent ? 'site_opt_in' : 'none';
+  const cancelUrl = buildCheckoutCancelUrl(input.baseUrl, input.tier, input.checkoutSource, attribution);
+  const checkoutParams = new URLSearchParams({
+    'mode': 'payment',
+    'line_items[0][price_data][currency]': tierPricing.currency.toLowerCase(),
+    'line_items[0][price_data][unit_amount]': String(amountInCents(tierPricing.amount)),
+    'line_items[0][price_data][product_data][name]': productCopy.name,
+    'line_items[0][price_data][product_data][description]': productCopy.description,
+    'line_items[0][quantity]': '1',
+    'submit_type': 'pay',
+    'success_url': `${input.baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+    'cancel_url': cancelUrl,
+    'expires_at': String(input.expiresAt),
+    'after_expiration[recovery][enabled]': 'true',
+    'after_expiration[recovery][allow_promotion_codes]': 'true',
+    'allow_promotion_codes': 'true',
+    'custom_text[after_submit][message]': 'TypeJung paid access is a one-time CAD purchase. No subscription is created.',
+    'custom_text[submit][message]': 'One-time CAD purchase. 7-day money-back guarantee if the paid report is not useful.',
+    'payment_intent_data[description]': productCopy.name,
+    'payment_intent_data[metadata][product]': 'typejung_premium',
+    'payment_intent_data[metadata][tier]': input.tier,
+    'payment_intent_data[metadata][source]': input.checkoutSource,
+    'payment_intent_data[metadata][recovery_email_consent]': recoveryConsent,
+    'payment_intent_data[metadata][checkout_email_source]': input.checkoutEmailSource,
+    'metadata[product]': 'typejung_premium',
+    'metadata[tier]': input.tier,
+    'metadata[source]': input.checkoutSource,
+    'metadata[amount_cad]': String(tierPricing.amount),
+    'metadata[recovery_email_consent]': recoveryConsent,
+    'metadata[checkout_email_source]': input.checkoutEmailSource,
+  });
+
+  // Proof of the CASL opt-in: which wording and when. No email is stored here.
+  if (input.siteRecoveryEmailConsent) {
+    addCheckoutMetadata(checkoutParams, {
+      recovery_email_consent_version: RECOVERY_EMAIL_CONSENT_VERSION,
+      recovery_email_consent_at: input.consentRecordedAt,
+    });
+  }
+
+  if (input.checkoutIntentId) {
+    checkoutParams.set('payment_intent_data[metadata][checkout_intent_id]', input.checkoutIntentId);
+    checkoutParams.set('metadata[checkout_intent_id]', input.checkoutIntentId);
+  }
+
+  if (input.paymentMethodConfigurationId) {
+    checkoutParams.set('payment_method_configuration', input.paymentMethodConfigurationId);
+  }
+
+  if (input.anonymousId) {
+    checkoutParams.set('payment_intent_data[metadata][anonymous_id]', input.anonymousId);
+    checkoutParams.set('metadata[anonymous_id]', input.anonymousId);
+  }
+
+  addCheckoutMetadata(checkoutParams, checkoutAttributionMetadata(attribution));
+  if (input.trafficAttribution) addCheckoutMetadata(checkoutParams, input.trafficAttribution);
+
+  if (input.includeStripePromotionConsent) {
+    checkoutParams.set('consent_collection[promotions]', 'auto');
+  }
+
+  applyCheckoutCustomerParams(checkoutParams, input.checkoutCustomerEmail || undefined, input.stripeCustomerId);
+
+  return checkoutParams;
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Aggregate "the map fit" share for Pricing and Checkout. Served from this
+  // function to stay within the Hobby serverless-function limit.
+  if (req.method === 'GET' && req.query?.view === 'result-fit') {
+    return handleResultFitStatsRequest(req, res);
+  }
+
   if (req.method !== 'POST') {
-    res.setHeader('Allow', 'POST');
+    res.setHeader('Allow', 'GET, POST');
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
@@ -317,7 +395,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const baseUrl = resolveCheckoutBaseUrl(req.headers.origin, req.headers.host);
     const customerEmail = await getCheckoutCustomerEmail(req);
     const tierPricing = PRICING[resolvedTier];
-    const productCopy = CHECKOUT_PRODUCT_COPY[resolvedTier];
     const checkoutSource = cleanCheckoutSource(req.body?.source);
     const checkoutAttribution = cleanCheckoutAttribution(req.body?.attribution);
     // A dedicated study browser remains research even if storage/privacy
@@ -334,12 +411,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const stripeCustomerId = await findStripeCustomerIdByEmail(stripeSecretKey, checkoutCustomerEmail);
     const anonymousId = cleanCheckoutToken(req.body?.anonymousId ?? req.body?.anonymous_id, 160);
     const paymentMethodConfigurationId = getStripePaymentMethodConfigurationId();
-    const expiresAt = Math.floor(Date.now() / 1000) + CHECKOUT_SESSION_EXPIRATION_SECONDS;
+    const expiresAt = checkoutSessionExpiresAt();
+    const consentRecordedAt = siteRecoveryEmailConsent ? new Date().toISOString() : undefined;
     checkoutIntentSupabase = hasSupabaseAdminConfig() ? getSupabaseAdminClient() : null;
     checkoutIntentId = checkoutIntentSupabase
       ? await recordCheckoutIntentStarted(checkoutIntentSupabase, {
         tier: resolvedTier,
-        amountCents: Math.round(tierPricing.amount * 100),
+        amountCents: amountInCents(tierPricing.amount),
         currency: tierPricing.currency,
         source: checkoutSource,
         attribution: checkoutAttribution,
@@ -348,96 +426,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         recoveryEmailConsent: siteRecoveryEmailConsent ? 'site_opt_in' : 'none',
       })
       : null;
-    const autoPromotionCode = cleanPromotionCode(getAutoPromotionCode() || undefined);
-    const promotionCodeLookup = autoPromotionCode
-      ? await findActivePromotionCodeId(stripeSecretKey, autoPromotionCode)
-      : { id: null };
-    const activePromotionCodeId = promotionCodeLookup.id;
-
-    if (autoPromotionCode && !activePromotionCodeId) {
-      const message = promotionCodeLookup.error || `Promotion code ${autoPromotionCode} is unavailable`;
-      if (checkoutIntentSupabase && checkoutIntentId) {
-        await markCheckoutIntentStripeFailed(
-          checkoutIntentSupabase,
-          checkoutIntentId,
-          message,
-        );
-      }
-      await trackCheckoutServerEvent('server_checkout_discount_lookup_failed', {
-        tier: resolvedTier,
-        source: checkoutSource,
-        discount_code: autoPromotionCode,
-        reason: message,
-      });
-      return res.status(502).json({
-        error: `${autoPromotionCode} is not available right now. Please try checkout again in a few minutes.`,
-      });
-    }
-
-    const buildCheckoutParams = (includeStripePromotionConsent: boolean) => {
-      const cancelUrl = buildCheckoutCancelUrl(baseUrl, resolvedTier, checkoutSource, checkoutAttribution);
-      const checkoutParams = new URLSearchParams({
-        'mode': 'payment',
-        'line_items[0][price_data][currency]': tierPricing.currency.toLowerCase(),
-        'line_items[0][price_data][unit_amount]': String(Math.round(tierPricing.amount * 100)),
-        'line_items[0][price_data][product_data][name]': productCopy.name,
-        'line_items[0][price_data][product_data][description]': productCopy.description,
-        'line_items[0][quantity]': '1',
-        'submit_type': 'pay',
-        'success_url': `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
-        'cancel_url': cancelUrl,
-        'expires_at': String(expiresAt),
-        'after_expiration[recovery][enabled]': 'true',
-        'custom_text[after_submit][message]': 'TypeJung paid access is a one-time CAD purchase. No subscription is created.',
-        'custom_text[submit][message]': 'One-time CAD purchase. 7-day money-back guarantee if the paid report is not useful.',
-        'payment_intent_data[description]': productCopy.name,
-        'payment_intent_data[metadata][product]': 'typejung_premium',
-        'payment_intent_data[metadata][tier]': resolvedTier,
-        'payment_intent_data[metadata][source]': checkoutSource,
-        'payment_intent_data[metadata][recovery_email_consent]': siteRecoveryEmailConsent ? 'site_opt_in' : 'none',
-        'payment_intent_data[metadata][checkout_email_source]': checkoutEmailSource,
-        'metadata[product]': 'typejung_premium',
-        'metadata[tier]': resolvedTier,
-        'metadata[source]': checkoutSource,
-        'metadata[amount_cad]': String(tierPricing.amount),
-        'metadata[recovery_email_consent]': siteRecoveryEmailConsent ? 'site_opt_in' : 'none',
-        'metadata[checkout_email_source]': checkoutEmailSource,
-      });
-
-      if (checkoutIntentId) {
-        checkoutParams.set('payment_intent_data[metadata][checkout_intent_id]', checkoutIntentId);
-        checkoutParams.set('metadata[checkout_intent_id]', checkoutIntentId);
-      }
-
-      if (paymentMethodConfigurationId) {
-        checkoutParams.set('payment_method_configuration', paymentMethodConfigurationId);
-      }
-
-      if (anonymousId) {
-        checkoutParams.set('payment_intent_data[metadata][anonymous_id]', anonymousId);
-        checkoutParams.set('metadata[anonymous_id]', anonymousId);
-      }
-
-      addCheckoutMetadata(checkoutParams, checkoutAttributionMetadata(checkoutAttribution));
-      addCheckoutMetadata(checkoutParams, trafficAttribution);
-
-      if (includeStripePromotionConsent) {
-        checkoutParams.set('consent_collection[promotions]', 'auto');
-      }
-
-      if (activePromotionCodeId) {
-        checkoutParams.set('discounts[0][promotion_code]', activePromotionCodeId);
-        checkoutParams.set('payment_intent_data[metadata][discount_code]', autoPromotionCode || '');
-        checkoutParams.set('metadata[discount_code]', autoPromotionCode || '');
-      } else {
-        checkoutParams.set('allow_promotion_codes', 'true');
-        checkoutParams.set('after_expiration[recovery][allow_promotion_codes]', 'true');
-      }
-
-      applyCheckoutCustomerParams(checkoutParams, checkoutCustomerEmail, stripeCustomerId);
-
-      return checkoutParams;
-    };
+    const buildCheckoutParams = (includeStripePromotionConsent: boolean) => buildCheckoutSessionParams({
+      tier: resolvedTier,
+      baseUrl,
+      checkoutSource,
+      attribution: checkoutAttribution,
+      trafficAttribution,
+      expiresAt,
+      checkoutIntentId,
+      paymentMethodConfigurationId,
+      anonymousId,
+      siteRecoveryEmailConsent,
+      consentRecordedAt,
+      checkoutEmailSource,
+      checkoutCustomerEmail,
+      stripeCustomerId,
+      includeStripePromotionConsent,
+    });
 
     const createStripeSession = async (includeStripePromotionConsent: boolean) => {
       const checkoutParams = buildCheckoutParams(includeStripePromotionConsent);
@@ -512,7 +517,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             stripe_customer_reused: Boolean(stripeCustomerId),
             site_recovery_email_consent: siteRecoveryEmailConsent,
             checkout_email_source: checkoutEmailSource,
-            discount_auto_applied: Boolean(activePromotionCodeId),
+            discount_auto_applied: false,
           },
         });
       } catch (funnelError) {
@@ -537,7 +542,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       stripe_customer_reused: Boolean(stripeCustomerId),
       stripe_promotion_consent_requested: true,
       stripe_promotion_consent_fallback_used: stripePromotionConsentFallbackUsed,
-      discount_auto_applied: Boolean(activePromotionCodeId),
+      discount_auto_applied: false,
       checkout_intent_recorded: Boolean(checkoutIntentId),
     });
 

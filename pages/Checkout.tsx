@@ -14,14 +14,9 @@ import React, {
   useState,
 } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { ResultFitNote } from '../components/discount/ResultFitNote';
 import { Button } from '../components/ui/Button';
 import { ATTITUDE_LABELS, FUNCTION_LABELS } from '../data/depthAssessment';
-import {
-  discountedPriceLabel,
-  discountSavingsAmount,
-  EMAIL_CAPTURE_OFFER,
-  formatCadAmount,
-} from '../data/discount';
 import type { PaidTierId } from '../data/pricing';
 import { isPaidTierId, PRICING } from '../data/pricing';
 import { SUPPORT_EMAIL } from '../data/support';
@@ -40,7 +35,6 @@ import {
 import { writePendingCheckout } from '../lib/pending-checkout';
 import { trafficAttributionParams } from '../lib/traffic-attribution';
 import {
-  encodeResultCode,
   RESULT_CODE_HASH_KEY,
   resultCodeFromHash,
   resultFromCode,
@@ -128,6 +122,40 @@ const CHECKOUT_DETAILS: Record<PaidTierId, CheckoutTierDetails> = {
 const DISCOUNT_CAPTURE_STORAGE_KEY = 'typejung_discount_capture';
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Shown beside an unticked checkbox. CASL wants express, unbundled consent, so
+// this is its own line, never pre-ticked, and paying never depends on it.
+export const CHECKOUT_RECOVERY_CONSENT_LABEL =
+  "Email me this checkout link if I don't finish.";
+
+export type CheckoutRecoveryChoice = {
+  customerEmail?: string;
+  recoveryEmailOptIn: boolean;
+  error?: 'invalid_email' | 'consent_needs_email';
+};
+
+// Decide what the checkout request carries. The email is optional; consent
+// only counts with an address the buyer can see in the field.
+export const resolveCheckoutRecoveryChoice = (input: {
+  typedEmail: string;
+  optIn: boolean;
+  fallbackEmail?: string | null;
+}): CheckoutRecoveryChoice => {
+  const typed = input.typedEmail.trim().toLowerCase();
+  const typedIsValid = typed.length <= 254 && EMAIL_PATTERN.test(typed);
+
+  if (typed && !typedIsValid) {
+    return { recoveryEmailOptIn: false, error: 'invalid_email' };
+  }
+  if (input.optIn && !typedIsValid) {
+    return { recoveryEmailOptIn: false, error: 'consent_needs_email' };
+  }
+
+  return {
+    customerEmail: typedIsValid ? typed : input.fallbackEmail || undefined,
+    recoveryEmailOptIn: input.optIn && typedIsValid,
+  };
+};
+
 const readCapturedDiscountEmail = (): string | null => {
   if (typeof window === 'undefined') return null;
 
@@ -200,9 +228,6 @@ export const Checkout: React.FC = () => {
   const [recoveryEmailError, setRecoveryEmailError] = useState<string | null>(
     null,
   );
-  const [checkoutRecoverySaveStatus, setCheckoutRecoverySaveStatus] = useState<
-    'idle' | 'saving' | 'saved' | 'error'
-  >('idle');
   const [{ result: savedDepthResult, restoredFromLink }] = useState(() =>
     readInitialDepthResult(location.hash),
   );
@@ -263,11 +288,14 @@ export const Checkout: React.FC = () => {
     };
   }, [savedDepthResult]);
 
+  // Prefill once from the signed-in account; a field the buyer cleared stays
+  // clear.
+  const accountEmailPrefilledRef = useRef(false);
   useEffect(() => {
-    if (!checkoutRecoveryEmail && user?.email) {
-      setCheckoutRecoveryEmail(user.email);
-    }
-  }, [checkoutRecoveryEmail, user?.email]);
+    if (accountEmailPrefilledRef.current || !user?.email) return;
+    accountEmailPrefilledRef.current = true;
+    setCheckoutRecoveryEmail((current) => current || user.email || '');
+  }, [user?.email]);
 
   useEffect(() => {
     if (!linkedResultCode) return;
@@ -378,9 +406,7 @@ export const Checkout: React.FC = () => {
   const hasCheckoutEmail = EMAIL_PATTERN.test(
     checkoutEmailCandidate.toLowerCase(),
   );
-  const finalPriceLabel = tierPrice
-    ? discountedPriceLabel(tierPrice.amount)
-    : '';
+  const finalPriceLabel = tierPrice ? tierPrice.price : '';
 
   const rememberCheckoutRecoveryEmail = useCallback(
     (email: string) => {
@@ -391,7 +417,6 @@ export const Checkout: React.FC = () => {
           DISCOUNT_CAPTURE_STORAGE_KEY,
           JSON.stringify({
             email,
-            discountCode: EMAIL_CAPTURE_OFFER.code,
             capturedAt: new Date().toISOString(),
             source: 'checkout_recovery_prestripe',
             tierIntent: paidTier,
@@ -402,134 +427,6 @@ export const Checkout: React.FC = () => {
       }
     },
     [paidTier],
-  );
-
-  const sendCheckoutRecoveryLead = useCallback(
-    async (email: string): Promise<boolean> => {
-      if (!paidTier) return false;
-
-      try {
-        const response = await fetch('/api/auth/discount-lead', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({
-            email,
-            website: '',
-            source: 'checkout_recovery_prestripe',
-            tierIntent: paidTier,
-            resultCode: savedDepthResult
-              ? encodeResultCode(savedDepthResult) || undefined
-              : undefined,
-            dominantLabel: savedResultAxis?.dominantLabel,
-            inferiorLabel: savedResultAxis?.inferiorLabel,
-            utmSource: checkoutAttribution?.utmSource,
-            utmCampaign: checkoutAttribution?.utmCampaign,
-            parentSource:
-              checkoutAttribution?.parentSource || checkoutAttribution?.source,
-            sourceChain: checkoutAttribution?.sourceChain,
-          }),
-        });
-
-        const data = await response.json().catch(() => null);
-        if (!response.ok) {
-          trackEvent('checkout_recovery_lead_failed', {
-            tier: paidTier,
-            status: response.status,
-            reason:
-              typeof data?.error === 'string' ? data.error : 'request_failed',
-          });
-          return false;
-        }
-
-        trackEvent('checkout_recovery_lead_captured', {
-          tier: paidTier,
-          captured: Boolean(data?.captured),
-          email_sent: Boolean(data?.sent),
-          capture_reason:
-            typeof data?.captureReason === 'string'
-              ? data.captureReason
-              : 'unknown',
-          skip_reason: typeof data?.reason === 'string' ? data.reason : 'none',
-        });
-        return true;
-      } catch (error) {
-        trackEvent('checkout_recovery_lead_failed', {
-          tier: paidTier,
-          status: 'network',
-          reason:
-            error instanceof Error
-              ? error.message.substring(0, 120)
-              : 'network_error',
-        });
-        // Checkout recovery capture is best-effort; Stripe should still open.
-        return false;
-      }
-    },
-    [
-      checkoutAttribution?.parentSource,
-      checkoutAttribution?.source,
-      checkoutAttribution?.sourceChain,
-      checkoutAttribution?.utmCampaign,
-      checkoutAttribution?.utmSource,
-      paidTier,
-      savedDepthResult,
-      savedResultAxis?.dominantLabel,
-      savedResultAxis?.inferiorLabel,
-    ],
-  );
-
-  const saveCheckoutRecoveryPath = useCallback(
-    async (source: string) => {
-      if (!paidTier) return false;
-
-      const email = checkoutEmailCandidate.trim().toLowerCase();
-      if (!EMAIL_PATTERN.test(email)) {
-        setRecoveryEmailError('Enter a valid email address before Stripe.');
-        window.requestAnimationFrame(() => {
-          checkoutEmailInputRef.current?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
-          });
-          checkoutEmailInputRef.current?.focus();
-        });
-        return false;
-      }
-
-      setCheckoutRecoverySaveStatus('saving');
-      setRecoveryEmailError(null);
-      rememberCheckoutRecoveryEmail(email);
-      const captured = await sendCheckoutRecoveryLead(email);
-
-      if (captured) {
-        setCheckoutRecoverySaveStatus('saved');
-        trackEvent('checkout_recovery_path_saved', {
-          tier: paidTier,
-          source,
-          acquisition_source: checkoutAttribution?.source || 'unknown',
-          utm_campaign: checkoutAttribution?.utmCampaign || 'unknown',
-          utm_source: checkoutAttribution?.utmSource || 'unknown',
-          has_result_axis: Boolean(savedResultAxis),
-        });
-        return true;
-      }
-
-      setCheckoutRecoverySaveStatus('error');
-      setRecoveryEmailError(
-        'The checkout path could not be emailed yet. You can still continue to Stripe.',
-      );
-      return false;
-    },
-    [
-      checkoutAttribution?.source,
-      checkoutAttribution?.utmCampaign,
-      checkoutAttribution?.utmSource,
-      checkoutEmailCandidate,
-      paidTier,
-      rememberCheckoutRecoveryEmail,
-      savedResultAxis,
-      sendCheckoutRecoveryLead,
-    ],
   );
 
   const viewSampleReport = useCallback(() => {
@@ -586,16 +483,21 @@ export const Checkout: React.FC = () => {
     if (checkoutOpeningRef.current) return;
 
     const checkoutSource = sourceForCheckout();
-    const typedRecoveryEmail = checkoutRecoveryEmail.trim().toLowerCase();
-    const validTypedRecoveryEmail = EMAIL_PATTERN.test(typedRecoveryEmail)
-      ? typedRecoveryEmail
-      : '';
-    const checkoutCustomerEmail =
-      validTypedRecoveryEmail ||
-      readCapturedDiscountEmail() ||
-      capturedEmail ||
-      user?.email ||
-      undefined;
+    const recoveryChoice = resolveCheckoutRecoveryChoice({
+      typedEmail: checkoutRecoveryEmail,
+      optIn: checkoutRecoveryOptIn,
+      fallbackEmail: user?.email || readCapturedDiscountEmail() || capturedEmail,
+    });
+
+    if (recoveryChoice.error) {
+      setRecoveryEmailError(
+        recoveryChoice.error === 'invalid_email'
+          ? 'Check the email address, or clear it to continue without one.'
+          : 'Add your email so we can send the link, or untick the box.',
+      );
+      checkoutEmailInputRef.current?.focus();
+      return;
+    }
 
     try {
       checkoutOpeningRef.current = true;
@@ -612,13 +514,12 @@ export const Checkout: React.FC = () => {
         },
       );
 
-      const recoveryEmail = checkoutCustomerEmail;
-      const shouldUseSiteRecoveryConsent =
-        checkoutRecoveryOptIn && Boolean(recoveryEmail);
+      const recoveryEmail = recoveryChoice.customerEmail;
+      const shouldUseSiteRecoveryConsent = recoveryChoice.recoveryEmailOptIn;
+
+      if (recoveryEmail) rememberCheckoutRecoveryEmail(recoveryEmail);
 
       if (shouldUseSiteRecoveryConsent) {
-        rememberCheckoutRecoveryEmail(recoveryEmail);
-        void sendCheckoutRecoveryLead(recoveryEmail);
         trackEvent('checkout_recovery_email_opted_in', {
           tier: paidTier,
           source: checkoutSource,
@@ -696,7 +597,6 @@ export const Checkout: React.FC = () => {
     paidTier,
     rememberCheckoutRecoveryEmail,
     savedResultAxis,
-    sendCheckoutRecoveryLead,
     tierPrice,
     user?.email,
   ]);
@@ -711,59 +611,73 @@ export const Checkout: React.FC = () => {
     void startStripeCheckout();
   }, [checkoutRecoveryOptIn, hasCheckoutEmail, paidTier, startStripeCheckout]);
 
+  const emailDescribedBy = [
+    'checkout-email-hint',
+    recoveryEmailError ? 'checkout-recovery-email-error' : null,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   const checkoutEmailCard = (
-    <details className="mt-5 border-t border-jung-border pt-3">
-      <summary className="cursor-pointer py-2 text-xs font-medium text-jung-secondary">
-        Email me a link to return later (optional)
-      </summary>
+    <div className="mt-5 border-t border-jung-border pt-4">
       <label
         htmlFor="checkout-recovery-email"
-        className="mt-3 block text-xs font-medium"
+        className="block text-sm font-medium text-jung-dark"
       >
-        Email address
+        Email <span className="font-normal text-jung-muted">(optional)</span>
       </label>
+      <p id="checkout-email-hint" className="mt-1 text-xs leading-5 text-jung-muted">
+        Stripe sends your receipt here. You can also enter it on the next step.
+      </p>
       <input
         ref={checkoutEmailInputRef}
         id="checkout-recovery-email"
+        name="email"
         type="email"
+        inputMode="email"
         autoComplete="email"
+        autoCapitalize="none"
+        spellCheck={false}
         value={checkoutRecoveryEmail}
         onChange={(event) => {
           setCheckoutRecoveryEmail(event.target.value);
-          setCheckoutRecoverySaveStatus('idle');
           setRecoveryEmailError(null);
+        }}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            handleCheckoutActionClick();
+          }
         }}
         placeholder="you@example.com"
         aria-invalid={Boolean(recoveryEmailError)}
-        aria-describedby={
-          recoveryEmailError ? 'checkout-recovery-email-error' : undefined
-        }
-        className="mt-2 h-11 w-full rounded-lg border border-jung-border bg-jung-surface px-3 text-sm"
+        aria-describedby={emailDescribedBy}
+        className="mt-2 h-12 w-full rounded-lg border border-jung-border bg-jung-surface px-3 text-base sm:text-sm"
       />
-      <label className="mt-3 flex gap-3 text-xs leading-5 text-jung-secondary">
+      <label
+        htmlFor="checkout-recovery-consent"
+        className="mt-3 flex min-h-11 cursor-pointer items-start gap-3 text-sm leading-6 text-jung-dark"
+      >
         <input
+          id="checkout-recovery-consent"
           type="checkbox"
           checked={checkoutRecoveryOptIn}
-          onChange={(event) => setCheckoutRecoveryOptIn(event.target.checked)}
-          className="mt-1 h-4 w-4 shrink-0 accent-jung-accent"
+          onChange={(event) => {
+            setCheckoutRecoveryOptIn(event.target.checked);
+            setRecoveryEmailError(null);
+          }}
+          aria-describedby="checkout-recovery-consent-hint"
+          className="mt-1 h-5 w-5 shrink-0 accent-jung-accent"
         />
-        Email me my result link and reminders about this optional report.
+        <span>{CHECKOUT_RECOVERY_CONSENT_LABEL}</span>
       </label>
-      {checkoutRecoveryOptIn && (
-        <Button
-          variant="outline"
-          size="sm"
-          className="mt-3 w-full"
-          onClick={() => void saveCheckoutRecoveryPath('checkout_email_card')}
-          disabled={checkoutRecoverySaveStatus === 'saving'}
-        >
-          {checkoutRecoverySaveStatus === 'saving'
-            ? 'Sending…'
-            : checkoutRecoverySaveStatus === 'saved'
-              ? 'Link sent'
-              : 'Send my return link'}
-        </Button>
-      )}
+      <p
+        id="checkout-recovery-consent-hint"
+        className="ml-8 text-xs leading-5 text-jung-muted"
+      >
+        One email, about an hour after you open Stripe, only if you have not
+        paid. Unsubscribe anytime. Leave it unticked to pay without it.
+      </p>
       {recoveryEmailError && (
         <p
           id="checkout-recovery-email-error"
@@ -773,11 +687,7 @@ export const Checkout: React.FC = () => {
           {recoveryEmailError}
         </p>
       )}
-      <p className="mt-3 text-xs leading-5 text-jung-muted">
-        Stripe collects your receipt email during payment. This extra email is
-        optional.
-      </p>
-    </details>
+    </div>
   );
 
   if (!paidTier || !checkoutDetails || !tierPrice) {
@@ -854,11 +764,9 @@ export const Checkout: React.FC = () => {
                 </p>
                 <div className="mt-5 rounded-lg border border-jung-accent-muted bg-jung-accent-light/70 p-4">
                   <p className="text-sm font-semibold text-jung-dark">
-                    Current offer:{' '}
-                    {discountedPriceLabel(PRICING[paidTier].amount)}
+                    {PRICING[paidTier].price}
                     <span className="ml-2 text-xs font-normal text-jung-muted">
-                      <span className="sr-only">Regular price </span>
-                      <s>{PRICING[paidTier].price}</s>
+                      one time · CAD
                     </span>
                   </p>
                   <p className="mt-1 text-xs leading-5 text-jung-secondary">
@@ -953,22 +861,13 @@ export const Checkout: React.FC = () => {
           <p className="mt-2 text-sm text-jung-muted">
             One payment · Canadian dollars
           </p>
-          <div className="mt-5 space-y-2 border-y border-jung-border py-4 text-xs text-jung-secondary">
-            <p className="flex justify-between gap-3">
-              <span>Regular price</span>
-              <span>{tierPrice.price}</span>
-            </p>
-            <p className="flex justify-between gap-3">
-              <span>{EMAIL_CAPTURE_OFFER.percentOff}% offer applied</span>
-              <span>
-                −{formatCadAmount(discountSavingsAmount(tierPrice.amount))}
-              </span>
-            </p>
+          <div className="mt-5 border-y border-jung-border py-4 text-xs text-jung-secondary">
             <p className="flex justify-between gap-3 font-semibold text-jung-dark">
               <span>Report total</span>
               <span>{finalPriceLabel}</span>
             </p>
           </div>
+          <ResultFitNote className="mt-4" />
           {returnedFromStripe && (
             <p
               className="mt-4 rounded-lg bg-jung-accent-light p-3 text-xs leading-6 text-jung-secondary"
@@ -993,6 +892,7 @@ export const Checkout: React.FC = () => {
               </a>
             </div>
           )}
+          {checkoutEmailCard}
           <Button
             variant="accent"
             size="lg"
@@ -1030,7 +930,6 @@ export const Checkout: React.FC = () => {
             </a>{' '}
             within 7 days with your receipt.
           </p>
-          {checkoutEmailCard}
         </aside>
       </div>
     </div>

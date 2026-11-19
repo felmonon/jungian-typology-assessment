@@ -38,6 +38,30 @@ const FUNNEL_EVENT_NAMES = new Set([
   'checkout_session_created',
   'checkout_guard_blocked',
   'purchase',
+  // Report-tab A/B test and paid-offer clicks outside the results unlock.
+  'result_report_preview_status',
+  'paid_offer_clicked',
+  // Assessment progress and checkout recovery (previously GA4/Vercel only).
+  'assessment_section_completed',
+  'stripe_checkout_returned_without_payment',
+  'checkout_recovery_lead_captured',
+  'checkout_recovery_lead_failed',
+  'checkout_recovery_path_saved',
+  'checkout_recovery_email_opted_in',
+  'checkout_recovery_email_skipped',
+  // Share and invite loop (previously GA4/Vercel only).
+  'result_referral_prompt_viewed',
+  'result_compare_link_created',
+  'result_compare_link_failed',
+  'assessment_invite_shared',
+  'inbound_shared_result_prompt_viewed',
+  'inbound_shared_result_reply_copied',
+  'inbound_shared_result_original_opened',
+  'shared_result_viewed',
+  'shared_result_cta_clicked',
+  'post_purchase_referral_prompt_viewed',
+  'post_purchase_share_link_created',
+  'post_purchase_referral_copied',
 ]);
 
 function cleanToken(value: unknown, maxLength = 120): string | null {

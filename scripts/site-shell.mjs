@@ -3,6 +3,7 @@
 // It mirrors the app header and footer (components/layout/Layout.tsx) and is
 // styled by public/site.css, so static pages and the app read as one site.
 import { standaloneAnalyticsSnippet } from './standalone-analytics.mjs';
+import { canonicalPathFor } from './seo-canonical.mjs';
 
 export const SITE = {
   url: 'https://typejung.com',
@@ -96,10 +97,12 @@ const FOOTER = [
 
 /**
  * Head tags shared by every standalone page.
+ * The canonical (and og:url) follows scripts/seo-canonical.mjs, so a page that
+ * duplicates a stronger page points at it.
  * @param {{ title: string, description: string, path: string, keywords?: string[], ogType?: string, noindex?: boolean }} options
  */
 export function shellHead({ title, description, path, keywords = [], ogType = 'article', noindex = false }) {
-  const url = absoluteUrl(path);
+  const url = absoluteUrl(canonicalPathFor(path));
   const keywordTag = keywords.length
     ? `\n<meta name="keywords" content="${escapeHtml(keywords.join(', '))}">`
     : '';

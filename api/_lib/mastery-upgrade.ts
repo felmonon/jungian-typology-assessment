@@ -1,5 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { enforceRateLimit } from './rate-limit.js';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import { getSessionUserFromCookie } from './auth-utils.js';
+import { getCheckoutSessionAccess, isUserEmailVerified } from './purchases.js';
+import { enforceSharedRateLimit } from './rate-limit.js';
+import { getSupabaseAdminClient, hasSupabaseAdminConfig } from './supabase.js';
 import {
   getStripePaymentMethodConfigurationId,
   getStripeSecretKey,
@@ -9,11 +13,10 @@ import { PRICING } from '../../data/pricing.js';
 import { discountedAmount, formatCadAmount } from '../../data/discount.js';
 import { guardPaidReportCheckout } from './report-availability.js';
 
-const CHECKOUT_SESSION_EXPIRATION_SECONDS = 24 * 60 * 60;
+const CHECKOUT_SESSION_EXPIRATION_SECONDS = 60 * 60;
 
 // Post-purchase upgrade: an Insight buyer pays only the difference to Mastery.
-// Charged as a one-time delta (no TYPEJUNG30 — both sides are already the
-// discounted prices) and recorded as a Mastery purchase so premium status,
+// Charged as a one-time delta of the list prices (no promotion code) and recorded as a Mastery purchase so premium status,
 // which reads the most recent completed purchase, reflects the upgrade.
 export const masteryUpgradeAmount = () =>
   Math.round((discountedAmount(PRICING.mastery.amount) - discountedAmount(PRICING.insight.amount)) * 100) / 100;
@@ -31,13 +34,108 @@ function cleanToken(value: unknown, max = 80): string | undefined {
   return value.trim().replace(/[^a-zA-Z0-9_-]/g, '_').replace(/_+/g, '_').slice(0, max) || undefined;
 }
 
+const CHECKOUT_SESSION_ID_PATTERN = /^cs_[A-Za-z0-9_]+$/;
+
+function cleanCheckoutSessionId(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  return trimmed.length <= 255 && CHECKOUT_SESSION_ID_PATTERN.test(trimmed) ? trimmed : null;
+}
+
+type InsightOwnership = { owned: true; customerEmail: string | null } | { owned: false };
+
+async function findAccountInsightPurchase(
+  supabase: SupabaseClient,
+  user: { id: string; email?: string | null },
+): Promise<InsightOwnership> {
+  const { data: byUser, error } = await supabase
+    .from('purchases')
+    .select('id, customer_email')
+    .eq('user_id', user.id)
+    .eq('tier', 'insight')
+    .eq('status', 'completed')
+    .limit(1);
+  if (error) throw error;
+  if (byUser?.[0]) return { owned: true, customerEmail: byUser[0].customer_email || null };
+
+  // Guest purchases count only for an account whose email a provider verified.
+  const { data: accounts, error: accountError } = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', user.id)
+    .limit(1);
+  if (accountError) throw accountError;
+  const account = accounts?.[0];
+  const email = typeof account?.email === 'string' ? account.email.trim().toLowerCase() : '';
+  if (!email || !isUserEmailVerified(account)) return { owned: false };
+
+  const { data: byEmail, error: emailError } = await supabase
+    .from('purchases')
+    .select('id, customer_email')
+    .eq('customer_email', email)
+    .eq('tier', 'insight')
+    .eq('status', 'completed')
+    .limit(1);
+  if (emailError) throw emailError;
+  return byEmail?.[0] ? { owned: true, customerEmail: email } : { owned: false };
+}
+
+async function findSessionInsightPurchase(
+  supabase: SupabaseClient,
+  sessionId: string,
+  user: { id: string } | null,
+  stripeSecretKey: string,
+): Promise<InsightOwnership> {
+  const access = await getCheckoutSessionAccess(supabase, sessionId, user);
+  if (access.state === 'revoked' || access.state === 'other_account') return { owned: false };
+  if (access.state === 'entitled') {
+    return access.purchase.tier === 'insight' && access.purchase.status === 'completed'
+      ? { owned: true, customerEmail: access.purchase.customer_email || null }
+      : { owned: false };
+  }
+
+  // Not recorded yet (webhook still in flight): confirm with Stripe directly.
+  const response = await fetch(`https://api.stripe.com/v1/checkout/sessions/${sessionId}`, {
+    method: 'GET',
+    headers: { 'Authorization': `Bearer ${stripeSecretKey}` },
+  });
+  if (!response.ok) return { owned: false };
+  const session = await response.json();
+  const isInsight = session?.payment_status === 'paid'
+    && session?.metadata?.product === 'typejung_premium'
+    && session?.metadata?.tier === 'insight';
+  if (!isInsight) return { owned: false };
+  const email = session.customer_details?.email;
+  return { owned: true, customerEmail: typeof email === 'string' ? email.trim().toLowerCase() : null };
+}
+
+// The upgrade price is only for buyers who already own Insight: a signed-in
+// account with a completed Insight purchase, or the Stripe session of a
+// completed, non-refunded Insight checkout.
+async function resolveInsightOwnership(req: VercelRequest, stripeSecretKey: string): Promise<InsightOwnership> {
+  if (!hasSupabaseAdminConfig()) return { owned: false };
+  const supabase = getSupabaseAdminClient();
+  const user = await getSessionUserFromCookie(req.headers.cookie, supabase);
+
+  if (user?.id) {
+    const owned = await findAccountInsightPurchase(supabase, user);
+    if (owned.owned) return owned;
+  }
+
+  const sessionId = cleanCheckoutSessionId(
+    req.body?.checkoutSessionId ?? req.body?.sessionId ?? req.body?.session_id,
+  );
+  if (!sessionId) return { owned: false };
+  return findSessionInsightPurchase(supabase, sessionId, user?.id ? { id: user.id } : null, stripeSecretKey);
+}
+
 export async function createMasteryUpgradeSession(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  if (enforceRateLimit(req, res, {
+  if (await enforceSharedRateLimit(req, res, {
     keyPrefix: 'checkout:mastery-upgrade',
     limit: 10,
     windowMs: 60 * 60 * 1000,
@@ -56,7 +154,12 @@ export async function createMasteryUpgradeSession(req: VercelRequest, res: Verce
       anonymousId: cleanToken(req.body?.anonymousId ?? req.body?.anonymous_id, 160),
     })) return;
 
-    const customerEmail = cleanEmail(req.body?.email ?? req.body?.customerEmail);
+    const ownership = await resolveInsightOwnership(req, stripeSecretKey);
+    if (!ownership.owned) {
+      return res.status(403).json({ error: 'The upgrade price is for Insight owners. Sign in or use the link from your Insight purchase.' });
+    }
+
+    const customerEmail = cleanEmail(ownership.customerEmail) || cleanEmail(req.body?.email ?? req.body?.customerEmail);
     const source = cleanToken(req.body?.source) || 'success_upsell';
     const amount = masteryUpgradeAmount();
     const baseUrl = resolveCheckoutBaseUrl(req.headers.origin, req.headers.host);
@@ -111,13 +214,13 @@ export async function createMasteryUpgradeSession(req: VercelRequest, res: Verce
 
     const session = await response.json();
     if (!response.ok) {
-      console.error('Stripe mastery upgrade error:', session);
-      return res.status(response.status).json({ error: session.error?.message || 'Stripe error' });
+      console.error('Stripe mastery upgrade error:', response.status, session?.error?.code || session?.error?.type || 'unknown');
+      return res.status(502).json({ error: 'Could not start the upgrade. Please try again.' });
     }
 
     return res.status(200).json({ sessionId: session.id, url: session.url, expiresAt: session.expires_at || expiresAt });
-  } catch (error: any) {
-    console.error('Mastery upgrade error:', error);
-    return res.status(500).json({ error: error.message || 'Failed to create upgrade session' });
+  } catch (error) {
+    console.error('Mastery upgrade error:', error instanceof Error ? error.message : 'unknown');
+    return res.status(500).json({ error: 'Failed to create upgrade session' });
   }
 }

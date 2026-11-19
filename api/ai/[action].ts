@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSessionUser } from '../_lib/auth.js';
 import { generateGeminiText } from '../_lib/gemini.js';
 import { findCompletedPurchaseForUser, isCheckoutSessionRedeemableBy, resolveTierFromCheckoutSession } from '../_lib/purchases.js';
-import { enforceRateLimit } from '../_lib/rate-limit.js';
+import { enforceSharedRateLimit } from '../_lib/rate-limit.js';
 import { isJsonObject, readJsonObjectBody, type JsonObject } from '../_lib/request-body.js';
 import { getSupabaseAdminClient, hasSupabaseAdminConfig } from '../_lib/supabase.js';
 import { getStripeSecretKey } from '../../server/checkout.js';
@@ -211,9 +211,8 @@ async function verifyPaidCheckoutSession(sessionId: unknown): Promise<boolean> {
     return false;
   }
 
-  // TODO(merge): Stripe keeps payment_status 'paid' after a refund. Once
-  // purchases.ts exports isSessionEntitled(sessionId) (DB status check), call
-  // it here as well, and treat a refunded or disputed session as not entitled.
+  // Stripe keeps payment_status 'paid' after a refund. Callers that release
+  // paid content must also pass isSessionEntitled (stored purchase status).
   if (session.payment_status !== 'paid') return false;
   return Boolean(resolveTierFromCheckoutSession(session));
 }
@@ -368,11 +367,11 @@ async function handlePremiumAnalysis(req: VercelRequest, res: VercelResponse) {
 
   const user = await getSessionUser(req.headers.cookie);
 
-  // TODO(merge): entitlement. findCompletedPurchaseForUser and the Stripe
-  // payment_status check below both still pass after a refund. When
-  // purchases.ts gains isSessionEntitled(sessionId) (DB status check), gate
-  // hasPremiumAccess on it here for both the account and checkout-session
-  // paths. This is the only place cached full report text is released.
+  // Entitlement. The account path only matches status 'completed' rows, and
+  // refunded/disputed rows can no longer return to 'completed'. The session
+  // path re-checks the stored purchase with isCheckoutSessionRedeemableBy,
+  // which rejects refunded, disputed and other-account sessions. This is the
+  // only place cached full report text is released.
   let hasPremiumAccess = false;
 
   if (user?.id) {
@@ -446,7 +445,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const action = actionName(req.query.action);
     if (action === 'free-analysis') {
-      if (enforceRateLimit(req, res, {
+      if (await enforceSharedRateLimit(req, res, {
         keyPrefix: 'ai:free-analysis',
         limit: 20,
         windowMs: 60 * 60 * 1000,
@@ -457,7 +456,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     if (action === 'report-preview') {
-      if (enforceRateLimit(req, res, {
+      if (await enforceSharedRateLimit(req, res, {
         keyPrefix: 'ai:report-preview',
         limit: 30,
         windowMs: 60 * 60 * 1000,
@@ -468,7 +467,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     if (action === 'premium-analysis') {
-      if (enforceRateLimit(req, res, {
+      if (await enforceSharedRateLimit(req, res, {
         keyPrefix: 'ai:premium-analysis',
         limit: 12,
         windowMs: 60 * 60 * 1000,

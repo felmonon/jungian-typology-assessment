@@ -12,7 +12,7 @@ vi.mock('../../api/_lib/purchases', () => ({
   resolveTierFromCheckoutSession: vi.fn(),
 }));
 vi.mock('../../api/_lib/supabase', () => ({ getSupabaseAdminClient: vi.fn(() => ({})), hasSupabaseAdminConfig: vi.fn(() => true) }));
-vi.mock('../../api/_lib/rate-limit', () => ({ enforceRateLimit: vi.fn(() => false) }));
+vi.mock('../../api/_lib/rate-limit', () => ({ enforceRateLimit: vi.fn(() => false), enforceSharedRateLimit: vi.fn(async () => false) }));
 
 const section = 'You may notice a preference for checking the reasoning behind a decision before committing to it. When that pattern is useful, it gives you a way to separate observations from assumptions. When it becomes rigid, you might keep refining an explanation instead of asking what another person needs from the conversation. Try recording one recent example, the evidence you used, and one detail that could change your interpretation. Treat this as a possibility to observe over a week, rather than a fixed description of your personality.';
 const completeReport = Object.fromEntries(PREMIUM_REPORT_KEYS.map(key => [key, section]));

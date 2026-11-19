@@ -19,7 +19,7 @@ vi.mock('../../api/_lib/checkout-intents', () => ({
 }));
 vi.mock('../../api/_lib/funnel-events', () => ({ recordFunnelEvent: vi.fn() }));
 vi.mock('../../api/_lib/report-availability', () => ({ guardPaidReportCheckout: vi.fn().mockResolvedValue(true) }));
-vi.mock('../../api/_lib/rate-limit', () => ({ enforceRateLimit: vi.fn(() => false) }));
+vi.mock('../../api/_lib/rate-limit', () => ({ enforceRateLimit: vi.fn(() => false), enforceSharedRateLimit: vi.fn(async () => false) }));
 vi.mock('../../server/checkout', async (importOriginal) => ({
   ...await importOriginal<typeof import('../../server/checkout')>(),
   getAutoPromotionCode: () => null,

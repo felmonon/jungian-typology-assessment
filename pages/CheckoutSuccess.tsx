@@ -96,12 +96,22 @@ export const CheckoutSuccess: React.FC = () => {
     });
     trackEvent('mastery_upgrade_clicked', { source: 'success_upsell' });
     try {
-      const email = (typeof window !== 'undefined' && localStorage.getItem('jungian_assessment_customer_email')) || undefined;
+      let email: string | undefined;
+      let checkoutSessionId: string | undefined;
+      try {
+        email = localStorage.getItem('jungian_assessment_customer_email') || undefined;
+        checkoutSessionId = localStorage.getItem('jungian_assessment_checkout_session_id') || undefined;
+      } catch {
+        // Storage can be blocked; the session id from the URL still proves ownership.
+      }
+      checkoutSessionId = checkoutSessionId || searchParams.get('session_id') || undefined;
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ product: 'mastery_upgrade', email, source: 'success_upsell' }),
+        // The upgrade price needs proof of an Insight purchase: the signed-in
+        // account, or the Insight checkout session this page was reached from.
+        body: JSON.stringify({ product: 'mastery_upgrade', email, checkoutSessionId, source: 'success_upsell' }),
       });
       const data = await response.json().catch(() => null);
       if (!response.ok || !data?.url) {

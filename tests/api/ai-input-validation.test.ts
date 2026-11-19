@@ -17,7 +17,7 @@ vi.mock('../../api/_lib/purchases', () => ({
   resolveTierFromCheckoutSession: vi.fn(),
 }));
 vi.mock('../../api/_lib/supabase', () => ({ getSupabaseAdminClient: vi.fn(() => ({})), hasSupabaseAdminConfig: vi.fn(() => true) }));
-vi.mock('../../api/_lib/rate-limit', () => ({ enforceRateLimit: vi.fn(() => false) }));
+vi.mock('../../api/_lib/rate-limit', () => ({ enforceRateLimit: vi.fn(() => false), enforceSharedRateLimit: vi.fn(async () => false) }));
 
 // The body the results page really sends: the browser's own conversion of a
 // scored assessment, after the JSON round trip of a fetch.

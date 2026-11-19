@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSessionUser } from './_lib/auth.js';
 import { generateGeminiText } from './_lib/gemini.js';
 import { findCompletedPurchaseForUser } from './_lib/purchases.js';
-import { enforceRateLimit } from './_lib/rate-limit.js';
+import { enforceSharedRateLimit } from './_lib/rate-limit.js';
 import { isJsonObject, readJsonObjectBody, type JsonObject } from './_lib/request-body.js';
 import { getSupabaseAdminClient } from './_lib/supabase.js';
 
@@ -78,7 +78,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  if (enforceRateLimit(req, res, {
+  if (await enforceSharedRateLimit(req, res, {
     keyPrefix: 'ai:chat',
     limit: 30,
     windowMs: 60 * 60 * 1000,

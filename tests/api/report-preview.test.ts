@@ -19,7 +19,7 @@ vi.mock('../../api/_lib/purchases', () => ({
   resolveTierFromCheckoutSession: vi.fn(),
 }));
 vi.mock('../../api/_lib/supabase', () => ({ getSupabaseAdminClient: vi.fn(), hasSupabaseAdminConfig: vi.fn(() => true) }));
-vi.mock('../../api/_lib/rate-limit', () => ({ enforceRateLimit: vi.fn(() => false) }));
+vi.mock('../../api/_lib/rate-limit', () => ({ enforceRateLimit: vi.fn(() => false), enforceSharedRateLimit: vi.fn(async () => false) }));
 
 // Each section has a distinct opening sentence and a distinct, recognisable
 // body so the test can tell which text left the server.

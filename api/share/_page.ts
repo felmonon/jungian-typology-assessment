@@ -16,25 +16,32 @@ import {
 // friend_compare attribution keeps working.
 
 const TEMPLATE_TTL_MS = 5 * 60 * 1000;
-let cachedTemplate: { html: string; at: number } | null = null;
+const cachedTemplates = new Map<string, { html: string; at: number }>();
 
-// Only fetch the shell from hosts that are this site. A forged Host header
-// falls back to production instead of making the function fetch elsewhere.
-function shellOrigin(req: VercelRequest): string {
-  const host = String(req.headers['x-forwarded-host'] || req.headers.host || '').split(',')[0].trim().toLowerCase();
-  if (/^(www\.)?typejung\.com$/.test(host) || /^[a-z0-9-]+\.vercel\.app$/.test(host)) return `https://${host}`;
-  if (/^(localhost|127\.0\.0\.1)(:\d+)?$/.test(host)) return `http://${host}`;
+// The shell origin comes from the deployment's own environment, never from
+// request headers, so a forged Host or X-Forwarded-Host cannot make this
+// function fetch (and cache) another site's page. Production uses the canonical
+// site; a preview uses its own deployment URL, which Vercel sets. Request
+// headers are read only in local development, and only for loopback hosts.
+export function shellOrigin(req: VercelRequest, env: NodeJS.ProcessEnv = process.env): string {
+  if (env.VERCEL_ENV === 'production') return SITE_URL;
+  if (env.VERCEL_URL) return `https://${env.VERCEL_URL}`;
+  if (!env.VERCEL) {
+    const host = String(req.headers.host || '').trim().toLowerCase();
+    if (/^(localhost|127\.0\.0\.1)(:\d+)?$/.test(host)) return `http://${host}`;
+  }
   return SITE_URL;
 }
 
 export async function loadShellTemplate(origin: string, fetchImpl: typeof fetch = fetch): Promise<string | null> {
-  if (cachedTemplate && Date.now() - cachedTemplate.at < TEMPLATE_TTL_MS) return cachedTemplate.html;
+  const cached = cachedTemplates.get(origin);
+  if (cached && Date.now() - cached.at < TEMPLATE_TTL_MS) return cached.html;
   try {
     const response = await fetchImpl(`${origin}/index.html`, { headers: { accept: 'text/html' } });
     if (!response.ok) return null;
     const html = await response.text();
     if (!/<div id="root">/i.test(html)) return null;
-    cachedTemplate = { html, at: Date.now() };
+    cachedTemplates.set(origin, { html, at: Date.now() });
     return html;
   } catch {
     return null;
@@ -42,7 +49,7 @@ export async function loadShellTemplate(origin: string, fetchImpl: typeof fetch 
 }
 
 export function resetShellTemplateCache() {
-  cachedTemplate = null;
+  cachedTemplates.clear();
 }
 
 async function findStack(slug: string): Promise<{ found: boolean; stack: ShareStack | null }> {

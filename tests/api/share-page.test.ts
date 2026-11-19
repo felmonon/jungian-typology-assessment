@@ -162,3 +162,14 @@ describe('/share/:slug', () => {
     expect(res.body).toContain("fetch('/index.html')");
   });
 });
+
+describe('shellOrigin', () => {
+  it('never takes the template origin from request headers on Vercel', async () => {
+    const { shellOrigin } = await import('../../api/share/_page');
+    const forged = { headers: { host: 'attacker.vercel.app', 'x-forwarded-host': 'attacker.vercel.app' } } as any;
+    expect(shellOrigin(forged, { VERCEL: '1', VERCEL_ENV: 'production', VERCEL_URL: 'typejung-abc.vercel.app' } as any)).toBe('https://typejung.com');
+    expect(shellOrigin(forged, { VERCEL: '1', VERCEL_ENV: 'preview', VERCEL_URL: 'typejung-abc.vercel.app' } as any)).toBe('https://typejung-abc.vercel.app');
+    expect(shellOrigin({ headers: { host: '127.0.0.1:5174' } } as any, { VERCEL: '1', VERCEL_ENV: 'preview' } as any)).toBe('https://typejung.com');
+    expect(shellOrigin({ headers: { host: '127.0.0.1:5174' } } as any, {} as any)).toBe('http://127.0.0.1:5174');
+  });
+});

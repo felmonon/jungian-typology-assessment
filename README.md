@@ -182,6 +182,8 @@ npm run test:e2e
 npm run test:coverage
 ```
 
+The E2E suite sends real requests, so point it at a preview deployment with `TEST_BASE_URL=https://<preview-url> npm run test:e2e`. Without `TEST_BASE_URL` it falls back to production. In CI it runs only when you start the workflow by hand from the Actions tab and give it a preview URL. It refuses `typejung.com`.
+
 ---
 
 ## Project Structure

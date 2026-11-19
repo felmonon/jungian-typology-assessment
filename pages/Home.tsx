@@ -1,446 +1,550 @@
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Check,
-  Clock3,
-  FileText,
-} from 'lucide-react';
-import React, { useEffect } from 'react';
+import { ArrowRight, ArrowUpRight, Check, Clock3 } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { PatternLens } from '../components/brand/PatternLens';
-import { FunctionEmblem } from '../components/brand/FunctionEmblem';
-import { ReportSamplePreview } from '../components/results/ReportSamplePreview';
 import { Button } from '../components/ui/Button';
-import { discountedPriceLabel } from '../data/discount';
+import { depthQuestions, type FunctionChannel } from '../data/depthAssessment';
 import { PRICING } from '../data/pricing';
 import { PAGE_SEO, useSEO } from '../hooks/useSEO';
 import { pathWithSource } from '../lib/acquisition-source';
 import { AnalyticsEvents, trackEvent } from '../lib/analytics';
 
-const insightPrice = discountedPriceLabel(PRICING.insight.amount);
+// Bumped whenever the homepage structure changes, so funnel_events rows can be
+// split by layout when comparing homepage landing to assessment_completed.
+export const HOME_LAYOUT_VERSION = '2026_11_aha_first';
+
+const TOTAL_QUESTIONS = depthQuestions.length;
+const layerCount = (layer: string) => depthQuestions.filter((question) => question.layer === layer).length;
+
+// The micro-demo uses a real question from the assessment, word for word.
+const DEMO_QUESTION_ID = 'inferior_01';
+const demoQuestion = depthQuestions.find((question) => question.id === DEMO_QUESTION_ID)!;
+const demoQuestionNumber = depthQuestions.findIndex((question) => question.id === DEMO_QUESTION_ID) + 1;
+
+const channelName: Record<FunctionChannel, string> = {
+  thinking: 'Thinking',
+  feeling: 'Feeling',
+  sensation: 'Sensation',
+  intuition: 'Intuition',
+};
+const oppositeChannel: Record<FunctionChannel, FunctionChannel> = {
+  thinking: 'feeling',
+  feeling: 'thinking',
+  sensation: 'intuition',
+  intuition: 'sensation',
+};
+
+const demoReadout = (option: (typeof demoQuestion.options)[number]) => {
+  if (!option.inferior) {
+    return {
+      title: 'That is a useful answer too.',
+      body: 'Every question has this option. Choosing it never forces a label; several of them simply lower your reliability score, so the map tells you where its evidence is thin.',
+    };
+  }
+  const inferior = channelName[option.inferior];
+  const lead = channelName[oppositeChannel[option.inferior]];
+  return {
+    title: `That reaction is linked to ${inferior} under pressure.`,
+    body: `In Jung’s model, the function that takes over when you are depleted is often the least developed one, and it usually sits opposite the one you lean on most. Here that points toward ${lead} as a possible lead. One answer is a clue, not a result: the full map weighs it against ${TOTAL_QUESTIONS - 1} others.`,
+  };
+};
+
+const sampleStack = [
+  { role: 'Dominant', code: 'Ti', name: 'Introverted Thinking' },
+  { role: 'Auxiliary', code: 'Ne', name: 'Extraverted Intuition' },
+  { role: 'Tertiary', code: 'Si', name: 'Introverted Sensation' },
+  { role: 'Inferior', code: 'Fe', name: 'Extraverted Feeling' },
+];
+const sampleScores: Array<[string, number]> = [
+  ['Ti', 82], ['Ne', 71], ['Si', 58], ['Te', 52], ['Ni', 47], ['Fi', 40], ['Se', 33], ['Fe', 28],
+];
+
+const layers = [
+  {
+    layer: 'behavioral',
+    title: 'Behavioral scenarios',
+    body: 'What you notice and act on first in ordinary decisions. No Jungian vocabulary needed.',
+  },
+  {
+    layer: 'inferior',
+    title: 'Inferior-function signals',
+    note: 'weighted 1.35×',
+    body: 'How you react when stressed or cornered. Your least developed function often points most clearly to your dominant one.',
+  },
+  {
+    layer: 'somatic',
+    title: 'Body cues',
+    body: 'Where tension and energy show up physically, which can catch patterns your self-image skips over.',
+  },
+  {
+    layer: 'attitude',
+    title: 'Attitude questions',
+    body: 'Introversion and extraversion as Jung defined them: the direction of your attention, not whether you are shy.',
+  },
+];
+
+const libraryCards = [
+  {
+    href: '/jung/inferior-function',
+    title: 'The inferior function',
+    body: 'Why your least developed function takes the wheel under stress, and what that says about your strengths.',
+    cta: 'Read · about 5 min',
+  },
+  {
+    href: '/jung/introversion-and-extraversion',
+    title: 'Introversion and extraversion',
+    body: 'Jung’s actual idea is about the direction of interest. It has nothing to do with shyness or social skill.',
+    cta: 'Read · about 5 min',
+  },
+  {
+    href: '/jung/quotes',
+    title: 'Did Jung really say that?',
+    body: 'Quotes checked against published sources and cited to the work, plus the popular lines he never wrote.',
+    cta: 'Browse the quotes',
+  },
+];
+
 const guides = [
-  [
-    '/jungian-cognitive-functions-test',
-    'Jungian cognitive functions test',
-    'How the assessment works',
-  ],
-  [
-    '/cognitive-function-test',
-    'Cognitive function test',
-    'Understand the eight functions',
-  ],
-  [
-    '/inferior-function-test',
-    'Your inferior function',
-    'Explore patterns under stress',
-  ],
-  [
-    '/mbti-test-alternative',
-    'When your MBTI keeps changing',
-    'A different way to read your result',
-  ],
-  [
-    '/best-cognitive-functions-test',
-    'Compare cognitive function tests',
-    'Choose a useful starting point',
-  ],
-  ['/guides', 'All TypeJung guides', 'Type comparisons and practical guides'],
+  ['/jungian-cognitive-functions-test', 'Jungian cognitive functions test'],
+  ['/cognitive-function-test', 'Cognitive function test'],
+  ['/inferior-function-test', 'Inferior function test'],
+  ['/mbti-test-alternative', 'When your MBTI keeps changing'],
+  ['/best-cognitive-functions-test', 'Compare cognitive function tests'],
+  ['/guides', 'All guides'],
 ];
-const libraryPaths = [
-  ['/jung/shadow', 'The shadow', 'What your self-image leaves out'],
-  ['/jung/archetypes', 'Archetypes', 'Patterns, not personality types'],
-  ['/jung/individuation', 'Individuation', 'Becoming who you already are'],
-  ['/jung/inferior-function', 'The inferior function', 'Where your map points next'],
-  ['/jung/quotes', 'Jung quotes, with sources', 'And the popular lines he never said'],
-  ['/jung/where-to-start', 'Where to start reading Jung', 'One book first, not twenty'],
-];
-const trustPoints: Array<[string, string, string, string, boolean]> = [
-  [
-    'You can read the method',
-    'The assessment scores four function channels and attention direction, then derives the eight-function map. Its limits are stated before you start.',
-    '/methodology',
-    'How the assessment works',
-    true,
-  ],
-  [
-    'You can check the sources',
-    'Library entries quote Jung briefly and cite the work and paragraph. Paraphrased and misattributed lines are labeled as such.',
-    '/jung/editorial-standards',
-    'Editorial standards',
-    false,
-  ],
-  [
-    'You see the result before any price',
-    'Your core map is free, with no account or card. Paid reports are one-time purchases, and you can read a sample first.',
-    '/sample-report',
-    'Read the sample report',
-    true,
-  ],
-];
+
 const faqs = [
   [
     'What will I get for free?',
-    'The full 42-question assessment, your function-stack map, the dominant–inferior pattern, and an introductory interpretation. No account or payment is required to see your result.',
+    `The full ${TOTAL_QUESTIONS}-question assessment, your function-stack map with all eight function-attitudes, the dominant–inferior pattern, a reliability score, and an introductory interpretation. No account or payment is required to see your result.`,
   ],
   [
     'What if I get a different result from another test?',
-    'Use the differences as questions to explore. TypeJung combines answers about everyday behavior, stress, body cues, and attention direction. The result is a working interpretation of your answers, and may change with your context.',
+    'Use the differences as questions to explore. TypeJung combines answers about everyday behavior, stress, body cues, and attention direction. The result is a working interpretation of your answers, and it may change with your context.',
   ],
   [
     'Does this measure eight functions independently?',
     'The assessment scores four function channels and attention direction, then derives a map showing all eight function-attitudes. The eight displayed values are not eight independent psychological measurements. You can inspect the method before you start.',
   ],
   [
-    'Do I have to buy the report?',
-    `No. Your core map is free. The Insight report is ${insightPrice}, paid once, and adds ten sections written for your result, generated by AI from your assessment. You can read an illustrative sample first. TypeJung is for educational self-reflection, not diagnosis.`,
-  ],
-  [
-    'Is TypeJung connected to Jung\u2019s estate or a Jungian institute?',
-    'No. TypeJung is an independent project. The assessment is built on Jung\u2019s published typology, and the Jung Library cites his works directly so you can check what he wrote. It is educational, and it is not therapy or analysis.',
+    'Is TypeJung connected to Jung’s estate or a Jungian institute?',
+    'No. TypeJung is an independent project. The assessment is built on Jung’s published typology, and the Jung Library cites his works directly so you can check what he wrote. It is educational, and it is not therapy or analysis.',
   ],
 ];
 
+const SampleMapCard: React.FC = () => (
+  <div className="rounded-[28px] bg-[#edeefa] p-5 sm:p-6">
+    <div className="flex items-center justify-between gap-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#585b7c]">
+      <span>Sample free map</span>
+      <span className="font-medium normal-case tracking-normal">Illustrative data</span>
+    </div>
+    <div className="mt-4 rounded-2xl bg-jung-surface p-5">
+      <p className="text-xs text-jung-muted">Suggested stack</p>
+      <p className="mt-1 font-display text-3xl font-semibold tracking-tight text-jung-dark">Ti · Ne · Si · Fe</p>
+      <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+        {sampleStack.map((item) => (
+          <div key={item.code} className="flex items-baseline gap-2">
+            <dt className={item.role === 'Inferior' ? 'w-16 shrink-0 text-jung-tension' : 'w-16 shrink-0 text-jung-muted'}>{item.role}</dt>
+            <dd className="font-semibold text-jung-dark">{item.code} <span className="font-normal text-jung-secondary">{item.name.split(' ')[1]}</span></dd>
+          </div>
+        ))}
+      </dl>
+      <div className="mt-5 grid grid-cols-4 items-end gap-x-2 gap-y-3 sm:grid-cols-8" aria-label="Sample scores for all eight functions">
+        {sampleScores.map(([code, score]) => (
+          <div key={code} className="flex flex-col items-center gap-1">
+            <div className="flex h-16 w-full items-end rounded-md bg-jung-accent-light">
+              <div className={code === 'Fe' ? 'w-full rounded-md bg-jung-tension/70' : 'w-full rounded-md bg-jung-accent'} style={{ height: `${score}%` }} />
+            </div>
+            <span className="text-[11px] font-semibold text-jung-secondary">{code}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div className="mt-3 grid grid-cols-2 gap-3">
+      <div className="rounded-2xl bg-jung-surface p-4">
+        <p className="text-xs text-jung-muted">Attitude</p>
+        <p className="mt-1 text-sm font-semibold text-jung-dark">64% I · 36% E</p>
+        <div className="mt-2 flex h-1.5 overflow-hidden rounded-full bg-jung-accent-light">
+          <span className="bg-jung-accent" style={{ width: '64%' }} />
+        </div>
+      </div>
+      <div className="rounded-2xl bg-jung-surface p-4">
+        <p className="text-xs text-jung-muted">Reliability</p>
+        <p className="mt-1 text-sm font-semibold text-jung-dark">84 · High</p>
+        <div className="mt-2 flex h-1.5 overflow-hidden rounded-full bg-jung-accent-light">
+          <span className="bg-jung-accent" style={{ width: '84%' }} />
+        </div>
+      </div>
+    </div>
+    <div className="mt-3 rounded-2xl bg-jung-surface p-4">
+      <p className="text-xs text-jung-tension">Stress edge · inferior Fe</p>
+      <p className="mt-1 text-sm leading-6 text-jung-secondary">
+        Under strain, this pattern can tip into sudden sensitivity about whether people value you.
+      </p>
+    </div>
+    <p className="mt-3 text-[11px] text-[#585b7c]">Illustrative example. Your map comes from your own answers.</p>
+  </div>
+);
+
 export const Home: React.FC = () => {
   const navigate = useNavigate();
+  const demoRef = useRef<HTMLElement | null>(null);
+  const [demoAnswer, setDemoAnswer] = useState<string | null>(null);
   useSEO(PAGE_SEO.home);
+
   useEffect(() => {
     trackEvent('home_wedge_viewed', {
       source: 'home',
       promise: 'mbti_alternative_function_stack',
-      version: '2026_09_pattern_studio',
+      version: HOME_LAYOUT_VERSION,
     });
   }, []);
-  const start = (source: string) => {
+
+  // Denominator for the micro-demo click rate: visitors who actually saw it.
+  useEffect(() => {
+    const node = demoRef.current;
+    if (!node || typeof IntersectionObserver === 'undefined') return;
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        trackEvent('home_demo_viewed', { version: HOME_LAYOUT_VERSION, question_id: DEMO_QUESTION_ID });
+        observer.disconnect();
+      }
+    }, { threshold: 0.4 });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  const start = (source: string, buttonText: string) => {
     const destination = pathWithSource('/assessment', source);
+    trackEvent('home_cta_clicked', {
+      cta: source,
+      destination: '/assessment',
+      version: HOME_LAYOUT_VERSION,
+      demo_answered: Boolean(demoAnswer),
+    });
     trackEvent('assessment_start_intent', {
       source,
       promise: 'mbti_alternative_function_stack',
     });
-    AnalyticsEvents.ctaClicked('start_assessment', source, {
-      buttonText: 'Get my free map',
-      destination,
-    });
+    AnalyticsEvents.ctaClicked('start_assessment', source, { buttonText, destination });
     navigate(destination);
   };
 
+  const answerDemo = (optionId: string) => {
+    const firstAnswer = demoAnswer === null;
+    setDemoAnswer(optionId);
+    trackEvent('home_demo_answered', {
+      version: HOME_LAYOUT_VERSION,
+      question_id: DEMO_QUESTION_ID,
+      option: optionId,
+      first_answer: firstAnswer,
+    });
+  };
+
+  const tryOneFirst = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    trackEvent('home_cta_clicked', { cta: 'home_hero_try_one', destination: '#try-a-question', version: HOME_LAYOUT_VERSION });
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    demoRef.current?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+  };
+
+  const trackLibrary = (destination: string, title: string) =>
+    trackEvent('home_library_path_clicked', { source: 'home_library', destination, title, version: HOME_LAYOUT_VERSION });
+
+  const selectedOption = demoQuestion.options.find((option) => option.id === demoAnswer);
+  const readout = selectedOption ? demoReadout(selectedOption) : null;
+
   return (
     <div className="journey-home">
+      {/* 1. Hero: the hook and what the free map actually shows */}
       <section className="studio-hero lab-container">
         <div className="studio-hero-copy">
-          <p className="studio-kicker"><span /> Free Jungian cognitive functions test</p>
-          <h1>You’re more<br />than <span>four letters.</span></h1>
-          <p className="studio-hero-description">Your MBTI result keeps changing? Look at the pattern underneath it. Get a free map of all eight cognitive functions, your function stack, and the dominant–inferior tension that shows up under stress.</p>
+          <p className="studio-kicker"><span /> Jungian function-stack assessment</p>
+          <h1 className="!text-[clamp(40px,4.6vw,62px)] !leading-[1.06] !tracking-[-0.045em]">Your MBTI result keeps changing. <span>Map the pattern underneath it.</span></h1>
+          <p className="studio-hero-description">
+            Four-letter quizzes squeeze how you think into a label that shifts with your mood. TypeJung maps all eight
+            cognitive functions, your dominant–inferior stress axis, and how consistent your answers were. Free, with no
+            account required.
+          </p>
           <div className="studio-hero-actions">
-            <Button variant="accent" size="lg" onClick={() => start('home_hero')} rightIcon={<ArrowRight className="h-4 w-4" />}>Get my free map</Button>
-            <a href="#how-it-works">How it works <span aria-hidden="true">↓</span></a>
+            <Button variant="accent" size="lg" onClick={() => start('home_hero', 'Start my free map')} rightIcon={<ArrowRight className="h-4 w-4" />}>
+              Start my free map
+            </Button>
+            <a href="#try-a-question" onClick={tryOneFirst}>Try one question first <span aria-hidden="true">↓</span></a>
           </div>
-          <p className="studio-reassurance"><Check size={15} /> Free results. No signup. No card.</p>
+          <p className="studio-reassurance"><Check size={15} /> Free full map. No email or card needed to see your results.</p>
           <div className="studio-time">
             <Clock3 size={15} />
-            <span>42 questions · 20–25 minutes<br /><small>Take your time. Your progress saves as you go.</small></span>
+            <span>{TOTAL_QUESTIONS} questions · 20–25 minutes<br /><small>Your progress saves in this browser as you go.</small></span>
           </div>
         </div>
-        <div id="example-map" className="studio-hero-art">
-          <PatternLens illustrative />
+        <div className="studio-hero-art">
+          <SampleMapCard />
         </div>
       </section>
-      <section id="how-it-works" className="studio-steps lab-container">
-        <div className="studio-section-intro">
-          <p className="journey-eyebrow">A clear path from here</p>
-          <h2>Get curious. Get your map.<br />Make it useful.</h2>
-          <Link to="/methodology">See how the assessment works <ArrowUpRight size={16} /></Link>
-        </div>
-        <ol>
-          {[
-            ['01', 'Start with everyday life.', 'Answer 42 questions about decisions, attention, and stress. Choose what sounds like you—there’s no theory to learn.', 'Answer at your own pace'],
-            ['02', 'Meet your pattern.', 'Get your free map, all eight functions, and an introductory interpretation. Explore what feels familiar and what surprises you.', 'Your complete core map is free'],
-            ['03', 'Choose your next step.', `Keep exploring your map, or add an Insight report for ${insightPrice} to reflect on relationships, work, and growth.`, 'One-time price. No subscription.'],
-          ].map(([n, title, body, note]) => <li key={n}>
-            <span className="studio-step-number">
-              {n}
-            </span>
-            <h3>
-              {title}
-            </h3>
-            <p>
-              {body}
-            </p>
-            <span className="studio-step-note">
-              <Check size={14} />
-              {note}
-            </span>
-          </li>)}
-        </ol>
-      </section>
-      <section className="studio-functions lab-container">
-        <div>
-          <p className="journey-eyebrow">The ideas behind your map</p>
-          <h2>Eight ways to meet the world.</h2>
-          <p>Thinking, feeling, sensing, and intuition—each directed inward or outward.</p>
-        </div>
-        <div className="studio-function-list">
-          {['Ti', 'Te', 'Ni', 'Ne', 'Si', 'Se', 'Fi', 'Fe'].map(code => <a key={code} href={`/functions/${code.toLowerCase()}`} aria-label={`Learn about ${code}`}>
-            <FunctionEmblem code={code} />
-            <span>
-              {code}
-            </span>
-          </a>)}
-        </div>
-      </section>
-      <section className="border-t border-jung-border bg-jung-base" aria-labelledby="home-library-title">
-        <div className="lab-container grid gap-10 py-16 md:py-20 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
-          <div>
-            <p className="journey-eyebrow">The Jung Library</p>
-            <h2 id="home-library-title" className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
-              Jung, in plain words
-              <br />
-              and <em className="font-serif font-medium italic text-jung-accent">in his own.</em>
+
+      {/* 2. Micro-demo: one real question and an educational readout */}
+      <section
+        id="try-a-question"
+        ref={demoRef}
+        className="scroll-mt-24 border-t border-jung-border bg-jung-surface"
+        aria-labelledby="home-demo-title"
+      >
+        <div className="lab-container py-16 md:py-20">
+          <div className="mx-auto max-w-[720px]">
+            <p className="journey-eyebrow">Try one question</p>
+            <h2 id="home-demo-title" className="mt-4 font-display text-3xl leading-tight sm:text-4xl">
+              No &ldquo;I enjoy parties: strongly agree&rdquo; sliders.
             </h2>
-            <p className="mt-5 max-w-md text-base leading-7 text-jung-secondary">
-              Your map uses one chapter of Jung&rsquo;s psychology. The library covers the rest: each concept explained
-              plainly, with his own words, an exact source, and the common misreadings.
+            <p className="mt-4 text-base leading-7 text-jung-secondary">
+              Many tests measure how you would like to behave. TypeJung asks about everyday scenarios, stress reactions,
+              and body cues. Pick one answer to see how it is read.
             </p>
-            <a
-              href="/jung"
-              className="mt-6 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-jung-accent"
-              onClick={() => trackEvent('home_library_path_clicked', { source: 'home_library', destination: '/jung', title: 'Open the library' })}
-            >
-              Open the library <ArrowRight className="h-4 w-4" />
-            </a>
-            <p className="mt-6 max-w-md text-xs leading-5 text-jung-muted">
-              Every quotation is checked against a published source. TypeJung is independent and is not affiliated
-              with the Jung family or any Jungian institute.
-            </p>
-          </div>
-          <div className="grid content-start gap-x-10 sm:grid-cols-2">
-            {libraryPaths.map(([href, title, subtitle]) => (
-              <a
-                key={href}
-                href={href}
-                className="group flex items-center justify-between gap-4 border-t border-jung-border py-5"
-                onClick={() => trackEvent('home_library_path_clicked', { source: 'home_library', destination: href, title })}
-              >
-                <div>
-                  <h3 className="font-display text-xl group-hover:text-jung-accent">{title}</h3>
-                  <p className="mt-1 text-xs text-jung-muted">{subtitle}</p>
-                </div>
-                <ArrowUpRight className="h-4 w-4 shrink-0 text-jung-accent" />
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-      <section id="pricing" className="studio-home-report">
-        <div className="lab-container grid items-center gap-10 py-14 md:py-20 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12">
-          <div>
-            <p className="journey-eyebrow">Go deeper · Insight report</p>
-            <h2 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">Turn a little insight<br />into something useful.</h2>
-            <p className="mt-5 mb-7 max-w-lg text-base leading-7 text-jung-secondary">Explore an example before you decide. Insight connects your pattern to the moments that matter: stress, relationships, work, and growth.</p>
-            <ReportSamplePreview onExplore={topic => trackEvent('home_report_sample_explored', { topic, source: 'home_paid_preview' })} />
-          </div>
-          <div className="studio-insight-card">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold">Insight</span>
-              <FileText className="h-5 w-5 text-jung-accent" />
+            <div className="mt-8 rounded-2xl border border-jung-border bg-jung-base p-5 sm:p-7">
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-jung-muted">
+                Question {demoQuestionNumber} of {TOTAL_QUESTIONS} · Stress and reactive patterns
+              </p>
+              <p className="mt-3 font-display text-xl leading-snug text-jung-dark sm:text-2xl">{demoQuestion.prompt}</p>
+              <div className="mt-5 grid gap-2" role="group" aria-label="Sample answers">
+                {demoQuestion.options.map((option) => {
+                  const selected = option.id === demoAnswer;
+                  return (
+                    <button
+                      key={option.id}
+                      type="button"
+                      aria-pressed={selected}
+                      onClick={() => answerDemo(option.id)}
+                      className={`min-h-12 rounded-xl border px-4 py-3 text-left text-sm leading-6 transition ${
+                        selected
+                          ? 'border-jung-accent bg-jung-accent-light text-jung-dark'
+                          : 'border-jung-border bg-jung-surface text-jung-secondary hover:border-jung-accent-muted'
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  );
+                })}
+              </div>
+              <div aria-live="polite">
+                {readout && (
+                  <div className="mt-6 border-t border-jung-border pt-5">
+                    <p className="font-semibold text-jung-dark">{readout.title}</p>
+                    <p className="mt-2 text-sm leading-7 text-jung-secondary">{readout.body}</p>
+                    <Button
+                      variant="accent"
+                      className="mt-5"
+                      onClick={() => start('home_demo', 'Continue to the full map')}
+                      rightIcon={<ArrowRight className="h-4 w-4" />}
+                    >
+                      Continue to all {TOTAL_QUESTIONS} questions
+                    </Button>
+                    <p className="mt-3 text-xs text-jung-muted">
+                      You will meet this question again as number {demoQuestionNumber}. For reflection only, not a diagnosis.
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
-            <p className="mt-4 font-display text-6xl font-semibold tracking-tight">
-              {insightPrice}
-              <span className="ml-3 font-sans text-sm tracking-normal text-jung-muted">
-                one time · CAD
-              </span>
-            </p>
-            <p className="mt-2 text-xs text-jung-muted">
-              One-time price · no subscription
-            </p>
-            <ul className="my-6 space-y-3">
-              {[
-                'Ten personalized interpretation sections',
-                'Stress and recovery reflections',
-                'Relationship, work, and growth prompts',
-                'The Function Stack in Depth guide (PDF)',
-              ].map((item) => (
-                <li
-                  key={item}
-                  className="flex gap-3 text-sm leading-6 text-jung-secondary"
-                >
-                  <Check className="mt-1 h-4 w-4 shrink-0 text-jung-accent" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <Button
-              variant="accent"
-              className="w-full"
-              onClick={() => start('home_pricing_insight')}
-              rightIcon={<ArrowRight className="h-4 w-4" />}
-            >
-              Start with my free map
-            </Button>
-            <p className="mt-4 text-center text-xs leading-5 text-jung-muted">
-              No subscription. 7-day refund policy.
-            </p>
-            <Link
-              to="/pricing"
-              className="mt-2 flex min-h-11 items-center justify-center text-xs font-semibold text-jung-accent underline underline-offset-4"
-            >
-              Compare all options
-            </Link>
-            <Link to={pathWithSource('/sample-report', 'home_paid_preview')} className="mt-2 flex min-h-11 items-center justify-center text-xs font-semibold text-jung-accent underline underline-offset-4">Read the full illustrative sample</Link>
           </div>
         </div>
       </section>
-      <section className="lab-container py-16 md:py-20">
-        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+
+      {/* 3. Why the test takes 20 minutes */}
+      <section id="how-it-works" className="lab-container py-16 md:py-20" aria-labelledby="home-layers-title">
+        <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="journey-eyebrow">Follow your curiosity</p>
-            <h2 className="mt-3 font-display text-3xl sm:text-4xl">
-              A little context can help.
+            <p className="journey-eyebrow">Why {TOTAL_QUESTIONS} questions</p>
+            <h2 id="home-layers-title" className="mt-4 font-display text-3xl leading-tight sm:text-4xl">
+              Four layers of evidence, not one mood check.
             </h2>
           </div>
-          <Link
-            to="/learn"
-            className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-jung-accent"
-          >
-            Learn the theory <ArrowRight className="h-4 w-4" />
+          <Link to="/methodology" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-jung-accent">
+            Read the method <ArrowUpRight className="h-4 w-4" />
           </Link>
         </div>
-        <div className="grid gap-x-10 md:grid-cols-2">
-          {guides.map(([href, title, subtitle]) => (
-            <a
-              key={href}
-              href={href}
-              className="group flex items-center justify-between gap-4 border-t border-jung-border py-5"
-              onClick={() =>
-                trackEvent('home_seo_path_clicked', {
-                  source: 'home_search_paths',
-                  destination: href,
-                  title,
-                })
-              }
-            >
-              <div>
-                <h3 className="font-display text-xl group-hover:text-jung-accent">
-                  {title}
-                </h3>
-                <p className="mt-1 text-xs text-jung-muted">
-                  {subtitle}
-                </p>
-              </div>
-              <ArrowUpRight className="h-4 w-4 shrink-0 text-jung-accent" />
-            </a>
-          ))}
-        </div>
-        <details className="mt-5 border-t border-jung-border pt-3">
-          <summary className="cursor-pointer py-3 text-sm font-medium text-jung-secondary">
-            Browse all eight functions and sixteen types
-          </summary>
-          <div className="flex flex-wrap gap-2 py-4">
-            {['Ni', 'Ne', 'Si', 'Se', 'Ti', 'Te', 'Fi', 'Fe'].map((code) => (
-              <a
-                key={code}
-                href={`/functions/${code.toLowerCase()}`}
-                className="inline-flex min-h-11 items-center rounded-lg border border-jung-border px-4 text-sm hover:bg-jung-accent-light"
-              >
-                {code}
-              </a>
-            ))}
-          </div>
-          <div className="flex flex-wrap gap-2 pb-4">
-            {[
-              'INTJ',
-              'INTP',
-              'ENTJ',
-              'ENTP',
-              'INFJ',
-              'INFP',
-              'ENFJ',
-              'ENFP',
-              'ISTJ',
-              'ISFJ',
-              'ESTJ',
-              'ESFJ',
-              'ISTP',
-              'ISFP',
-              'ESTP',
-              'ESFP',
-            ].map((code) => (
-              <a
-                key={code}
-                href={`/types/${code.toLowerCase()}`}
-                className="inline-flex min-h-11 items-center rounded-lg border border-jung-border px-4 text-sm hover:bg-jung-accent-light"
-              >
-                {code}
-              </a>
-            ))}
-          </div>
-        </details>
-      </section>
-      <section className="lab-container pb-16 md:pb-20" aria-labelledby="home-trust-title">
-        <p className="journey-eyebrow">Why trust it</p>
-        <h2 id="home-trust-title" className="mt-3 font-display text-3xl sm:text-4xl">
-          Built to be checked.
-        </h2>
-        <div className="mt-8 grid gap-8 md:grid-cols-3">
-          {trustPoints.map(([title, body, href, label, inApp]) => (
-            <div key={href} className="border-t border-jung-border pt-5">
-              <h3 className="font-display text-xl">{title}</h3>
-              <p className="mt-3 text-sm leading-7 text-jung-secondary">{body}</p>
-              {inApp ? (
-                <Link to={href} className="mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-jung-accent">
-                  {label} <ArrowRight className="h-4 w-4" />
-                </Link>
-              ) : (
-                <a href={href} className="mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-jung-accent">
-                  {label} <ArrowRight className="h-4 w-4" />
-                </a>
-              )}
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {layers.map((item) => (
+            <div key={item.layer} className="rounded-2xl border border-jung-border bg-jung-surface p-5">
+              <p className="font-display text-4xl font-semibold tracking-tight text-jung-accent">{layerCount(item.layer)}</p>
+              <h3 className="mt-2 font-semibold text-jung-dark">{item.title}</h3>
+              {item.note && <p className="mt-1 text-xs font-semibold text-jung-tension">{item.note}</p>}
+              <p className="mt-2 text-sm leading-6 text-jung-secondary">{item.body}</p>
             </div>
           ))}
         </div>
+        <p className="mt-6 max-w-3xl text-sm leading-7 text-jung-secondary">
+          <strong className="text-jung-dark">When the layers disagree, the result says so.</strong> Your map includes a
+          reliability score from 25 to 96 and notes on where your answers pulled in different directions.
+        </p>
       </section>
+
+      {/* 4. Free map vs optional report, at list prices */}
+      <section id="pricing" className="border-y border-jung-border-light bg-jung-surface" aria-labelledby="home-offer-title">
+        <div className="lab-container py-16 md:py-20">
+          <p className="journey-eyebrow">What is free, and what is not</p>
+          <h2 id="home-offer-title" className="mt-4 max-w-2xl font-display text-3xl leading-tight sm:text-4xl">
+            See your full map free. Pay only if you want the deeper read.
+          </h2>
+          <div className="mt-8 grid gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-jung-border bg-jung-base p-6">
+              <div className="flex items-baseline justify-between gap-3">
+                <h3 className="font-display text-2xl">Free map</h3>
+                <span className="font-display text-2xl font-semibold">{PRICING.free.price}</span>
+              </div>
+              <ul className="mt-5 space-y-3">
+                {[
+                  'Scores for all eight function-attitudes',
+                  'Your four-function stack and introversion–extraversion balance',
+                  'The dominant–inferior stress axis and a reliability score',
+                  'An introductory interpretation of your pattern',
+                  'No account, email or card required',
+                ].map((item) => (
+                  <li key={item} className="flex gap-3 text-sm leading-6 text-jung-secondary">
+                    <Check className="mt-1 h-4 w-4 shrink-0 text-jung-accent" />{item}
+                  </li>
+                ))}
+              </ul>
+              <Button
+                variant="accent"
+                className="mt-6 w-full"
+                onClick={() => start('home_offer_free', 'Start my free map')}
+                rightIcon={<ArrowRight className="h-4 w-4" />}
+              >
+                Start my free map
+              </Button>
+            </div>
+            <div className="rounded-2xl border border-jung-border bg-jung-base p-6">
+              <div className="flex items-baseline justify-between gap-3">
+                <h3 className="font-display text-2xl">Insight report</h3>
+                <span className="font-display text-2xl font-semibold">
+                  {PRICING.insight.price} <span className="font-sans text-xs font-normal text-jung-muted">once</span>
+                </span>
+              </div>
+              <p className="mt-2 text-xs text-jung-muted">Optional. Decide after you see your map.</p>
+              <ul className="mt-5 space-y-3">
+                {[
+                  'Ten interpretation sections written for your result',
+                  'Stress and recovery reflections',
+                  'Relationship, work, and growth prompts',
+                  'The Function Stack in Depth guide (PDF)',
+                ].map((item) => (
+                  <li key={item} className="flex gap-3 text-sm leading-6 text-jung-secondary">
+                    <Check className="mt-1 h-4 w-4 shrink-0 text-jung-accent" />{item}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-5 text-xs leading-5 text-jung-muted">
+                Mastery ({PRICING.mastery.price} once) adds the AI Type Guide, growth exercises and an individuation
+                roadmap. No subscription. 7-day refund policy.
+              </p>
+              <Link
+                to={pathWithSource('/sample-report', 'home_offer')}
+                onClick={() => trackEvent('home_cta_clicked', { cta: 'home_offer_sample', destination: '/sample-report', version: HOME_LAYOUT_VERSION })}
+                className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-jung-accent"
+              >
+                Read a full sample report <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Library ramp for visitors not ready for 20 minutes */}
+      <section className="lab-container py-16 md:py-20" aria-labelledby="home-library-title">
+        <p className="journey-eyebrow">The Jung Library</p>
+        <h2 id="home-library-title" className="mt-4 max-w-2xl font-display text-3xl leading-tight sm:text-4xl">
+          Not ready for 20 minutes? Start with one short idea.
+        </h2>
+        <p className="mt-4 max-w-xl text-base leading-7 text-jung-secondary">
+          Jung in plain words, with his own words quoted and an exact source for each.
+        </p>
+        <div className="mt-8 grid gap-4 md:grid-cols-3">
+          {libraryCards.map((card) => (
+            <a
+              key={card.href}
+              href={card.href}
+              onClick={() => trackLibrary(card.href, card.title)}
+              className="group flex flex-col rounded-2xl border border-jung-border bg-jung-surface p-5 transition hover:border-jung-accent-muted"
+            >
+              <h3 className="font-display text-xl group-hover:text-jung-accent">{card.title}</h3>
+              <p className="mt-2 flex-1 text-sm leading-6 text-jung-secondary">{card.body}</p>
+              <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-jung-accent">
+                {card.cta} <ArrowUpRight className="h-4 w-4" />
+              </span>
+            </a>
+          ))}
+        </div>
+        <a
+          href="/jung"
+          onClick={() => trackLibrary('/jung', 'Explore the full Jung Library')}
+          className="mt-6 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-jung-accent"
+        >
+          Explore the full Jung Library <ArrowRight className="h-4 w-4" />
+        </a>
+      </section>
+
       <section className="border-y border-jung-border-light bg-jung-surface">
         <div className="lab-container grid gap-8 py-14 md:py-20 lg:grid-cols-[0.7fr_1fr] lg:gap-20">
           <div>
             <p className="journey-eyebrow">Before you begin</p>
-            <h2 className="mt-4 font-display text-4xl">
-              A few fair questions.
-            </h2>
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl">A few fair questions.</h2>
           </div>
           <div>
             {faqs.map(([question, answer]) => (
-              <details
-                key={question}
-                className="group border-b border-jung-border first:border-t"
-              >
-                <summary className="cursor-pointer py-5 text-base font-medium text-jung-dark">
-                  {question}
-                </summary>
-                <p className="max-w-2xl pb-5 text-sm leading-7 text-jung-secondary">
-                  {answer}
-                </p>
+              <details key={question} className="group border-b border-jung-border first:border-t">
+                <summary className="cursor-pointer py-5 text-base font-medium text-jung-dark">{question}</summary>
+                <p className="max-w-2xl pb-5 text-sm leading-7 text-jung-secondary">{answer}</p>
               </details>
             ))}
           </div>
         </div>
       </section>
+
+      {/* 6. Final CTA with honest expectations */}
       <section className="studio-final-cta lab-container">
         <p className="journey-eyebrow">Your next step</p>
         <h2 className="mx-auto mt-4 max-w-2xl font-display text-4xl leading-tight sm:text-5xl">
-          A clearer view of you starts here.
+          See how your eight functions pull against each other.
         </h2>
+        <ul className="mx-auto mt-6 grid max-w-3xl gap-3 text-left text-sm leading-6 text-jung-secondary sm:grid-cols-3">
+          {[
+            'Progress saves in this browser, so you can pause and come back.',
+            'Every question has a “none of these fits” option.',
+            'Educational self-reflection, never a clinical diagnosis or a fixed “true type”.',
+          ].map((item) => (
+            <li key={item} className="flex gap-2"><Check className="mt-1 h-4 w-4 shrink-0 text-jung-accent" />{item}</li>
+          ))}
+        </ul>
         <Button
           variant="accent"
           size="lg"
-          className="mt-7"
-          onClick={() => start('home_final_cta')}
+          className="mt-8"
+          onClick={() => start('home_final_cta', 'Start the free map')}
           rightIcon={<ArrowRight className="h-4 w-4" />}
         >
-          Get my free map
+          Start the free {TOTAL_QUESTIONS}-question map
         </Button>
-        <p className="mt-4 text-xs text-jung-muted">
-          42 questions. Your core map is free.
-        </p>
       </section>
+
+      {/* Guide links kept for crawlers and searchers, out of the main path */}
+      <nav aria-label="Guides" className="lab-container border-t border-jung-border-light py-8 text-xs text-jung-muted">
+        <p className="journey-eyebrow mb-2">Guides</p>
+        <div className="flex flex-wrap gap-x-5">
+          {guides.map(([href, title]) => (
+            <a key={href} href={href} className="inline-flex min-h-11 items-center hover:text-jung-accent">{title}</a>
+          ))}
+        </div>
+        <details className="mt-2">
+          <summary className="cursor-pointer py-3">Browse all eight functions and sixteen types</summary>
+          <div className="flex flex-wrap gap-x-4">
+            {['Ni', 'Ne', 'Si', 'Se', 'Ti', 'Te', 'Fi', 'Fe'].map((code) => (
+              <a key={code} href={`/functions/${code.toLowerCase()}`} className="inline-flex min-h-11 items-center hover:text-jung-accent">{code}</a>
+            ))}
+            {['INTJ', 'INTP', 'ENTJ', 'ENTP', 'INFJ', 'INFP', 'ENFJ', 'ENFP', 'ISTJ', 'ISFJ', 'ESTJ', 'ESFJ', 'ISTP', 'ISFP', 'ESTP', 'ESFP'].map((code) => (
+              <a key={code} href={`/types/${code.toLowerCase()}`} className="inline-flex min-h-11 items-center hover:text-jung-accent">{code}</a>
+            ))}
+          </div>
+        </details>
+      </nav>
     </div>
   );
 };

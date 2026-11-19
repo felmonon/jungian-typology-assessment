@@ -78,6 +78,15 @@ export function assessmentEntryContextFromSource(
     };
   }
 
+  if (normalized.includes('home_demo')) {
+    return {
+      category: 'stress_edge',
+      eyebrow: 'You have already tried one',
+      title: 'That stress question comes back as one of ten.',
+      body: 'Answer from repeated patterns rather than one bad day. The map weighs stress answers against everyday scenarios, body cues and attention direction before naming a pattern.',
+    };
+  }
+
   if (normalized.includes('inferior_function') || normalized.includes('shadow_work')) {
     return {
       category: 'stress_edge',

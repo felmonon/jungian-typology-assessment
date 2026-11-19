@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 import { growthBlogArticles } from './growth-blog-data.mjs';
 import { seoLandingPages } from './seo-data.mjs';
 import { HUB, SECTION_PAGES, books, concepts, practices } from './jung/pages.mjs';
+import { PRICING } from '../data/pricing.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = join(__dirname, '..');
@@ -14,6 +15,8 @@ const publicDir = join(rootDir, 'public');
 const distPublicDir = join(rootDir, 'dist', 'public');
 const baseUrl = 'https://typejung.com';
 const buildDate = new Date().toISOString().split('T')[0];
+
+// Prices come from the constants the app and checkout use.
 
 const plainText = (value) => String(value || '').replace(/\[\[([^\]|]+)(?:\|([^\]]*))?\]\]/g, (_, target, label) => label || target.replace(/-/g, ' ')).replace(/\*+/g, '').replace(/\s+/g, ' ').trim();
 
@@ -111,8 +114,8 @@ ${mainLinks.map(markdownLink).join('\n')}
 ## Offer
 
 - Free: 42-question assessment, all 8 function scores, function-stack map, dominant-inferior axis, and shareable result.
-- Insight: one-time CAD upgrade, CA$7. Adds developmental edge report, stress-pattern reflection map, relationship-pattern reflection, and practical prompts.
-- Mastery: one-time CAD upgrade, CA$19. Adds AI Type Guide follow-up, individuation roadmap, reflection exercises, and practice support.
+- Insight: one-time CAD upgrade, ${PRICING.insight.price}. Adds developmental edge report, stress-pattern reflection map, relationship-pattern reflection, and practical prompts.
+- Mastery: one-time CAD upgrade, ${PRICING.mastery.price}. Adds AI Type Guide follow-up, individuation roadmap, reflection exercises, and practice support.
 - Payment is handled by Stripe. Free users do not need a card to take the assessment.
 
 ## The Jung Library
@@ -193,7 +196,7 @@ Free tier:
 
 Insight tier:
 - One-time CAD upgrade
-- CA$7, paid once
+- ${PRICING.insight.price}, paid once
 - Developmental edge report
 - Stress-pattern reflection map
 - Relationship-pattern reflection
@@ -201,7 +204,7 @@ Insight tier:
 
 Mastery tier:
 - One-time CAD upgrade
-- CA$19, paid once
+- ${PRICING.mastery.price}, paid once
 - AI Type Guide chat
 - Individuation roadmap
 - Tailored growth exercises
@@ -286,7 +289,7 @@ seo_<slug>_email_code
 blog_<slug>_email_code
 
 Save-link behavior:
-- Email the assessment link and TYPEJUNG30 code.
+- Email yourself the assessment link and an email-only upgrade code.
 - Return users to /assessment rather than pricing.
 - Preserve free-first positioning.
 - Feed recoverable discount_leads records for follow-up.

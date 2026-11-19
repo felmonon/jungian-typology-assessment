@@ -269,7 +269,7 @@ function renderClusterNav(currentSlug: string) {
 function renderSaveLinkPanel(page: any) {
   const saveLink = page.saveLink || {};
   const title = saveLink.title || 'Want the free map later?';
-  const body = saveLink.body || `Email yourself the assessment link and ${'TYPEJUNG30'} code. Start free, then decide after the result.`;
+  const body = saveLink.body || `Email yourself the assessment link and an email-only upgrade code. Start free, then decide after the result.`;
   const button = saveLink.button || 'Email the free link';
   const tier = saveLink.tier || 'insight';
 
@@ -750,9 +750,8 @@ ${shellHeader({ ctaSource: sourceFor(sourcePage, 'nav') })}
   <div class="related-grid">
     ${data.dominantIn.map(type => {
       const typeKey = type.toLowerCase();
-      const typeInfo = typeSEO[typeKey];
       return `<div class="related-card">
-        <a href="/types/${typeKey}">${type}</a> - ${typeInfo?.name?.split(' - ')[1] || 'Personality Type'}
+        <a href="/types/${typeKey}">${type}</a> · ${typeData[typeKey]?.stack.slice(0, 2).join('-') || 'Personality Type'}
       </div>`;
     }).join('\n    ')}
   </div>
@@ -761,9 +760,8 @@ ${shellHeader({ ctaSource: sourceFor(sourcePage, 'nav') })}
   <div class="related-grid">
     ${data.auxiliaryIn.map(type => {
       const typeKey = type.toLowerCase();
-      const typeInfo = typeSEO[typeKey];
       return `<div class="related-card">
-        <a href="/types/${typeKey}">${type}</a> - ${typeInfo?.name?.split(' - ')[1] || 'Personality Type'}
+        <a href="/types/${typeKey}">${type}</a> · ${typeData[typeKey]?.stack.slice(0, 2).join('-') || 'Personality Type'}
       </div>`;
     }).join('\n    ')}
   </div>
@@ -822,7 +820,7 @@ ${getHead(seo.title, seo.description, path)}
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "${data.code} - ${data.name}",
+  "headline": "${data.code} · ${data.name}",
   "description": "${seo.description}",
   "url": "${siteConfig.url}${path}",
   "dateModified": "${buildDate}",
@@ -844,7 +842,7 @@ ${shellHeader({ ctaSource: sourceFor(sourcePage, 'nav') })}
     <a href="/">Home</a> › <a href="/learn">Learn</a> › ${data.code} Personality Type
   </div>
 
-  <h1>${data.code} - ${data.name}</h1>
+  <h1>${data.code} · ${data.name}</h1>
   <p class="subtitle">${data.nickname} | ${data.stack.join('-')} Function Stack</p>
 
   <p>${data.description}</p>
@@ -899,7 +897,7 @@ ${shellHeader({ ctaSource: sourceFor(sourcePage, 'nav') })}
       .map(t => {
         const tData = typeData[t];
         return `<div class="related-card">
-          <a href="/types/${t}">${tData.code}</a> - ${tData.name}
+          <a href="/types/${t}">${tData.code}</a> · ${tData.name}
         </div>`;
       }).join('\n    ')}
   </div>

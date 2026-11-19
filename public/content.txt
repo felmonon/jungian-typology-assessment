@@ -649,7 +649,7 @@ seo_<slug>_email_code
 blog_<slug>_email_code
 
 Save-link behavior:
-- Email the assessment link and TYPEJUNG30 code.
+- Email yourself the assessment link and an email-only upgrade code.
 - Return users to /assessment rather than pricing.
 - Preserve free-first positioning.
 - Feed recoverable discount_leads records for follow-up.

@@ -6,7 +6,10 @@ import { enforceRateLimit } from '../_lib/rate-limit.js';
 import { isJsonObject, readJsonObjectBody, type JsonObject } from '../_lib/request-body.js';
 import { getSupabaseAdminClient, hasSupabaseAdminConfig } from '../_lib/supabase.js';
 import { getStripeSecretKey } from '../../server/checkout.js';
-import { PREMIUM_REPORT_KEYS, readCompletePremiumReport } from '../../lib/premium-report.js';
+import { PREMIUM_REPORT_KEYS, readCompletePremiumReport, type PremiumAnalysis } from '../../lib/premium-report.js';
+import { buildReportPreview } from '../../lib/report-preview.js';
+import { isOversizedBody, sanitizeAssessmentInput, type CleanAssessment } from '../_lib/assessment-input.js';
+import { markCachedReportUnlocked, readCachedReport, reportCacheKey, storeCachedReport } from '../_lib/report-cache.js';
 
 interface FunctionScore {
   function: string;
@@ -96,29 +99,35 @@ function isFreeAnalysisInput(body: JsonObject): body is JsonObject & AnalysisInp
   ].every(isPrintable);
 }
 
-function formatScoresForPrompt(input: AnalysisInput): string {
+function functionName(code: string): string {
+  return FUNCTION_NAMES[code] || code;
+}
+
+// Only cleaned, capped fields are formatted here; the browser's JSON is never
+// interpolated directly into a prompt.
+function formatScoresForPrompt(input: CleanAssessment): string {
   const sortedScores = [...input.scores].sort((a, b) => b.score - a.score);
   const scoresList = sortedScores
-    .map((s, i) => `${i + 1}. ${FUNCTION_NAMES[s.function] || s.function} (${s.function}): ${s.score.toFixed(1)}%`)
+    .map((s, i) => `${i + 1}. ${functionName(s.function)} (${s.function}): ${s.score.toFixed(1)}%`)
     .join('\n');
 
-  const stackInfo = `
+  const stackInfo = input.stack ? `
 Cognitive Stack:
-- Dominant: ${FUNCTION_NAMES[input.stack.dominant.function] || input.stack.dominant.function} (${input.stack.dominant.function}) - ${input.stack.dominant.score.toFixed(1)}%
-- Auxiliary: ${FUNCTION_NAMES[input.stack.auxiliary.function] || input.stack.auxiliary.function} (${input.stack.auxiliary.function}) - ${input.stack.auxiliary.score.toFixed(1)}%
-- Tertiary: ${FUNCTION_NAMES[input.stack.tertiary.function] || input.stack.tertiary.function} (${input.stack.tertiary.function}) - ${input.stack.tertiary.score.toFixed(1)}%
-- Inferior: ${FUNCTION_NAMES[input.stack.inferior.function] || input.stack.inferior.function} (${input.stack.inferior.function}) - ${input.stack.inferior.score.toFixed(1)}%`;
+${STACK_POSITIONS.map((position) => {
+    const entry = input.stack![position];
+    return `- ${position[0].toUpperCase()}${position.slice(1)}: ${functionName(entry.function)} (${entry.function}) - ${entry.score.toFixed(1)}%`;
+  }).join('\n')}` : '';
 
-  const attitude = (input.attitudeScore || 0) > 0 ? 'Extraverted' : 'Introverted';
-  const depth = input.depthResult || input.stack?.depthResult;
+  const attitude = input.attitudeScore > 0 ? 'Extraverted' : 'Introverted';
+  const depth = input.depth;
   const depthBlock = depth ? `
 Depth Function-Stack Map:
-- Dominant channel: ${depth.dominant}
-- Auxiliary channel: ${depth.auxiliary}
-- Inferior channel: ${depth.inferior}
-- Answer consistency signal: ${depth.reliability?.score}% (${depth.reliability?.label})
-- Developmental edge: ${depth.narrative?.developmentalEdge}
-- Pressure pattern: ${depth.narrative?.complexVulnerability}
+- Dominant channel: ${depth.dominant ?? 'not given'}
+- Auxiliary channel: ${depth.auxiliary ?? 'not given'}
+- Inferior channel: ${depth.inferior ?? 'not given'}
+- Answer consistency signal: ${depth.reliability.score ?? 'not given'}% (${depth.reliability.label ?? 'not given'})
+- Developmental edge: ${depth.narrative.developmentalEdge ?? 'not given'}
+- Pressure pattern: ${depth.narrative.complexVulnerability ?? 'not given'}
 ` : '';
 
   return `
@@ -127,7 +136,7 @@ ${scoresList}
 
 ${stackInfo}
 
-Overall Attitude: ${attitude} (score: ${(input.attitudeScore || 0).toFixed(1)})
+Overall Attitude: ${attitude} (score: ${input.attitudeScore.toFixed(1)})
 Differentiation Status: ${input.isUndifferentiated ? 'Undifferentiated (scores are relatively even)' : 'Differentiated'}
 ${depthBlock}
 `;
@@ -148,17 +157,14 @@ function extractJson(text: string): Record<string, string> | null {
   }
 }
 
-function getDepth(input: AnalysisInput): any {
-  return input.depthResult || input.stack?.depthResult || null;
-}
-
-function fallbackFreeAnalysis(input: AnalysisInput): string {
-  const depth = getDepth(input);
-  const dominant = depth?.dominant ? CHANNEL_NAMES[depth.dominant] || depth.dominant : FUNCTION_NAMES[input.stack.dominant.function] || input.stack.dominant.function;
-  const auxiliary = depth?.auxiliary ? CHANNEL_NAMES[depth.auxiliary] || depth.auxiliary : FUNCTION_NAMES[input.stack.auxiliary.function] || input.stack.auxiliary.function;
-  const inferior = depth?.inferior ? CHANNEL_NAMES[depth.inferior] || depth.inferior : FUNCTION_NAMES[input.stack.inferior.function] || input.stack.inferior.function;
-  const edge = depth?.narrative?.developmentalEdge || `Your developmental work sits around ${inferior}, the channel with the least conscious energy in this result.`;
-  const vulnerability = depth?.narrative?.complexVulnerability || 'Stress is most likely to pull attention into the inferior channel before you can respond from your stronger functions.';
+function fallbackFreeAnalysis(input: CleanAssessment): string {
+  const depth = input.depth;
+  const stack = input.stack!;
+  const dominant = depth?.dominant ? CHANNEL_NAMES[depth.dominant] : functionName(stack.dominant.function);
+  const auxiliary = depth?.auxiliary ? CHANNEL_NAMES[depth.auxiliary] : functionName(stack.auxiliary.function);
+  const inferior = depth?.inferior ? CHANNEL_NAMES[depth.inferior] : functionName(stack.inferior.function);
+  const edge = depth?.narrative.developmentalEdge || `Your developmental work sits around ${inferior}, the channel with the least conscious energy in this result.`;
+  const vulnerability = depth?.narrative.complexVulnerability || 'Stress is most likely to pull attention into the inferior channel before you can respond from your stronger functions.';
 
   return `Your function-stack map is led by ${dominant}, supported by ${auxiliary}. This means your strongest movement is not a fixed personality label but a repeated channel of attention, judgment, and effort. The important tension is the opposite pole: ${inferior}. ${edge} ${vulnerability} Use the result as a practice map. When stress rises, notice whether you are trying to solve the situation only through the dominant channel. The useful move is to give the inferior function a small, concrete role before it takes over in a primitive form.`;
 }
@@ -205,22 +211,34 @@ async function verifyPaidCheckoutSession(sessionId: unknown): Promise<boolean> {
     return false;
   }
 
+  // TODO(merge): Stripe keeps payment_status 'paid' after a refund. Once
+  // purchases.ts exports isSessionEntitled(sessionId) (DB status check), call
+  // it here as well, and treat a refunded or disputed session as not entitled.
   if (session.payment_status !== 'paid') return false;
   return Boolean(resolveTierFromCheckoutSession(session));
+}
+
+function rejectOversized(body: unknown, res: VercelResponse): boolean {
+  if (!isOversizedBody(body)) return false;
+  res.status(413).json({ error: 'Assessment data is too large' });
+  return true;
 }
 
 async function handleFreeAnalysis(req: VercelRequest, res: VercelResponse) {
   const body = readJsonObjectBody(req);
 
-  if (!body || !isFreeAnalysisInput(body)) {
+  if (!body) return res.status(400).json({ error: 'Invalid assessment data format' });
+  if (rejectOversized(body, res)) return;
+  if (!isFreeAnalysisInput(body)) {
     return res.status(400).json({ error: 'Invalid assessment data format' });
   }
 
-  const { scores, stack, attitudeScore, isUndifferentiated, resultVersion, depthResult } = body;
+  const input = sanitizeAssessmentInput(body);
+  if (!input.stack) return res.status(400).json({ error: 'Invalid assessment data format' });
 
   const prompt = `Write as an educational Jungian typology guide. Based on the following TypeJung self-reflection results, provide a brief but insightful personalized analysis.
 
-${formatScoresForPrompt({ scores, stack, attitudeScore: attitudeScore || 0, isUndifferentiated: isUndifferentiated || false, resultVersion, depthResult })}
+${formatScoresForPrompt(input)}
 
 Write a personalized analysis in 150-200 words that:
 1. Identifies where their psychic energy flows most strongly
@@ -229,8 +247,7 @@ Write a personalized analysis in 150-200 words that:
 
 Keep the tone direct, psychologically grounded, and useful. Use second person ("you"). Clearly treat the result as educational self-reflection, not diagnosis, therapy, or a clinical assessment. Avoid certainty, treatment advice, and claims of scientific validation. Do not mention that this is a free or limited analysis. Do not use bullet points, headers, or any markdown formatting like asterisks. Write in plain flowing paragraphs only.`;
 
-  const fallbackInput = { scores, stack, attitudeScore, isUndifferentiated, resultVersion, depthResult };
-  let analysis = fallbackFreeAnalysis(fallbackInput);
+  let analysis = fallbackFreeAnalysis(input);
   let generationSource: 'gemini' | 'openrouter' | 'template' = 'template';
 
   try {
@@ -239,11 +256,12 @@ Keep the tone direct, psychologically grounded, and useful. Use second person ("
       // Reserve the short generation budget for the 150–200 word response.
       maxOutputTokens: 768,
       thinkingBudget: 0,
+      timeoutMs: 30_000,
     });
 
     if (isUsableFreeAnalysis(generated)) {
       analysis = generated.trim();
-      generationSource = process.env.REPORT_AI_PROVIDER === 'openrouter' ? 'openrouter' : 'gemini';
+      generationSource = providerName();
     } else {
       console.error('Using fallback free analysis: generated response was incomplete');
     }
@@ -254,18 +272,107 @@ Keep the tone direct, psychologically grounded, and useful. Use second person ("
   return res.status(200).json({ analysis, generationSource });
 }
 
-async function handlePremiumAnalysis(req: VercelRequest, res: VercelResponse) {
-  const body: JsonObject = readJsonObjectBody(req) ?? {};
-  const { scores, stack, attitudeScore, isUndifferentiated, depthResult, checkoutSessionId } = body;
+function providerName(): 'gemini' | 'openrouter' {
+  return process.env.REPORT_AI_PROVIDER === 'openrouter' ? 'openrouter' : 'gemini';
+}
 
-  // The report prompt embeds these values as JSON, so their container types
-  // are all it depends on.
+function premiumReportPrompt(input: CleanAssessment): string {
+  const { scores, stack, attitudeScore, isUndifferentiated, depth } = input;
+  // completedAt keys the cache; it says nothing about the person.
+  const depthForPrompt = depth ? { ...depth, completedAt: undefined } : null;
+  return `Write as an educational Jungian typology guide. Create a premium TypeJung self-reflection report from this result.
+
+Return valid JSON only with these exact string keys:
+${PREMIUM_REPORT_KEYS.join(', ')}
+
+Each value should be 120-180 words, direct, psychologically grounded, and second-person. Frame interpretations as possibilities for reflection, not clinical findings. Do not diagnose, provide therapy, or claim scientific validation. The theGrip section should open with one clear sentence about how stress can pull the reader from the dominant function toward the inferior one; every other section should also open with a sentence that names its theme for this reader.
+
+Compatibility scores:
+${JSON.stringify({ scores, stack, attitudeScore, isUndifferentiated }, null, 2)}
+
+Depth function-stack map:
+${JSON.stringify(depthForPrompt, null, 2)}
+`;
+}
+
+async function generatePremiumReport(input: CleanAssessment): Promise<PremiumAnalysis | null> {
+  const text = await generateGeminiText(premiumReportPrompt(input), {
+    temperature: 0.65,
+    maxOutputTokens: 8192,
+    responseMimeType: 'application/json',
+    timeoutMs: 90_000,
+  }).catch((error) => {
+    console.error('Premium report generation unavailable:', error?.message || error);
+    return '';
+  });
+  return readCompletePremiumReport(extractJson(text));
+}
+
+type ReportPreviewFallbackReason = 'cache_unavailable' | 'generation_failed' | 'incomplete_result';
+
+function previewFallback(res: VercelResponse, reason: ReportPreviewFallbackReason, status = 200) {
+  // The browser keeps the previous offer when this arrives; nothing is locked
+  // behind a preview that could not be prepared.
+  if (status === 503) res.setHeader('Retry-After', '60');
+  return res.status(status).json({ available: false, reason });
+}
+
+/**
+ * Builds the report once per result, stores it, and returns only the preview
+ * parts: the stress-edge section in full and an opening sentence for each of
+ * the other nine. The other sections' full text stays in the database until
+ * premium-analysis confirms the reader is entitled to it.
+ */
+async function handleReportPreview(req: VercelRequest, res: VercelResponse) {
+  res.setHeader('Cache-Control', 'no-store');
+  const body = readJsonObjectBody(req);
+  if (!body) return res.status(400).json({ error: 'Invalid assessment data format' });
+  if (rejectOversized(body, res)) return;
+  if (!isFreeAnalysisInput(body)) return res.status(400).json({ error: 'Invalid assessment data format' });
+
+  const input = sanitizeAssessmentInput(body);
+  if (!input.stack) return res.status(400).json({ error: 'Invalid assessment data format' });
+  const key = reportCacheKey(input);
+  if (!key) return previewFallback(res, 'incomplete_result');
+  // Without a place to keep the report, the preview could differ from the
+  // report the reader later buys, so the old offer is shown instead.
+  if (!hasSupabaseAdminConfig()) return previewFallback(res, 'cache_unavailable');
+
+  const supabase = getSupabaseAdminClient();
+  const cached = await readCachedReport(supabase, key);
+  if (cached.status === 'unavailable') return previewFallback(res, 'cache_unavailable');
+
+  let report = cached.status === 'hit' ? cached.entry.report : null;
+  if (!report) {
+    const generated = await generatePremiumReport(input);
+    if (!generated) return previewFallback(res, 'generation_failed', 503);
+    const stored = await storeCachedReport(supabase, key, { report: generated, generationSource: providerName() });
+    if (!stored) return previewFallback(res, 'cache_unavailable');
+    report = stored.report;
+  }
+
+  return res.status(200).json({ available: true, preview: buildReportPreview(report) });
+}
+
+async function handlePremiumAnalysis(req: VercelRequest, res: VercelResponse) {
+  const body = readJsonObjectBody(req);
+  if (!body) return res.status(400).json({ error: 'Invalid assessment data format' });
+  if (rejectOversized(body, res)) return;
+  const { scores, stack, checkoutSessionId } = body;
+
+  // The report prompt embeds the cleaned values as JSON, so their container
+  // types are all a buyer's request must satisfy.
   if (!Array.isArray(scores) || !isJsonObject(stack)) {
     return res.status(400).json({ error: 'Invalid assessment data format' });
   }
 
   const user = await getSessionUser(req.headers.cookie);
 
+  // TODO(merge): entitlement. findCompletedPurchaseForUser and the Stripe
+  // payment_status check below both still pass after a refund. When
+  // purchases.ts gains isSessionEntitled(sessionId) (DB status check), gate
+  // hasPremiumAccess on it here for both the account and checkout-session
+  // paths. This is the only place cached full report text is released.
   let hasPremiumAccess = false;
 
   if (user?.id) {
@@ -294,30 +401,21 @@ async function handlePremiumAnalysis(req: VercelRequest, res: VercelResponse) {
     return res.status(403).json({ error: 'Premium access required' });
   }
 
-  const prompt = `Write as an educational Jungian typology guide. Create a premium TypeJung self-reflection report from this result.
+  const input = sanitizeAssessmentInput(body);
+  const key = reportCacheKey(input);
+  const supabase = key && hasSupabaseAdminConfig() ? getSupabaseAdminClient() : null;
 
-Return valid JSON only with these exact string keys:
-${PREMIUM_REPORT_KEYS.join(', ')}
+  // The report the reader previewed is the report they get: serve the stored
+  // one rather than generating a different version after purchase.
+  if (key && supabase) {
+    const cached = await readCachedReport(supabase, key);
+    if (cached.status === 'hit') {
+      await markCachedReportUnlocked(supabase, key);
+      return res.status(200).json({ analysis: cached.entry.report, generationSource: cached.entry.generationSource ?? providerName() });
+    }
+  }
 
-Each value should be 120-180 words, direct, psychologically grounded, and second-person. Frame interpretations as possibilities for reflection, not clinical findings. Do not diagnose, provide therapy, or claim scientific validation.
-
-Compatibility scores:
-${JSON.stringify({ scores, stack, attitudeScore, isUndifferentiated }, null, 2)}
-
-Depth function-stack map:
-${JSON.stringify(depthResult || stack.depthResult || null, null, 2)}
-`;
-
-  const text = await generateGeminiText(prompt, {
-    temperature: 0.65,
-    maxOutputTokens: 8192,
-    responseMimeType: 'application/json',
-  }).catch((error) => {
-    console.error('Premium report generation unavailable:', error?.message || error);
-    return '';
-  });
-
-  const analysis = readCompletePremiumReport(extractJson(text));
+  const analysis = await generatePremiumReport(input);
   if (!analysis) {
     console.error('Premium report delivery failed: a complete ten-section report was not generated');
     res.setHeader('Retry-After', '60');
@@ -328,7 +426,15 @@ ${JSON.stringify(depthResult || stack.depthResult || null, null, 2)}
     });
   }
 
-  return res.status(200).json({ analysis, generationSource: process.env.REPORT_AI_PROVIDER === 'openrouter' ? 'openrouter' : 'gemini' });
+  if (key && supabase) {
+    const stored = await storeCachedReport(supabase, key, { report: analysis, generationSource: providerName() });
+    if (stored) {
+      await markCachedReportUnlocked(supabase, key);
+      return res.status(200).json({ analysis: stored.report, generationSource: stored.generationSource ?? providerName() });
+    }
+  }
+
+  return res.status(200).json({ analysis, generationSource: providerName() });
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -348,6 +454,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       })) return;
 
       return await handleFreeAnalysis(req, res);
+    }
+
+    if (action === 'report-preview') {
+      if (enforceRateLimit(req, res, {
+        keyPrefix: 'ai:report-preview',
+        limit: 30,
+        windowMs: 60 * 60 * 1000,
+        message: 'Too many report preview requests. Please wait and try again.',
+      })) return;
+
+      return await handleReportPreview(req, res);
     }
 
     if (action === 'premium-analysis') {

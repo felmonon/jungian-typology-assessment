@@ -111,8 +111,8 @@ ${mainLinks.map(markdownLink).join('\n')}
 ## Offer
 
 - Free: 42-question assessment, all 8 function scores, function-stack map, dominant-inferior axis, and shareable result.
-- Insight: one-time CAD upgrade, CA$10 base price, currently CA$7 with TYPEJUNG30 on Stripe. Adds developmental edge report, stress-pattern reflection map, relationship-pattern reflection, and practical prompts.
-- Mastery: one-time CAD upgrade, CA$29 base price, currently CA$20.30 with TYPEJUNG30 on Stripe. Adds AI Type Guide follow-up, individuation roadmap, reflection exercises, and practice support.
+- Insight: one-time CAD upgrade, CA$7. Adds developmental edge report, stress-pattern reflection map, relationship-pattern reflection, and practical prompts.
+- Mastery: one-time CAD upgrade, CA$19. Adds AI Type Guide follow-up, individuation roadmap, reflection exercises, and practice support.
 - Payment is handled by Stripe. Free users do not need a card to take the assessment.
 
 ## The Jung Library
@@ -193,8 +193,7 @@ Free tier:
 
 Insight tier:
 - One-time CAD upgrade
-- CA$10 base price before code
-- Currently CA$7 with TYPEJUNG30 on Stripe
+- CA$7, paid once
 - Developmental edge report
 - Stress-pattern reflection map
 - Relationship-pattern reflection
@@ -202,8 +201,7 @@ Insight tier:
 
 Mastery tier:
 - One-time CAD upgrade
-- CA$29 base price before code
-- Currently CA$20.30 with TYPEJUNG30 on Stripe
+- CA$19, paid once
 - AI Type Guide chat
 - Individuation roadmap
 - Tailored growth exercises

@@ -32,9 +32,9 @@ const routePages = [
   },
   {
     path: '/pricing',
-    title: 'Pricing: Free Map, Insight CA$7, Mastery CA$20.30 | TypeJung',
+    title: 'Pricing: Free Map, Insight CA$7, Mastery CA$19 | TypeJung',
     description:
-      'Start with the free TypeJung assessment, then unlock Insight for CA$7 or Mastery for CA$20.30 with TYPEJUNG30 applied on Stripe.',
+      'Start with the free TypeJung assessment, then add Insight for CA$7 or Mastery for CA$19. One-time CAD, no code needed.',
     h1: 'Start with the map. Decide after.',
     cta: 'Compare plans',
   },

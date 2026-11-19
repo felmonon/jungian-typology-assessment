@@ -234,7 +234,7 @@
     },
     {
       "source": "/share/:slug",
-      "destination": "/index.html"
+      "destination": "/api/share/page?slug=:slug"
     },
     {
       "source": "/admin",

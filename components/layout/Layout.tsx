@@ -627,7 +627,6 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
                 ['/sample-report', 'Sample report'],
                 ['/methodology', 'Methodology'],
                 ['/learn', 'Learn the theory'],
-                ['/debrief', 'Personal debrief'],
               ].map(([to, label]) => (
                 <Link
                   key={to}

@@ -190,52 +190,6 @@ function renderLibraryLinks(kind: 'typology' | 'shadow') {
   </nav>`;
 }
 
-const debriefGuideSlugs = new Set([
-  'cognitive-function-test',
-  'jungian-cognitive-functions-test',
-  'sakinorva-alternative',
-  '16personalities-alternative',
-  'infj-vs-infp-test',
-  'intj-vs-intp-test',
-  'inferior-function-test',
-  'mbti-keeps-changing',
-  'mbti-mistype-test',
-  'best-cognitive-functions-test',
-  'why-do-i-get-different-mbti-results',
-  'am-i-infj-or-infp',
-  'mbti-changes-with-mood',
-]);
-
-function renderDebriefGuideCta(page: any) {
-  if (!debriefGuideSlugs.has(page.slug)) return '';
-
-  return `<section class="debrief-cta" aria-labelledby="${escapeHtml(page.slug)}-debrief-title">
-    <div class="debrief-cta-grid">
-      <div>
-        <p class="eyebrow">Human-reviewed option</p>
-        <h2 id="${escapeHtml(page.slug)}-debrief-title">Still stuck between two types?</h2>
-        <p>
-          If this guide sounds familiar but you still do not know how to read your result, get a Personal Type Debrief.
-          I review your TypeJung map, likely mistype risks, and stress edge, then send a 10-minute video or written breakdown within 72 hours.
-        </p>
-        <ul>
-          <li>Best for INFJ vs INFP, INTJ vs INTP, or Sakinorva/16Personalities confusion.</li>
-          <li>Start with the free map first; use the Debrief when you want a second read.</li>
-          <li>Educational self-reflection, not a clinical or diagnostic assessment.</li>
-        </ul>
-        <div class="cta-actions">
-          <a href="${escapeHtml(withSource('/debrief', page, 'guide_debrief'))}" class="btn">Get a personal debrief</a>
-          <a href="${escapeHtml(withSource('/assessment', page, 'guide_debrief_assessment'))}" class="secondary-btn">Take the free map first</a>
-        </div>
-      </div>
-      <div class="debrief-price-card">
-        <strong>CA$129</strong>
-        <span>Limited to 5/week</span>
-      </div>
-    </div>
-  </section>`;
-}
-
 function renderIntentPanel(page: any) {
   if (!page.intent) return '';
 
@@ -555,7 +509,7 @@ ${shellHeader({ ctaSource: sourceFor(page, 'nav') })}
 
   ${renderIntentPanel(page)}
 
-  ${renderDebriefGuideCta(page)}
+
 
   ${renderCreatorShareKit(page)}
 

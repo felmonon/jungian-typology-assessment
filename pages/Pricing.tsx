@@ -332,16 +332,6 @@ export const Pricing: React.FC = () => {
           </details>
         ))}
       </section>
-      <p className="mx-auto mt-10 max-w-4xl text-sm leading-7 text-jung-secondary">
-        Prefer a written second perspective from the founder?{' '}
-        <Link
-          to="/debrief"
-          className="inline-flex min-h-11 items-center text-jung-accent underline underline-offset-4"
-        >
-          Read about the Personal Type Debrief
-        </Link>
-        .
-      </p>
     </div>
   );
 };

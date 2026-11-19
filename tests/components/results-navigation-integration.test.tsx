@@ -74,6 +74,8 @@ beforeEach(() => {
     });
   }
   localStorage.setItem('jungian_assessment_results', JSON.stringify(calculateDepthResults({})));
+  // The report-tab A/B arm is random per browser; these tests cover control.
+  localStorage.setItem('typejung_report_preview_variant', 'control');
   premiumState = { tier: 'free', isPremium: false, isLoading: false };
   analysisState = {
     freeAnalysis: 'A reflection from your free map.', premiumAnalysis: null,
@@ -150,7 +152,7 @@ describe('result views and report visibility', () => {
     expect(diagnostics('result_upgrade_prompt_viewed')).toHaveLength(0);
     act(() => promptObserver.emit(true));
     expect(diagnostics('result_upgrade_prompt_viewed')).toEqual([
-      ['result_upgrade_prompt_viewed', { source: 'overview_next', offer_version: 'direct-unlock-v1', measurement_version: 'visibility-v1', tier: 'insight' }],
+      ['result_upgrade_prompt_viewed', { source: 'overview_next', offer_version: 'direct-unlock-v1', offer_variant: 'control', measurement_version: 'visibility-v1', tier: 'insight' }],
     ]);
     expect(offerImpressions()).toHaveLength(0);
 
@@ -267,5 +269,53 @@ describe('result views and report visibility', () => {
     expect(offerObservers()).toHaveLength(0);
     const paidOverviewButton = document.querySelector('.studio-result-next button:last-child');
     expect(ObserverMock.instances.some((observer) => observer.targets.includes(paidOverviewButton!))).toBe(false);
+  });
+});
+
+describe('report preview A/B arm on the report tab', () => {
+  const previewReport = Object.fromEntries(PREMIUM_REPORT_KEYS.map((key) => [
+    key,
+    `Opening line for ${key}. Locked detail for ${key}.`,
+  ])) as PremiumAnalysis;
+
+  function previewResponse(body: unknown, status = 200) {
+    return vi.fn().mockResolvedValue({ ok: status < 400, status, json: async () => body });
+  }
+
+  it('shows the reader their own first section and tags offer events with the arm', async () => {
+    localStorage.setItem('typejung_report_preview_variant', 'preview_v2');
+    const { buildReportPreview } = await import('../../lib/report-preview');
+    const fetchMock = previewResponse({ available: true, preview: buildReportPreview(previewReport) });
+    vi.stubGlobal('fetch', fetchMock);
+
+    render(<ResultsRoute />);
+    fireEvent.click(screen.getByRole('tab', { name: 'Go deeper' }));
+
+    expect(await screen.findByText('Opening line for theGrip. Locked detail for theGrip.')).toBeVisible();
+    expect(fetchMock).toHaveBeenCalledWith('/api/ai/report-preview', expect.objectContaining({ method: 'POST' }));
+    expect(screen.queryByText('Locked detail for overview.')).toBeNull();
+    expect(screen.queryByText('What the report adds')).toBeNull();
+    expect(diagnostics('result_report_opened')[0][1]).toMatchObject({ offer_version: 'report-preview-v2', offer_variant: 'preview_v2' });
+    await waitFor(() => expect(diagnostics('result_report_preview_status')[0][1]).toMatchObject({ preview_status: 'ready', offer_variant: 'preview_v2' }));
+  });
+
+  it('falls back to the previous offer when the preview cannot be prepared', async () => {
+    localStorage.setItem('typejung_report_preview_variant', 'preview_v2');
+    vi.stubGlobal('fetch', previewResponse({ available: false, reason: 'cache_unavailable' }));
+
+    render(<ResultsRoute />);
+    fireEvent.click(screen.getByRole('tab', { name: 'Go deeper' }));
+
+    expect(await screen.findByText('What the report adds')).toBeVisible();
+    await waitFor(() => expect(diagnostics('result_report_preview_status')[0][1]).toMatchObject({ preview_status: 'fallback', reason: 'cache_unavailable' }));
+  });
+
+  it('never requests a preview for the control arm', async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+    render(<ResultsRoute />);
+    fireEvent.click(screen.getByRole('tab', { name: 'Go deeper' }));
+    expect(await screen.findByText('What the report adds')).toBeVisible();
+    expect(fetchMock).not.toHaveBeenCalledWith('/api/ai/report-preview', expect.anything());
   });
 });

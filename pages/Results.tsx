@@ -1144,7 +1144,7 @@ export const Results: React.FC = () => {
       minimalTitle="Not ready to decide?"
       minimalDescription="Email yourself a link back to this report, with your report code, and come back when you want it."
       minimalSubmitLabel="Email my link"
-      minimalFootnote="By requesting this, you agree to receive the link and follow-up emails about the report. Every email has an unsubscribe link. Your complete map stays in this browser unless you save it to an account."
+      minimalFootnote="Every email has an unsubscribe link. Your complete map stays in this browser unless you save it to an account."
       minimalSentMessage="Your link and report code are in your inbox. Your complete map is still here on this device."
     />
   );
@@ -1284,7 +1284,7 @@ export const Results: React.FC = () => {
                     minimalTitle="Not ready to decide?"
                     minimalDescription="Email yourself a link back to this report, with your report code, and come back when you want it."
                     minimalSubmitLabel="Email my link"
-                    minimalFootnote="By requesting this, you agree to receive the link and follow-up emails about the report. Every email has an unsubscribe link. Your complete map stays in this browser unless you save it to an account."
+                    minimalFootnote="Every email has an unsubscribe link. Your complete map stays in this browser unless you save it to an account."
                     minimalSentMessage="Your link and report code are in your inbox. Your complete map is still here on this device."
                   />
                 }
@@ -1640,7 +1640,7 @@ export const Results: React.FC = () => {
                   minimalTitle="Keep a link for later"
                   minimalDescription="Email a summary of your leading pattern and a link to the optional report."
                   minimalSubmitLabel="Email my link"
-                  minimalFootnote="By requesting this, you agree to receive the link and follow-up emails about the report. Your complete map stays in this browser unless you save it to an account."
+                  minimalFootnote="Every email has an unsubscribe link. Your complete map stays in this browser unless you save it to an account."
                   minimalSentMessage="Your link and report code are in your inbox. Your complete map is still here on this device."
                 />
               </div>

@@ -13,11 +13,10 @@ import { PRICING } from '../../data/pricing.js';
 import { discountedAmount, formatCadAmount } from '../../data/discount.js';
 import { guardPaidReportCheckout } from './report-availability.js';
 
-const CHECKOUT_SESSION_EXPIRATION_SECONDS = 24 * 60 * 60;
+const CHECKOUT_SESSION_EXPIRATION_SECONDS = 60 * 60;
 
 // Post-purchase upgrade: an Insight buyer pays only the difference to Mastery.
-// Charged as a one-time delta (no TYPEJUNG30 — both sides are already the
-// discounted prices) and recorded as a Mastery purchase so premium status,
+// Charged as a one-time delta of the list prices (no promotion code) and recorded as a Mastery purchase so premium status,
 // which reads the most recent completed purchase, reflects the upgrade.
 export const masteryUpgradeAmount = () =>
   Math.round((discountedAmount(PRICING.mastery.amount) - discountedAmount(PRICING.insight.amount)) * 100) / 100;

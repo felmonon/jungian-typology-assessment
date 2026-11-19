@@ -90,6 +90,10 @@ export const CheckoutSuccess: React.FC = () => {
   const startMasteryUpgrade = useCallback(async () => {
     setUpgrading(true);
     setUpgradeError(null);
+    AnalyticsEvents.paidOfferClicked('success_upsell', 'mastery', 'stripe_checkout', {
+      value: PRICING.mastery.amount,
+      currency: PRICING.mastery.currency,
+    });
     trackEvent('mastery_upgrade_clicked', { source: 'success_upsell' });
     try {
       const email = (typeof window !== 'undefined' && localStorage.getItem('jungian_assessment_customer_email')) || undefined;

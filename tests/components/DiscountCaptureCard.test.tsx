@@ -26,6 +26,7 @@ vi.mock('../../lib/analytics', () => ({
   trackEvent: vi.fn(),
   AnalyticsEvents: {
     ctaClicked: vi.fn(),
+    paidOfferClicked: vi.fn(),
   },
 }));
 

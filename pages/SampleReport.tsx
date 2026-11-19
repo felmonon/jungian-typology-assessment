@@ -49,6 +49,10 @@ export const SampleReport: React.FC = () => {
       tier: 'insight',
     });
     if (hasResults) {
+      AnalyticsEvents.paidOfferClicked(source, 'insight', destination, {
+        value: PRICING.insight.amount,
+        currency: PRICING.insight.currency,
+      });
       AnalyticsEvents.upgradeClicked(source, 'insight');
       trackEvent('sample_report_checkout_clicked', { tier: 'insight', source });
     }

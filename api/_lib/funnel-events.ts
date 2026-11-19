@@ -62,6 +62,12 @@ const FUNNEL_EVENT_NAMES = new Set([
   'post_purchase_referral_prompt_viewed',
   'post_purchase_share_link_created',
   'post_purchase_referral_copied',
+  // Homepage layout test (2026_11_aha_first): views, the micro-demo and CTAs.
+  'home_wedge_viewed',
+  'home_demo_viewed',
+  'home_demo_answered',
+  'home_cta_clicked',
+  'home_library_path_clicked',
 ]);
 
 function cleanToken(value: unknown, maxLength = 120): string | null {

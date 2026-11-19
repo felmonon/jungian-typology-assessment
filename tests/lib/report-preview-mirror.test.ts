@@ -33,6 +33,11 @@ const NEWLY_MIRRORED = [
   'post_purchase_referral_prompt_viewed',
   'post_purchase_share_link_created',
   'post_purchase_referral_copied',
+  'home_wedge_viewed',
+  'home_demo_viewed',
+  'home_demo_answered',
+  'home_cta_clicked',
+  'home_library_path_clicked',
 ];
 
 beforeEach(() => {

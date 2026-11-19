@@ -90,6 +90,17 @@ const UpgradeEventSchema = eventSchema({
   tier: text(1, 50),
 });
 
+// One stable name for every control whose purpose is to move toward paying, so
+// placements stay comparable when a button is renamed, moved, or redesigned.
+const PaidOfferClickEventSchema = eventSchema({
+  placement: text(1, 100),
+  source: text(1, 100),
+  tier: text(1, 50),
+  destination: text(1, 500),
+  value: numberBetween(0, 10000, true),
+  currency: text(3, 3, true),
+});
+
 const CTAEventSchema = eventSchema({
   cta_name: text(1, 100),
   location: text(1, 100),
@@ -127,6 +138,30 @@ const FUNNEL_MIRROR_EVENT_NAMES = new Set([
   'results_unlock_clicked',
   'results_direct_checkout_failed',
   'checkout_review_viewed',
+  // Report-tab A/B test and paid-offer clicks outside the results unlock.
+  'result_report_preview_status',
+  'paid_offer_clicked',
+  // Assessment progress and checkout recovery (previously GA4/Vercel only).
+  'assessment_section_completed',
+  'stripe_checkout_returned_without_payment',
+  'checkout_recovery_lead_captured',
+  'checkout_recovery_lead_failed',
+  'checkout_recovery_path_saved',
+  'checkout_recovery_email_opted_in',
+  'checkout_recovery_email_skipped',
+  // Share and invite loop (previously GA4/Vercel only).
+  'result_referral_prompt_viewed',
+  'result_compare_link_created',
+  'result_compare_link_failed',
+  'assessment_invite_shared',
+  'inbound_shared_result_prompt_viewed',
+  'inbound_shared_result_reply_copied',
+  'inbound_shared_result_original_opened',
+  'shared_result_viewed',
+  'shared_result_cta_clicked',
+  'post_purchase_referral_prompt_viewed',
+  'post_purchase_share_link_created',
+  'post_purchase_referral_copied',
 ]);
 
 function randomFunnelToken(): string {
@@ -536,6 +571,32 @@ export const AnalyticsEvents = {
       tier: String(tier).substring(0, 50),
     };
     return safeTrackEvent('upgrade_clicked', params, UpgradeEventSchema);
+  },
+
+  // `source` mirrors `placement` so the funnel row lands in the indexed
+  // `source` column alongside the older results_unlock_clicked rows. The
+  // results unlock button already sends results_unlock_clicked, so this is
+  // for the other paths to checkout.
+  paidOfferClicked: (
+    placement: string,
+    tier: string,
+    destination: string,
+    options?: { value?: number; currency?: string },
+  ) => {
+    const cleanedPlacement = String(placement).substring(0, 100);
+    const params = {
+      placement: cleanedPlacement,
+      source: cleanedPlacement,
+      tier: String(tier).substring(0, 50),
+      destination: String(destination).substring(0, 500),
+      ...(typeof options?.value === 'number' && Number.isFinite(options.value)
+        ? { value: Math.max(0, options.value) }
+        : {}),
+      ...(options?.currency && /^[A-Z]{3}$/.test(options.currency)
+        ? { currency: options.currency }
+        : {}),
+    };
+    return safeTrackEvent('paid_offer_clicked', params, PaidOfferClickEventSchema);
   },
 
   // Engagement

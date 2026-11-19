@@ -27,9 +27,13 @@ import { PersonalReportReader } from '../components/results/PersonalReportReader
 import { ResultStressPreview } from '../components/results/ResultStressPreview';
 import { ReportUnlockCard, StickyReportBar } from '../components/results/ReportUnlockCard';
 import { LockedPremiumPreview } from '../components/results/LockedPremiumPreview';
+import { ReportPreviewOffer } from '../components/results/ReportPreviewOffer';
 import { EnergyBars, Hierarchy, SignalGrid } from '../components/results/ResultCharts';
 import { ResultReaction } from '../components/results/ResultReaction';
-import { RESULT_OFFER_VERSION } from '../lib/result-stress-preview';
+import { assignReportPreviewVariant, reportPreviewOfferProperties } from '../lib/report-preview-variant';
+import { PREMIUM_REPORT_KEYS } from '../lib/premium-report';
+import { PREMIUM_REPORT_SECTION_TITLES } from '../lib/report-preview';
+import { useReportPreview } from '../hooks/use-report-preview';
 import { useOfferImpression } from '../hooks/useOfferImpression';
 import { PAGE_SEO, useSEO } from '../hooks/useSEO';
 import { Button } from '../components/ui/Button';
@@ -92,21 +96,12 @@ const inviteSourceByLocation: Record<InviteShareLocation, string> = {
   results_invite_card: 'result_compare_card',
 };
 
+// Titles come from the same table the report preview uses, so the sections a
+// reader saw before purchase carry the same names afterwards.
 const premiumReportSectionConfig: Array<{
   key: keyof PremiumAnalysis;
   title: string;
-}> = [
-    { key: 'overview', title: 'Pattern synthesis' },
-    { key: 'functionAnalysis', title: 'Function dynamics' },
-    { key: 'archetypes', title: 'Archetypal pattern' },
-    { key: 'theGrip', title: 'Grip sequence and recovery' },
-    { key: 'relationships', title: 'Relationship pattern and repair' },
-    { key: 'career', title: 'Work conditions and friction' },
-    { key: 'individuation', title: 'Individuation path' },
-    { key: 'shadow', title: 'Shadow triggers and integration' },
-    { key: 'growth', title: 'Growth practices' },
-    { key: 'dreams', title: 'Dream reflection prompts' },
-  ];
+}> = PREMIUM_REPORT_KEYS.map((key) => ({ key, title: PREMIUM_REPORT_SECTION_TITLES[key] }));
 
 type ResultsState =
   | { status: 'loading' }
@@ -156,6 +151,11 @@ const postLifecycleEmail = async (body: Record<string, unknown>) => {
 
 export const Results: React.FC = () => {
   useSEO(PAGE_SEO.results);
+  // A/B arm for the report tab: 'preview_v2' shows the reader's own first
+  // section, 'control' keeps the previous offer. Stable per browser.
+  const [reportVariant] = useState(() => assignReportPreviewVariant());
+  const offerProps = useMemo(() => reportPreviewOfferProperties(reportVariant), [reportVariant]);
+  const { state: reportPreviewState, load: loadReportPreview } = useReportPreview();
   const navigate = useNavigate();
   const location = useLocation();
   const resultView = resultViewForHash(location.hash);
@@ -167,7 +167,7 @@ export const Results: React.FC = () => {
       reportEntrySourceRef.current = entrySource;
       trackEvent('result_upgrade_entry_clicked', {
         source: entrySource,
-        offer_version: RESULT_OFFER_VERSION,
+        ...offerProps,
         measurement_version: RESULT_VISIBILITY_VERSION,
         tier: intendedTier,
       });
@@ -233,7 +233,7 @@ export const Results: React.FC = () => {
       const destination = 'secure_stripe_checkout';
       trackEvent('results_unlock_clicked', {
         source: ctaSource,
-        offer_version: RESULT_OFFER_VERSION,
+        ...offerProps,
         tier: paidTier,
         destination,
         checkout_mode: 'direct',
@@ -290,7 +290,7 @@ export const Results: React.FC = () => {
         });
       }
     },
-    [acquisition, checkoutOpeningTier, user?.email],
+    [acquisition, checkoutOpeningTier, offerProps, user?.email],
   );
 
   const viewSampleReport = useCallback(
@@ -399,7 +399,7 @@ export const Results: React.FC = () => {
       openedReportKeysRef.current.add(key);
       trackEvent('result_report_opened', {
         source: reportEntrySourceRef.current,
-        offer_version: RESULT_OFFER_VERSION,
+        ...offerProps,
         measurement_version: RESULT_VISIBILITY_VERSION,
         tier: intendedTier,
       });
@@ -407,7 +407,7 @@ export const Results: React.FC = () => {
     reportOpen();
     document.addEventListener('visibilitychange', reportOpen);
     return () => document.removeEventListener('visibilitychange', reportOpen);
-  }, [currentResults, intendedTier, isPremium, premiumLoading, resultView]);
+  }, [currentResults, intendedTier, isPremium, offerProps, premiumLoading, resultView]);
 
   const upgradePromptRef = useOfferImpression<HTMLButtonElement>({
     impressionKey: currentResults ? `${currentResults.completedAt}_${intendedTier}` : null,
@@ -415,7 +415,7 @@ export const Results: React.FC = () => {
     onImpression: () => {
       trackEvent('result_upgrade_prompt_viewed', {
         source: 'overview_next',
-        offer_version: RESULT_OFFER_VERSION,
+        ...offerProps,
         measurement_version: RESULT_VISIBILITY_VERSION,
         tier: intendedTier,
       });
@@ -428,7 +428,7 @@ export const Results: React.FC = () => {
     onImpression: () => {
       trackEvent('result_upgrade_prompt_viewed', {
         source: 'overview_unlock_card',
-        offer_version: RESULT_OFFER_VERSION,
+        ...offerProps,
         measurement_version: RESULT_VISIBILITY_VERSION,
         tier: intendedTier,
       });
@@ -470,11 +470,11 @@ export const Results: React.FC = () => {
     stickyTrackedRef.current = true;
     trackEvent('result_upgrade_prompt_viewed', {
       source: 'sticky_bar',
-      offer_version: RESULT_OFFER_VERSION,
+      ...offerProps,
       measurement_version: RESULT_VISIBILITY_VERSION,
       tier: intendedTier,
     });
-  }, [intendedTier, stickyBarVisible]);
+  }, [intendedTier, offerProps, stickyBarVisible]);
 
   const offerRef = useOfferImpression<HTMLElement>({
     impressionKey: currentResults ? `${currentResults.completedAt}_${intendedTier}_${upgradeContext?.category || 'default'}` : null,
@@ -482,7 +482,7 @@ export const Results: React.FC = () => {
     onImpression: () => {
       if (!currentResults) return;
       trackEvent('result_upgrade_offer_viewed', {
-        offer_version: RESULT_OFFER_VERSION,
+        ...offerProps,
         source: acquisition?.source || 'unknown',
         intended_tier: intendedTier,
         context_category: upgradeContext?.category || 'default',
@@ -504,7 +504,7 @@ export const Results: React.FC = () => {
           : {}),
       });
       const previewPayload = {
-        offer_version: RESULT_OFFER_VERSION,
+        ...offerProps,
         source: acquisition?.source || 'unknown',
         preview_source: 'results_locked_preview',
         intended_tier: intendedTier,
@@ -667,6 +667,27 @@ export const Results: React.FC = () => {
     if (!legacyInput || freeAnalysis || freeError || isLoadingFree) return;
     fetchFreeAnalysis(legacyInput);
   }, [fetchFreeAnalysis, freeAnalysis, freeError, isLoadingFree, legacyInput]);
+
+  // The preview arm prepares the reader's own report as soon as the result is
+  // known not to be paid for, so the first section is usually ready by the
+  // time the report tab opens. Control never calls the endpoint.
+  useEffect(() => {
+    if (reportVariant !== 'preview_v2' || !legacyInput || premiumLoading || isPremium) return;
+    void loadReportPreview(legacyInput);
+  }, [isPremium, legacyInput, loadReportPreview, premiumLoading, reportVariant]);
+
+  const previewStatusTrackedRef = useRef(false);
+  useEffect(() => {
+    if (reportVariant !== 'preview_v2' || previewStatusTrackedRef.current) return;
+    if (reportPreviewState.status !== 'ready' && reportPreviewState.status !== 'fallback') return;
+    previewStatusTrackedRef.current = true;
+    trackEvent('result_report_preview_status', {
+      ...offerProps,
+      preview_status: reportPreviewState.status,
+      ...(reportPreviewState.status === 'fallback' ? { reason: reportPreviewState.reason } : {}),
+      tier: intendedTier,
+    });
+  }, [intendedTier, offerProps, reportPreviewState, reportVariant]);
 
   useEffect(() => {
     if (
@@ -1111,6 +1132,22 @@ export const Results: React.FC = () => {
       .filter((section) => Boolean(section.body && section.body.trim()))
     : [];
   const hasMasteryAccess = tier === 'mastery';
+  const notReadyOfferCapture = (
+    <DiscountCaptureCard
+      source="results_offer_not_ready"
+      dominantLabel={dominantLabel}
+      inferiorLabel={inferiorLabel}
+      preferredTier={intendedTier}
+      compact
+      minimal
+      showCheckoutButtons={false}
+      minimalTitle="Not ready to decide?"
+      minimalDescription="Email yourself a link back to this report, with your report code, and come back when you want it."
+      minimalSubmitLabel="Email my link"
+      minimalFootnote="By requesting this, you agree to receive the link and follow-up emails about the report. Every email has an unsubscribe link. Your complete map stays in this browser unless you save it to an account."
+      minimalSentMessage="Your link and report code are in your inbox. Your complete map is still here on this device."
+    />
+  );
 
   return (
     <div className={`studio-results min-h-screen bg-jung-base ${stickyBarVisible ? 'pb-36 lg:pb-16' : 'pb-16'}`}>
@@ -1122,7 +1159,7 @@ export const Results: React.FC = () => {
         onUnlock={() => openUpgradeCheckout(intendedTier, 'results_sticky_bar')}
         onDismiss={() => {
           setStickyDismissed(true);
-          trackEvent('result_upgrade_prompt_dismissed', { source: 'sticky_bar', offer_version: RESULT_OFFER_VERSION, tier: intendedTier });
+          trackEvent('result_upgrade_prompt_dismissed', { source: 'sticky_bar', ...offerProps, tier: intendedTier });
         }}
       />
       <div className="editorial-container">
@@ -1472,6 +1509,18 @@ export const Results: React.FC = () => {
           {!premiumLoading && !isPremium && (
             <>
               <p className="journey-eyebrow mb-5">Your personal report · Built from your free map</p>
+              {reportVariant === 'preview_v2' && reportPreviewState.status !== 'fallback' ? (
+                <ReportPreviewOffer
+                  preview={reportPreviewState.status === 'ready' ? reportPreviewState.preview : null}
+                  offerRef={offerRef}
+                  intendedTier={intendedTier}
+                  onUnlock={openUpgradeCheckout}
+                  onViewSampleReport={viewSampleReport}
+                  checkoutOpeningTier={checkoutOpeningTier}
+                  checkoutError={checkoutError}
+                  notReadyCapture={notReadyOfferCapture}
+                />
+              ) : (
               <LockedPremiumPreview
                 results={results}
                 offerRef={offerRef}
@@ -1481,23 +1530,9 @@ export const Results: React.FC = () => {
                 onViewSampleReport={viewSampleReport}
                 checkoutOpeningTier={checkoutOpeningTier}
                 checkoutError={checkoutError}
-                notReadyCapture={
-                  <DiscountCaptureCard
-                    source="results_offer_not_ready"
-                    dominantLabel={dominantLabel}
-                    inferiorLabel={inferiorLabel}
-                    preferredTier={intendedTier}
-                    compact
-                    minimal
-                    showCheckoutButtons={false}
-                    minimalTitle="Not ready to decide?"
-                    minimalDescription="Email yourself a link back to this report, with your report code, and come back when you want it."
-                    minimalSubmitLabel="Email my link"
-                    minimalFootnote="By requesting this, you agree to receive the link and follow-up emails about the report. Every email has an unsubscribe link. Your complete map stays in this browser unless you save it to an account."
-                    minimalSentMessage="Your link and report code are in your inbox. Your complete map is still here on this device."
-                  />
-                }
+                notReadyCapture={notReadyOfferCapture}
               />
+              )}
             </>
           )}
 

@@ -10,6 +10,18 @@ export interface GenerateTextOptions {
   timeoutMs?: number;
 }
 
+// A stalled provider call must not hold a serverless function (and the reader
+// waiting on it) until the platform kills it. Gemini rejects deadlines below
+// 10 seconds, so shorter requests are raised to that floor.
+export const DEFAULT_GEMINI_TIMEOUT_MS = 60_000;
+const MIN_GEMINI_TIMEOUT_MS = 10_000;
+
+export function resolveGeminiTimeoutMs(timeoutMs: number | undefined): number {
+  if (timeoutMs === undefined) return DEFAULT_GEMINI_TIMEOUT_MS;
+  if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) throw new Error('Invalid AI request timeout');
+  return Math.max(MIN_GEMINI_TIMEOUT_MS, timeoutMs);
+}
+
 let integrationClient: GoogleGenAI | null = null;
 let directClient: GoogleGenAI | null = null;
 
@@ -56,10 +68,21 @@ export async function generateGeminiText(prompt: string, options: GenerateTextOp
     throw new Error('AI service not configured');
   }
 
+  const timeoutMs = resolveGeminiTimeoutMs(options.timeoutMs);
   let lastError: unknown;
   for (const attempt of attempts) {
+    const controller = new AbortController();
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    // The SDK deadline is the primary limit; this local one also covers a
+    // connection that never answers, which the SDK option alone may not end.
+    const deadline = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => {
+        controller.abort();
+        reject(Object.assign(new Error('AI request timeout'), { name: 'TimeoutError' }));
+      }, timeoutMs);
+    });
     try {
-      const response = await attempt.client.models.generateContent({
+      const request = attempt.client.models.generateContent({
         model: options.model || 'gemini-2.5-flash',
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
         config: {
@@ -67,9 +90,13 @@ export async function generateGeminiText(prompt: string, options: GenerateTextOp
           maxOutputTokens: options.maxOutputTokens,
           responseMimeType: options.responseMimeType,
           ...(options.thinkingBudget !== undefined ? { thinkingConfig: { thinkingBudget: options.thinkingBudget } } : {}),
-          ...(options.timeoutMs !== undefined ? { httpOptions: { timeout: options.timeoutMs } } : {}),
+          httpOptions: { timeout: timeoutMs },
+          abortSignal: controller.signal,
         },
       });
+      // A rejection that loses the race must not surface as unhandled.
+      request.catch(() => undefined);
+      const response = await Promise.race([request, deadline]);
 
       return response.text || 'Unable to generate analysis at this time.';
     } catch (error: any) {
@@ -80,6 +107,8 @@ export async function generateGeminiText(prompt: string, options: GenerateTextOp
         type: timedOut ? 'timeout' : 'provider_error',
         ...(Number.isInteger(error?.status) && error.status >= 100 && error.status <= 599 ? { status: error.status } : {}),
       });
+    } finally {
+      clearTimeout(timer);
     }
   }
 

@@ -142,6 +142,7 @@ export const DiscountCaptureCard: React.FC<DiscountCaptureCardProps> = ({
     const destination = onCheckout
       ? 'secure_stripe_checkout'
       : pathWithSource(`/checkout/${tier}`, `${source}_${tier}_checkout`);
+    AnalyticsEvents.paidOfferClicked(`${source}_discount_card`, tier, destination);
     AnalyticsEvents.ctaClicked(`open_${tier}_checkout_after_discount_email`, source, {
       buttonText: checkoutButtonLabel || `Open ${tier} checkout`,
       destination,

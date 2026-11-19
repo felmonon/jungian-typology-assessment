@@ -246,11 +246,11 @@
     },
     {
       "source": "/privacy",
-      "destination": "/index.html"
+      "destination": "/privacy/index.html"
     },
     {
       "source": "/terms",
-      "destination": "/index.html"
+      "destination": "/terms/index.html"
     },
     {
       "source": "/",

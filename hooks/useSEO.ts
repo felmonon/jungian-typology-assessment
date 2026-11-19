@@ -37,8 +37,8 @@ export const PAGE_SEO: Record<string, SEOConfig> = {
     description: 'TypeJung is a sourced library of Carl Jung\'s ideas and a free map of your own function pattern. Why it is not another MBTI clone, and what it does not claim.',
   },
   pricing: {
-    title: 'Pricing: Free Map, Insight CA$7, Mastery CA$20.30 | TypeJung',
-    description: 'Start with the free TypeJung map, then unlock Insight for CA$7 or Mastery for CA$20.30 with TYPEJUNG30 applied. One-time CAD upgrades, no subscription.',
+    title: 'Pricing: Free Map, Insight CA$7, Mastery CA$19 | TypeJung',
+    description: 'Start with the free TypeJung map, then add Insight for CA$7 or Mastery for CA$19. One-time CAD upgrades, no code needed, no subscription.',
   },
   methodology: {
     title: 'Methodology - How the Function-Stack Map Is Built | TypeJung',

@@ -1,10 +1,16 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { discountedPriceLabel } from '../../data/discount.js';
 import { isPaidTierId, PRICING, type PaidTierId } from '../../data/pricing.js';
 import { sendCheckoutRecoveryEmail } from '../../server/resend.js';
 
-const RECOVERY_SEND_DELAY_MS = 60 * 60 * 1000;
+// Checkout sessions expire about an hour after they open, and the expiry
+// webhook queues this email. It goes out straight away from that webhook; the
+// daily cron only sweeps up rows the immediate send missed.
+export const RECOVERY_SEND_DELAY_MS = 0;
 const RECOVERY_SEND_LIMIT = 40;
+
+export function recoverySendAfter(now: Date = new Date()): string {
+  return new Date(now.getTime() + RECOVERY_SEND_DELAY_MS).toISOString();
+}
 
 type CheckoutSessionLike = {
   id: string;
@@ -25,7 +31,7 @@ type CheckoutSessionLike = {
 };
 
 type RecoveryEmailRow = {
-  id: string;
+  id?: string;
   stripe_session_id: string;
   customer_email: string | null;
   tier: string | null;
@@ -53,6 +59,12 @@ function cleanToken(value: unknown, maxLength = 100): string | null {
     .slice(0, maxLength);
 
   return cleaned || null;
+}
+
+function cleanIsoTimestamp(value: unknown): string | null {
+  if (typeof value !== 'string' || value.length > 40) return null;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date.toISOString();
 }
 
 function checkoutSessionEmail(session: CheckoutSessionLike): string | null {
@@ -209,10 +221,19 @@ async function logSkippedRecovery(
   return { queued: false, skipped: true, reason };
 }
 
+export type QueueRecoveryResult = {
+  queued: boolean;
+  skipped?: boolean;
+  reason?: string;
+  sent?: boolean;
+  sendReason?: string;
+};
+
 export async function queueCheckoutRecoveryEmail(
   supabase: SupabaseClient,
   session: CheckoutSessionLike,
-): Promise<{ queued: boolean; skipped?: boolean; reason?: string }> {
+  options: { sendNow?: boolean } = {},
+): Promise<QueueRecoveryResult> {
   const existing = await existingRecoveryRow(supabase, session.id);
   if (existing?.status === 'queued' || existing?.status === 'sent') {
     return { queued: false, skipped: true, reason: `already_${existing.status}` };
@@ -276,9 +297,11 @@ export async function queueCheckoutRecoveryEmail(
       stripe_recovery_url: stripeUrl,
       consent_source: consentSource,
       status: 'queued',
-      send_after: new Date(now.getTime() + RECOVERY_SEND_DELAY_MS).toISOString(),
+      send_after: recoverySendAfter(now),
       error_message: null,
       metadata: {
+        consent_version: cleanToken(session.metadata?.recovery_email_consent_version, 80),
+        consent_recorded_at: cleanIsoTimestamp(session.metadata?.recovery_email_consent_at),
         source: cleanToken(session.metadata?.source, 120) || 'unknown',
         acquisition_source: cleanToken(session.metadata?.acquisition_source, 120) || cleanToken(session.metadata?.source, 120) || 'unknown',
         utm_campaign: cleanToken(session.metadata?.utm_campaign, 100),
@@ -294,7 +317,116 @@ export async function queueCheckoutRecoveryEmail(
     return { queued: false, skipped: true, reason: 'queue_failed' };
   }
 
-  return { queued: true };
+  if (options.sendNow === false) return { queued: true };
+
+  // Send now rather than waiting for the daily cron. If the send throws, the
+  // row stays queued for the cron to retry; nothing here fails the webhook.
+  try {
+    const outcome = await deliverRecoveryRow(supabase, {
+      stripe_session_id: session.id,
+      customer_email: customerEmail,
+      tier,
+      recovery_url: appRecoveryUrl,
+      consent_source: consentSource,
+    }, { purchaseAlreadyChecked: true, keepQueuedOnError: true });
+    return { queued: true, sent: outcome === 'sent', sendReason: outcome };
+  } catch (sendError) {
+    console.warn('Immediate recovery email send failed:', sendError instanceof Error ? sendError.message : 'Unknown error');
+    return { queued: true, sent: false, sendReason: 'send_error' };
+  }
+}
+
+type DeliveryOutcome = 'sent' | 'skipped_invalid' | 'skipped_purchased' | 'would_send' | 'failed' | 'retry_later';
+
+async function updateRecoveryRow(
+  supabase: SupabaseClient,
+  row: Pick<RecoveryEmailRow, 'id' | 'stripe_session_id'>,
+  update: Record<string, unknown>,
+) {
+  const query = supabase.from('recovery_emails').update(update);
+  return row.id ? query.eq('id', row.id) : query.eq('stripe_session_id', row.stripe_session_id);
+}
+
+async function deliverRecoveryRow(
+  supabase: SupabaseClient,
+  row: RecoveryEmailRow,
+  options: { dryRun?: boolean; purchaseAlreadyChecked?: boolean; keepQueuedOnError?: boolean } = {},
+): Promise<DeliveryOutcome> {
+  const email = cleanEmail(row.customer_email);
+  const tier = isPaidTierId(row.tier) ? row.tier : null;
+  const recoveryUrl = typeof row.recovery_url === 'string' && row.recovery_url.startsWith('https://')
+    ? row.recovery_url
+    : null;
+  const consentSource = row.consent_source === 'stripe' || row.consent_source === 'site'
+    ? row.consent_source
+    : null;
+
+  if (!email || !tier || !recoveryUrl || !consentSource) {
+    await updateRecoveryRow(supabase, row, {
+      status: 'skipped',
+      skipped_at: new Date().toISOString(),
+      error_message: 'invalid_recovery_row',
+      updated_at: new Date().toISOString(),
+    });
+    return 'skipped_invalid';
+  }
+
+  if (!options.purchaseAlreadyChecked && await hasCompletedPurchase(supabase, row.stripe_session_id, email)) {
+    await updateRecoveryRow(supabase, row, {
+      status: 'skipped',
+      skipped_at: new Date().toISOString(),
+      error_message: 'already_purchased',
+      updated_at: new Date().toISOString(),
+    });
+    return 'skipped_purchased';
+  }
+
+  if (options.dryRun) return 'would_send';
+
+  try {
+    const sendResult = await sendCheckoutRecoveryEmail({
+      toEmail: email,
+      recoveryUrl,
+      tier,
+      priceLabel: PRICING[tier].price,
+      consentSource,
+      idempotencyKey: `checkout-recovery:${row.stripe_session_id}`,
+    });
+
+    if (sendResult.sent) {
+      await updateRecoveryRow(supabase, row, {
+        status: 'sent',
+        sent_at: new Date().toISOString(),
+        resend_email_id: 'id' in sendResult ? sendResult.id : null,
+        error_message: null,
+        updated_at: new Date().toISOString(),
+      });
+      return 'sent';
+    }
+
+    await updateRecoveryRow(supabase, row, {
+      status: 'failed',
+      failed_at: new Date().toISOString(),
+      error_message: 'reason' in sendResult ? sendResult.reason : 'not_sent',
+      updated_at: new Date().toISOString(),
+    });
+    return 'failed';
+  } catch (error) {
+    if (options.keepQueuedOnError) {
+      await updateRecoveryRow(supabase, row, {
+        error_message: error instanceof Error ? error.message.slice(0, 500) : 'send_failed',
+        updated_at: new Date().toISOString(),
+      });
+      return 'retry_later';
+    }
+    await updateRecoveryRow(supabase, row, {
+      status: 'failed',
+      failed_at: new Date().toISOString(),
+      error_message: error instanceof Error ? error.message.slice(0, 500) : 'send_failed',
+      updated_at: new Date().toISOString(),
+    });
+    return 'failed';
+  }
 }
 
 export async function processQueuedRecoveryEmails(
@@ -326,94 +458,12 @@ export async function processQueuedRecoveryEmails(
   };
 
   for (const row of (data || []) as RecoveryEmailRow[]) {
-    const email = cleanEmail(row.customer_email);
-    const tier = isPaidTierId(row.tier) ? row.tier : null;
-    const recoveryUrl = typeof row.recovery_url === 'string' && row.recovery_url.startsWith('https://')
-      ? row.recovery_url
-      : null;
-    const consentSource = row.consent_source === 'stripe' || row.consent_source === 'site'
-      ? row.consent_source
-      : null;
-
-    if (!email || !tier || !recoveryUrl || !consentSource) {
-      counters.skippedInvalid += 1;
-      await supabase
-        .from('recovery_emails')
-        .update({
-          status: 'skipped',
-          skipped_at: new Date().toISOString(),
-          error_message: 'invalid_recovery_row',
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', row.id);
-      continue;
-    }
-
-    if (await hasCompletedPurchase(supabase, row.stripe_session_id, email)) {
-      counters.skippedPurchased += 1;
-      await supabase
-        .from('recovery_emails')
-        .update({
-          status: 'skipped',
-          skipped_at: new Date().toISOString(),
-          error_message: 'already_purchased',
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', row.id);
-      continue;
-    }
-
-    if (options.dryRun) {
-      counters.wouldSend += 1;
-      continue;
-    }
-
-    try {
-      const sendResult = await sendCheckoutRecoveryEmail({
-        toEmail: email,
-        recoveryUrl,
-        tier,
-        priceLabel: discountedPriceLabel(PRICING[tier].amount),
-        consentSource,
-        idempotencyKey: `checkout-recovery:${row.stripe_session_id}`,
-      });
-
-      if (sendResult.sent) {
-        counters.sent += 1;
-        await supabase
-          .from('recovery_emails')
-          .update({
-            status: 'sent',
-            sent_at: new Date().toISOString(),
-            resend_email_id: 'id' in sendResult ? sendResult.id : null,
-            error_message: null,
-            updated_at: new Date().toISOString(),
-          })
-          .eq('id', row.id);
-      } else {
-        counters.failed += 1;
-        await supabase
-          .from('recovery_emails')
-          .update({
-            status: 'failed',
-            failed_at: new Date().toISOString(),
-            error_message: 'reason' in sendResult ? sendResult.reason : 'not_sent',
-            updated_at: new Date().toISOString(),
-          })
-          .eq('id', row.id);
-      }
-    } catch (error) {
-      counters.failed += 1;
-      await supabase
-        .from('recovery_emails')
-        .update({
-          status: 'failed',
-          failed_at: new Date().toISOString(),
-          error_message: error instanceof Error ? error.message.slice(0, 500) : 'send_failed',
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', row.id);
-    }
+    const outcome = await deliverRecoveryRow(supabase, row, { dryRun: options.dryRun });
+    if (outcome === 'sent') counters.sent += 1;
+    else if (outcome === 'skipped_invalid') counters.skippedInvalid += 1;
+    else if (outcome === 'skipped_purchased') counters.skippedPurchased += 1;
+    else if (outcome === 'would_send') counters.wouldSend += 1;
+    else counters.failed += 1;
   }
 
   return counters;

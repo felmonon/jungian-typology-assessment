@@ -1,6 +1,10 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { DiscountCaptureCard } from '../../components/discount/DiscountCaptureCard';
+import {
+  DiscountCaptureCard,
+  RESULT_LINK_CONSENT_LABEL,
+  RESULT_LINK_CONSENT_VERSION,
+} from '../../components/discount/DiscountCaptureCard';
 import { depthQuestions } from '../../data/depthAssessment';
 import { encodeResultCode } from '../../lib/result-link';
 import { STORAGE_KEYS } from '../../lib/validation';
@@ -27,6 +31,7 @@ vi.mock('../../lib/analytics', () => ({
   AnalyticsEvents: {
     ctaClicked: vi.fn(),
     paidOfferClicked: vi.fn(),
+    errorOccurred: vi.fn(),
   },
 }));
 
@@ -84,10 +89,53 @@ describe('DiscountCaptureCard', () => {
 
     render(<DiscountCaptureCard source="results_offer_not_ready" minimal preferredTier="insight" />);
     fireEvent.change(screen.getByRole('textbox'), { target: { value: 'reader@example.com' } });
-    fireEvent.click(screen.getByRole('button', { name: /Email code/ }));
+    fireEvent.click(screen.getByRole('checkbox', { name: RESULT_LINK_CONSENT_LABEL }));
+    fireEvent.click(screen.getByRole('button', { name: /Email my link/ }));
 
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
     const body = JSON.parse(String(fetchMock.mock.calls[0][1]?.body));
     expect(body.resultCode).toBe(encodeResultCode(result));
+  });
+
+  it('asks for explicit, unticked consent before sending anything', async () => {
+    const fetchMock = vi.mocked(globalThis.fetch);
+    fetchMock.mockResolvedValue(new Response(JSON.stringify({ sent: true, captured: true }), { status: 200 }));
+
+    render(<DiscountCaptureCard source="results_save_return_link" minimal preferredTier="insight" />);
+    const consent = screen.getByRole('checkbox', { name: RESULT_LINK_CONSENT_LABEL });
+    expect(consent).not.toBeChecked();
+
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'reader@example.com' } });
+    fireEvent.click(screen.getByRole('button', { name: /Email my link/ }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Tick the box');
+    expect(fetchMock).not.toHaveBeenCalled();
+
+    fireEvent.click(consent);
+    fireEvent.click(screen.getByRole('button', { name: /Email my link/ }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+    const body = JSON.parse(String(fetchMock.mock.calls[0][1]?.body));
+    expect(body).toMatchObject({
+      email: 'reader@example.com',
+      source: 'results_save_return_link',
+      emailConsent: true,
+      consentVersion: RESULT_LINK_CONSENT_VERSION,
+    });
+    expect(await screen.findByText(/Your link is in your inbox/)).toBeInTheDocument();
+    expect(JSON.parse(localStorage.getItem('typejung_discount_capture')!)).toMatchObject({ linkSent: true });
+  });
+
+  it('no longer offers a backup of the auto-applied code', () => {
+    const { container } = render(<DiscountCaptureCard source="results_offer_not_ready" />);
+    expect(container.textContent).not.toMatch(/TYPEJUNG30|% off|backup code|discount/i);
+  });
+
+  it('only prefills, and does not mark as sent, an email saved by checkout', () => {
+    localStorage.setItem('typejung_discount_capture', JSON.stringify({
+      email: 'buyer@example.com',
+      source: 'checkout_recovery_prestripe',
+    }));
+    render(<DiscountCaptureCard source="results_offer_not_ready" minimal />);
+    expect(screen.getByRole('textbox')).toHaveValue('buyer@example.com');
+    expect(screen.getByRole('button', { name: /Email my link/ })).toBeInTheDocument();
   });
 });

@@ -548,7 +548,7 @@ ${shellHeader({ ctaSource: sourceFor(page, 'nav') })}
     <ul class="proof-strip" aria-label="Assessment proof points">
       <li>42-question map</li>
       <li>No payment first</li>
-      <li>CA$7 Insight with TYPEJUNG30</li>
+      <li>CA$7 Insight, paid once</li>
     </ul>
     ${renderSaveLinkPanel(page)}
   </header>
@@ -565,7 +565,7 @@ ${shellHeader({ ctaSource: sourceFor(page, 'nav') })}
 
   <div class="cta-box">
     <h2>Start with your own function profile</h2>
-    <p>Take the free TypeJung assessment first. If the function-stack map feels useful, Insight is currently CA$7 with TYPEJUNG30 and Mastery is CA$20.30 with the same Stripe code.</p>
+    <p>Take the free TypeJung assessment first. If the function-stack map feels useful, Insight is CA$7 and Mastery is CA$19, each paid once in CAD.</p>
     <div class="cta-actions">
       <a href="${escapeHtml(withSource('/assessment', page, 'final'))}" class="btn">Take the free assessment</a>
       <a href="${escapeHtml(withSource('/sample-report', page, 'final_sample'))}" class="secondary-btn">View sample report</a>

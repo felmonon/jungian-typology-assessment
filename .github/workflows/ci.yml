@@ -107,14 +107,17 @@ jobs:
         env:
           TEST_BASE_URL: ${{ inputs.e2e_base_url }}
         run: |
-          case "$TEST_BASE_URL" in
-            https://*) ;;
-            *) echo "::error::e2e_base_url must be an https URL"; exit 1 ;;
-          esac
-          case "$TEST_BASE_URL" in
-            https://typejung.com|https://typejung.com/*|https://www.typejung.com|https://www.typejung.com/*)
-              echo "::error::Refusing to run E2E tests against production"; exit 1 ;;
-          esac
+          # Allowlist: only Vercel preview hosts. Parse with a real URL parser so
+          # userinfo, case, trailing dots or ports cannot smuggle in production.
+          node -e '
+            let u;
+            try { u = new URL(process.env.TEST_BASE_URL); } catch { console.log("::error::e2e_base_url is not a valid URL"); process.exit(1); }
+            const host = u.hostname.toLowerCase().replace(/\.$/, "");
+            if (u.protocol !== "https:" || u.username || u.password || u.port || !host.endsWith(".vercel.app")) {
+              console.log("::error::e2e_base_url must be a plain https://<preview>.vercel.app URL");
+              process.exit(1);
+            }
+          '
 
       - name: Checkout code
         uses: actions/checkout@v4
